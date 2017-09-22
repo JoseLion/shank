@@ -9,7 +9,7 @@ const LocalStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#3C4635',
+        backgroundColor: '#1D222D',
     },
 });
 
