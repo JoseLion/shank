@@ -1,4 +1,5 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
+import Style from './Stylesheet';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 const {width, height} = Dimensions.get('window');
@@ -15,6 +16,22 @@ const MainStyles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
+    },
+    iconLG: {
+        width: Style.iconLG,
+        height: Style.iconLG,
+    },
+    iconMD: {
+        width: Style.iconMD,
+        height: Style.iconMD,
+    },
+    iconSM: {
+        width: Style.iconSM,
+        height: Style.iconSM,
+    },
+    iconXS: {
+        width: Style.iconXS,
+        height: Style.iconXS,
     },
 });
 
