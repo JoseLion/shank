@@ -3,7 +3,7 @@ import {NavigationActions} from 'react-navigation';
 
 import {AppNavigator} from '../navigators/AppNavigator';
 
-const firstAction = AppNavigator.router.getActionForPathAndParams('Main');
+const firstAction = AppNavigator.router.getActionForPathAndParams('Splash');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);
 const secondAction = AppNavigator.router.getActionForPathAndParams('Login');
 const initialNavState = AppNavigator.router.getStateForAction(
@@ -14,15 +14,33 @@ const initialNavState = AppNavigator.router.getStateForAction(
 function nav(state = initialNavState, action) {
     let nextState;
     switch (action.type) {
+        case 'Splash':
+            nextState = AppNavigator.router.getStateForAction(
+                NavigationActions.navigate({routeName: 'Login'}),
+                state
+            );
+            break;
+        // case 'Login':
+        //     nextState = AppNavigator.router.getStateForAction(
+        //         NavigationActions.back(),
+        //         state
+        //     );
+        //     break;
         case 'Login':
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.back(),
+                NavigationActions.navigate({routeName: 'Main'}),
                 state
             );
             break;
         case 'Logout':
             nextState = AppNavigator.router.getStateForAction(
                 NavigationActions.navigate({routeName: 'Login'}),
+                state
+            );
+            break;
+        case 'Main':
+            nextState = AppNavigator.router.getStateForAction(
+                NavigationActions.navigate({routeName: 'Profile'}),
                 state
             );
             break;
