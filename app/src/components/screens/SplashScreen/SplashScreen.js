@@ -12,11 +12,10 @@ const SplashScreen = ({navigation}) => {
         }, 500);
     };
 
-    let component = componentWillMount();
     return (
 
         <View style={LocalStyles.container}>
-            {component}
+            () => this.componentWillMount()
             <StatusBar hidden={true}/>
             <Image
                 source={require('../../../../resources/shankLogo/IOS/regular/shankLogo.png')}
