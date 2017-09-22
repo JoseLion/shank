@@ -1,9 +1,2 @@
-import React from 'react';
-import {
-    TabNavigator,
-} from 'react-navigation';
-
-const BasicApp = TabNavigator({
-    Main: {screen: MainScreen},
-    Setup: {screen: SetupScreen},
-});
+import App from './src/App';
+export default App;
