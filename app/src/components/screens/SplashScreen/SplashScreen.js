@@ -1,23 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, Image} from 'react-native';
+import {Button, StyleSheet, Text, View, Image, StatusBar} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 
 const SplashScreen = ({navigation}) => (
     <View style={LocalStyles.container}>
-        <Text style={MainStyles.welcome}>
-        </Text>
+        <StatusBar hidden={true} />
         <Image
-            source={require('../../../../resources/icons/60ptx2.png')}
+            source={require('../../../../resources/shankLogo/IOS/regular/shankLogo.png')}
             style={MainStyles.iconLG}/>
-        <Text style={MainStyles.instructions}>
-            Splash
-        </Text>
         <Button
             onPress={() => navigation.dispatch({type: 'Splash'})}
-            title="Go to Log in"
-        />
+            title="Go to Log in"/>
     </View>
 );
 
@@ -27,6 +22,8 @@ SplashScreen.propTypes = {
 
 SplashScreen.navigationOptions = {
     title: 'Splash',
+    header: null
 };
+
 
 export default SplashScreen;
