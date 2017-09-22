@@ -2,19 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, StyleSheet, Text, View} from 'react-native';
 // import {StyleSheet, View} from 'react-native';
+import Styles from '../../styles/main';
 
 // import LoginStatusMessage from './LoginStatusMessage';
 // import AuthButton from './AuthButton';
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-});
-
 // const MainScreen = () => (
 //     <View style={styles.container}>
 //         <LoginStatusMessage/>
@@ -23,11 +14,11 @@ const styles = StyleSheet.create({
 // );
 
 const MainScreen = ({navigation}) => (
-    <View style={styles.container}>
-        <Text style={styles.welcome}>
+    <View style={Styles.container}>
+        <Text style={Styles.welcome}>
             Screen A
         </Text>
-        <Text style={styles.instructions}>
+        <Text style={Styles.instructions}>
             This is great
         </Text>
         <Button

@@ -6,7 +6,7 @@ import {createStore} from 'redux';
 import AppReducer from './components/reducers';
 import AppWithNavigationState from './components/navigators/AppNavigator';
 
-class ReduxExampleApp extends React.Component {
+class ShankApp extends React.Component {
     store = createStore(AppReducer);
 
     render() {
@@ -18,6 +18,6 @@ class ReduxExampleApp extends React.Component {
     }
 }
 
-AppRegistry.registerComponent('ReduxExample', () => ReduxExampleApp);
+AppRegistry.registerComponent('ShankApp', () => ShankApp);
 
-export default ReduxExampleApp;
+export default ShankApp;
