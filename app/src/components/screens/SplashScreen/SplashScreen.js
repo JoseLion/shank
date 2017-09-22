@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, StyleSheet, Text, View} from 'react-native';
-import Styles from '../../styles/main';
+import MainStyles from '../../../styles/main';
+import LocalStyles from './styles/local'
 
 const SplashScreen = ({navigation}) => (
-    <View style={Styles.container}>
-        <Text style={Styles.welcome}>
+    <View style={LocalStyles.container}>
+        <Text style={MainStyles.welcome}>
 
         </Text>
-        <Text style={Styles.instructions}>
+        <Text style={MainStyles.instructions}>
             Splash
         </Text>
         <Button

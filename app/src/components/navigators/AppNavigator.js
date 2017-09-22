@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {addNavigationHelpers, StackNavigator} from 'react-navigation';
 
-import SplashScreen from '../screens/SplashScreen'
-import LoginScreen from '../screens/LoginScreen';
-import MainScreen from '../screens/MainScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import SplashScreen from '../screens/SplashScreen/SplashScreen'
+import LoginScreen from '../screens/LoginScreen/LoginScreen';
+import MainScreen from '../screens/MainScreen/MainScreen';
+import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 
 export const AppNavigator = StackNavigator({
     Splash: {screen: SplashScreen},

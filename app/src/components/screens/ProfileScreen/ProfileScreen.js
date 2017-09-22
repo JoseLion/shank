@@ -1,10 +1,11 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import Styles from '../../styles/main';
+import MainStyles from '../../../styles/main';
+import LocalStyles from './styles/local'
 
 const ProfileScreen = () => (
-    <View style={Styles.container}>
-        <Text style={Styles.welcome}>
+    <View style={MainStyles.container}>
+        <Text style={MainStyles.welcome}>
             Profile Screen
         </Text>
     </View>
