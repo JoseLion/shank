@@ -4,18 +4,18 @@ import {Button, StyleSheet, Text, View, Image, StatusBar} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 
+function componentWillMount(navigation) {
+    console.log("Si entra mmvga");
+    setTimeout(() => {
+        navigation.dispatch({type: 'Splash'});
+    }, 500);
+}
+
 const SplashScreen = ({navigation}) => {
-    componentWillMount = () => {
-        console.log("Si entra mmvga")
-        setTimeout(() => {
-            navigation.dispatch({type: 'Splash'});
-        }, 500);
-    };
 
     return (
-
         <View style={LocalStyles.container}>
-            () => this.componentWillMount()
+            {componentWillMount(navigation)}
             <StatusBar hidden={true}/>
             <Image
                 source={require('../../../../resources/shankLogo/IOS/regular/shankLogo.png')}
@@ -25,7 +25,7 @@ const SplashScreen = ({navigation}) => {
                 title="Go to Log in"/>
         </View>
     );
-}
+};
 
 SplashScreen.propTypes = {
     navigation: PropTypes.object.isRequired,
