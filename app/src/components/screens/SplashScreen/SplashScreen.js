@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, StyleSheet, Text, View, Image} from 'react-native';
 import MainStyles from '../../../styles/main';
-import LocalStyles from './styles/local'
+import LocalStyles from './styles/local';
 
 const SplashScreen = ({navigation}) => (
     <View style={LocalStyles.container}>
