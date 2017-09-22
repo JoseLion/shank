@@ -4,10 +4,18 @@ import {Button, StyleSheet, Text, View, Image, StatusBar} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 
+
+function componentWillMount(navigation) {
+    setTimeout(() => {
+        //navigation.dispatch({type: 'Splash'});
+    }, 2000);
+}
+
 const SplashScreen = ({navigation}) => {
     return (
         <View style={LocalStyles.container}>
-            <StatusBar hidden={true} />
+            {componentWillMount(navigation)}
+            <StatusBar hidden={true}/>
             <Image
                 source={require('../../../../resources/shankLogo/IOS/regular/shankLogo.png')}
                 style={MainStyles.iconLG}/>
@@ -15,7 +23,7 @@ const SplashScreen = ({navigation}) => {
                 onPress={() => navigation.dispatch({type: 'Splash'})}
                 title="Go to Log in"/>
         </View>
-    )
+    );
 };
 
 SplashScreen.propTypes = {
