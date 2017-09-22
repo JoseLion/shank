@@ -5,9 +5,9 @@ import {AppNavigator} from '../navigators/AppNavigator';
 
 const firstAction = AppNavigator.router.getActionForPathAndParams('Splash');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);
-const secondAction = AppNavigator.router.getActionForPathAndParams('Login');
+const secondAction = AppNavigator.router.getActionForPathAndParams('Slider');
 const initialNavState = AppNavigator.router.getStateForAction(
-    secondAction,
+    firstAction,
     tempNavState
 );
 
@@ -16,7 +16,7 @@ function nav(state = initialNavState, action) {
     switch (action.type) {
         case 'Splash':
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Login'}),
+                NavigationActions.navigate({routeName: 'Slider'}),
                 state
             );
             break;
@@ -44,9 +44,16 @@ function nav(state = initialNavState, action) {
                 state
             );
             break;
+        case 'Slider':
+            nextState = AppNavigator.router.getStateForAction(
+                NavigationActions.navigate({routeName: 'Main'}),
+                state
+            );
+            break;
         default:
             nextState = AppNavigator.router.getStateForAction(action, state);
             break;
+
     }
 
     // Simply return the original `state` if `nextState` is null or undefined.

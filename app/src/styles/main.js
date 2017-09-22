@@ -33,6 +33,22 @@ const MainStyles = StyleSheet.create({
         width: Style.iconXS,
         height: Style.iconXS,
     },
+    shankGreen : {
+        color:'#556E3E'
+    },
+    shankTitle : {
+        fontSize: Style.FONT_SIZE_TITLE,
+        color:'#fff',
+
+    },
+    medShankFont: {
+        fontSize: Style.FONT_16,
+        color:'#fff'
+    },
+    smallShankFont : {
+        fontSize: Style.FONT_13,
+        color:'#fff'
+    }
 });
 
 export default MainStyles;

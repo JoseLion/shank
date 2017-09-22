@@ -8,7 +8,6 @@ import AppWithNavigationState from './components/navigators/AppNavigator';
 
 class ShankApp extends React.Component {
     store = createStore(AppReducer);
-
     render() {
         return (
             <Provider store={this.store}>
