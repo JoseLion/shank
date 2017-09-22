@@ -1,18 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, StyleSheet, Text, View} from 'react-native';
-// import {StyleSheet, View} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 
-// import LoginStatusMessage from './LoginStatusMessage';
-// import AuthButton from './AuthButton';
-// const MainScreen = () => (
-//     <View styles={styles.container}>
-//         <LoginStatusMessage/>
-//         <AuthButton/>
-//     </View>
-// );
+import LoginStatusMessage from './LoginStatusMessage';
+import AuthButton from './AuthButton';
 
 const MainScreen = ({navigation}) => (
     <View style={MainStyles.container}>
@@ -30,6 +23,8 @@ const MainScreen = ({navigation}) => (
             onPress={() => navigation.dispatch({type: 'Logout'})}
             title="Logout App"
         />
+        <LoginStatusMessage/>
+        <AuthButton/>
     </View>
 );
 
