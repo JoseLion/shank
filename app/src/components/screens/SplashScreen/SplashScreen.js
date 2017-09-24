@@ -1,24 +1,38 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button, StyleSheet, Text, View, Image, StatusBar} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 
+const logoTrans = require('../../../../resources/shankLogo/IOS/trans/shankLogoTrans.png');
+const logoRegular = require('../../../../resources/shankLogo/IOS/regular/shankLogo.png');
 
-function componentWillMount(navigation) {
-    setTimeout(() => {
-        //navigation.dispatch({type: 'Splash'});
-    }, 2000);
+class Greeting extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {showImages: true};
+        // Toggle the state every second
+        setInterval(() => {
+            this.setState(previousState => {
+                return {showImages: !previousState.showImages};
+            });
+        }, 1000);
+    }
+
+    render() {
+        let imgSource = this.state.showImages ? logoTrans : logoRegular;
+        return (
+            <Image source={imgSource}
+                   style={MainStyles.iconXLG}/>
+        );
+    }
 }
 
 const SplashScreen = ({navigation}) => {
     return (
         <View style={LocalStyles.container}>
-            {componentWillMount(navigation)}
             <StatusBar hidden={true}/>
-            <Image
-                source={require('../../../../resources/shankLogo/IOS/regular/shankLogo.png')}
-                style={MainStyles.iconLG}/>
+            <Greeting/>
             <Button
                 onPress={() => navigation.dispatch({type: 'Splash'})}
                 title="Go to Log in"/>

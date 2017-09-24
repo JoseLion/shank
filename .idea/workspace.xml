@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e3925777-7cb1-4227-8ce1-c61c59debbde" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/components/screens/SliderScreen/SwiperScreen.js" afterPath="$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/navigators/AppNavigator.js" afterPath="$PROJECT_DIR$/app/src/components/navigators/AppNavigator.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/reducers/index.js" afterPath="$PROJECT_DIR$/app/src/components/reducers/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" afterPath="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/styles/Stylesheet.js" afterPath="$PROJECT_DIR$/app/src/styles/Stylesheet.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/styles/main.js" afterPath="$PROJECT_DIR$/app/src/styles/main.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -19,40 +18,84 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="SliderScreen.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js">
+      <file leaf-file-name="SplashScreen.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" column="63" lean-forward="true" selection-start-line="24" selection-start-column="63" selection-end-line="24" selection-end-column="63" />
+            <state relative-caret-position="149">
+              <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
               <folding>
-                <element signature="e#0#26#0" expanded="true" />
+                <element signature="e#0#39#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/components/reducers/index.js">
+      <file leaf-file-name="shankLogohdpi.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogohdpi.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/styles/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
-              <folding>
-                <element signature="e#0#38#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="202">
+              <caret line="20" column="23" lean-forward="true" selection-start-line="20" selection-start-column="23" selection-end-line="20" selection-end-column="23" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AppNavigator.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/components/navigators/AppNavigator.js">
+      <file leaf-file-name="Stylesheet.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/styles/Stylesheet.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="31" lean-forward="false" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-                <marker date="1506263172787" expanded="true" signature="704:714" ph="{...}" />
-              </folding>
+            <state relative-caret-position="285">
+              <caret line="101" column="4" lean-forward="false" selection-start-line="101" selection-start-column="4" selection-end-line="101" selection-end-column="4" />
+              <folding />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shankLogoTransxhdpi.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTransxhdpi.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shankLogoTransmdpi.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTransmdpi.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shankLogomdpi.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogomdpi.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shankLogoldpi.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoldpi.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shankLogoxhdpi.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoxhdpi.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shankLogoxxxhdpi.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoxxxhdpi.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
           </provider>
         </entry>
       </file>
@@ -125,14 +168,14 @@
         <option value="$PROJECT_DIR$/app/src/components/screens/SliderScreen/styles/SwiperScreen.js" />
         <option value="$PROJECT_DIR$/app/package.json" />
         <option value="$PROJECT_DIR$/app/src/App.js" />
-        <option value="$PROJECT_DIR$/app/src/styles/Stylesheet.js" />
-        <option value="$PROJECT_DIR$/app/src/styles/main.js" />
         <option value="$PROJECT_DIR$/app/src/components/screens/SliderScreen/SwiperScreen.js" />
         <option value="$PROJECT_DIR$/app/src/components/screens/SliderScreen/styles/local.js" />
-        <option value="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" />
         <option value="$PROJECT_DIR$/app/src/components/reducers/index.js" />
         <option value="$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js" />
         <option value="$PROJECT_DIR$/app/src/components/navigators/AppNavigator.js" />
+        <option value="$PROJECT_DIR$/app/src/styles/Stylesheet.js" />
+        <option value="$PROJECT_DIR$/app/src/styles/main.js" />
+        <option value="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" />
       </list>
     </option>
   </component>
@@ -181,6 +224,12 @@
               <item name="shank" type="b2602c69:ProjectViewProjectNode" />
               <item name="shank" type="462c0819:PsiDirectoryNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="shank" type="b2602c69:ProjectViewProjectNode" />
+              <item name="shank" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="shank" type="b2602c69:ProjectViewProjectNode" />
@@ -386,12 +435,12 @@
       <workItem from="1506036121052" duration="12831000" />
       <workItem from="1506093979956" duration="2345000" />
       <workItem from="1506171135235" duration="2141000" />
-      <workItem from="1506260910696" duration="1345000" />
+      <workItem from="1506260910696" duration="6353000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38208000" />
+    <option name="totallyTimeSpent" value="43216000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -426,38 +475,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/MainScreen.js" />
-    <entry file="file://$PROJECT_DIR$/app/App.test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="19" lean-forward="false" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/ProfileScreen.js" />
-    <entry file="file://$PROJECT_DIR$/app/navigation/RootNavigation.js" />
-    <entry file="file://$PROJECT_DIR$/app/navigation/MainTabNavigator.js" />
-    <entry file="file://$PROJECT_DIR$/app/screens/HomeScreen.js" />
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/HomeScreen/HomeScreen.js" />
-    <entry file="file://$PROJECT_DIR$/app/src/components/navigation/AppRouter.js" />
-    <entry file="file://$PROJECT_DIR$/app/node_modules/react-native/Libraries/ReactNative/AppRegistry.js" />
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/LoginScreen/styles/localStyle.js" />
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/ProfileScreen/styles/localStyle.js" />
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/MainScreen/styles/localStyle.js" />
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/MainScreen/styles/local.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/ProfileScreen/styles/local.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/App.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -482,31 +499,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogohdpi.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoldpi.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTranshdpi.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/trans/shankLogoTrans.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/regular/shankLogo.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/resources/splashScreen/GENERAL ESPECIFICATIONS.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -518,6 +510,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="11" column="33" lean-forward="false" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -605,13 +598,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/styles/Stylesheet.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="810">
-          <caret line="55" column="4" lean-forward="false" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
@@ -630,22 +616,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/styles/main.js">
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/styles/local.js" />
+    <entry file="file://$PROJECT_DIR$/app/src/components/reducers/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+        <state relative-caret-position="270">
+          <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
           <folding>
-            <element signature="e#0#62#0" expanded="true" />
+            <element signature="e#0#38#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/styles/local.js" />
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js">
+    <entry file="file://$PROJECT_DIR$/app/src/components/navigators/AppNavigator.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="255">
+          <caret line="15" column="31" lean-forward="false" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+            <marker date="1506263172787" expanded="true" signature="704:714" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -659,23 +648,135 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/reducers/index.js">
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/trans/shankLogoTrans.svg">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/navigators/AppNavigator.js">
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/trans/shankLogoTrans@2x.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/trans/shankLogoTrans@3x.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/trans/shankLogoTrans.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/regular/shankLogo.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/regular/shankLogo.svg">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="31" lean-forward="false" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/regular/shankLogo@2x.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/IOS/regular/shankLogo@3x.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogo.svg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTrans.svg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTranshdpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTransldpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTransxhdpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTransmdpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogomdpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoldpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoxhdpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoxxxhdpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogohdpi.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/styles/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="20" column="23" lean-forward="true" selection-start-line="20" selection-start-column="23" selection-end-line="20" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/styles/Stylesheet.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="101" column="4" lean-forward="false" selection-start-line="101" selection-start-column="4" selection-end-line="101" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
           <folding>
-            <element signature="e#0#26#0" expanded="true" />
-            <marker date="1506263172787" expanded="true" signature="704:714" ph="{...}" />
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>

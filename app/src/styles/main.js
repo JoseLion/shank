@@ -17,6 +17,10 @@ const MainStyles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
     },
+    iconXLG: {
+        width: Style.iconXLG,
+        height: Style.iconXLG,
+    },
     iconLG: {
         width: Style.iconLG,
         height: Style.iconLG,
