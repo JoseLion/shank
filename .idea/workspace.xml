@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e3925777-7cb1-4227-8ce1-c61c59debbde" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/screens/LoginScreen/LoginScreen.js" afterPath="$PROJECT_DIR$/app/src/components/screens/LoginScreen/LoginScreen.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/screens/MainScreen/MainScreen.js" afterPath="$PROJECT_DIR$/app/src/components/screens/MainScreen/MainScreen.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/screens/ProfileScreen/ProfileScreen.js" afterPath="$PROJECT_DIR$/app/src/components/screens/ProfileScreen/ProfileScreen.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js" afterPath="$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" afterPath="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -23,7 +19,7 @@
       <file leaf-file-name="SplashScreen.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="-561">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="39" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
@@ -35,18 +31,30 @@
       <file leaf-file-name="SliderScreen.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <state relative-caret-position="404">
+              <caret line="41" column="52" lean-forward="false" selection-start-line="41" selection-start-column="52" selection-end-line="41" selection-end-column="52" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="local.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/styles/local.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="352">
+              <caret line="46" column="29" lean-forward="true" selection-start-line="46" selection-start-column="29" selection-end-line="46" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProfileScreen.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ProfileScreen.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/components/screens/ProfileScreen/ProfileScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="19" column="5" lean-forward="true" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
+            <state relative-caret-position="238">
+              <caret line="17" column="24" lean-forward="true" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -57,7 +65,7 @@
       <file leaf-file-name="MainScreen.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/components/screens/MainScreen/MainScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="-255">
               <caret line="0" column="39" lean-forward="false" selection-start-line="0" selection-start-column="39" selection-end-line="0" selection-end-column="39" />
               <folding />
             </state>
@@ -149,10 +157,10 @@
         <option value="$PROJECT_DIR$/app/src/styles/Stylesheet.js" />
         <option value="$PROJECT_DIR$/app/src/styles/main.js" />
         <option value="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" />
-        <option value="$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js" />
         <option value="$PROJECT_DIR$/app/src/components/screens/MainScreen/MainScreen.js" />
         <option value="$PROJECT_DIR$/app/src/components/screens/LoginScreen/LoginScreen.js" />
         <option value="$PROJECT_DIR$/app/src/components/screens/ProfileScreen/ProfileScreen.js" />
+        <option value="$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js" />
       </list>
     </option>
   </component>
@@ -449,12 +457,12 @@
       <workItem from="1506036121052" duration="12831000" />
       <workItem from="1506093979956" duration="2345000" />
       <workItem from="1506171135235" duration="2141000" />
-      <workItem from="1506260910696" duration="13142000" />
+      <workItem from="1506260910696" duration="13326000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="50005000" />
+    <option name="totallyTimeSpent" value="50189000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -588,7 +596,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/styles/local.js" />
     <entry file="file://$PROJECT_DIR$/app/src/components/reducers/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -757,17 +764,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/MainScreen/MainScreen.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="39" lean-forward="false" selection-start-line="0" selection-start-column="39" selection-end-line="0" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="-561">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="39" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
@@ -775,21 +774,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js">
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/ProfileScreen/ProfileScreen.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+        <state relative-caret-position="238">
+          <caret line="17" column="24" lean-forward="true" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/MainScreen/MainScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-255">
+          <caret line="0" column="39" lean-forward="false" selection-start-line="0" selection-start-column="39" selection-end-line="0" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/ProfileScreen/ProfileScreen.js">
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="5" lean-forward="true" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
+        <state relative-caret-position="404">
+          <caret line="41" column="52" lean-forward="false" selection-start-line="41" selection-start-column="52" selection-end-line="41" selection-end-column="52" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/styles/local.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="46" column="29" lean-forward="true" selection-start-line="46" selection-start-column="29" selection-end-line="46" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>

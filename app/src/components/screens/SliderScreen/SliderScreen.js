@@ -35,13 +35,13 @@ export default class SliderScreen extends Component {
                 <View style={LocalStyles.slide3}>
                     <Image style={LocalStyles.coverImage}
                            source={require('../../../../resources/initSlider/IOS/slider/init3/sliterInit3.png')}>
-                        <Text style={MainStyles.shankTitle}>SHANK</Text>
-                        <Text style={MainStyles.medShankFont}>GET YOUR REWARD</Text>
-                        <Text style={MainStyles.smallShankFont}>PROFIT FROM THE OUTCOME AND BET AGAIN</Text>
-                        <Button style={LocalStyles.startButton}
-                                onPress={() => navigation.dispatch({type: 'Slider'})}
-                                title="Let's get started"/>
                     </Image>
+                    <Text style={MainStyles.shankTitle}>SHANK</Text>
+                    <Text style={MainStyles.medShankFont}>GET YOUR REWARD</Text>
+                    <Text style={MainStyles.smallShankFont}>PROFIT FROM THE OUTCOME AND BET AGAIN</Text>
+                    <Button style={LocalStyles.startButton}
+                            onPress={() => navigation.dispatch({type: 'Slider'})}
+                            title="Let's get started"/>
 
                 </View>
             </Swiper>
