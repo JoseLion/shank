@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e3925777-7cb1-4227-8ce1-c61c59debbde" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" afterPath="$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/styles/Stylesheet.js" afterPath="$PROJECT_DIR$/app/src/styles/Stylesheet.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/styles/main.js" afterPath="$PROJECT_DIR$/app/src/styles/main.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -21,81 +19,12 @@
       <file leaf-file-name="SplashScreen.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="149">
-              <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
+            <state relative-caret-position="285">
+              <caret line="21" column="48" lean-forward="true" selection-start-line="21" selection-start-column="48" selection-end-line="21" selection-end-column="48" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
             </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shankLogohdpi.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogohdpi.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/styles/main.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
-              <caret line="20" column="23" lean-forward="true" selection-start-line="20" selection-start-column="23" selection-end-line="20" selection-end-column="23" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Stylesheet.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/styles/Stylesheet.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="101" column="4" lean-forward="false" selection-start-line="101" selection-start-column="4" selection-end-line="101" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shankLogoTransxhdpi.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTransxhdpi.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shankLogoTransmdpi.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/trans/shankLogoTransmdpi.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shankLogomdpi.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogomdpi.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shankLogoldpi.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoldpi.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shankLogoxhdpi.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoxhdpi.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shankLogoxxxhdpi.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/resources/shankLogo/Android/regular/shankLogoxxxhdpi.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
           </provider>
         </entry>
       </file>
@@ -275,6 +204,24 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="components" type="462c0819:PsiDirectoryNode" />
               <item name="screens" type="462c0819:PsiDirectoryNode" />
+              <item name="LoginScreen" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="shank" type="b2602c69:ProjectViewProjectNode" />
+              <item name="shank" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="screens" type="462c0819:PsiDirectoryNode" />
+              <item name="ProfileScreen" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="shank" type="b2602c69:ProjectViewProjectNode" />
+              <item name="shank" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="screens" type="462c0819:PsiDirectoryNode" />
               <item name="SliderScreen" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -285,6 +232,16 @@
               <item name="components" type="462c0819:PsiDirectoryNode" />
               <item name="screens" type="462c0819:PsiDirectoryNode" />
               <item name="SplashScreen" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="shank" type="b2602c69:ProjectViewProjectNode" />
+              <item name="shank" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="screens" type="462c0819:PsiDirectoryNode" />
+              <item name="SplashScreen" type="462c0819:PsiDirectoryNode" />
+              <item name="styles" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="shank" type="b2602c69:ProjectViewProjectNode" />
@@ -435,12 +392,12 @@
       <workItem from="1506036121052" duration="12831000" />
       <workItem from="1506093979956" duration="2345000" />
       <workItem from="1506171135235" duration="2141000" />
-      <workItem from="1506260910696" duration="6353000" />
+      <workItem from="1506260910696" duration="10686000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="43216000" />
+    <option name="totallyTimeSpent" value="47549000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -506,21 +463,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/styles/local.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="33" lean-forward="false" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/LoginScreen/LoginScreen.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="7" lean-forward="true" selection-start-line="0" selection-start-column="7" selection-end-line="0" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/node_modules/react-navigation-props-mapper/index.js" />
     <entry file="file://$PROJECT_DIR$/app/src/components/screens/MainScreen/MainScreen.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -546,16 +488,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
           <caret line="11" column="6" lean-forward="false" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="10" lean-forward="true" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
-          <folding>
-            <element signature="e#0#26#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -606,16 +538,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/ProfileScreen/ProfileScreen.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="19" column="29" lean-forward="false" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#26#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/styles/local.js" />
     <entry file="file://$PROJECT_DIR$/app/src/components/reducers/index.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -634,16 +556,6 @@
           <folding>
             <element signature="e#0#26#0" expanded="true" />
             <marker date="1506263172787" expanded="true" signature="704:714" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="63" lean-forward="true" selection-start-line="24" selection-start-column="63" selection-end-line="24" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -771,10 +683,52 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="15" column="10" lean-forward="true" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/styles/local.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="33" lean-forward="false" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/SliderScreen/SliderScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="25" column="47" lean-forward="false" selection-start-line="25" selection-start-column="47" selection-end-line="25" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/ProfileScreen/ProfileScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="19" column="29" lean-forward="false" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/components/screens/LoginScreen/LoginScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="7" lean-forward="true" selection-start-line="0" selection-start-column="7" selection-end-line="0" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/components/screens/SplashScreen/SplashScreen.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
-          <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
+        <state relative-caret-position="285">
+          <caret line="21" column="48" lean-forward="true" selection-start-line="21" selection-start-column="48" selection-end-line="21" selection-end-column="48" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
