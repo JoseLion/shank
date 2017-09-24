@@ -7,7 +7,7 @@ import SplashScreen from '../screens/SplashScreen/SplashScreen'
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import MainScreen from '../screens/MainScreen/MainScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
-import SwiperScreen from "../screens/SliderScreen/SwiperScreen";
+import SliderScreen from '../screens/SliderScreen/SliderScreen';
 
 
 export const AppNavigator = StackNavigator({
@@ -15,7 +15,7 @@ export const AppNavigator = StackNavigator({
     Login: {screen: LoginScreen},
     Main: {screen: MainScreen},
     Profile: {screen: ProfileScreen},
-    Slider: {screen: SwiperScreen},
+    Slider: {screen: SliderScreen},
 });
 
 const AppWithNavigationState = ({dispatch, nav}) => (

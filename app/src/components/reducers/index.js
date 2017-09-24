@@ -46,7 +46,7 @@ function nav(state = initialNavState, action) {
             break;
         case 'Slider':
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Main'}),
+                NavigationActions.navigate({routeName: 'Login'}),
                 state
             );
             break;

@@ -4,7 +4,7 @@ import MainStyles from '../../../styles/main';
 import Swiper from 'react-native-swiper';
 import LocalStyles from './styles/local'
 
-const SwiperScreen = ({navigation}) =>
+const SliderScreen = ({navigation}) =>
     (
         <Swiper style={LocalStyles.wrapper} showsButtons={false}>
             <View style={LocalStyles.slide1}>
@@ -31,8 +31,8 @@ const SwiperScreen = ({navigation}) =>
             </View>
         </Swiper>
     );
-SwiperScreen.navigationOptions = {
+SliderScreen.navigationOptions = {
     title: 'Slider',
     header: null
 };
-export default SwiperScreen;
+export default SliderScreen;
