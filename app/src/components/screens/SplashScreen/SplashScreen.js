@@ -46,7 +46,8 @@ export default class SplashScreen extends Component {
 
     render() {
         let navigation = this.props.navigation;
-        let imgSource = this.state.showImages ? logoTrans : logoRegular;
+        // let imgSource = this.state.showImages ? logoTrans : logoRegular; Cambiar cuando se tenga el recurso correcto
+        let imgSource = this.state.showImages ? logoRegular : logoRegular;
         return (
             <View style={[LocalStyles.container, {backgroundColor: this.state.backgroundColor}]}>
                 <StatusBar hidden={true}/>
@@ -54,7 +55,7 @@ export default class SplashScreen extends Component {
                        style={MainStyles.iconXLG}/>
                 <Button
                     onPress={() => navigation.dispatch({type: 'Splash'})}
-                    title="Go to Log in"/>
+                    title="Go to Slide Screen"/>
             </View>
 
         );

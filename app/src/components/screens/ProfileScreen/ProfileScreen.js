@@ -1,20 +1,32 @@
-import React from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {StyleSheet, Text, View} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 
-const ProfileScreen = () =>
-    (
-        <View style={MainStyles.container}>
-            <Text style={MainStyles.welcome}>
-                Profile Screen
-            </Text>
-        </View>
-    );
 
+export default class ProfileScreen extends Component {
 
-ProfileScreen.navigationOptions = {
-    title: 'Profile',
-};
+    static propTypes = {
+        navigation: PropTypes.object.isRequired,
+    };
 
-export default ProfileScreen;
+    static navigationOptions = {
+        title: 'Profile',
+    };
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let navigation = this.props.navigation;
+        return (
+            <View style={MainStyles.container}>
+                <Text style={MainStyles.welcome}>
+                    Profile Screen
+                </Text>
+            </View>
+        );
+    }
+}
