@@ -37,30 +37,36 @@ const MainStyles = StyleSheet.create({
         width: Style.iconXS,
         height: Style.iconXS,
     },
-    shankGreen : {
-        color:'#556E3E'
+    shankGreen: {
+        color: '#556E3E'
     },
-    shankTitle : {
+    shankGray: {
+        color: '#3C4635'
+    },
+    shankBlue: {
+        color: '#1D222D'
+    },
+    shankTitle: {
         fontSize: Style.FONT_SIZE_TITLE,
-        color:'#fff',
+        color: '#fff',
 
     },
     medShankFont: {
         fontSize: Style.FONT_16,
-        color:'#fff'
+        color: '#fff'
     },
-    smallShankFont : {
+    smallShankFont: {
         fontSize: Style.FONT_13,
-        color:'#333'
+        color: '#333'
     },
-    greenMedShankFont : {
+    greenMedShankFont: {
         fontSize: Style.FONT_16,
-        color:'#556E3E'
+        color: '#556E3E'
     },
-    goldenShankButton : {
-        padding:Style.PADDING,
+    goldenShankButton: {
+        padding: Style.PADDING,
         fontSize: Style.FONT_16,
-        color:'#A39534'
+        color: '#A39534'
     },
     loginInput: {
         height: 50,

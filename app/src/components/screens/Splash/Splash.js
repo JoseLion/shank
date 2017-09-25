@@ -7,15 +7,6 @@ import LocalStyles from './styles/local';
 const logoTrans = require('../../../../resources/shankLogo/IOS/trans/shankLogoTrans.png');
 const logoRegular = require('../../../../resources/shankLogo/IOS/regular/shankLogo.png');
 
-let randomHex = () => {
-    let letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-};
-
 export default class SplashScreen extends Component {
 
     static propTypes = {
@@ -27,35 +18,45 @@ export default class SplashScreen extends Component {
         header: null
     };
 
+    componentDidMount() {
+        let navigation = this.props.navigation;
+        this.timeoutHandle = setTimeout(() => {
+            navigation.dispatch({type: 'Splash'})
+        }, 10000);
+    };
+
+    componentWillUnmount() {
+        clearTimeout(this.timeoutHandle);
+    };
+
     constructor(props) {
+
         super(props);
         this.state = {
-            showImages: true,
-            backgroundColor: randomHex()
+            changeImages: true,
+            changeBackground: true,
         };
 
-        setInterval(() => {
+        setTimeout(() => {
             this.setState(previousState => {
                 return {
-                    showImages: !previousState.showImages,
-                    backgroundColor: randomHex(),
+                    changeImages: !previousState.changeImages,
+                    changeBackground: !previousState.changeBackground,
                 };
             });
-        }, 1000);
-    }
+        }, 4000);
+
+    };
 
     render() {
-        let navigation = this.props.navigation;
-        // let imgSource = this.state.showImages ? logoTrans : logoRegular; Cambiar cuando se tenga el recurso correcto
-        let imgSource = this.state.showImages ? logoRegular : logoRegular;
+
+        let imgSource = this.state.changeImages ? logoRegular : logoTrans;
+        let backgroundColor = this.state.changeBackground ? '#1D222D' : '#3C4635';
         return (
-            <View style={[LocalStyles.container, {backgroundColor: this.state.backgroundColor}]}>
+            <View style={[LocalStyles.container, {backgroundColor: backgroundColor}]}>
                 <StatusBar hidden={true}/>
                 <Image source={imgSource}
                        style={MainStyles.iconXLG}/>
-                <Button
-                    onPress={() => navigation.dispatch({type: 'Splash'})}
-                    title="Go to Slide Screen"/>
             </View>
 
         );
