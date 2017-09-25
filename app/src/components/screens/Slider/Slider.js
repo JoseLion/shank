@@ -15,6 +15,7 @@ export default class SliderScreen extends Component {
         title: 'Slider',
         header: null
     };
+
     constructor(props) {
         super(props);
     }
@@ -22,33 +23,28 @@ export default class SliderScreen extends Component {
     render() {
         let navigation = this.props.navigation;
         return (
-            <View style={LocalStyles.container}>
-                <Swiper style={LocalStyles.wrapper} showsButtons={false}>
-                    <View style={LocalStyles.slide}>
-                        <Image style={LocalStyles.coverImage}
-                               source={require('../../../../resources/initSlider/IOS/slider/init1/sliderInit1.png')}/>
-                    </View>
-                    <View style={LocalStyles.slide}>
-                        <Image style={LocalStyles.coverImage}
-                               source={require('../../../../resources/initSlider/IOS/slider/init2/sliderInit2.png')}/>
-                    </View>
-                    <View style={LocalStyles.slide}>
-                        <Image style={LocalStyles.coverImage}
-                               source={require('../../../../resources/initSlider/IOS/slider/init3/sliterInit3.png')}>
-                            <Text style={MainStyles.shankTitle}>SHANK</Text>
-                            <Text style={MainStyles.medShankFont}>GET YOUR REWARD</Text>
-                            <Text style={MainStyles.smallShankFont}>PROFIT FROM</Text>
-                            <Text style={MainStyles.smallShankFont}>THE OUTCOME</Text>
-                            <Text style={MainStyles.smallShankFont}>AND BET</Text>
-                            <Text style={MainStyles.smallShankFont}>AGAIN</Text>
-                            <Button style={MainStyles.startButton}
-                                    onPress={() => navigation.dispatch({type: 'Slider'})}
-                                    title="Let's get started"/>
-                        </Image>
-                    </View>
-                </Swiper>
-            </View>
+            <Swiper style={LocalStyles.wrapper} showsButtons={false}>
+                <View style={LocalStyles.slide1}>
+                    <Image style={LocalStyles.coverImage}
+                           source={require('../../../../resources/initSlider/IOS/slider/init1/sliderInit1.png')}/>
+                </View>
+                <View style={LocalStyles.slide2}>
+                    <Image style={LocalStyles.coverImage}
+                           source={require('../../../../resources/initSlider/IOS/slider/init2/sliderInit2.png')}/>
+                </View>
+                <View style={LocalStyles.slide3}>
+                    <Image style={LocalStyles.coverImage}
+                           source={require('../../../../resources/initSlider/IOS/slider/init3/sliterInit3.png')}>
+                    </Image>
+                    <Text style={MainStyles.shankTitle}>SHANK</Text>
+                    <Text style={MainStyles.medShankFont}>GET YOUR REWARD</Text>
+                    <Text style={MainStyles.smallShankFont}>PROFIT FROM THE OUTCOME AND BET AGAIN</Text>
+                    <Button style={LocalStyles.startButton}
+                            onPress={() => navigation.dispatch({type: 'Slider'})}
+                            title="Let's get started"/>
 
+                </View>
+            </Swiper>
         );
     }
 }
