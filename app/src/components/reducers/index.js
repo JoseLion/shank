@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
 import {NavigationActions} from 'react-navigation';
-
 import {AppNavigator} from '../navigators/AppNavigator';
+
 
 const firstAction = AppNavigator.router.getActionForPathAndParams('Splash');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);
@@ -46,7 +46,7 @@ function nav(state = initialNavState, action) {
             break;
         case 'Slider':
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Main'}),
+                NavigationActions.navigate({routeName: 'Login'}),
                 state
             );
             break;

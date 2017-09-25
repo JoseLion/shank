@@ -3,42 +3,42 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {addNavigationHelpers, StackNavigator, TabNavigator} from 'react-navigation';
 
-import SplashScreen from '../screens/Splash/SplashScreen'
-import LoginScreen from '../screens/Login/LoginScreen';
-import MainScreen from '../screens/Main/MainScreen';
-import ProfileScreen from '../screens/Profile/ProfileScreen';
-import SliderScreen from '../screens/Slider/SliderScreen';
-import Tournaments from '../screens/Tournament/TournamentScreen';
-import Groups from '../screens/Group/GroupScreen';
+import Splash from '../screens/Splash/Splash'
+import Login from '../screens/Login/Login';
+import Main from '../screens/Main/Main';
+import Profile from '../screens/Profile/Profile';
+import Slider from '../screens/Slider/Slider';
+import Tournament from '../screens/Tournament/Tournament';
+import Group from '../screens/Group/Group';
 
 export const TabNav = TabNavigator({
         Groups: {
-            screen: MainScreen,
+            screen: Main,
         },
         News: {
-            screen: Tournaments,
+            screen: Tournament,
         },
     }, {
         tabBarPosition: 'bottom',
         tabBarOptions: {
             activeTintColor: '#fff',
-            style :{
-                backgroundColor:"#556E3E",
+            style: {
+                backgroundColor: "#556E3E",
             }
         },
-        labelStyle:{
+        labelStyle: {
             fontWeight: 'bold',
         }
     }
 );
 
 export const AppNavigator = StackNavigator({
-    Splash: {screen: SplashScreen},
-    Login: {screen: LoginScreen},
+    Splash: {screen: Splash},
+    Login: {screen: Login},
     Main: {screen: TabNav},
-    Profile: {screen: ProfileScreen},
-    Slider: {screen: SliderScreen},
-    Groups: {screen: Groups},
+    Profile: {screen: Profile},
+    Slider: {screen: Slider},
+    Groups: {screen: Group},
 });
 
 const AppWithNavigationState = ({dispatch, nav}) => (
