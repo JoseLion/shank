@@ -22,7 +22,7 @@ export default class SplashScreen extends Component {
         let navigation = this.props.navigation;
         this.timeoutHandle = setTimeout(() => {
             navigation.dispatch({type: 'Splash'})
-        }, 10000);
+        }, 7000);
     };
 
     componentWillUnmount() {
@@ -44,13 +44,13 @@ export default class SplashScreen extends Component {
                     changeBackground: !previousState.changeBackground,
                 };
             });
-        }, 4000);
+        }, 3000);
 
     };
 
     render() {
-
-        let imgSource = this.state.changeImages ? logoRegular : logoTrans;
+        // let imgSource = this.state.changeImages ? logoRegular : logoTrans;
+        let imgSource = this.state.changeImages ? logoRegular : logoRegular;
         let backgroundColor = this.state.changeBackground ? '#1D222D' : '#3C4635';
         return (
             <View style={[LocalStyles.container, {backgroundColor: backgroundColor}]}>
