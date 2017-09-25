@@ -11,6 +11,8 @@ import Slider from '../screens/Slider/Slider';
 import Tournament from '../screens/Tournament/Tournament';
 import Group from '../screens/Group/Group';
 
+let Icon = require('react-native-vector-icons/Ionicons');
+
 export const TabNav = TabNavigator({
         Groups: {
             screen: Main,
