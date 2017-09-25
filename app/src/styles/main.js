@@ -93,7 +93,7 @@ const MainStyles = StyleSheet.create({
         backgroundColor: '#556E3E',
         width: Style.LG,
         color: '#556E3E',
-        marginBottom: 90,
+        marginBottom: 9,
 
     },
 });

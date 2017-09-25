@@ -41,7 +41,7 @@ export default class SliderScreen extends Component {
                         <Text style={MainStyles.smallShankFont}>THE OUTCOME</Text>
                         <Text style={MainStyles.smallShankFont}>AND BET</Text>
                         <Text style={MainStyles.smallShankFont}>AGAIN</Text>
-                        <View style={MainStyles.startButton}><Button
+                        <View ><Button style={MainStyles.startButton}
                             onPress={() => navigation.dispatch({type: 'Slider'})}
                             title="Let's get start"/>
                         </View>
