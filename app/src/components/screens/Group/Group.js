@@ -8,7 +8,7 @@ import {Button, StyleSheet, Text, View} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 
-export default class GroupsScreen extends Component {
+export default class Group extends Component {
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,

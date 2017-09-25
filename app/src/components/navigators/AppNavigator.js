@@ -10,15 +10,22 @@ import Profile from '../screens/Profile/Profile';
 import Slider from '../screens/Slider/Slider';
 import Tournament from '../screens/Tournament/Tournament';
 import Group from '../screens/Group/Group';
+import Register from '../screens/Register/Register';
 
 let Icon = require('react-native-vector-icons/Ionicons');
 
 export const TabNav = TabNavigator({
         Groups: {
-            screen: Main,
+            screen:Main,
         },
         News: {
             screen: Tournament,
+        },
+        Login: {
+            screen: Login,
+        },
+        Register: {
+            screen: Register,
         },
     }, {
         tabBarPosition: 'bottom',

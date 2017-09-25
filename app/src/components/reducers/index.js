@@ -39,6 +39,7 @@ function nav(state = initialNavState, action) {
             );
             break;
         case 'Main':
+            console.log('fyuck chisasdsdt')
             nextState = AppNavigator.router.getStateForAction(
                 NavigationActions.navigate({routeName: 'Groups'}),
                 state

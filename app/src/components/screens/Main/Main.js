@@ -19,18 +19,17 @@ export default class MainScreen extends Component {
         super(props);
     }
 
-    handleSave() {
- 
+    static handleSave() {
+        
     }
-
-    static navigationOptions = {
+    static navigationOptions = ({navigation}) => ({ 
         title: 'BETTING GROUPS',
         headerTitleStyle: { alignSelf: 'center' },
         headerStyle: {
             backgroundColor: MainStyles.shankGreen
         },
-        headerLeft: null,
-        headerRight: <Button title='+' onPress = {() => this.handleSave()}/>,
+        headerLeft: null, 
+        headerRight: <Button title='+' onPress = {() => navigation.dispatch({type: 'Main'})}/>,
         showIcon: true,
         tabBarIcon: () => {
             return(
@@ -40,7 +39,7 @@ export default class MainScreen extends Component {
                 />
             )
         },
-    };
+    });
 
     render() {
         let navigation = this.props.navigation;

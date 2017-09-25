@@ -45,7 +45,6 @@ const MainStyles = StyleSheet.create({
         fontSize: Style.FONT_50,
         color: '#fff',
         textAlign: 'center',
-        marginTop: 50,
         backgroundColor: 'rgba(0,0,0,.6)',
     },
     medShankFont: {
@@ -53,8 +52,8 @@ const MainStyles = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
         backgroundColor: 'rgba(0,0,0,.6)',
-        marginBottom: 90,
     },
+
     smallShankFont: {
         fontSize: Style.FONT_13,
         color: '#fff',
@@ -72,20 +71,28 @@ const MainStyles = StyleSheet.create({
         fontSize: Style.FONT_16,
         color: '#556E3E'
     },
+    centerText : {
+        textAlign: 'center',
+    },
     goldenShankButton: {
-        padding: Style.PADDING,
-        fontSize: Style.FONT_16,
-        color: '#A39534'
+        alignItems: 'center',
+        padding: 4,
+        width:'70%',
+        height: 50,
+        marginTop: Style.PX_15,
+        backgroundColor: '#A39534',
+        borderRadius:10
     },
     loginInput: {
         height: 50,
-        marginTop: 10,
+        width:'80%',
+        marginTop: Style.PX_15,
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
         borderColor: '#48BBEC',
         borderRadius: 0,
-        color: '#A39534'
+        color: '#333'
     },
     startButton: {
         alignItems: 'center',
@@ -96,6 +103,9 @@ const MainStyles = StyleSheet.create({
         marginBottom: 90,
 
     },
+    inputTopSeparation :{
+        marginTop: Style.PX_15,
+    }
 });
 
 export default MainStyles;

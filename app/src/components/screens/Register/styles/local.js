@@ -5,14 +5,11 @@ const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
 
 const LocalStyles = StyleSheet.create({
-    fbButton :{
-        width:'70%',
-        backgroundColor: '#3B5998',
-        marginTop: 15,
-        padding: 4,
-        height: 50,
+    container: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 10,
+        backgroundColor: '#1D222D',
     },
     buttonText: {
         color: '#fff',

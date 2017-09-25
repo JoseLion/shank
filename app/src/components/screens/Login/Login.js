@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, TextInput} from 'react-native';
+import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 
@@ -17,6 +17,7 @@ export default class LoginScreen extends Component {
 
     constructor(props) {
         super(props);
+        this.state = { userName: 'Email',password: 'Password' };
     }
 
     render() {
@@ -28,25 +29,27 @@ export default class LoginScreen extends Component {
                 </Text>
                 <TextInput
                     style={MainStyles.loginInput}
-                    onChangeText={(text)=> this.setState({username: text})}
-                    value={this.state.text}
-                    placeholder="Email"
+                    onChangeText={(userName) => this.setState({userName})}
+                    value={this.state.userName}
                 />
                 <TextInput
                     style={MainStyles.loginInput}
-                    onChangeText={(password)=> this.setState({password: password})}
+                    onChangeText={(password)=> this.setState({password})}
                     value={this.state.password}
-                    placeholder="Password"
                 />
-                <Button style={MainStyles.goldenShankButton}
+                <TouchableHighlight
                     onPress={this._onLoginPressed}
-                    title="Log in"
-                />
-                <Button
+                    style={MainStyles.goldenShankButton}>
+                    <Text style={LocalStyles.buttonText}>Log in</Text>
+                </TouchableHighlight>
+
+                <TouchableHighlight
                     onPress={this._handleFacebookLogin}
-                    title="Continue with Facebook"
-                />
-                <Text style={MainStyles.smallShankFont}>
+                    style={LocalStyles.fbButton}>
+                    <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
+                </TouchableHighlight>
+
+                <Text style={[MainStyles.smallShankFont,MainStyles.inputTopSeparation]}>
                     Forgot my password
                 </Text>
             </View>
