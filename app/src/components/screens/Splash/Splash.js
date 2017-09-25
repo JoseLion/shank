@@ -19,10 +19,9 @@ export default class SplashScreen extends Component {
     };
 
     componentDidMount() {
-        let navigation = this.props.navigation;
         this.timeoutHandle = setTimeout(() => {
-            navigation.dispatch({type: 'Splash'})
-        }, 7000);
+            this.props.navigation.dispatch({type: 'Splash'})
+        }, 4000);
     };
 
     componentWillUnmount() {
@@ -44,7 +43,7 @@ export default class SplashScreen extends Component {
                     changeBackground: !previousState.changeBackground,
                 };
             });
-        }, 3000);
+        }, 2000);
 
     };
 
