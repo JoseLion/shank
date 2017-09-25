@@ -38,28 +38,35 @@ const MainStyles = StyleSheet.create({
         height: Style.iconXS,
     },
     shankGreen: {
-        color: '#556E3E'
+        color: '#556E3E',
     },
+
     shankTitle: {
         fontSize: Style.FONT_50,
         color: '#fff',
         textAlign: 'center',
-        marginTop:50,
+        marginTop: 50,
         backgroundColor: 'rgba(0,0,0,.6)',
-
     },
     medShankFont: {
         fontSize: Style.FONT_19,
         color: '#fff',
         textAlign: 'center',
         backgroundColor: 'rgba(0,0,0,.6)',
-        marginBottom:90,
+        marginBottom: 90,
     },
     smallShankFont: {
         fontSize: Style.FONT_13,
         color: '#fff',
         textAlign: 'center',
         backgroundColor: 'rgba(0,0,0,.6)',
+    },
+
+    shankGray: {
+        color: '#3C4635'
+    },
+    shankBlue: {
+        color: '#1D222D'
     },
     greenMedShankFont: {
         fontSize: Style.FONT_16,
@@ -84,9 +91,9 @@ const MainStyles = StyleSheet.create({
         alignItems: 'center',
         flex: 1,
         backgroundColor: '#fff',
-        width:Style.LG,
-        color:'#556E3E',
-        marginBottom:90,
+        width: Style.LG,
+        color: '#556E3E',
+        marginBottom: 90,
 
     },
 });
