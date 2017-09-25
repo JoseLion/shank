@@ -90,7 +90,7 @@ const MainStyles = StyleSheet.create({
     startButton: {
         alignItems: 'center',
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#556E3E',
         width: Style.LG,
         color: '#556E3E',
         marginBottom: 90,
