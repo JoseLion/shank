@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {addNavigationHelpers, StackNavigator, TabNavigator} from 'react-navigation';
 
-import SplashScreen from '../screens/SplashScreen/SplashScreen'
+import SplashScreen from '../screens/Splash/SplashScreen'
 import LoginScreen from '../screens/Login/LoginScreen';
-import MainScreen from '../screens/MainScreen/MainScreen';
-import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
-import SliderScreen from '../screens/SliderScreen/SliderScreen';
-import Tournaments from '../screens/Tournaments/TournamentsScreen';
-import Groups from '../screens/Groups/GroupsScreen';
+import MainScreen from '../screens/Main/MainScreen';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
+import SliderScreen from '../screens/Slider/SliderScreen';
+import Tournaments from '../screens/Tournament/TournamentScreen';
+import Groups from '../screens/Group/GroupScreen';
 
 export const TabNav = TabNavigator({
         Groups: {
