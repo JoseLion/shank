@@ -42,7 +42,10 @@ export default class MainScreen extends Component {
         },
     };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b873b03299e5d607253c8255ca8b5df29aa2102d
     render() {
         let navigation = this.props.navigation;
         return (
