@@ -37,30 +37,38 @@ const MainStyles = StyleSheet.create({
         width: Style.iconXS,
         height: Style.iconXS,
     },
-    shankGreen : {
-        color:'#556E3E'
+    shankGreen: {
+        color: '#556E3E'
     },
-    shankTitle : {
-        fontSize: Style.FONT_SIZE_TITLE,
-        color:'#fff',
+    shankTitle: {
+        fontSize: Style.FONT_50,
+        color: '#fff',
+        textAlign: 'center',
+        marginTop:50,
+        backgroundColor: 'rgba(0,0,0,.6)',
 
     },
     medShankFont: {
-        fontSize: Style.FONT_16,
-        color:'#fff'
+        fontSize: Style.FONT_19,
+        color: '#fff',
+        textAlign: 'center',
+        backgroundColor: 'rgba(0,0,0,.6)',
+        marginBottom:90,
     },
-    smallShankFont : {
+    smallShankFont: {
         fontSize: Style.FONT_13,
-        color:'#333'
+        color: '#fff',
+        textAlign: 'center',
+        backgroundColor: 'rgba(0,0,0,.6)',
     },
-    greenMedShankFont : {
+    greenMedShankFont: {
         fontSize: Style.FONT_16,
-        color:'#556E3E'
+        color: '#556E3E'
     },
-    goldenShankButton : {
-        padding:Style.PADDING,
+    goldenShankButton: {
+        padding: Style.PADDING,
         fontSize: Style.FONT_16,
-        color:'#A39534'
+        color: '#A39534'
     },
     loginInput: {
         height: 50,
@@ -71,7 +79,16 @@ const MainStyles = StyleSheet.create({
         borderColor: '#48BBEC',
         borderRadius: 0,
         color: '#A39534'
-    }
+    },
+    startButton: {
+        alignItems: 'center',
+        flex: 1,
+        backgroundColor: '#fff',
+        width:Style.LG,
+        color:'#556E3E',
+        marginBottom:90,
+
+    },
 });
 
 export default MainStyles;

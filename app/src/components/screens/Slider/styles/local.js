@@ -21,6 +21,8 @@ const LocalStyles = StyleSheet.create({
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: '#9DD6EB',
+
+
     },
     slide2: {
         flex: 1,
@@ -45,14 +47,6 @@ const LocalStyles = StyleSheet.create({
     },
     plusIcon: {
 
-    },
-    startButton: {
-        alignItems: 'center',
-        flex: 1,
-        backgroundColor: '#fff',
-        marginBottom: 7,
-        width:Style.LG,
-        color:MainStyles.shankGreen,
     },
 });
 
