@@ -11,49 +11,22 @@ const LocalStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#1D222D',
-
     },
-    wrapper: {
-    },
-    slide1: {
+    wrapper: {},
+    slide: {
         flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#9DD6EB',
-    },
-    slide2: {
-        flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#97CAE5',
-    },
-    slide3: {
-        flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#92BBD9',
+        // backgroundColor: 'transparent'
     },
     text: {
         color: '#fff',
-            fontSize: 30,
-            fontWeight: 'bold',
+        fontSize: 30,
+        fontWeight: 'bold',
     },
     coverImage: {
         width,
         flex: 1
     },
-    plusIcon: {
-
-    },
-    startButton: {
-        alignItems: 'center',
-        flex: 1,
-        backgroundColor: '#fff',
-        marginBottom: 7,
-        width:Style.LG,
-        color:MainStyles.shankGreen,
-    },
+    plusIcon: {},
 });
 
 export default LocalStyles;
