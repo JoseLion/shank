@@ -8,7 +8,6 @@ const tempNavState = AppNavigator.router.getStateForAction(firstAction);
 const secondAction = AppNavigator.router.getActionForPathAndParams('Slider');
 const initialNavState = AppNavigator.router.getStateForAction(
     firstAction,
-    tempNavState
 );
 
 function nav(state = initialNavState, action) {
