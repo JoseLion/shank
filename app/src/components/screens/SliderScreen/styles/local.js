@@ -43,6 +43,9 @@ const LocalStyles = StyleSheet.create({
         width,
         flex: 1
     },
+    plusIcon: {
+
+    },
     startButton: {
         alignItems: 'center',
         flex: 1,

@@ -40,11 +40,17 @@ function nav(state = initialNavState, action) {
             break;
         case 'Main':
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Profile'}),
+                NavigationActions.navigate({routeName: 'Groups'}),
                 state
             );
             break;
         case 'Slider':
+            nextState = AppNavigator.router.getStateForAction(
+                NavigationActions.navigate({routeName: 'Main'}),
+                state
+            );
+            break;
+        case 'Groups':
             nextState = AppNavigator.router.getStateForAction(
                 NavigationActions.navigate({routeName: 'Main'}),
                 state

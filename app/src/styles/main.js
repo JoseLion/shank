@@ -12,10 +12,14 @@ const MainStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
-    welcome: {
-        fontSize: 20,
+    groupsNone: {
+        fontSize: 15,
         textAlign: 'center',
         margin: 10,
+    },
+    iconXLG: {
+        width: Style.iconXLG,
+        height: Style.iconXLG,
     },
     iconLG: {
         width: Style.iconLG,
@@ -47,7 +51,26 @@ const MainStyles = StyleSheet.create({
     },
     smallShankFont : {
         fontSize: Style.FONT_13,
-        color:'#fff'
+        color:'#333'
+    },
+    greenMedShankFont : {
+        fontSize: Style.FONT_16,
+        color:'#556E3E'
+    },
+    goldenShankButton : {
+        padding:Style.PADDING,
+        fontSize: Style.FONT_16,
+        color:'#A39534'
+    },
+    loginInput: {
+        height: 50,
+        marginTop: 10,
+        padding: 4,
+        fontSize: 18,
+        borderWidth: 1,
+        borderColor: '#48BBEC',
+        borderRadius: 0,
+        color: '#A39534'
     }
 });
 

@@ -1,18 +1,23 @@
+/**
+ * Created by MnMistake on 9/24/2017.
+ */
+
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 
-
-export default class ProfileScreen extends Component {
+export default class GroupsScreen extends Component {
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,
     };
 
     static navigationOptions = {
-        title: 'Profile',
+        title: 'what',
+        headerTitleStyle: { alignSelf: 'center' },
+        headerLeft: null
     };
 
     constructor(props) {
@@ -24,7 +29,7 @@ export default class ProfileScreen extends Component {
         return (
             <View style={MainStyles.container}>
                 <Text style={MainStyles.welcome}>
-                    Profile Screen
+                   Group Screen
                 </Text>
             </View>
         );
