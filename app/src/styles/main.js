@@ -92,9 +92,6 @@ const MainStyles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#556E3E',
         width: Style.LG,
-        color: '#556E3E',
-        marginBottom: 9,
-
     },
 });
 
