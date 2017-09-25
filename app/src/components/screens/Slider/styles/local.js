@@ -14,40 +14,35 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: '#1D222D',
 
     },
-    wrapper: {
-    },
+    wrapper: {},
     slide1: {
         flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#9DD6EB',
-
-
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#9DD6EB',
     },
     slide2: {
         flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#97CAE5',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#97CAE5',
     },
     slide3: {
         flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#92BBD9',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#92BBD9',
     },
     text: {
         color: '#fff',
-            fontSize: 30,
-            fontWeight: 'bold',
+        fontSize: 30,
+        fontWeight: 'bold',
     },
     coverImage: {
         width,
         flex: 1
     },
-    plusIcon: {
-
-    },
+    plusIcon: {},
 });
 
 export default LocalStyles;
