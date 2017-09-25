@@ -37,15 +37,17 @@ export default class SliderScreen extends Component {
                            source={require('../../../../resources/initSlider/IOS/slider/init3/sliterInit3.png')}>
                         <Text style={MainStyles.shankTitle}>SHANK</Text>
                         <Text style={MainStyles.medShankFont}>GET YOUR REWARD</Text>
-                        <Text style={MainStyles.smallShankFont}>PROFIT FROM</Text>
-                        <Text style={MainStyles.smallShankFont}>THE OUTCOME</Text>
-                        <Text style={MainStyles.smallShankFont}>AND BET</Text>
-                        <Text style={MainStyles.smallShankFont}>AGAIN</Text>
-                        <View><Button style={MainStyles.startButton}
-                                      onPress={() => navigation.dispatch({type: 'Slider'})}
-                                      title="Let's get start"
-                                      color= "#556E3E"/>
+                        <View style={LocalStyles.centerText}>
+                            <Text style={MainStyles.smallShankFont}>PROFIT FROM</Text>
+                            <Text style={MainStyles.smallShankFont}>THE OUTCOME</Text>
+                            <Text style={MainStyles.smallShankFont}>AND BET</Text>
+                            <Text style={MainStyles.smallShankFont}>AGAIN</Text>
                         </View>
+                        <Button style={MainStyles.startButton}
+                                onPress={() => navigation.dispatch({type: 'Slider'})}
+                                title="Let's get start"
+                                color="#556E3E"/>
+
                     </Image>
                 </View>
             </Swiper>

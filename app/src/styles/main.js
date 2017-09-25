@@ -58,8 +58,9 @@ const MainStyles = StyleSheet.create({
     smallShankFont: {
         fontSize: Style.FONT_13,
         color: '#fff',
-        textAlign: 'center',
+        textAlign: 'left',
         backgroundColor: 'rgba(0,0,0,.6)',
+        padding: 1,
     },
 
     shankGray: {
@@ -88,10 +89,12 @@ const MainStyles = StyleSheet.create({
         color: '#A39534'
     },
     startButton: {
-        alignItems: 'center',
-        flex: 1,
         backgroundColor: '#556E3E',
         width: Style.LG,
+        justifyContent: 'center',
+        margin: 15,
+        flex: 1,
+
     },
 });
 
