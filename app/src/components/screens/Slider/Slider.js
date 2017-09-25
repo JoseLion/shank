@@ -15,7 +15,6 @@ export default class SliderScreen extends Component {
         title: 'Slider',
         header: null
     };
-
     constructor(props) {
         super(props);
     }
