@@ -11,12 +11,11 @@ const LocalStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#1D222D',
-
     },
     wrapper: {},
     slide: {
-        backgroundColor: 'transparent'
+        flex: 1,
+        // backgroundColor: 'transparent'
     },
     text: {
         color: '#fff',
