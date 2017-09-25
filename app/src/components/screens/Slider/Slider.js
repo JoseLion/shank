@@ -19,19 +19,21 @@ export default class SliderScreen extends Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         let navigation = this.props.navigation;
         return (
-            <Swiper style={LocalStyles.wrapper} showsButtons={false}>
-                <View style={LocalStyles.slide1}>
+            <View>
+                <Swiper style={LocalStyles.wrapper} showsButtons={false}>
+                    {/*<View style={LocalStyles.slide1}>*/}
                     <Image style={LocalStyles.coverImage}
                            source={require('../../../../resources/initSlider/IOS/slider/init1/sliderInit1.png')}/>
-                </View>
-                <View style={LocalStyles.slide2}>
+                    {/*</View>*/}
+                    {/*<View style={LocalStyles.slide2}>*/}
                     <Image style={LocalStyles.coverImage}
                            source={require('../../../../resources/initSlider/IOS/slider/init2/sliderInit2.png')}/>
-                </View>
-                <View style={LocalStyles.slide3}>
+                    {/*</View>*/}
+                    {/*<View style={LocalStyles.slide3}>*/}
                     <Image style={LocalStyles.coverImage}
                            source={require('../../../../resources/initSlider/IOS/slider/init3/sliterInit3.png')}>
                         <Text style={MainStyles.shankTitle}>SHANK</Text>
@@ -44,8 +46,10 @@ export default class SliderScreen extends Component {
                                 onPress={() => navigation.dispatch({type: 'Slider'})}
                                 title="Let's get started"/>
                     </Image>
-                </View>
-            </Swiper>
+                    {/*</View>*/}
+                </Swiper>
+            </View>
+
         );
     }
 }
