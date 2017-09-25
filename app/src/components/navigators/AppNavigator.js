@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {addNavigationHelpers, StackNavigator, TabNavigator} from 'react-navigation';
 
 import SplashScreen from '../screens/SplashScreen/SplashScreen'
-import LoginScreen from '../screens/LoginScreen/LoginScreen';
+import LoginScreen from '../screens/Login/LoginScreen';
 import MainScreen from '../screens/MainScreen/MainScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import SliderScreen from '../screens/SliderScreen/SliderScreen';
