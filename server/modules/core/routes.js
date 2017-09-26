@@ -5,7 +5,7 @@ let jwtConfig = require('../../config/jwt');
 
 let auth = jwt({
   secret: jwtConfig.TOKEN_SECRET,
-  useletrProperty: 'payload'
+  userProperty: 'payload'
 });
 
 module.exports = function(model, path) {

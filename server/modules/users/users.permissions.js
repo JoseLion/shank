@@ -1,6 +1,6 @@
 'use strict';
 
-var generate = require('../utils/permissions.utils.js').generate_permission;
+let generate = require('../utils/permissions.utils.js').generate_permission;
 
 module.exports = {
   general: {

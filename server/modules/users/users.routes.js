@@ -32,7 +32,7 @@ let prepareRouter = function(app) {
     
     User
     .findById(req.payload._id)
-    .select('_id name surname email cell_phone gender birthdate address fb')
+    .select('_id name surname email cell_phone gender birthDate address fb')
     .exec(function(err, user) {
       if (err) {
         res.ok({}, 'Al seleccionar usuario.');

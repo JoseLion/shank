@@ -1,16 +1,16 @@
 'use strict';
 
-var Q = require('q');
-var _ = require('lodash');
+let Q = require('q');
+let _ = require('lodash');
 
-var generate_permission = function(actions, paths, permission) {
+let generate_permission = function(actions, paths, permission) {
   paths = paths || [];
 
   if(!_(actions).isArray()) {
     actions = [ actions ];
   }
 
-  var generated_permission = function(user, data, action) {
+  let generated_permission = function(user, data, action) {
     if(!_(generated_permission.actions).contains(action)) {
       return Q.reject();
     }

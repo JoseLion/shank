@@ -1,4 +1,4 @@
-var jwt = require('express-jwt');
+let jwt = require('express-jwt');
 
 module.exports = jwt({
   secret: process.env.TOKEN_SECRET || "tokendevWWF",

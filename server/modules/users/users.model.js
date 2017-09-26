@@ -22,7 +22,7 @@ let UserSchema = new mongoose.Schema({
     ref: 'Profile'
   },
   gender: String,
-  birthdate: Date,
+  birthDate: Date,
   city: String,
   address: String,
   transport_mode: {
