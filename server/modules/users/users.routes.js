@@ -1,6 +1,5 @@
 let mongoose = require('mongoose');
 let User = mongoose.model('User');
-let Transport_Mode = mongoose.model('Transport_Mode');
 
 let multer  = require('multer');
 let fs = require('fs-extra');
