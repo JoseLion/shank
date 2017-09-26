@@ -1,0 +1,11 @@
+version: '2'
+services:
+  shankDB:
+      container_name: db
+      image: mongo:3.4.2
+      ports:
+        - "27017:27017"
+      command: mongod --smallfiles --quiet
+      environment :
+        - MONGODB_DATABASE="shank"
+      tty: true
