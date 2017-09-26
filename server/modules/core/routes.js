@@ -11,18 +11,18 @@ let auth = jwt({
 module.exports = function(model, path) {
   
   router.route(path)
-  .post(auth, function(req, res) {
-    
+  .post(function(req, res) {
     let data = req.body;
-    data.user = req.payload._id;
+/*    data.user = req.payload._id;*/
 
-      let currentModel = new model(data);
+    let currentModel = new model(data);
     
     currentModel.save(function(err, res_data) {
       if (err) {
         res.ok({}, 'data not created.');
       }
       else {
+        console.log('res_data',res_data)
         res.ok(res_data);
       }
     });
