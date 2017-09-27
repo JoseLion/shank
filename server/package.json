@@ -24,6 +24,7 @@
     "passport-local": "^1.0.0",
     "ejs": "^2.5.6",
     "express-custom-response": "git+https://github.com/SteffenLanger/express-custom-response.git",
-    "fs-extra": "^3.0.1"
+    "fs-extra": "^3.0.1",
+    "jsonwebtoken": "^7.3.0"
   }
 }

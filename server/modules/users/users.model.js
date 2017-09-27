@@ -25,10 +25,6 @@ let UserSchema = new mongoose.Schema({
   birthDate: Date,
   city: String,
   address: String,
-  transport_mode: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Transport_Mode'
-  },
   fb: String,
   type: { type: Number, default: 1 },
   hash: String,
@@ -36,6 +32,7 @@ let UserSchema = new mongoose.Schema({
   security_code: Number,
   enabled: { type: Boolean, default: true },
   created_at: {type: Date, default: Date.now()},
+  updated_at: {type: Date, default: Date.now()},
 });
 
 UserSchema.methods.setPassword = function(password) {
@@ -46,16 +43,13 @@ UserSchema.methods.setPassword = function(password) {
 UserSchema.methods.getNewPassword = function(password) {
   let salt = crypto.randomBytes(16).toString('hex');
   let hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-  
   return {salt: salt, hash: hash};
 };
 
 UserSchema.methods.validPassword = function(password) {
-  
   if (!this.salt) {
     return false;
   }
-  
   let hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
   return this.hash === hash;
 };
