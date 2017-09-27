@@ -16,9 +16,8 @@ const LocalStyles = StyleSheet.create({
         width: Style.iconLG,
         height:Style.iconLG,
         position:'absolute',
-        top:'55%',
-        left:'55%',
-        backgroundColor: '#1D222D',
+        top:'5%',
+        left:'35%',
     },
 });
 

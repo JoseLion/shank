@@ -27,7 +27,7 @@ export default class Group extends Component {
 
     render() {
         let navigation = this.props.navigation;
-        let addPhoto = require('../../../../resources/createGroup/ios/Recurso 13.png');
+        let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
         return (
             <View style={MainStyles.container}>
                 <Image style={LocalStyles.addPhotoLogo}

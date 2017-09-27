@@ -20,7 +20,7 @@ export default class SplashScreen extends Component {
 
     componentDidMount() {
         this.timeoutHandle = setTimeout(() => {
-            this.props.navigation.dispatch({type: 'Splash'})
+            this.props.navigation.dispatch({type: 'Slider'})
         }, 2000);
     };
 
