@@ -1,21 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {addNavigationHelpers, StackNavigator} from 'react-navigation';
+import {addNavigationHelpers, StackNavigator, TabNavigator} from 'react-navigation';
 
-import SplashScreen from '../screens/SplashScreen/SplashScreen'
-import LoginScreen from '../screens/LoginScreen/LoginScreen';
-import MainScreen from '../screens/MainScreen/MainScreen';
-import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
-import SliderScreen from '../screens/SliderScreen/SliderScreen';
+import Splash from '../screens/Splash/Splash'
+import Login from '../screens/Login/Login';
+import Main from '../screens/Main/Main';
+import Profile from '../screens/Profile/Profile';
+import Slider from '../screens/Slider/Slider';
+import Tournament from '../screens/Tournament/Tournament';
+import Group from '../screens/Group/Group';
+import Register from '../screens/Register/Register';
 
+let Icon = require('react-native-vector-icons/Ionicons');
+
+export const TabNav = TabNavigator({
+        Groups: {
+            screen:Main,
+        },
+        News: {
+            screen: Tournament,
+        },
+        Login: {
+            screen: Login,
+        },
+        Register: {
+            screen: Register,
+        },
+    }, {
+        tabBarPosition: 'bottom',
+        tabBarOptions: {
+            activeTintColor: '#fff',
+            style: {
+                backgroundColor: "#556E3E",
+            }
+        },
+        labelStyle: {
+            fontWeight: 'bold',
+        }
+    }
+);
 
 export const AppNavigator = StackNavigator({
-    Splash: {screen: SplashScreen},
-    Login: {screen: LoginScreen},
-    Main: {screen: MainScreen},
-    Profile: {screen: ProfileScreen},
-    Slider: {screen: SliderScreen},
+    Splash: {screen: Splash},
+    Login: {screen: Login},
+    Main: {screen: TabNav},
+    Profile: {screen: Profile},
+    Slider: {screen: Slider},
+    Groups: {screen: Group},
 });
 
 const AppWithNavigationState = ({dispatch, nav}) => (

@@ -1,3 +1,6 @@
 GREEN MAIN MENU 
 
 #556E3E
+
+FONTS
+Century Gothic en texto regular y Nunito Sans en botones y similares

@@ -1,14 +1,13 @@
 import {combineReducers} from 'redux';
 import {NavigationActions} from 'react-navigation';
-
 import {AppNavigator} from '../navigators/AppNavigator';
+
 
 const firstAction = AppNavigator.router.getActionForPathAndParams('Splash');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);
 const secondAction = AppNavigator.router.getActionForPathAndParams('Slider');
 const initialNavState = AppNavigator.router.getStateForAction(
     firstAction,
-    tempNavState
 );
 
 function nav(state = initialNavState, action) {
@@ -39,14 +38,21 @@ function nav(state = initialNavState, action) {
             );
             break;
         case 'Main':
+            console.log('fyuck chisasdsdt')
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Profile'}),
+                NavigationActions.navigate({routeName: 'Groups'}),
                 state
             );
             break;
         case 'Slider':
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Login'}),
+                NavigationActions.navigate({routeName: 'Main'}),
+                state
+            );
+            break;
+        case 'Groups':
+            nextState = AppNavigator.router.getStateForAction(
+                NavigationActions.navigate({routeName: 'Main'}),
                 state
             );
             break;

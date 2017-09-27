@@ -99,6 +99,8 @@ const Style = {
     //Horizontal SPACES
     HS_10: em(0.625),
     //ICONS
+    iconXXXLG: em(15),
+    iconXXLG: em(12),
     iconXLG: em(9),
     iconLG: em(7),
     iconMD: em(4),
