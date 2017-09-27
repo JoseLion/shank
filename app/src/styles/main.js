@@ -44,21 +44,18 @@ const MainStyles = StyleSheet.create({
         fontSize: Style.FONT_50,
         color: '#fff',
         textAlign: 'center',
-        backgroundColor: 'rgba(0,0,0,.6)',
         fontWeight: 'bold',
     },
     medShankFont: {
         fontSize: Style.FONT_19,
         color: '#fff',
         textAlign: 'center',
-        backgroundColor: 'rgba(0,0,0,.6)',
     },
 
     smallShankFont: {
         fontSize: Style.FONT_13,
         color: '#fff',
         textAlign: 'left',
-        backgroundColor: 'rgba(0,0,0,.6)',
     },
 
     shankGray: {
