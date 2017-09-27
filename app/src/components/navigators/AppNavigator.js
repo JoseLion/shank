@@ -16,7 +16,7 @@ let Icon = require('react-native-vector-icons/Ionicons');
 
 export const TabNav = TabNavigator({
         Groups: {
-            screen:Main,
+            screen: Main,
         },
         News: {
             screen: Tournament,
@@ -26,6 +26,9 @@ export const TabNav = TabNavigator({
         },
         Register: {
             screen: Register,
+        },
+        CreateGroup: {
+            screen: Group,
         },
     }, {
         tabBarPosition: 'bottom',
