@@ -62,12 +62,12 @@ let prepareRouter = function (app) {
                         res.ok({err}, 'error on: searching existing user.');
                         return;
                     }
-                    if (user){
+                    if (user) {
                         res.ok({}, 'user already registered.');
-                    }else{
+                    } else {
                         let userModel = new User(req.body);
                         userModel.setPassword(data.password);
-                        userModel.save(function(err){
+                        userModel.save(function (err) {
                             if (err) {
                                 res.ok({err}, 'error on: saving user registration.');
                                 return;
