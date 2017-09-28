@@ -44,7 +44,7 @@ let prepareRouter = function (app) {
         .get('/allUsers', function (req, res) {
             User
                 .find()
-                .select('_id name surname email hash salt')
+                .select('_id name surname email hash salt enabled type')
                 .exec(function (err, user) {
                     if (err) {
                         res.ok({}, 'Al seleccionar usuario.');
@@ -62,12 +62,12 @@ let prepareRouter = function (app) {
                         res.ok({err}, 'error on: searching existing user.');
                         return;
                     }
-                    if (user){
+                    if (user) {
                         res.ok({}, 'user already registered.');
-                    }else{
+                    } else {
                         let userModel = new User(req.body);
                         userModel.setPassword(data.password);
-                        userModel.save(function(err){
+                        userModel.save(function (err) {
                             if (err) {
                                 res.ok({err}, 'error on: saving user registration.');
                                 return;
@@ -76,7 +76,8 @@ let prepareRouter = function (app) {
                         });
                     }
                 });
-        });
+        })
+    ;
     return router;
 };
 
