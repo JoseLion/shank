@@ -13,38 +13,25 @@ const initialNavState = AppNavigator.router.getStateForAction(
 function nav(state = initialNavState, action) {
     let nextState;
     switch (action.type) {
-        case 'Splash':
+        case 'Slider':
             nextState = AppNavigator.router.getStateForAction(
                 NavigationActions.navigate({routeName: 'Slider'}),
                 state
             );
             break;
-        // case 'Login':
-        //     nextState = AppNavigator.router.getStateForAction(
-        //         NavigationActions.back(),
-        //         state
-        //     );
-        //     break;
         case 'Login':
-            nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Main'}),
-                state
-            );
-            break;
-        case 'Logout':
             nextState = AppNavigator.router.getStateForAction(
                 NavigationActions.navigate({routeName: 'Login'}),
                 state
             );
             break;
-        case 'Main':
-            console.log('fyuck chisasdsdt')
+        case 'Logout':
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Groups'}),
+                NavigationActions.navigate({routeName: 'Logout'}),
                 state
             );
             break;
-        case 'Slider':
+        case 'Main':
             nextState = AppNavigator.router.getStateForAction(
                 NavigationActions.navigate({routeName: 'Main'}),
                 state
@@ -52,7 +39,7 @@ function nav(state = initialNavState, action) {
             break;
         case 'Groups':
             nextState = AppNavigator.router.getStateForAction(
-                NavigationActions.navigate({routeName: 'Main'}),
+                NavigationActions.navigate({routeName: 'Groups'}),
                 state
             );
             break;
@@ -61,8 +48,6 @@ function nav(state = initialNavState, action) {
             break;
 
     }
-
-    // Simply return the original `state` if `nextState` is null or undefined.
     return nextState || state;
 }
 

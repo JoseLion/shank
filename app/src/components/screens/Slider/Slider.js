@@ -18,10 +18,10 @@ export default class SliderScreen extends Component {
 
     constructor(props) {
         super(props);
+
     }
 
     render() {
-        let navigation = this.props.navigation;
         let logoRegular = require('../../../../resources/initSlider/IOS/logo/slider1Logo.png');
         let ImgSlideOne = require('../../../../resources/initSlider/IOS/slider/init1/sliderInit1.png');
         let ImgSlideTwo = require('../../../../resources/initSlider/IOS/slider/init2/sliderInit2.png');
@@ -34,7 +34,8 @@ export default class SliderScreen extends Component {
                         <Text style={LocalStyles.titleTxtSlideOne}>SHANK</Text>
                         <Text style={LocalStyles.medTxtSlideOne}>INVITE YOUR FRIENDS</Text>
                         <View style={LocalStyles.positionTextSlideOne}>
-                            <Text style={LocalStyles.botTxtSlideOne}>ADD THEM{"\n"}ON YOUR{"\n"}BETTING GROUP{"\n"}OR JOIN{"\n"}AN
+                            <Text style={LocalStyles.botTxtSlideOne}>ADD THEM{"\n"}ON YOUR{"\n"}BETTING GROUP{"\n"}OR
+                                JOIN{"\n"}AN
                                 EXISTING {"\n"}ONE</Text>
                         </View>
                         <Image style={LocalStyles.shankLogoSlideOne}
@@ -75,7 +76,7 @@ export default class SliderScreen extends Component {
                     </Image>
 
                     <TouchableHighlight style={LocalStyles.buttonStart}
-                                        onPress={() => navigation.dispatch({type: 'Slider'})}>
+                                        onPress={() => this.props.navigation.dispatch({type: 'Main'})}>
                         <Text style={LocalStyles.text}>Let's get start</Text>
                     </TouchableHighlight>
                 </View>

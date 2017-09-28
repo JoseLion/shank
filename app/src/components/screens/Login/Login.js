@@ -14,6 +14,7 @@ export default class LoginScreen extends Component {
 
     static navigationOptions = {
         title: 'LOG IN',
+        headerLeft: null
     };
 
     constructor(props) {
@@ -69,7 +70,6 @@ export default class LoginScreen extends Component {
             </View>
         );
     }
-
 
     async _onLoginPressed() {
 
