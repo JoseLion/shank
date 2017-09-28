@@ -8,8 +8,9 @@ import {AsyncStorage, Button, StyleSheet, Text, View, TextInput, TouchableHighli
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 import Notifier from '../../../core/Notifier';
-import BaseModel from '../../../core/BaseModel';
-import Constans from '../../../core/Constans';
+import NoAuthModel from '../../../core/NoAuthModel';
+import * as Constants from '../../../core/Constans';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Register extends Component {
 
@@ -32,20 +33,26 @@ export default class Register extends Component {
             name: '',
             email: '',
             password: '',
-            repeatedPassword: ''
+            repeatedPassword: '',
+            loading: false,
         };
     }
 
-    async _registerUserAsync(data) {
+    setLoading(loading) {
+        this.setState({loading: loading});
+    }
 
-        BaseModel.create('register', data).then((response) => {
-            AsyncStorage.setItem(response.token, () => {
-                AsyncStorage.setItem(JSON.stringify(response.user), () => {
+    async _registerUserAsync(data) {
+        this.setLoading(true);
+        NoAuthModel.create('register', data).then((response) => {
+            AsyncStorage.setItem(Constants.AUTH_TOKEN, response.token, () => {
+                AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(response.user), () => {
+                    this.setLoading(false);
                     this.props.navigation.dispatch({type: 'Login'})
                 });
             });
         }).catch((error) => {
-            // this.setLoading(false);
+            this.setLoading(false);
             setTimeout(() => {
                 Notifier.message({title: 'ERRORS', message: error});
             }, 2000);
@@ -87,6 +94,7 @@ export default class Register extends Component {
         let navigation = this.props.navigation;
         return (
             <View style={MainStyles.container}>
+                <Spinner visible={this.state.loading}/>
                 <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
                     WELCOME
                 </Text>
