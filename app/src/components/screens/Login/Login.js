@@ -25,9 +25,9 @@ export default class LoginScreen extends Component {
         this._loginWithFacebookAsync = this._loginWithFacebookAsync.bind(this);
 
         this.state = {
-            userName: 'Email',
-            password: 'Password',
-            email: 'Email',
+            userName: '',
+            password: '',
+            email: '',
             loading: false,
         };
     }
@@ -48,11 +48,15 @@ export default class LoginScreen extends Component {
                     style={MainStyles.loginInput}
                     onChangeText={(email) => this.setState({email})}
                     value={this.state.email}
+                    placeholder={'Email'}
                 />
                 <TextInput
+                    secureTextEntry={true}
+                    underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(password) => this.setState({password})}
                     value={this.state.password}
+                    placeholder={'Password'}
                 />
                 <TouchableHighlight
                     onPress={this._onLoginPressed}

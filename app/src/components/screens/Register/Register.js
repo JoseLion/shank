@@ -54,7 +54,7 @@ export default class Register extends Component {
         }).catch((error) => {
             this.setLoading(false);
             setTimeout(() => {
-                Notifier.message({title: 'ERRORS', message: error});
+                Notifier.message({title: 'ERROR', message: error});
             }, 2000);
         });
     }
