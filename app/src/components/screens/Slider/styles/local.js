@@ -132,14 +132,14 @@ const LocalStyles = StyleSheet.create({
     },
     buttonStart: {
         width: '80%',
-        paddingBottom:Style.PX_13,
-        paddingTop: Style.PX_13,
+        paddingBottom:Style.PX_12,
+        paddingTop: Style.PX_12,
         borderWidth: 1,
         borderColor: '#48BBEC',
         borderRadius: 10,
         backgroundColor:'#fff',
         position:'absolute',
-        bottom:'10%',
+        bottom:'7%',
     },
 });
 

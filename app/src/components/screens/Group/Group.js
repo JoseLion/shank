@@ -16,13 +16,13 @@ export default class Group extends Component {
 
     static navigationOptions = {
         title: 'Create Group',
-        headerTitleStyle: { alignSelf: 'center' },
+        headerTitleStyle: {alignSelf: 'center'},
         headerLeft: null
     };
 
     constructor(props) {
         super(props);
-        this.state = { name: 'Group name', selectTournament: 'Select tournament', prize: 'Prize'};
+        this.state = {name: 'Group name', selectTournament: 'Select tournament', prize: 'Prize'};
     }
 
     render() {
@@ -30,10 +30,12 @@ export default class Group extends Component {
         let addPhoto = require('../../../../resources/createGroup/ios/Recurso 13.png');
         return (
             <View style={MainStyles.container}>
-                <Image style={LocalStyles.addPhotoLogo}
-                       source={addPhoto}>
-                </Image>
-                <Text style={[MainStyles.centerText,MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
+                <View>
+                    <Image style={LocalStyles.addPhotoLogo}
+                           source={addPhoto}>
+                    </Image>
+                </View>
+                <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
                     Add a photo
                 </Text>
                 <TextInput
@@ -43,7 +45,7 @@ export default class Group extends Component {
                 />
                 <TextInput
                     style={MainStyles.loginInput}
-                    onChangeText={(email)=> this.setState({selectTournament})}
+                    onChangeText={(email) => this.setState({selectTournament})}
                     value={this.state.selectTournament}
                 />
                 <TextInput
