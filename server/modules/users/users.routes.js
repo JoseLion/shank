@@ -76,7 +76,8 @@ let prepareRouter = function (app) {
                         });
                     }
                 });
-        });
+        })
+    ;
     return router;
 };
 
