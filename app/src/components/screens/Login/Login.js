@@ -6,6 +6,7 @@ import LocalStyles from './styles/local';
 import Notifier from '../../../core/Notifier';
 import BaseModel from '../../../core/BaseModel';
 import * as Constants from '../../../core/Constans';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class LoginScreen extends Component {
 
