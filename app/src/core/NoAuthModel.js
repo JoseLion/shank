@@ -1,65 +1,28 @@
+/**
+ * Created by MnMistake on 9/27/2017.
+ */
 'use strict';
 
-import React, {Component} from 'react';
+import React from 'react';
 
-import {
-    AsyncStorage,
-} from 'react-native';
+import { ApiHost } from '../config/variables';
 
-import * as ApiUtils from './ApiUtils';
+let internetError = 'No internet connection available.';
+let requestServerError = 'We couldn\'t connect to the server. Please try later';
+let parsingResponseError = 'Error getting server response.';
 
-import * as Constants from './Constans';
-import {Host, ApiHost, AuthToken, ApiKey, version} from '../config/variables';
+let NoAuthModel = {
 
-let internetError = 'No fue posible acceder al internet de su teléfono.';
-let requestServerError = 'No fue posible comunicar con el servidor.';
-let parsingResponseError = 'Error al analizar la respuesta del servidor.';
-let notLogged = 'Not Logged.';
-
-function request(method, resource, params) {
-
-    let path = ApiHost + resource;
-
-    // Serialize and post the data
-    if (!params) {
-        params = {};
-    }
-    const json = JSON.stringify(params);
-
-    return fetch(path, {
-        method: method,
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: json
-    })
-        .then(ApiUtils.CHECK_STATUS)
-        .then(response => {
-            response.json();
-        })
-        .catch(e => e)
-}
-
-let BaseModel = {
-    
     async get(resource) {
-
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
-        }
 
         let options = {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
             }
         };
-        console.log(ApiHost + resource, '**********************-----------------------');
+
         const response = await fetch(ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
@@ -82,23 +45,16 @@ let BaseModel = {
 
     async create(resource, params) {
 
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
-        }
-
         const data = JSON.stringify(params);
 
         let options = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
             },
             body: data
-        };
+        }
 
         const response = await fetch(ApiHost + resource, options).catch(
             error => {
@@ -122,20 +78,13 @@ let BaseModel = {
 
     async update(resource, params) {
 
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
-        }
-
         const data = JSON.stringify(params);
 
         let options = {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
             },
             body: data
         }
@@ -162,18 +111,11 @@ let BaseModel = {
 
     async remove(resource) {
 
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
-        }
-
         let options = {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
             }
         }
 
@@ -197,7 +139,6 @@ let BaseModel = {
             return json.response;
         }
     },
-
 };
 
-export {BaseModel as default};
+export { NoAuthModel as default };

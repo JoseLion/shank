@@ -4,7 +4,7 @@ import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, AsyncStor
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import Notifier from '../../../core/Notifier';
-import BaseModel from '../../../core/BaseModel';
+import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -61,7 +61,7 @@ export default class LoginScreen extends Component {
                 </TouchableHighlight>
 
                 <TouchableHighlight
-                    onPress={this._handleFacebookLogin}
+                    onPress={this._loginWithFacebookAsync}
                     style={LocalStyles.fbButton}>
                     <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
                 </TouchableHighlight>
@@ -96,11 +96,13 @@ export default class LoginScreen extends Component {
 
         this.setLoading(true);
 
-        BaseModel.create('login', data).then((login) => {
+        NoAuthModel.create('login', data).then((login) => {
             AsyncStorage.setItem(Constants.AUTH_TOKEN, login.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(login.user), () => {
                     this.setLoading(false);
-                    this.openHomePage();
+                    console.log("succesfuly loggedn in")
+                    console.log("TOKEN", login.token)
+                    console.log("current profile", JSON.stringify(login.user))
                 });
             });
         })
@@ -112,7 +114,7 @@ export default class LoginScreen extends Component {
             });
     }
 
-    _loginWithFacebookAsync() {
+    async _loginWithFacebookAsync() {
 
     }
 }
