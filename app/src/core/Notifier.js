@@ -6,9 +6,11 @@ import {
     Platform,
     Alert,
     AlertIOS,
+
 } from 'react-native';
 
 const currentAlert = Platform.OS == 'android' ? Alert : AlertIOS;
+
 
 var Notifier = {
     error: function (message) {
