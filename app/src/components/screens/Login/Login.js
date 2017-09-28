@@ -75,7 +75,7 @@ export default class LoginScreen extends Component {
 
     async _onLoginPressed() {
 
-        /*dismissKeyboard();*/
+        /dismissKeyboard();/
 
         if (!this.state.email) {
             Notifier.message({title: 'LOGIN SESSION', message: 'Please enter your email.'});
@@ -118,4 +118,3 @@ export default class LoginScreen extends Component {
 
     }
 }
-
