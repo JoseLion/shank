@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 
 import * as ApiUtils from './ApiUtils';
-
 import * as Constants from './Constans';
 import {Host, ApiHost, AuthToken, ApiKey, version} from '../config/variables';
 
@@ -42,10 +41,10 @@ function request(method, resource, params) {
 }
 
 let BaseModel = {
-    
+
     async get(resource) {
 
-        let token = await AsyncStorage.getItem(AuthToken);
+        let token = await AsyncStorage.getItem(Constants.AUTH_TOKEN);
 
         if (!token) {
             throw notLogged;
@@ -59,7 +58,7 @@ let BaseModel = {
                 'Authorization': 'Bearer ' + token,
             }
         };
-        console.log(ApiHost + resource, '**********************-----------------------');
+        console.log(ApiHost + resource, '********-----------------------');
         const response = await fetch(ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
@@ -98,7 +97,7 @@ let BaseModel = {
                 'Authorization': 'Bearer ' + token,
             },
             body: data
-        };
+        }
 
         const response = await fetch(ApiHost + resource, options).catch(
             error => {
@@ -197,7 +196,6 @@ let BaseModel = {
             return json.response;
         }
     },
-
 };
 
 export {BaseModel as default};
