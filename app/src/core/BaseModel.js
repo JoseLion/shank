@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import * as ApiUtils from './ApiUtils';
+import * as Constants from './Constans';
 import { Host, ApiHost, AuthToken, ApiKey, version } from '../config/variables';
 
 let internetError = 'No fue posible acceder al internet de su teléfono.';
@@ -43,7 +44,7 @@ let BaseModel = {
   
   async get(resource) {
     
-    let token = await AsyncStorage.getItem(AuthToken);
+    let token = await AsyncStorage.getItem(Constants.AUTH_TOKEN);
     
     if (!token) {
       throw notLogged;
