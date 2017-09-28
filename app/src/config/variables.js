@@ -8,14 +8,14 @@
 
 
 // Prod
-const Host = 'http://144.217.254.86:4002/';
+const Host = 'http://192.168.1.3:3000/';
 const ApiHost = Host + 'api/';
 
 const AuthToken = 'wwfAuthToken';
 const ApiKey = 'MTU2NDJkYzcxZjkwNTk4NjdlNjVlYWRjZTI5Zjdl';
 const AssetsURL = 'http://144.217.254.86/uploads';
 const Timeout = 20000;
-const version = '1.0';
+const version = '1.2';
 
 
 export { Host, ApiHost, AuthToken, ApiKey, AssetsURL, Timeout, version };
