@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, Image, } from 'react-native';
+import {Button, StyleSheet, Text, View, Image,} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
+
 let Icon = require('react-native-vector-icons/Ionicons');
 
 import LoginStatusMessage from './LoginStatusMessage';
@@ -20,22 +21,23 @@ export default class MainScreen extends Component {
     }
 
     static handleSave() {
-        
+
     }
-    static navigationOptions = ({navigation}) => ({ 
+
+    static navigationOptions = ({navigation}) => ({
         title: 'BETTING GROUPS',
-        headerTitleStyle: { alignSelf: 'center' },
+        headerTitleStyle: {alignSelf: 'center'},
         headerStyle: {
             backgroundColor: MainStyles.shankGreen
         },
-        headerLeft: null, 
-        headerRight: <Button title='+' onPress = {() => navigation.dispatch({type: 'Main'})}/>,
+        headerLeft: null,
+        headerRight: <Button title='+' onPress={() => navigation.dispatch({type: 'Groups'})}/>,
         showIcon: true,
         tabBarIcon: () => {
-            return(
+            return (
                 <Image
-                    source={require('../../../../resources/mainMenu/menuTaskBar/ios/Recurso 9.png')}
-                    style={{tintColor: '#000', width: 50, height: 50}}
+                    source={require('../../../../resources/mainMenu/menuTaskBar/ios/Recurso9.png')}
+                    style={MainStyles.iconXS}
                 />
             )
         },
@@ -46,7 +48,7 @@ export default class MainScreen extends Component {
         return (
             <View style={MainStyles.container}>
                 <Text style={MainStyles.groupsNone}>
-                    Tap on the "+" button to create {"\n"} or join a betting group"
+                    Tap on the "+"  {"\n"} or join a betting group"
                 </Text>
             </View>
         );

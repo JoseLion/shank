@@ -13,11 +13,12 @@ export default class LoginScreen extends Component {
 
     static navigationOptions = {
         title: 'LOG IN',
+        headerLeft: null
     };
 
     constructor(props) {
         super(props);
-        this.state = { userName: 'Email',password: 'Password' };
+        this.state = {userName: 'Email', password: 'Password'};
     }
 
     render() {
@@ -34,7 +35,7 @@ export default class LoginScreen extends Component {
                 />
                 <TextInput
                     style={MainStyles.loginInput}
-                    onChangeText={(password)=> this.setState({password})}
+                    onChangeText={(password) => this.setState({password})}
                     value={this.state.password}
                 />
                 <TouchableHighlight
@@ -49,18 +50,18 @@ export default class LoginScreen extends Component {
                     <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
                 </TouchableHighlight>
 
-                <Text style={[MainStyles.smallShankFont,MainStyles.inputTopSeparation]}>
+                <Text style={[MainStyles.smallShankFont, MainStyles.inputTopSeparation]}>
                     Forgot my password
                 </Text>
             </View>
         );
     }
 
-    _onLoginPressed(){
+    _onLoginPressed() {
 
     }
 
-    _handleFacebookLogin(){
+    _handleFacebookLogin() {
 
     }
 }
