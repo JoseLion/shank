@@ -79,6 +79,7 @@ const Style = {
     FONT_55: em(5.45),
     FONT_60: em(6.20),
     //PX
+    PX_12: em(0.89),
     PX_13: em(1.25),
     PX_14: em(1.40),
     PX_15: em(1.55),

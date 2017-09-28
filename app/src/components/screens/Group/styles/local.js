@@ -12,10 +12,25 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#1D222D',
     },
+    participantsList: {
+        flex: 1,
+        paddingTop: 20,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        backgroundColor: '#F5FCFF',
+        marginLeft:'-50%'
+    },
+    addNewParticipant: {
+        flex: 1,
+        paddingTop: 22,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        backgroundColor: '#F5FCFF',
+    },
     addPhotoLogo: {
         width:  Style.iconLG,
         height: Style.iconLG,
-        marginTop: '7%',
+        marginTop: '5%',
         alignItems: 'center',
     },
     groupImage:{
@@ -33,6 +48,19 @@ const LocalStyles = StyleSheet.create({
     },
     inputContainer:{
 
+    },
+    txtAddPhoto: {
+        fontSize: Style.FONT_16,
+        color: '#3C4635',
+        marginTop: '-9%',
+        marginBottom:'4%'
+    },
+    item: {
+        padding: 7,
+        fontSize: Style.FONT_13,
+        height: 44,
+        width:'100%',
+        textAlign:'left',
     },
     createTInput :{
         height: 50,

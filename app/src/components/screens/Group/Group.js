@@ -4,7 +4,8 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, TextInput, TouchableHighlight, Image, Picker, TouchableOpacity} from 'react-native';
+
+import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, Image, FlatList , TouchableOpacity, Picker} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 import Notifier from '../../../core/Notifier';
@@ -24,8 +25,8 @@ export default class Group extends Component {
     };
 
     static navigationOptions = {
-        title: 'Create Groupsss',
-        headerTitleStyle: { alignSelf: 'center' },
+        title: 'Create Group',
+        headerTitleStyle: {alignSelf: 'center'},
         headerLeft: null
     };
 
@@ -53,7 +54,6 @@ export default class Group extends Component {
             <View style={MainStyles.container}>
                 <Spinner visible={this.state.loading}/>
 
-
                 <TouchableOpacity style={LocalStyles.addPhotoLogo} onPress={this._pickImage}>
                     {groupPhoto &&
                         <Image source={{ uri: groupPhoto }} style={LocalStyles.groupImage} />
@@ -67,7 +67,6 @@ export default class Group extends Component {
                         Add a photo
                     </Text>
                 </TouchableOpacity>
-
 
                 <TextInput
                     underlineColorAndroid='transparent'
@@ -95,9 +94,32 @@ export default class Group extends Component {
                     onChangeText={(prize) => this.setState({prize})}
                     value={this.state.prize}
                 />
+                <View style={LocalStyles.participantsList}>
+                    <Text style={MainStyles.greenMedShankFont}>
+                        PARTICIPANTS
+                    </Text>
+                  {/*  <FlatList style={{width:'100%'}}
+                        data={[
+                            {key: 'Devin'},
+                            {key: 'Jackson'},
+                            {key: 'James'},
+                            {key: 'Joel'},
+                            {key: 'John'},
+                            {key: 'Jillian'},
+                            {key: 'Jimmy'},
+                            {key: 'Julie'},
+                        ]}
+                        renderItem={({item}) => <Text style={LocalStyles.item}>{item.key}</Text>}
+                    />*/}
+                </View>
+                <View  style={LocalStyles.addNewParticipant}>
+                    <Text style={[LocalStyles.centerText,MainStyles.shankGray]}>
+                        Add new participant
+                    </Text>
+                </View>
                 <TouchableHighlight
                     onPress={this._handleNewGroupRegistry}
-                    style={MainStyles.goldenShankButton}>
+                    style={[MainStyles.goldenShankButton,{marginBottom: '10%'}]}>
                     <Text style={LocalStyles.buttonText}>Create group</Text>
                 </TouchableHighlight>
             </View>
@@ -130,7 +152,7 @@ export default class Group extends Component {
 
         BaseModel.create('createGroup', data).then((response) => {
             this.setLoading(false);
-            console.log("succesfuly CREATED A GROUP in")
+            console.log("Success CREATED A GROUP in")
             console.log("CREATE GROUP RESPONSE", response)
           /*  this.props.navigation.dispatch({type: 'Main'})*/
         })
