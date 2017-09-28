@@ -73,9 +73,9 @@ const MainStyles = StyleSheet.create({
     },
     goldenShankButton: {
         alignItems: 'center',
-        padding: 4,
+        paddingBottom:Style.SMALL_PADDING,
+        paddingTop:Style.SMALL_PADDING,
         width:'70%',
-        height: 50,
         marginTop: Style.PX_15,
         backgroundColor: '#A39534',
         borderRadius:10

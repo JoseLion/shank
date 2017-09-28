@@ -2,6 +2,8 @@
  * Created by MnMistake on 9/26/2017.
  */
 let mongoose = require('mongoose');
+let Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
 
 let BettingGroupSchema = new mongoose.Schema({
     name: String,

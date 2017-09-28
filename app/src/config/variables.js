@@ -13,7 +13,7 @@ const ApiHost = Host + 'api/';
 
 const AuthToken = 'wwfAuthToken';
 const ApiKey = 'MTU2NDJkYzcxZjkwNTk4NjdlNjVlYWRjZTI5Zjdl';
-const AssetsURL = 'http://144.217.254.86/uploads';
+const AssetsURL = 'http://192.168.1.3:3000/uploads';
 const Timeout = 20000;
 const version = '1.2';
 

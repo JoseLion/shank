@@ -4,59 +4,168 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, Image} from 'react-native';
+import {Text, View, TextInput, TouchableHighlight, Image, Picker, TouchableOpacity} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
+import Notifier from '../../../core/Notifier';
+import BaseModel from '../../../core/BaseModel';
+import * as Constants from '../../../core/Constans';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { ImagePicker } from 'expo';
 
 export default class Group extends Component {
+
+    state = {
+        groupPhoto: null,
+    };
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,
     };
 
     static navigationOptions = {
-        title: 'Create Group',
+        title: 'Create Groupsss',
         headerTitleStyle: { alignSelf: 'center' },
         headerLeft: null
     };
 
     constructor(props) {
         super(props);
-        this.state = { name: 'Group name', selectTournament: 'Select tournament', prize: 'Prize'};
+        this._handleNewGroupRegistry = this._handleNewGroupRegistry.bind(this);
+        this._pickImage = this._pickImage.bind(this);
+        this.state = {
+            name: '',
+            selectTournament: '',
+            prize: '',
+            loading : false
+        };
+    }
+
+    setLoading(loading) {
+        this.setState({loading: loading});
     }
 
     render() {
+        let { groupPhoto } = this.state;
         let navigation = this.props.navigation;
         let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
         return (
             <View style={MainStyles.container}>
-                <Image style={LocalStyles.addPhotoLogo}
-                       source={addPhoto}>
-                </Image>
-                <Text style={[MainStyles.centerText,MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
-                    Add a photo
-                </Text>
+                <Spinner visible={this.state.loading}/>
+
+
+                <TouchableOpacity style={LocalStyles.addPhotoLogo} onPress={this._pickImage}>
+                    {groupPhoto &&
+                        <Image source={{ uri: groupPhoto }} style={LocalStyles.groupImage} />
+                    }
+                    {!groupPhoto &&
+                        <Image
+                            source={addPhoto}>
+                        </Image>
+                    }
+                    <Text style={[MainStyles.centerText,MainStyles.greenMedShankFont]}>
+                        Add a photo
+                    </Text>
+                </TouchableOpacity>
+
+
                 <TextInput
-                    style={MainStyles.loginInput}
+                    underlineColorAndroid='transparent'
+                    style={LocalStyles.createTInput}
                     onChangeText={(name) => this.setState({name})}
                     value={this.state.name}
+                    placeholder={'Group name'}
                 />
+                <View style={LocalStyles.tournamentPicker}>
+                    <Picker
+                        selectedValue={this.state.language}
+                        onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+                        <Picker.Item  color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...' />
+                        <Picker.Item label="Presidents Cup" value="15151515zxcasd515" />
+                        <Picker.Item label="Safeway Open" value="15415a1s5d1a5sd" />
+                        <Picker.Item label="CIMB Classic" value="15415a1s5d1a5sd" />
+                        <Picker.Item label="PGA Tour" value="asdasdzxczxc12515" />
+                        <Picker.Item label="US Opens" value="asdasd15151656123123" />
+                    </Picker>
+                </View>
                 <TextInput
-                    style={MainStyles.loginInput}
-                    onChangeText={(email)=> this.setState({selectTournament})}
-                    value={this.state.selectTournament}
-                />
-                <TextInput
-                    style={MainStyles.loginInput}
-                    onChangeText={(password) => this.setState({prize})}
+                    underlineColorAndroid='transparent'
+                    placeholder={'Prize'}
+                    style={[LocalStyles.createTInput,{paddingBottom:5}]}
+                    onChangeText={(prize) => this.setState({prize})}
                     value={this.state.prize}
                 />
                 <TouchableHighlight
-                    onPress={this._handleNewRegistry}
+                    onPress={this._handleNewGroupRegistry}
                     style={MainStyles.goldenShankButton}>
                     <Text style={LocalStyles.buttonText}>Create group</Text>
                 </TouchableHighlight>
             </View>
         );
     }
+
+    async _handleNewGroupRegistry() {
+
+        if (!this.state.name) {
+            Notifier.message({title: 'NEW GROUP', message: 'Please enter a name for the group'});
+            return;
+        }
+
+        if (!this.state.selectTournament) {
+            Notifier.message({title: 'NEW GROUP', message: 'Please select a tournament'});
+            return;
+        }
+
+        if (!this.state.prize) {
+            Notifier.message({title: 'NEW GROUP', message: 'Please enter a prize'});
+            return;
+        }
+
+        if (!this.state.groupPhoto) {
+            Notifier.message({title: 'NEW GROUP', message: 'Please select a group photo (tap on the empty image)'});
+            return;
+        }
+
+        this.setLoading(true);
+
+        BaseModel.create('createGroup', data).then((response) => {
+            this.setLoading(false);
+            console.log("succesfuly CREATED A GROUP in")
+            console.log("CREATE GROUP RESPONSE", response)
+          /*  this.props.navigation.dispatch({type: 'Main'})*/
+        })
+        .catch((error) => {
+            this.setLoading(false);
+            setTimeout(() => {
+                Notifier.message({title: 'ERROR', message: error});
+            }, Constants.TIME_OUT_NOTIFIER);
+        });
+    }
+
+
+    _pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+            this.setState({ groupPhoto: result.uri });
+        }
+/*
+        // ImagePicker saves the taken photo to disk and returns a local URI to it
+        let localUri = result.uri;
+        let filename = localUri.split('/').pop();
+
+        // Infer the type of the image
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+
+        // Upload the image using the fetch and FormData APIs
+        let formData = new FormData();
+        // Assume "photo" is the name of the form field the server expects
+        formData.append('photo', { uri: localUri, name: filename, type });*/
+    };
 }

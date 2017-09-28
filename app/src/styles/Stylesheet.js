@@ -42,6 +42,7 @@ const Style = {
     RATIO_Y: ratioY,
     UNIT: em(1),
     PADDING: em(1.25),
+    SMALL_PADDING: em(0.8),
 
     // CARD
     CARD_WIDTH: x - em(1.25) * 2,

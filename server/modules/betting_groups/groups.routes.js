@@ -3,12 +3,12 @@
  */
 
 let mongoose = require('mongoose');
-let User = mongoose.model('Group');
+let BettingGroup = mongoose.model('BettingGroup');
 
 let multer = require('multer');
 let fs = require('fs-extra');
 
-multer.diskStorage({
+let bettingGroupPhoto = multer.diskStorage({
     destination: function (req, file, cb) {
         let path = `../../uploads/betting_groups/${req.body.user}`;
         fs.mkdirsSync(path);
@@ -25,7 +25,7 @@ let auth = require('../../config/auth');
 let prepareRouter = function (app) {
 
     let path = '/groups';
-    let router = require('../core/routes.js')(User, path);
+    let router = require('../core/routes.js')(BettingGroup, path);
 
     router
         .get('/myGroups', auth, function (req, res) {
@@ -44,6 +44,30 @@ let prepareRouter = function (app) {
                     }
                     res.ok(user);
                 });*/
+        })
+        .post('/createGroup', auth, function (req, res) {
+            if (!req.payload._id) {
+                res.ok({}, 'Usuario no autorizado.');
+                return;
+            }
+            let data = req.body;
+
+            let groupModel = new BettingGroup(data);
+
+            let upload = multer({
+                storage: bettingGroupPhoto
+            }).single(groupModel.photo);
+            upload(req, res, function(err) {
+                res.end('GroupFile is uploaded')
+            });
+
+            groupModel.save(function (err) {
+                if (err) {
+                    res.ok({err}, 'error on: saving new group registration.');
+                    return;
+                }
+                res.ok(groupModel._id, 'group registered successfully.');
+            });
         });
     return router;
 };
