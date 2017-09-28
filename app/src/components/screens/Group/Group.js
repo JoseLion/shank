@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, Image} from 'react-native';
+import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, Image, FlatList} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 
@@ -30,32 +30,55 @@ export default class Group extends Component {
         let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
         return (
             <View style={MainStyles.container}>
-                <View>
+                <View style={MainStyles.container}>
                     <Image style={LocalStyles.addPhotoLogo}
                            source={addPhoto}>
                     </Image>
                 </View>
-                <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
+                <Text style={[MainStyles.centerText, LocalStyles.txtAddPhoto]}>
                     Add a photo
                 </Text>
                 <TextInput
-                    style={MainStyles.loginInput}
+                    style={LocalStyles.inputTxt}
                     onChangeText={(name) => this.setState({name})}
                     value={this.state.name}
                 />
                 <TextInput
-                    style={MainStyles.loginInput}
+                    style={LocalStyles.inputTxt}
                     onChangeText={(email) => this.setState({selectTournament})}
                     value={this.state.selectTournament}
                 />
                 <TextInput
-                    style={MainStyles.loginInput}
+                    style={LocalStyles.inputTxtPrize}
                     onChangeText={(password) => this.setState({prize})}
                     value={this.state.prize}
                 />
+                <View style={LocalStyles.participantsList}>
+                    <Text style={MainStyles.greenMedShankFont}>
+                        PARTICIPANTS
+                    </Text>
+                    <FlatList
+                        data={[
+                            {key: 'Devin'},
+                            {key: 'Jackson'},
+                            {key: 'James'},
+                            {key: 'Joel'},
+                            {key: 'John'},
+                            {key: 'Jillian'},
+                            {key: 'Jimmy'},
+                            {key: 'Julie'},
+                        ]}
+                        renderItem={({item}) => <Text style={LocalStyles.item}>{item.key}</Text>}
+                    />
+                </View>
+                <View  style={LocalStyles.addNewParticipant}>
+                    <Text style={[LocalStyles.centerText,MainStyles.shankGray]}>
+                        Add new participant
+                    </Text>
+                </View>
                 <TouchableHighlight
                     onPress={this._handleNewRegistry}
-                    style={MainStyles.goldenShankButton}>
+                    style={LocalStyles.buttonCreateGroup}>
                     <Text style={LocalStyles.buttonText}>Create group</Text>
                 </TouchableHighlight>
             </View>

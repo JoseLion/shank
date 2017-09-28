@@ -47,9 +47,11 @@ export default class MainScreen extends Component {
         let navigation = this.props.navigation;
         return (
             <View style={MainStyles.container}>
-                <Text style={MainStyles.groupsNone}>
+               {/* <Text style={MainStyles.groupsNone}>
                     Tap on the "+"  {"\n"} or join a betting group"
-                </Text>
+                </Text>*/}
+
+                
             </View>
         );
     }
