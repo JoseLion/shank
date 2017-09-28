@@ -74,7 +74,7 @@ const LocalStyles = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
-        fontSize: Style.FONT_15
+        fontSize: 16
     }
 });
 

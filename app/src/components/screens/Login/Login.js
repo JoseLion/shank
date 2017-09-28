@@ -45,6 +45,7 @@ export default class LoginScreen extends Component {
                     WELCOME BACK
                 </Text>
                 <TextInput
+                    underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(email) => this.setState({email})}
                     value={this.state.email}
@@ -66,7 +67,7 @@ export default class LoginScreen extends Component {
 
                 <TouchableHighlight
                     onPress={this._loginWithFacebookAsync}
-                    style={LocalStyles.fbButton}>
+                    style={MainStyles.fbButton}>
                     <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
                 </TouchableHighlight>
 

@@ -87,9 +87,18 @@ const MainStyles = StyleSheet.create({
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
-        borderColor: '#48BBEC',
+        borderColor: '#rgba(0, 0, 0, .2)',
         borderRadius: 0,
         color: '#333'
+    },
+    fbButton :{
+        width:'70%',
+        paddingBottom:Style.SMALL_PADDING,
+        paddingTop:Style.SMALL_PADDING,
+        backgroundColor: '#3B5998',
+        marginTop: 15,
+        alignItems: 'center',
+        borderRadius: 10,
     },
     startButton: {
         backgroundColor: '#556E3E',
@@ -99,7 +108,7 @@ const MainStyles = StyleSheet.create({
         borderRadius: 10,
     },
     inputTopSeparation :{
-        marginTop: Style.PX_15,
+        marginTop: Style.PX_13,
     }
 });
 

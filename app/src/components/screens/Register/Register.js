@@ -102,12 +102,14 @@ export default class Register extends Component {
                     LETS START BY CREATING {"\n"} AN ACCOUNT
                 </Text>
                 <TextInput
+                    underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(name) => this.setState({name})}
                     value={this.state.name}
                     placeholder={'Name'}
                 />
                 <TextInput
+                    underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(email) => this.setState({email})}
                     value={this.state.email}
