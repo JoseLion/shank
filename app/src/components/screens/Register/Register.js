@@ -36,7 +36,6 @@ export default class Register extends Component {
     constructor(props) {
         super(props);
 
-        this._register = this._register.bind(this);
         this._handleNewRegistry = this._handleNewRegistry.bind(this);
 
         this.state = {
@@ -143,16 +142,16 @@ export default class Register extends Component {
                     value={this.state.repeatedPassword}
                     placeholder={'Repeat your password'}
                 />
-                <TouchableHighlight
-                    onPress={this._handleNewRegistry}
+                <TouchableOpacity
+                    onPress={() => this._handleNewRegistry()}
                     style={MainStyles.goldenShankButton}>
                     <Text style={LocalStyles.buttonText}>Register</Text>
-                </TouchableHighlight>
-                <TouchableHighlight
-                    onPress={this._register()}
-                    style={MainStyles.goldenShankButton}>
-                    <Text style={LocalStyles.buttonText}>Register with Facebook</Text>
-                </TouchableHighlight>
+                </TouchableOpacity>
+                {/*<TouchableHighlight*/}
+                    {/*onPress={this._register()}*/}
+                    {/*style={MainStyles.goldenShankButton}>*/}
+                    {/*<Text style={LocalStyles.buttonText}>Register with Facebook</Text>*/}
+                {/*</TouchableHighlight>*/}
                 <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
                     <Text
                         style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
