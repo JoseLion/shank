@@ -1,4 +1,3 @@
-
 // Dev
 // const ApiHost = 'http://192.168.10.106:3002/';
 // const ApiKey = 'MTU2NDJkYzcxZjkwNTk4NjdlNjVlYWRjZTI5Zjdl';
@@ -11,11 +10,10 @@
 const Host = 'http://192.168.1.7:3000/';
 const ApiHost = Host + 'api/';
 
-const AuthToken = 'wwfAuthToken';
+const AuthToken = 'shank-auth-token';
 const ApiKey = 'MTU2NDJkYzcxZjkwNTk4NjdlNjVlYWRjZTI5Zjdl';
 const AssetsURL = 'http://192.168.1.7:3000/uploads';
-const Timeout = 20000;
-const version = '1.2';
+const Timeout = 60000;
+const version = '2.2';
 
-
-export { Host, ApiHost, AuthToken, ApiKey, AssetsURL, Timeout, version };
+export {Host, ApiHost, AuthToken, ApiKey, AssetsURL, Timeout, version};

@@ -8,6 +8,18 @@ let Schema = mongoose.Schema,
 let BettingGroupSchema = new mongoose.Schema({
     name: String,
     users: [{type: ObjectId, ref: 'User'}],
+    tournament: String,
+    city: String,
+    photo: {
+        name: {type: String},
+        path: {type: String}
+    },
+});
+
+/*
+let BettingGroupSchema = new mongoose.Schema({
+    name: String,
+    users: [{type: ObjectId, ref: 'User'}],
     tournament: {type: ObjectId, ref: 'Tournament'},
     city: String,
     photo: {
@@ -15,6 +27,7 @@ let BettingGroupSchema = new mongoose.Schema({
         path: {type: String}
     },
 });
+*/
 
 BettingGroupSchema.methods.setSomething = function (some) {
     this.surname = some;

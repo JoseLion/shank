@@ -26,8 +26,7 @@ export default class Group extends Component {
 
     static navigationOptions = {
         title: 'Create Group',
-        headerTitleStyle: {alignSelf: 'center'},
-        headerLeft: null
+        headerTitleStyle: {alignSelf: 'center'}
     };
 
     constructor(props) {
@@ -149,6 +148,26 @@ export default class Group extends Component {
         }
 
         this.setLoading(true);
+        // ImagePicker saves the taken photo to disk and returns a local URI to it
+        let localUri = this.state.groupPhoto;
+        let filename = localUri.split('/').pop();
+
+        // Infer the type of the image
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+
+        // Upload the image using the fetch and FormData APIs
+        let formData = new FormData();
+        // Assume "photo" is the name of the form field the server expects
+        formData.append('photo', { path: localUri, name: filename, type });
+        console.log("******************formData*******************");
+        console.log(formData);
+
+        let data = {
+            name: this.state.name,
+            tournament: this.state.selectTournament,
+            prize: this.state.prize
+        };
 
         BaseModel.create('createGroup', data).then((response) => {
             this.setLoading(false);
@@ -170,24 +189,9 @@ export default class Group extends Component {
             allowsEditing: true,
             aspect: [4, 3],
         });
-
         console.log(result);
-
         if (!result.cancelled) {
             this.setState({ groupPhoto: result.uri });
         }
-/*
-        // ImagePicker saves the taken photo to disk and returns a local URI to it
-        let localUri = result.uri;
-        let filename = localUri.split('/').pop();
-
-        // Infer the type of the image
-        let match = /\.(\w+)$/.exec(filename);
-        let type = match ? `image/${match[1]}` : `image`;
-
-        // Upload the image using the fetch and FormData APIs
-        let formData = new FormData();
-        // Assume "photo" is the name of the form field the server expects
-        formData.append('photo', { uri: localUri, name: filename, type });*/
     };
 }

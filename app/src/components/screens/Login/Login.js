@@ -16,7 +16,7 @@ export default class LoginScreen extends Component {
 
     static navigationOptions = {
         title: 'LOG IN',
-        headerLeft: null
+        headerTitleStyle: {alignSelf: 'center'}
     };
 
     constructor(props) {
@@ -105,7 +105,7 @@ export default class LoginScreen extends Component {
             AsyncStorage.setItem(Constants.AUTH_TOKEN, login.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(login.user), () => {
                     this.setLoading(false);
-                    console.log("succesfuly loggedn in")
+                    Notifier.message({title: 'SUCCESS', message: "succesfuly loggedn in"});
                     console.log("TOKEN", login.token)
                     console.log("current profile", JSON.stringify(login.user))
                 });

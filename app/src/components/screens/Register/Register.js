@@ -30,8 +30,7 @@ export default class Register extends Component {
 
     static navigationOptions = {
         title: 'Register',
-        headerTitleStyle: {alignSelf: 'center'},
-        headerLeft: null
+        headerTitleStyle: {alignSelf: 'center'}
     };
 
     constructor(props) {
@@ -53,22 +52,6 @@ export default class Register extends Component {
         this.setState({loading: loading});
     }
 
-    _register() {
-        const {type, token} = await Expo.Facebook.logInWithReadPermissionsAsync('<APP_ID>', {
-            permissions: ['public_profile'],
-        });
-        if (type === 'success') {
-            // Get the user's name using Facebook's Graph API
-            const response = await
-            fetch(
-                `https://graph.facebook.com/me?access_token=${token}`);
-            Alert.alert(
-                'Logged in!',
-                `Hi ${(await response.json()).name}!`,
-            );
-        }
-    }
-
     async _registerUserAsync(data) {
         this.setLoading(true);
         NoAuthModel.create('register', data).then((response) => {
@@ -84,7 +67,7 @@ export default class Register extends Component {
             setTimeout(() => {
                 console.log("error--->", error);
                 Notifier.message({title: 'ERROR', message: error});
-            }, 2000);
+            }, Constants.TIME_OUT_NOTIFIER);
         });
     }
 
@@ -170,6 +153,13 @@ export default class Register extends Component {
                     style={MainStyles.goldenShankButton}>
                     <Text style={LocalStyles.buttonText}>Register with Facebook</Text>
                 </TouchableHighlight>
+
+                <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
+                    <Text
+                        style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
+                        I already have an account
+                    </Text>
+                </TouchableOpacity>
             </View>
         );
     }
