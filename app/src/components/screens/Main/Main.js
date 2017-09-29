@@ -40,7 +40,7 @@ export default class MainScreen extends Component {
     }
 
     static navigationOptions = ({navigation}) => ({
-        title: 'BETTING GROUPSsss',
+        title: 'BETTING GROUPS',
         headerTitleStyle: {alignSelf: 'center'},
         headerStyle: {
             backgroundColor: MainStyles.shankGreen
