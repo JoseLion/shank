@@ -99,12 +99,12 @@ export default class LoginScreen extends Component {
             password: this.state.password,
         };
 
-        this.setLoading(true);
+        // this.setLoading(true);
 
         NoAuthModel.create('login', data).then((login) => {
             AsyncStorage.setItem(Constants.AUTH_TOKEN, login.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(login.user), () => {
-                    this.setLoading(false);
+                    // this.setLoading(false);
                     Notifier.message({title: 'SUCCESS', message: "succesfuly loggedn in"});
                     console.log("TOKEN", login.token)
                     console.log("current profile", JSON.stringify(login.user))
@@ -112,7 +112,7 @@ export default class LoginScreen extends Component {
             });
         })
             .catch((error) => {
-                this.setLoading(false);
+                // this.setLoading(false);
                 setTimeout(() => {
                     Notifier.message({title: 'ERROR', message: error});
                 }, Constants.TIME_OUT_NOTIFIER);
