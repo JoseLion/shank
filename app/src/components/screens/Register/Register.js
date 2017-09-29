@@ -153,7 +153,6 @@ export default class Register extends Component {
                     style={MainStyles.goldenShankButton}>
                     <Text style={LocalStyles.buttonText}>Register with Facebook</Text>
                 </TouchableHighlight>
-
                 <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
                     <Text
                         style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
