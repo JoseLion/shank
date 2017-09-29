@@ -34,16 +34,28 @@ let prepareRouter = function (app) {
                 return;
             }
             res.ok({});
-          /*  User
-                .findById(req.payload._id)
-                .select('_id name surname email')
+            /*  User
+             .findById(req.payload._id)
+             .select('_id name surname email')
+             .exec(function (err, user) {
+             if (err) {
+             res.ok({}, 'Al seleccionar usuario.');
+             return;
+             }
+             res.ok(user);
+             });*/
+        })
+        .get('/allGroups', function (req, res) {
+            BettingGroup
+                .find()
+                .select('_id name users tournament city photo')
                 .exec(function (err, user) {
                     if (err) {
-                        res.ok({}, 'Al seleccionar usuario.');
+                        res.ok({}, 'Al seleccionar grupos.');
                         return;
                     }
                     res.ok(user);
-                });*/
+                });
         })
         .post('/createGroup', auth, function (req, res) {
             if (!req.payload._id) {
@@ -53,17 +65,17 @@ let prepareRouter = function (app) {
             let data = req.body;
 
             let groupModel = new BettingGroup(data);
-
-            let upload = multer({
-                storage: bettingGroupPhoto
-            }).single(groupModel.photo);
-            upload(req, res, function(err) {
-                res.end('GroupFile is uploaded')
-            });
-
+            /*
+             let upload = multer({
+             storage: bettingGroupPhoto
+             }).single(groupModel.photo);
+             upload(req, res, function(err) {
+             res.end('GroupFile is uploaded')
+             });
+             */
             groupModel.save(function (err) {
                 if (err) {
-                    res.ok({err}, 'error on: saving new group registration.');
+                    res.ok({err}, 'GROUP ERROR ONM SAVE.');
                     return;
                 }
                 res.ok(groupModel._id, 'group registered successfully.');

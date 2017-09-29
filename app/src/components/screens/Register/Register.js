@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {AsyncStorage, Button, StyleSheet, Text, View, TextInput, TouchableHighlight} from 'react-native';
+import {AsyncStorage, Button, StyleSheet, Text, View, TextInput, TouchableHighlight, TouchableOpacity} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 import Notifier from '../../../core/Notifier';
@@ -20,8 +20,7 @@ export default class Register extends Component {
 
     static navigationOptions = {
         title: 'Register',
-        headerTitleStyle: {alignSelf: 'center'},
-        headerLeft: null
+        headerTitleStyle: {alignSelf: 'center'}
     };
 
     constructor(props) {
@@ -55,7 +54,7 @@ export default class Register extends Component {
             this.setLoading(false);
             setTimeout(() => {
                 Notifier.message({title: 'ERROR', message: error});
-            }, 2000);
+            }, Constants.TIME_OUT_NOTIFIER);
         });
     }
 
@@ -136,6 +135,11 @@ export default class Register extends Component {
                     style={MainStyles.goldenShankButton}>
                     <Text style={LocalStyles.buttonText}>Register</Text>
                 </TouchableHighlight>
+                <TouchableOpacity onPress={()=> navigation.dispatch({type: 'Login'})}>
+                    <Text style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
+                        I already have an account
+                    </Text>
+                </TouchableOpacity>
             </View>
         );
     }

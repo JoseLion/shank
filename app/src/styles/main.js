@@ -57,6 +57,10 @@ const MainStyles = StyleSheet.create({
         color: '#fff',
         textAlign: 'left',
     },
+    smallShankBlackFont: {
+        fontSize: Style.FONT_13,
+        color: '#000',
+    },
 
     shankGray: {
         color: '#3C4635'

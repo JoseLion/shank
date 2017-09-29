@@ -21,15 +21,6 @@ export const TabNav = TabNavigator({
         News: {
             screen: Tournament,
         },
-        Login: {
-            screen: Login,
-        },
-        Register: {
-            screen: Register,
-        },
-        CreateGroup: {
-            screen: Group,
-        },
     }, {
         tabBarPosition: 'bottom',
         tabBarOptions: {
@@ -50,20 +41,23 @@ export const AppNavigator = StackNavigator({
     Main: {screen: TabNav},
     Profile: {screen: Profile},
     Slider: {screen: Slider},
-    Groups: {screen: Group},
+    Group: {screen: Group},
+    Register: {screen: Register},
 });
 
-const AppWithNavigationState = ({dispatch, nav}) => (
-    <AppNavigator navigation={addNavigationHelpers({dispatch, state: nav})}/>
+const AppWithNavigationState = ({dispatch, nav, auth}) => (
+    <AppNavigator navigation={addNavigationHelpers({dispatch, state: nav, authState: auth})}/>
 );
 
 AppWithNavigationState.propTypes = {
     dispatch: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
     nav: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
     nav: state.nav,
+    auth: state.auth
 });
 
 export default connect(mapStateToProps)(AppWithNavigationState);

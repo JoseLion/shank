@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, Image, FlatList, ActivityIndicator} from 'react-native';
+import {Button, StyleSheet, Text, View, Image, FlatList, ActivityIndicator, TouchableHighlight, AsyncStorage} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import { List, ListItem, SearchBar } from "react-native-elements";
+import * as Constants from '../../../core/Constans';
 
 let Icon = require('react-native-vector-icons/Ionicons');
 
@@ -19,6 +20,7 @@ export default class MainScreen extends Component {
 
     constructor(props) {
         super(props);
+        this._removeStorage = this._removeStorage.bind(this);
         this.state = {
             loading: false,
             data: [],
@@ -33,14 +35,18 @@ export default class MainScreen extends Component {
 
     }
 
+    componentDidMount() {
+        this.makeRemoteRequest();
+    }
+
     static navigationOptions = ({navigation}) => ({
-        title: 'BETTING GROUPS',
+        title: 'BETTING GROUPSsss',
         headerTitleStyle: {alignSelf: 'center'},
         headerStyle: {
             backgroundColor: MainStyles.shankGreen
         },
         headerLeft: null,
-        headerRight: <Button title='+' onPress={() => navigation.dispatch({type: 'Groups'})}/>,
+        headerRight: <Button title='+' onPress={()=> console.log("shit mate")}/>,
         showIcon: true,
         tabBarIcon: () => {
             return (
@@ -52,13 +58,9 @@ export default class MainScreen extends Component {
         },
     });
 
-    componentDidMount() {
-        this.makeRemoteRequest();
-    }
-
     makeRemoteRequest = () => {
         const {page, seed} = this.state;
-        const url = `https://randomuser.me/api/?seed=${seed}&page=${page}&results=20`;
+        const url = `https://randomuser.me/api/?seed=${seed}&page=${page}&results=10`;
         this.setState({loading: true});
 
         fetch(url)
@@ -133,37 +135,72 @@ export default class MainScreen extends Component {
         );
     };
 
+    async _removeStorage() {
+        try {
+            let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
+            if (!token) {
+                console.log('fucking christ')
+                this.props.navigation.dispatch({type: 'Splash'})
+            }else{
+                console.log('fucking christ2222')
+                this.props.navigation.dispatch({type: 'Main'})
+            }
+            console.log('Token removed from diskkhjkh.');
+        } catch (error) {
+            console.log('error on  :Token removed from disk.');
+        }
+    }
+
 
     render() {
         let navigation = this.props.navigation;
-        return (
-            <View>
-                {/* <Text style={MainStyles.groupsNone}>
-                    Tap on the "+"  {"\n"} or join a betting group"
-                </Text>*/}
-                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
-                    <FlatList
-                        data={this.state.data}
-                        renderItem={({item}) => (
-                            <ListItem
-                                roundAvatar
-                                title={`${item.name.first} ${item.name.last}`}
-                                subtitle={item.email}
-                                avatar={{uri: item.picture.thumbnail}}
-                                containerStyle={{borderBottomWidth: 0}}
-                            />
-                        )}
-                        keyExtractor={item => item.email}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        ListHeaderComponent={this.renderHeader}
-                        ListFooterComponent={this.renderFooter}
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.state.refreshing}
-                        onEndReached={this.handleLoadMore}
-                        onEndReachedThreshold={50}
-                    />
-                </List>
-            </View>
-        );
+        if (navigation.authState.isAuthenticated){
+            return (
+                <View>
+                    <TouchableHighlight style={LocalStyles.buttonStart}
+                                        onPress={()=> navigation.dispatch({type: 'Group'})}>
+                        <Text>+</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={LocalStyles.buttonStart}
+                                        onPress={()=> navigation.dispatch({type: 'Register'})}>
+                        <Text>REGISTER</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={LocalStyles.buttonStart}
+                                        onPress={this._removeStorage}>
+                        <Text>LOGOUT</Text>
+                    </TouchableHighlight>
+                    <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                        <FlatList
+                            data={this.state.data}
+                            renderItem={({item}) => (
+                                <ListItem
+                                    roundAvatar
+                                    title={`${item.name.first} ${item.name.last}`}
+                                    subtitle={item.email}
+                                    avatar={{uri: item.picture.thumbnail}}
+                                    containerStyle={{borderBottomWidth: 0}}
+                                />
+                            )}
+                            keyExtractor={item => item.email}
+                            ItemSeparatorComponent={this.renderSeparator}
+                            ListHeaderComponent={this.renderHeader}
+                            ListFooterComponent={this.renderFooter}
+                            onRefresh={this.handleRefresh}
+                            refreshing={this.state.refreshing}
+                            onEndReachedThreshold={1}
+                        />
+                    </List>
+                </View>
+            )
+        }else{
+            return(
+                <View>
+                    <Button style={{ backgroundColor: 'rgba(0,0,0,0)'}} title='+' onPress={()=> navigation.dispatch({type: 'Register'})}/>
+                    <Text style={MainStyles.groupsNone}>
+                        Tap on the "+"  {"\n"} or join a betting group"
+                    </Text>
+                </View>
+            )
+        }
     }
 }
