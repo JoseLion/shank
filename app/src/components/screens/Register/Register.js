@@ -143,4 +143,4 @@ export default class Register extends Component {
             </View>
         );
     }
-}00
+}
