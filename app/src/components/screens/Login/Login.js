@@ -22,7 +22,7 @@ export default class LoginScreen extends Component {
     static navigationOptions = {
         title: 'LOG IN',
         headerTintColor: 'white',
-        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E'
         },
@@ -105,41 +105,38 @@ export default class LoginScreen extends Component {
         );
     }
 
-    async _onLoginPressed() {
-
-        /dismissKeyboard();/
+    _onLoginPressed() {
+        //dismissKeyboard();/
 
         if (!this.state.email) {
             Notifier.message({title: 'LOGIN SESSION', message: 'Please enter your email.'});
             return;
         }
-
         if (!this.state.password) {
             Notifier.message({title: 'LOGIN SESSION', message: 'Please enter a password.'});
             return;
         }
-
+        this.setLoading(true);
         let email = this.state.email.toLowerCase();
-
         let data = {
             email: email,
             password: this.state.password,
         };
+        this._onLoginPressedAsync(data).then((response) => {
+            this.setLoading(false);
+            this.props.navigation.dispatch({type: 'Main'});
+        })
+    }
 
-        // this.setLoading(true);
-
-        NoAuthModel.create('login', data).then((login) => {
+    async _onLoginPressedAsync(data) {
+        await NoAuthModel.create('login', data).then((login) => {
             AsyncStorage.setItem(Constants.AUTH_TOKEN, login.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(login.user), () => {
-                    // this.setLoading(false);
-                    Notifier.message({title: 'SUCCESS', message: "succesfuly loggedn in"});
-                    console.log("TOKEN", login.token)
-                    console.log("current profile", JSON.stringify(login.user))
                 });
             });
         })
             .catch((error) => {
-                // this.setLoading(false);
+                this.setLoading(false);
                 setTimeout(() => {
                     Notifier.message({title: 'ERROR', message: error});
                 }, Constants.TIME_OUT_NOTIFIER);

@@ -56,8 +56,7 @@ export default class Register extends Component {
     }
 
     async _registerUserAsync(data) {
-        this.setLoading(true);
-        NoAuthModel.create('register', data).then((response) => {
+        await NoAuthModel.create('register', data).then((response) => {
             AsyncStorage.setItem(Constants.AUTH_TOKEN, response.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(response.user), () => {
 
@@ -93,6 +92,7 @@ export default class Register extends Component {
             Notifier.message({title: 'Register', message: 'Passwords must match.'});
             return;
         }
+        this.setLoading(true);
 
         let data = {
             name: this.state.name,

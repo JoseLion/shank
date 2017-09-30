@@ -66,9 +66,22 @@ function nav(state = initialNavState, action) {
 
 const initialAuthState = {isLoggedIn: false};
 
+async function  _isItLoggedAsync(){
+    return await AsyncStorage.getItem(Constants.AUTH_TOKEN)
+}
+
+function _isUserLogged() {
+    _isItLoggedAsync().then((authToken) => {
+        console.log("current logged");
+        console.log(authToken);
+        return authToken
+    })
+}
+//TODO: HOW TO GET PROMISES IN REDUX STATES (assign to auth.isAuthenticated)
+
 function auth(state = {
     isFetching: false,
-    isAuthenticated: !!AsyncStorage.getItem(Constants.AUTH_TOKEN)
+    isAuthenticated: false
 }, action) {
     switch (action.type) {
         case 'Login':

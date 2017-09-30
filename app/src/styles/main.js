@@ -12,10 +12,15 @@ const MainStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
+    mainContainer: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+    },
     groupsNone: {
         fontSize: 15,
-        textAlign: 'center',
-        margin: 10,
+        color: 'rgba(0,0,0,.2)'
     },
     iconXLG: {
         width: Style.iconXLG,

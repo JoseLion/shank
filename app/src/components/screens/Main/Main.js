@@ -27,15 +27,17 @@ export default class MainScreen extends Component {
             page: 1,
             seed: 1,
             error: null,
-            refreshing: false
+            refreshing: false,
+            auth:null
         };
     }
 
-    static handleSave() {
-
-    }
-
     componentDidMount() {
+        AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
+            this.setState({
+                auth: authToken
+            })
+        });
         this.makeRemoteRequest();
     }
 
@@ -47,7 +49,7 @@ export default class MainScreen extends Component {
 
         },
         headerLeft: null,
-        headerRight: <Button title='+' onPress={()=> console.log("shit mate")}/>,
+     /*   headerRight: <Button title='+' onPress={()=> console.log("shit mate")}/>,*/
         showIcon: true,
         tabBarIcon: () => {
             return (
@@ -140,31 +142,24 @@ export default class MainScreen extends Component {
         try {
             let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
             if (!token) {
-                console.log('fucking christ')
                 this.props.navigation.dispatch({type: 'Splash'})
             }else{
-                console.log('fucking christ2222')
                 this.props.navigation.dispatch({type: 'Main'})
             }
-            console.log('Token removed from diskkhjkh.');
+            console.log('Token removed from.');
         } catch (error) {
             console.log('error on  :Token removed from disk.');
         }
     }
 
-
     render() {
         let navigation = this.props.navigation;
-        if (navigation.authState.isAuthenticated){
+        if (this.state.auth){
             return (
                 <View>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={()=> navigation.dispatch({type: 'Group'})}>
                         <Text>+</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
-                                        onPress={()=> navigation.dispatch({type: 'Register'})}>
-                        <Text>REGISTER</Text>
                     </TouchableHighlight>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={this._removeStorage}>
@@ -195,11 +190,15 @@ export default class MainScreen extends Component {
             )
         }else{
             return(
-                <View>
-                    <Button style={{ backgroundColor: 'rgba(0,0,0,0)'}} title='+' onPress={()=> navigation.dispatch({type: 'Register'})}/>
+                <View style={MainStyles.mainContainer}>
+                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
+                                        onPress={()=> navigation.dispatch({type: 'Register'})}>
+                        <Text>+</Text>
+                    </TouchableHighlight>
                     <Text style={MainStyles.groupsNone}>
-                        Tap on the "+"  {"\n"} or join a betting group"
+                        Tap on the "+" button to create {"\n"} or join a betting group
                     </Text>
+                    <Text></Text>
                 </View>
             )
         }
