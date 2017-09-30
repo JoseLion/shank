@@ -13,6 +13,11 @@ export default class ProfileScreen extends Component {
 
     static navigationOptions = {
         title: 'Profile',
+        headerTintColor: 'white',
+        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerStyle: {
+            backgroundColor: '#556E3E'
+        },
     };
 
     constructor(props) {

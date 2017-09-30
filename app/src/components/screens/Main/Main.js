@@ -41,9 +41,10 @@ export default class MainScreen extends Component {
 
     static navigationOptions = ({navigation}) => ({
         title: 'BETTING GROUPS',
-        headerTitleStyle: {alignSelf: 'center'},
+        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
         headerStyle: {
-            backgroundColor: MainStyles.shankGreen
+            backgroundColor: '#556E3E',
+
         },
         headerLeft: null,
         headerRight: <Button title='+' onPress={()=> console.log("shit mate")}/>,
@@ -157,15 +158,15 @@ export default class MainScreen extends Component {
         if (navigation.authState.isAuthenticated){
             return (
                 <View>
-                    <TouchableHighlight style={LocalStyles.buttonStart}
+                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={()=> navigation.dispatch({type: 'Group'})}>
                         <Text>+</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight style={LocalStyles.buttonStart}
+                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={()=> navigation.dispatch({type: 'Register'})}>
                         <Text>REGISTER</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight style={LocalStyles.buttonStart}
+                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={this._removeStorage}>
                         <Text>LOGOUT</Text>
                     </TouchableHighlight>

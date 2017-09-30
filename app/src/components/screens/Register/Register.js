@@ -4,13 +4,23 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {AsyncStorage, Button, StyleSheet, Text, View, TextInput, TouchableHighlight, TouchableOpacity} from 'react-native';
+import {
+    AsyncStorage,
+    Button,
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    TouchableHighlight,
+    TouchableOpacity
+} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 import Notifier from '../../../core/Notifier';
 import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
+
 
 export default class Register extends Component {
 
@@ -20,7 +30,11 @@ export default class Register extends Component {
 
     static navigationOptions = {
         title: 'Register',
-        headerTitleStyle: {alignSelf: 'center'}
+        headerTintColor: 'white',
+        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerStyle: {
+            backgroundColor: '#556E3E'
+        },
     };
 
     constructor(props) {
@@ -46,13 +60,13 @@ export default class Register extends Component {
         NoAuthModel.create('register', data).then((response) => {
             AsyncStorage.setItem(Constants.AUTH_TOKEN, response.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(response.user), () => {
-                    this.setLoading(false);
-                    this.props.navigation.dispatch({type: 'Login'})
+
                 });
             });
         }).catch((error) => {
             this.setLoading(false);
             setTimeout(() => {
+                console.log("error--->", error);
                 Notifier.message({title: 'ERROR', message: error});
             }, Constants.TIME_OUT_NOTIFIER);
         });
@@ -86,7 +100,10 @@ export default class Register extends Component {
             password: this.state.password,
         };
 
-        this._registerUserAsync(data);
+        this._registerUserAsync(data).then((response) => {
+            this.setLoading(false);
+            this.props.navigation.dispatch({type: 'Login'});
+        })
     }
 
     render() {
@@ -130,13 +147,19 @@ export default class Register extends Component {
                     value={this.state.repeatedPassword}
                     placeholder={'Repeat your password'}
                 />
-                <TouchableHighlight
-                    onPress={this._handleNewRegistry}
+                <TouchableOpacity
+                    onPress={() => this._handleNewRegistry()}
                     style={MainStyles.goldenShankButton}>
                     <Text style={LocalStyles.buttonText}>Register</Text>
-                </TouchableHighlight>
-                <TouchableOpacity onPress={()=> navigation.dispatch({type: 'Login'})}>
-                    <Text style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
+                </TouchableOpacity>
+                {/*<TouchableHighlight*/}
+                    {/*onPress={this._register()}*/}
+                    {/*style={MainStyles.goldenShankButton}>*/}
+                    {/*<Text style={LocalStyles.buttonText}>Register with Facebook</Text>*/}
+                {/*</TouchableHighlight>*/}
+                <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
+                    <Text
+                        style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
                         I already have an account
                     </Text>
                 </TouchableOpacity>

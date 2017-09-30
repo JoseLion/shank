@@ -74,7 +74,7 @@ export default class SliderScreen extends Component {
                                source={logoRegular}>
                         </Image>
                     </Image>
-                    <TouchableHighlight style={LocalStyles.buttonStart}
+                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor='#cbbeb5'
                                         onPress={() => this.props.navigation.dispatch({type: 'Main'})}>
                         <Text style={LocalStyles.text}>Let's get start</Text>
                     </TouchableHighlight>

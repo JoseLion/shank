@@ -135,7 +135,7 @@ const LocalStyles = StyleSheet.create({
         paddingBottom:Style.PX_12,
         paddingTop: Style.PX_12,
         borderWidth: 1,
-        borderColor: '#48BBEC',
+        borderColor: '#fff',
         borderRadius: 10,
         backgroundColor:'#fff',
         position:'absolute',

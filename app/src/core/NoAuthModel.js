@@ -54,7 +54,7 @@ let NoAuthModel = {
                 'Content-Type': 'application/json'
             },
             body: data
-        }
+        };
 
         const response = await fetch(ApiHost + resource, options).catch(
             error => {
