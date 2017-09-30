@@ -11,7 +11,7 @@ mongoose.Promise = global.Promise;
 let passport = require('passport');
 let customResponses = require('express-custom-response');
 
-const databaseUri = 'mongodb://docker.com:27017/shank';
+const databaseUri = 'mongodb://shankDB/shank';
 
 mongoose.connect(databaseUri, { useMongoClient: true })
     .then(() => console.log(`Database connected at ${databaseUri}`))
