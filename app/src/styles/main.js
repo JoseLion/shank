@@ -75,6 +75,10 @@ const MainStyles = StyleSheet.create({
     centerText : {
         textAlign: 'center',
     },
+    leftText : {
+        textAlign: 'left',
+    },
+
     goldenShankButton: {
         alignItems: 'center',
         paddingBottom:Style.SMALL_PADDING,

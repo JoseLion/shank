@@ -30,7 +30,11 @@ export default class Register extends Component {
 
     static navigationOptions = {
         title: 'Register',
-        headerTitleStyle: {alignSelf: 'center'}
+        headerTintColor: 'white',
+        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerStyle: {
+            backgroundColor: '#556E3E'
+        },
     };
 
     constructor(props) {
@@ -56,9 +60,7 @@ export default class Register extends Component {
         NoAuthModel.create('register', data).then((response) => {
             AsyncStorage.setItem(Constants.AUTH_TOKEN, response.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(response.user), () => {
-                    this.setLoading(false);
-                    this.props.navigation.dispatch({type: 'Login'});
-                    console.log("error--->", response)
+
                 });
             });
         }).catch((error) => {
@@ -98,7 +100,10 @@ export default class Register extends Component {
             password: this.state.password,
         };
 
-        this._registerUserAsync(data);
+        this._registerUserAsync(data).then((response) => {
+            this.setLoading(false);
+            this.props.navigation.dispatch({type: 'Login'});
+        })
     }
 
     render() {

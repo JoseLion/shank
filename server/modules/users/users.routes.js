@@ -72,9 +72,9 @@ let prepareRouter = function (app) {
                                 res.ok({err}, 'error on: saving user registration.');
                                 return;
                             }
-                            res.ok(userModel._id, 'user registered successfully.');
                         });
                     }
+                    res.ok({}, 'user registered successfully.');
                 });
         })
     ;

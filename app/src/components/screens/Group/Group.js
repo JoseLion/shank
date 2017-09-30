@@ -5,14 +5,27 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, Image, FlatList , TouchableOpacity, Picker} from 'react-native';
+import {
+    Button,
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    TouchableHighlight,
+    Image,
+    FlatList,
+    TouchableOpacity,
+    Picker,
+    ActivityIndicator
+} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 import Notifier from '../../../core/Notifier';
 import BaseModel from '../../../core/BaseModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { ImagePicker } from 'expo';
+import {ImagePicker} from 'expo';
+import {List, ListItem, SearchBar} from "react-native-elements";
 
 export default class Group extends Component {
 
@@ -26,7 +39,11 @@ export default class Group extends Component {
 
     static navigationOptions = {
         title: 'Create Group',
-        headerTitleStyle: {alignSelf: 'center'}
+        headerTintColor: 'white',
+        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
+        headerStyle: {
+            backgroundColor: '#556E3E'
+        },
     };
 
     constructor(props) {
@@ -37,16 +54,103 @@ export default class Group extends Component {
             name: '',
             selectTournament: '',
             prize: '',
-            loading : false
+            loading: false,
+            data: [],
+            page: 1,
+            seed: 1,
+            error: null,
+            refreshing: false
         };
+
+    }
+
+    componentDidMount() {
+        this.makeRemoteRequest();
     }
 
     setLoading(loading) {
         this.setState({loading: loading});
     }
 
+    makeRemoteRequest = () => {
+        const {page, seed} = this.state;
+        const url = `https://randomuser.me/api/?seed=${seed}&page=${page}&results=10`;
+        this.setState({loading: true});
+
+        fetch(url)
+            .then(res => res.json())
+            .then(res => {
+                this.setState({
+                    data: page === 1 ? res.results : [...this.state.data, ...res.results],
+                    error: res.error || null,
+                    loading: false,
+                    refreshing: false
+                });
+            })
+            .catch(error => {
+                this.setState({error, loading: false});
+            });
+    };
+
+    handleRefresh = () => {
+        this.setState(
+            {
+                page: 1,
+                seed: this.state.seed + 1,
+                refreshing: true
+            },
+            () => {
+                this.makeRemoteRequest();
+            }
+        );
+    };
+
+    handleLoadMore = () => {
+        this.setState(
+            {
+                page: this.state.page + 1
+            },
+            () => {
+                this.makeRemoteRequest();
+            }
+        );
+    };
+
+    renderSeparator = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        );
+    };
+
+    /*renderHeader = () => {
+        return <SearchBar placeholder="Type Here..." lightTheme round/>;
+    };*/
+
+    renderFooter = () => {
+        if (!this.state.loading) return null;
+
+        return (
+            <View
+                style={{
+                    paddingVertical: 20,
+                    borderTopWidth: 1,
+                    borderColor: "#CED0CE"
+                }}
+            >
+                <ActivityIndicator animating size="large"/>
+            </View>
+        );
+    };
+
     render() {
-        let { groupPhoto } = this.state;
+        let {groupPhoto} = this.state;
         let navigation = this.props.navigation;
         let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
         return (
@@ -55,14 +159,14 @@ export default class Group extends Component {
 
                 <TouchableOpacity style={LocalStyles.addPhotoLogo} onPress={this._pickImage}>
                     {groupPhoto &&
-                        <Image source={{ uri: groupPhoto }} style={LocalStyles.groupImage} />
+                    <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/>
                     }
                     {!groupPhoto &&
-                        <Image
-                            source={addPhoto}>
-                        </Image>
+                    <Image
+                        source={addPhoto}>
+                    </Image>
                     }
-                    <Text style={[MainStyles.centerText,MainStyles.greenMedShankFont]}>
+                    <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
                         Add a photo
                     </Text>
                 </TouchableOpacity>
@@ -78,47 +182,54 @@ export default class Group extends Component {
                     <Picker
                         selectedValue={this.state.language}
                         onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                        <Picker.Item  color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...' />
-                        <Picker.Item label="Presidents Cup" value="15151515zxcasd515" />
-                        <Picker.Item label="Safeway Open" value="15415a1s5d1a5sd" />
-                        <Picker.Item label="CIMB Classic" value="15415a1s5d1a5sd" />
-                        <Picker.Item label="PGA Tour" value="asdasdzxczxc12515" />
-                        <Picker.Item label="US Opens" value="asdasd15151656123123" />
+                        <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
+                        <Picker.Item label="Presidents Cup" value="15151515zxcasd515"/>
+                        <Picker.Item label="Safeway Open" value="15415a1s5d1a5sd"/>
+                        <Picker.Item label="CIMB Classic" value="15415a1s5d1a5sd"/>
+                        <Picker.Item label="PGA Tour" value="asdasdzxczxc12515"/>
+                        <Picker.Item label="US Opens" value="asdasd15151656123123"/>
                     </Picker>
                 </View>
                 <TextInput
                     underlineColorAndroid='transparent'
                     placeholder={'Prize'}
-                    style={[LocalStyles.createTInput,{paddingBottom:5}]}
+                    style={[LocalStyles.createTInput, {paddingBottom: 5}]}
                     onChangeText={(prize) => this.setState({prize})}
                     value={this.state.prize}
                 />
-                <View style={LocalStyles.participantsList}>
+                <View style={LocalStyles.participantsTxt}>
                     <Text style={MainStyles.greenMedShankFont}>
                         PARTICIPANTS
                     </Text>
-                  {/*  <FlatList style={{width:'100%'}}
-                        data={[
-                            {key: 'Devin'},
-                            {key: 'Jackson'},
-                            {key: 'James'},
-                            {key: 'Joel'},
-                            {key: 'John'},
-                            {key: 'Jillian'},
-                            {key: 'Jimmy'},
-                            {key: 'Julie'},
-                        ]}
-                        renderItem={({item}) => <Text style={LocalStyles.item}>{item.key}</Text>}
-                    />*/}
                 </View>
-                <View  style={LocalStyles.addNewParticipant}>
-                    <Text style={[LocalStyles.centerText,MainStyles.shankGray]}>
+                    {/*<List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, width: '100%'}}>
+                        <FlatList
+                            data={this.state.data}
+                            renderItem={({item}) => (
+                                <ListItem
+                                    roundAvatar
+                                    title={`${item.name.first} ${item.name.last}`}
+                                    subtitle={item.email}
+                                    avatar={{uri: item.picture.thumbnail}}
+                                    containerStyle={{borderBottomWidth: 0}}
+                                />
+                            )}
+                            keyExtractor={item => item.email}
+                            ItemSeparatorComponent={this.renderSeparator}
+                            ListFooterComponent={this.renderFooter}
+                            onRefresh={this.handleRefresh}
+                            refreshing={this.state.refreshing}
+                            onEndReachedThreshold={1}
+                        />
+                    </List>*/}
+                <View style={LocalStyles.addNewParticipant}>
+                    <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
                         Add new participant
                     </Text>
                 </View>
                 <TouchableHighlight
                     onPress={this._handleNewGroupRegistry}
-                    style={[MainStyles.goldenShankButton,{marginBottom: '10%'}]}>
+                    style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                     <Text style={LocalStyles.buttonText}>Create group</Text>
                 </TouchableHighlight>
             </View>
@@ -159,7 +270,7 @@ export default class Group extends Component {
         // Upload the image using the fetch and FormData APIs
         let formData = new FormData();
         // Assume "photo" is the name of the form field the server expects
-        formData.append('photo', { path: localUri, name: filename, type });
+        formData.append('photo', {path: localUri, name: filename, type});
         console.log("******************formData*******************");
         console.log(formData);
 
@@ -173,17 +284,15 @@ export default class Group extends Component {
             this.setLoading(false);
             console.log("Success CREATED A GROUP in")
             console.log("CREATE GROUP RESPONSE", response)
-          /*  this.props.navigation.dispatch({type: 'Main'})*/
+            /*  this.props.navigation.dispatch({type: 'Main'})*/
         })
-        .catch((error) => {
-            this.setLoading(false);
-            setTimeout(() => {
-                Notifier.message({title: 'ERROR', message: error});
-            }, Constants.TIME_OUT_NOTIFIER);
-        });
+            .catch((error) => {
+                this.setLoading(false);
+                setTimeout(() => {
+                    Notifier.message({title: 'ERROR', message: error});
+                }, Constants.TIME_OUT_NOTIFIER);
+            });
     }
-
-
     _pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
@@ -191,7 +300,7 @@ export default class Group extends Component {
         });
         console.log(result);
         if (!result.cancelled) {
-            this.setState({ groupPhoto: result.uri });
+            this.setState({groupPhoto: result.uri});
         }
     };
 }

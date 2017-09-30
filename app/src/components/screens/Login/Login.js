@@ -8,6 +8,11 @@ import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+const FBSDK = require('react-native-fbsdk');
+const {
+    LoginButton,
+} = FBSDK;
+
 export default class LoginScreen extends Component {
 
     static propTypes = {
@@ -16,7 +21,11 @@ export default class LoginScreen extends Component {
 
     static navigationOptions = {
         title: 'LOG IN',
-        headerTitleStyle: {alignSelf: 'center'}
+        headerTintColor: 'white',
+        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerStyle: {
+            backgroundColor: '#556E3E'
+        },
     };
 
     constructor(props) {
@@ -70,6 +79,24 @@ export default class LoginScreen extends Component {
                     style={MainStyles.fbButton}>
                     <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
                 </TouchableHighlight>
+
+                <View>
+                    <LoginButton
+                        publishPermissions={["publish_actions"]}
+                        onLoginFinished={
+                            (error, result) => {
+                                if (error) {
+                                    alert("Login failed with error: " + result.error);
+                                } else if (result.isCancelled) {
+                                    alert("Login was cancelled");
+                                } else {
+                                    alert("Login was successful with permissions: " + result.grantedPermissions)
+                                }
+                            }
+                        }
+                        onLogoutFinished={() => alert("User logged out")}/>
+                </View>
+
 
                 <Text style={[MainStyles.smallShankFont, MainStyles.inputTopSeparation]}>
                     Forgot my password

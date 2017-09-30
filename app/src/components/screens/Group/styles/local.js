@@ -12,14 +12,18 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#1D222D',
     },
+    participantsTxt: {
+        //flex: 1,
+        paddingTop: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+        //marginLeft:'-50%'
+    },
     participantsList: {
         flex: 1,
-        paddingTop: 20,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        backgroundColor: '#F5FCFF',
-        marginLeft:'-50%'
     },
+
     addNewParticipant: {
         flex: 1,
         paddingTop: 22,

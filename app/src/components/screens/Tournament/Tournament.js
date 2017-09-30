@@ -16,7 +16,11 @@ export default class TournamentsScreen extends Component {
 
     static navigationOptions = {
         title: 'TOURNAMENTS',
-        headerTitleStyle: { alignSelf: 'center' },
+        headerTintColor: 'white',
+        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerStyle: {
+            backgroundColor: '#556E3E'
+        },
         headerLeft: null
     };
 
