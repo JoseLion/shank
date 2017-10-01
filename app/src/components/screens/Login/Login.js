@@ -1,17 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, AsyncStorage} from 'react-native';
+import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, AsyncStorage, Alert} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import Notifier from '../../../core/Notifier';
 import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {Facebook} from 'expo';
 
-const FBSDK = require('react-native-fbsdk');
-const {
-    LoginButton,
-} = FBSDK;
 
 export default class LoginScreen extends Component {
 
@@ -80,30 +77,14 @@ export default class LoginScreen extends Component {
                     <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
                 </TouchableHighlight>
 
-                <View>
-                    <LoginButton
-                        publishPermissions={["publish_actions"]}
-                        onLoginFinished={
-                            (error, result) => {
-                                if (error) {
-                                    alert("Login failed with error: " + result.error);
-                                } else if (result.isCancelled) {
-                                    alert("Login was cancelled");
-                                } else {
-                                    alert("Login was successful with permissions: " + result.grantedPermissions)
-                                }
-                            }
-                        }
-                        onLogoutFinished={() => alert("User logged out")}/>
-                </View>
-
-
                 <Text style={[MainStyles.smallShankFont, MainStyles.inputTopSeparation]}>
                     Forgot my password
                 </Text>
             </View>
         );
     }
+
+
 
     _onLoginPressed() {
         //dismissKeyboard();/
@@ -143,7 +124,49 @@ export default class LoginScreen extends Component {
             });
     }
 
-    async _loginWithFacebookAsync() {
+    _loginWithFacebookAsync = async () => {
+        try {
+            this.setLoading(true);
+            const { type, token } = await Facebook.logInWithReadPermissionsAsync(
+                Constants.APP_FB_ID, // Replace with your own app id in standalone app
+                { permissions: ['public_profile', 'email', 'user_friends'] }
+            );
 
-    }
+            switch (type) {
+                case 'success': {
+                    // Get the user's name using Facebook's Graph API
+                    const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email&access_token=${token}`);
+                    const profile = await response.json();
+                    let data = {
+                        email: profile.email,
+                        password: token,
+                    };
+                    console.log("profile",profile)
+                    console.log("token",token)
+                    this.setLoading(false);
+                    break;
+                }
+                case 'cancel': {
+                    Alert.alert(
+                        'Cancelled!',
+                        'FB Login was cancelled!',
+                    );
+                    break;
+                }
+                default: {
+                    Alert.alert(
+                        'Oops!',
+                        'Login failed!',
+                    );
+                }
+            }
+            this.setLoading(false);
+        } catch (e) {
+            Alert.alert(
+                'Oops!',
+                'Login failed!',
+            );
+            this.setLoading(false);
+        }
+    };
 }
