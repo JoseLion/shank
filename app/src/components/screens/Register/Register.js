@@ -123,12 +123,13 @@ export default class Register extends Component {
                     const profile = await response.json();
 
                     console.log("all data of profile --> ", profile);
+                    console.log("facebook id --> ", profile.id);
 
                     if (profile.email){
                         let data = {
                             name: profile.name,
                             email: profile.email,
-                            password: token,
+                            password:  profile.id,
                         };
 
                         console.log("parse data ", data);
