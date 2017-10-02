@@ -141,8 +141,8 @@ export default class LoginScreen extends Component {
                         email: profile.email,
                         password: token,
                     };
-                    console.log("profile",profile)
-                    console.log("token",token)
+                    console.log("profile",profile);
+                    console.log("token",token);
                     this.setLoading(false);
                     break;
                 }
