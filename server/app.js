@@ -11,6 +11,7 @@ mongoose.Promise = global.Promise;
 let passport = require('passport');
 let customResponses = require('express-custom-response');
 
+//const databaseUri = 'mongodb://db/shank'; testing server docker
 const databaseUri = 'mongodb://docker.com:27017/shank';
 
 mongoose.connect(databaseUri, { useMongoClient: true })

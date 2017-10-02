@@ -13,14 +13,11 @@ module.exports = function () {
         .post('/login', function (req, res) {
 
             passport.authenticate('local', function (err, user, info) {
-
                 if (err) {
                     res.ok({internal_error: true}, 'Al iniciar sesión.');
                     return;
                 }
-
                 let token;
-
                 if (user) {
                     if (user.type == 1 && user.enabled) {
                         token = user.generateJwt([]);
@@ -33,7 +30,6 @@ module.exports = function () {
                             name: user.name,
                             attachments: user.attachments
                         };
-
                         res.ok({user: new_user, token: token});
                     }
                     else {
@@ -44,7 +40,7 @@ module.exports = function () {
                     res.ok({}, info.message);
                 }
             })(req, res);
-        });
+        })
 
     return router;
 };
