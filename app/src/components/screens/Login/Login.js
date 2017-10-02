@@ -139,11 +139,17 @@ export default class LoginScreen extends Component {
                     const profile = await response.json();
                     let data = {
                         email: profile.email,
-                        password: token,
+                        password: profile.id,
+                        cell_phone: '',
+                        surname: profile.name,
+                        name: profile.name
                     };
-                    console.log("profile",profile)
-                    console.log("token",token)
-                    this.setLoading(false);
+                    console.log("_loginWithFacebookAsync datadatadata***********")
+                    console.log(data)
+                    this._onLoginPressedAsync(data).then(() => {
+                        this.setLoading(false);
+                        this.props.navigation.dispatch({type: 'Main'});
+                    });
                     break;
                 }
                 case 'cancel': {
