@@ -12,7 +12,8 @@ import {
     View,
     TextInput,
     TouchableHighlight,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -20,6 +21,7 @@ import Notifier from '../../../core/Notifier';
 import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {Facebook} from 'expo';
 
 
 export default class Register extends Component {
@@ -31,7 +33,7 @@ export default class Register extends Component {
     static navigationOptions = {
         title: 'Register',
         headerTintColor: 'white',
-        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E'
         },
@@ -41,6 +43,7 @@ export default class Register extends Component {
         super(props);
 
         this._handleNewRegistry = this._handleNewRegistry.bind(this);
+        this._registerByFacebook = this._registerByFacebook.bind(this);
 
         this.state = {
             name: '',
@@ -106,6 +109,63 @@ export default class Register extends Component {
         })
     }
 
+    _registerByFacebook = async () => {
+        try {
+            const {type, token} = await Facebook.logInWithReadPermissionsAsync(
+                Constants.APP_FB_ID,
+                {permissions: ['public_profile', 'email', 'user_friends']}
+            );
+
+            switch (type) {
+                case 'success': {
+                    // Get the user's name using Facebook's Graph API
+                    const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email&access_token=${token}`);
+                    const profile = await response.json();
+
+                    console.log("all data of profile --> ", profile);
+                    console.log("facebook id --> ", profile.id);
+
+                    if (profile.email){
+                        let data = {
+                            name: profile.name,
+                            email: profile.email,
+                            password:  profile.id,
+                        };
+
+                        console.log("parse data ", data);
+                        this._registerUserAsync(data).then((response) => {
+                            this.props.navigation.dispatch({type: 'Login'});
+                        });
+                    } else {
+                        Alert.alert(
+                            'Cancelled!',
+                            'Facebook account does not have an associated email!',
+                        );
+                    }
+                    break;
+                }
+                case 'cancel': {
+                    Alert.alert(
+                        'Cancelled!',
+                        'FB Register was cancelled!',
+                    );
+                    break;
+                }
+                default: {
+                    Alert.alert(
+                        'Oops!',
+                        'Register failed!',
+                    );
+                }
+            }
+        } catch (e) {
+            Alert.alert(
+                'Oops!',
+                'Register failed!',
+            );
+        }
+    };
+
     render() {
         let navigation = this.props.navigation;
         return (
@@ -152,11 +212,11 @@ export default class Register extends Component {
                     style={MainStyles.goldenShankButton}>
                     <Text style={LocalStyles.buttonText}>Register</Text>
                 </TouchableOpacity>
-                {/*<TouchableHighlight*/}
-                    {/*onPress={this._register()}*/}
-                    {/*style={MainStyles.goldenShankButton}>*/}
-                    {/*<Text style={LocalStyles.buttonText}>Register with Facebook</Text>*/}
-                {/*</TouchableHighlight>*/}
+                <TouchableHighlight
+                    onPress={this._registerByFacebook}
+                    style={MainStyles.fbButton}>
+                    <Text style={LocalStyles.buttonText}>Register by Facebook</Text>
+                </TouchableHighlight>
                 <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
                     <Text
                         style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
