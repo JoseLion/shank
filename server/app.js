@@ -5,15 +5,16 @@ let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 
-let mongoose   = require('mongoose');
+let mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 let passport = require('passport');
 let customResponses = require('express-custom-response');
 
-const databaseUri = 'mongodb://docker.com:27017/shank';
+const databaseUri = 'mongodb://192.168.99.100:27017/shank'; //docker macOs enviroment
+// const databaseUri = 'mongodb://docker.com:27017/shank'; chino enviroment
 
-mongoose.connect(databaseUri, { useMongoClient: true })
+mongoose.connect(databaseUri, {useMongoClient: true})
     .then(() => console.log(`Database connected at ${databaseUri}`))
     .catch(err => console.log(`Database connection error: ${err.message}`));
 
@@ -34,14 +35,14 @@ app.set('view engine', 'html');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 //access images from client and app uploads/
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Enable CORS (Cross Origin Request Sharing)
 //http://code.tutsplus.com/tutorials/token-based-authentication-with-angularjs-nodejs--cms-22543
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
@@ -62,7 +63,7 @@ require('./config/passport');
 app.use(passport.initialize());
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     let err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -73,7 +74,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res, next) {
 
         // Catch unauthorised errors JWT
         //console.log(err, '********************');
@@ -92,15 +93,15 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to users
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
 
     // Catch unauthorised errors JWT
     if (err.code === 'invalid_token') {
-        return res.status(err.status).json({response : {}, error: 'Usuario no autorizado'});
+        return res.status(err.status).json({response: {}, error: 'Usuario no autorizado'});
     }
 
     if (err.code === 'permission_denied') {
-        return res.status(err.status).json({response : {}, error: 'Permiso denegado'});
+        return res.status(err.status).json({response: {}, error: 'Permiso denegado'});
     }
 
     res.status(err.status || 500);
