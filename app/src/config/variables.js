@@ -20,6 +20,6 @@ const AuthToken = 'shank-auth-token';
 const ApiKey = 'MTU2NDJkYzcxZjkwNTk4NjdlNjVlYWRjZTI5Zjdl';
 const AssetsURL = 'http://192.168.1.3:3000/uploads';
 const Timeout = 60000;
-const version = '2.9';
+const version = '2.0';
 
 export {Host, ApiHost, AuthToken, ApiKey, AssetsURL, Timeout, version};

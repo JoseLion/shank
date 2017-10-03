@@ -36,14 +36,14 @@ module.exports = function () {
                             name: user.name,
                             attachments: user.attachments
                         };
-                        return ({user: new_user, token: token, response: ''});
+                        res.ok({user: new_user, token: token, response: ''});
                     }
                     else {
-                        return ({user: null, token: null, response: 'User not enabled'});
+                        res.ok({}, 'user not enabled.');
                     }
                 }
                 else {
-                    return ({user: null, token: null, response: 'User not found'});
+                    res.ok({}, 'user not found.');
                 }
             })(req, res);
         });
