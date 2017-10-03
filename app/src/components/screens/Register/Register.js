@@ -60,6 +60,8 @@ export default class Register extends Component {
 
     async _registerUserAsync(data) {
         await NoAuthModel.create('register', data).then((response) => {
+            console.log('response from uxsss')
+            console.log(response)
             AsyncStorage.setItem(Constants.AUTH_TOKEN, response.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(response.user), () => {
 
@@ -105,7 +107,7 @@ export default class Register extends Component {
 
         this._registerUserAsync(data).then((response) => {
             this.setLoading(false);
-            this.props.navigation.dispatch({type: 'Login'});
+            this.props.navigation.dispatch({type: 'Main'});
         })
     }
 
@@ -134,8 +136,8 @@ export default class Register extends Component {
 
                         console.log("parse data ", data);
                         this._registerUserAsync(data).then((response) => {
-                            this.props.navigation.dispatch({type: 'Login'});
-                        });
+                            this.props.navigation.dispatch({type: 'Main'});
+                        })
                     } else {
                         Alert.alert(
                             'Cancelled!',

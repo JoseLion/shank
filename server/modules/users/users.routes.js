@@ -3,6 +3,8 @@ let User = mongoose.model('User');
 
 let multer = require('multer');
 let fs = require('fs-extra');
+let authHelper = require('../helpers/auth.helper');
+let passport = require('passport');
 
 multer.diskStorage({
     destination: function (req, file, cb) {
@@ -72,9 +74,46 @@ let prepareRouter = function (app) {
                                 res.ok({err}, 'error on: saving user registration.');
                                 return;
                             }
+                            passport.authenticate('local', function (err, user, info) {
+                                if (err) {
+                                    res.ok({internal_error: true}, 'Al iniciar sesión.');
+                                    return;
+                                }
+                                let token;
+                                if (user) {
+                                    if (user.type == 1 && user.enabled) {
+                                        token = user.generateJwt([]);
+
+                                        let new_user = {
+                                            _id: user._id,
+                                            email: user.email,
+                                            cell_phone: user.cell_phone,
+                                            surname: user.surname,
+                                            name: user.name,
+                                            attachments: user.attachments
+                                        };
+                                        res.ok({user: new_user, token: token, response: ''});
+                                    }
+                                    else {
+                                        res.ok({user: null, token: null, response: 'User not enabled'});
+                                    }
+                                }
+                                else {
+                                    res.ok({user: null, token: null, response: 'User not found'});
+                                }
+                            })(req, res);
                         });
+                        //TODO REFACTOR SINGLE LOGIN PASSPORT FUNCTION ON AUTH.ROUTE AND HERE
+                       /* let response = authHelper.login(req,res);
+                        console.log("response /registerss");
+                        console.log(response);
+                        if (response.user){
+                            res.ok({user: response.user, token: response.token});
+                        }else{
+                            res.ok({},response.response);
+                        }
+                        return;*/
                     }
-                    res.ok({}, 'user registered successfully.');
                 });
         })
     ;

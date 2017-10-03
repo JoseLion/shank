@@ -1,23 +1,16 @@
-'use strict';
+/**
+ * Created by MnMistake on 10/3/2017.
+ */
 
 let express = require('express');
-let router = express.Router();
-
 let passport = require('passport');
 let mongoose = require('mongoose');
 let User = mongoose.model('User');
-let authHelper = require('../helpers/auth.helper');
 
-module.exports = function () {
-
-    router
-        .post('/login', function (req, res) {
-           /* let response = authHelper.login;
-            if (response.user){
-                res.ok({user: response.user, token: response.token});
-            }else{
-                res.ok({},response.response);
-            }*/
+module.exports ={
+       login:  function (req, res) {
+           console.log("req, resreq, res")
+           console.log(req, res)
             passport.authenticate('local', function (err, user, info) {
                 if (err) {
                     res.ok({internal_error: true}, 'Al iniciar sesión.');
@@ -46,7 +39,5 @@ module.exports = function () {
                     return ({user: null, token: null, response: 'User not found'});
                 }
             })(req, res);
-        });
-
-    return router;
+        }
 };
