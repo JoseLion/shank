@@ -28,7 +28,6 @@ export default class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this._onLoginPressed = this._onLoginPressed.bind(this);
-        this._loginWithFacebookAsync = this._loginWithFacebookAsync.bind(this);
 
         this.state = {
             userName: '',
@@ -71,20 +70,12 @@ export default class LoginScreen extends Component {
                     <Text style={LocalStyles.buttonText}>Log in</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight
-                    onPress={this._loginWithFacebookAsync}
-                    style={MainStyles.fbButton}>
-                    <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
-                </TouchableHighlight>
-
                 <Text style={[MainStyles.smallShankFont, MainStyles.inputTopSeparation]}>
                     Forgot my password
                 </Text>
             </View>
         );
     }
-
-
 
     _onLoginPressed() {
         //dismissKeyboard();/
@@ -123,56 +114,4 @@ export default class LoginScreen extends Component {
                 }, Constants.TIME_OUT_NOTIFIER);
             });
     }
-
-    _loginWithFacebookAsync = async () => {
-        try {
-            this.setLoading(true);
-            const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-                Constants.APP_FB_ID, // Replace with your own app id in standalone app
-                { permissions: ['public_profile', 'email', 'user_friends'] }
-            );
-
-            switch (type) {
-                case 'success': {
-                    // Get the user's name using Facebook's Graph API
-                    const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email&access_token=${token}`);
-                    const profile = await response.json();
-                    let data = {
-                        email: profile.email,
-                        password: profile.id,
-                        cell_phone: '',
-                        surname: profile.name,
-                        name: profile.name
-                    };
-                    console.log("_loginWithFacebookAsync datadatadata***********")
-                    console.log(data)
-                    this._onLoginPressedAsync(data).then(() => {
-                        this.setLoading(false);
-                        this.props.navigation.dispatch({type: 'Main'});
-                    });
-                    break;
-                }
-                case 'cancel': {
-                    Alert.alert(
-                        'Cancelled!',
-                        'FB Login was cancelled!',
-                    );
-                    break;
-                }
-                default: {
-                    Alert.alert(
-                        'Oops!',
-                        'Login failed!',
-                    );
-                }
-            }
-            this.setLoading(false);
-        } catch (e) {
-            Alert.alert(
-                'Oops!',
-                'Login failed!',
-            );
-            this.setLoading(false);
-        }
-    };
 }

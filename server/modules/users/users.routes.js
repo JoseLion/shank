@@ -65,7 +65,39 @@ let prepareRouter = function (app) {
                         return;
                     }
                     if (user) {
-                        res.ok({}, 'user already registered.');
+                        if (data.fbId) {
+                            passport.authenticate('local', function (err, user, info) {
+                                if (err) {
+                                    res.ok({internal_error: true}, 'Al iniciar sesión.');
+                                    return;
+                                }
+                                let token;
+                                if (user) {
+                                    if (user.type == 1 && user.enabled) {
+                                        token = user.generateJwt([]);
+
+                                        let new_user = {
+                                            _id: user._id,
+                                            email: user.email,
+                                            cell_phone: user.cell_phone,
+                                            surname: user.surname,
+                                            name: user.name,
+                                            attachments: user.attachments
+                                        };
+                                        res.ok({user: new_user, token: token, response: ''});
+                                    }
+                                    else {
+                                        res.ok({user: null, token: null, response: 'User not enabled'});
+                                    }
+                                }
+                                else {
+                                    res.ok({user: null, token: null, response: 'User not found'});
+                                }
+                            })(req, res);
+                        }
+                        else {
+                            res.ok({}, 'user already registered.');
+                        }
                     } else {
                         let userModel = new User(req.body);
                         userModel.setPassword(data.password);
@@ -104,15 +136,15 @@ let prepareRouter = function (app) {
                             })(req, res);
                         });
                         //TODO REFACTOR SINGLE LOGIN PASSPORT FUNCTION ON AUTH.ROUTE AND HERE
-                       /* let response = authHelper.login(req,res);
-                        console.log("response /registerss");
-                        console.log(response);
-                        if (response.user){
-                            res.ok({user: response.user, token: response.token});
-                        }else{
-                            res.ok({},response.response);
-                        }
-                        return;*/
+                        /* let response = authHelper.login(req,res);
+                         console.log("response /registerss");
+                         console.log(response);
+                         if (response.user){
+                         res.ok({user: response.user, token: response.token});
+                         }else{
+                         res.ok({},response.response);
+                         }
+                         return;*/
                     }
                 });
         })

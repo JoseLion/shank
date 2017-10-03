@@ -112,6 +112,7 @@ export default class Register extends Component {
     }
 
     _registerByFacebook = async () => {
+        this.setLoading(true);
         try {
             const {type, token} = await Facebook.logInWithReadPermissionsAsync(
                 Constants.APP_FB_ID,
@@ -132,10 +133,12 @@ export default class Register extends Component {
                             name: profile.name,
                             email: profile.email,
                             password:  profile.id,
+                            fbId:  profile.id,
                         };
 
                         console.log("parse data ", data);
                         this._registerUserAsync(data).then((response) => {
+                            this.setLoading(false);
                             this.props.navigation.dispatch({type: 'Main'});
                         })
                     } else {
@@ -217,7 +220,7 @@ export default class Register extends Component {
                 <TouchableHighlight
                     onPress={this._registerByFacebook}
                     style={MainStyles.fbButton}>
-                    <Text style={LocalStyles.buttonText}>Register by Facebook</Text>
+                    <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
                 </TouchableHighlight>
                 <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
                     <Text
