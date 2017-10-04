@@ -46,7 +46,7 @@ let prepareRouter = function (app) {
         .get('/allUsers', function (req, res) {
             User
                 .find()
-                .select('_id name surname email hash salt enabled type')
+                .select('_id name surname email hash salt enabled type bettingGroups')
                 .exec(function (err, user) {
                     if (err) {
                         res.ok({}, 'Al seleccionar usuario.');

@@ -1,16 +1,27 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, Image, FlatList, ActivityIndicator, TouchableHighlight, AsyncStorage} from 'react-native';
+import {
+    Button,
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    FlatList,
+    ActivityIndicator,
+    TouchableHighlight,
+    AsyncStorage
+} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
-import { List, ListItem, SearchBar } from "react-native-elements";
+import {List, ListItem, SearchBar} from "react-native-elements";
 import * as Constants from '../../../core/Constans';
 
 let Icon = require('react-native-vector-icons/Ionicons');
 
 import LoginStatusMessage from './LoginStatusMessage';
 import AuthButton from './AuthButton';
-
+import BaseModel from '../../../core/BaseModel';
+import Notifier from '../../../core/Notifier';
 
 export default class MainScreen extends Component {
 
@@ -28,7 +39,7 @@ export default class MainScreen extends Component {
             seed: 1,
             error: null,
             refreshing: false,
-            auth:null
+            auth: null
         };
     }
 
@@ -38,18 +49,21 @@ export default class MainScreen extends Component {
                 auth: authToken
             })
         });
-        this.makeRemoteRequest();
+        this._myGroupsAsyncRemoteRequest().then((group) => {
+            console.log('group')
+            console.log(group)
+        });
     }
 
     static navigationOptions = ({navigation}) => ({
         title: 'BETTING GROUPS',
-        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E',
 
         },
         headerLeft: null,
-     /*   headerRight: <Button title='+' onPress={()=> console.log("shit mate")}/>,*/
+        /*   headerRight: <Button title='+' onPress={()=> console.log("shit mate")}/>,*/
         showIcon: true,
         tabBarIcon: () => {
             return (
@@ -60,6 +74,27 @@ export default class MainScreen extends Component {
             )
         },
     });
+
+    async _myGroupsAsyncRemoteRequest(data) {
+        const {page, seed} = this.state;
+        this.setState({loading: true});
+        await BaseModel.get('myGroups', data).then((group) => {
+            console.log("groupgroupgroup")
+            console.log(group)
+            this.setState({
+                data: page === 1 ? group.results : [...this.state.data, ...group.results],
+                error: group.error || null,
+                loading: false,
+                refreshing: false
+            });
+        })
+            .catch((error) => {
+                this.setLoading(false);
+                setTimeout(() => {
+                    Notifier.message({title: 'ERROR', message: error});
+                }, Constants.TIME_OUT_NOTIFIER);
+            });
+    }
 
     makeRemoteRequest = () => {
         const {page, seed} = this.state;
@@ -110,9 +145,10 @@ export default class MainScreen extends Component {
             <View
                 style={{
                     height: 1,
-                    width: "86%",
+                    width: "76%",
                     backgroundColor: "#CED0CE",
-                    marginLeft: "14%"
+                    marginBottom: "5%",
+                    marginHorizontal: '10%'
                 }}
             />
         );
@@ -130,7 +166,7 @@ export default class MainScreen extends Component {
                 style={{
                     paddingVertical: 20,
                     borderTopWidth: 1,
-                    borderColor: "#CED0CE"
+                    borderColor: "#CED0CE",
                 }}
             >
                 <ActivityIndicator animating size="large"/>
@@ -143,7 +179,7 @@ export default class MainScreen extends Component {
             let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
             if (!token) {
                 this.props.navigation.dispatch({type: 'Splash'})
-            }else{
+            } else {
                 this.props.navigation.dispatch({type: 'Main'})
             }
             console.log('Token removed from.');
@@ -154,11 +190,11 @@ export default class MainScreen extends Component {
 
     render() {
         let navigation = this.props.navigation;
-        if (this.state.auth){
+        if (this.state.auth) {
             return (
                 <View>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
-                                        onPress={()=> navigation.dispatch({type: 'Group'})}>
+                                        onPress={() => navigation.dispatch({type: 'Group'})}>
                         <Text>+</Text>
                     </TouchableHighlight>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
@@ -171,13 +207,13 @@ export default class MainScreen extends Component {
                             renderItem={({item}) => (
                                 <ListItem
                                     roundAvatar
-                                    title={`${item.name.first} ${item.name.last}`}
-                                    subtitle={item.email}
-                                    avatar={{uri: item.picture.thumbnail}}
-                                    containerStyle={{borderBottomWidth: 0}}
+                                    title={`${item.name}`}
+                                    subtitle={item.tournament}
+                                    avatar={{uri: ''}}
+                                    containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
                                 />
                             )}
-                            keyExtractor={item => item.email}
+                            keyExtractor={item => item.tournament}
                             ItemSeparatorComponent={this.renderSeparator}
                             ListHeaderComponent={this.renderHeader}
                             ListFooterComponent={this.renderFooter}
@@ -188,11 +224,11 @@ export default class MainScreen extends Component {
                     </List>
                 </View>
             )
-        }else{
-            return(
+        } else {
+            return (
                 <View style={MainStyles.mainContainer}>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
-                                        onPress={()=> navigation.dispatch({type: 'Register'})}>
+                                        onPress={() => navigation.dispatch({type: 'Register'})}>
                         <Text>+</Text>
                     </TouchableHighlight>
                     <Text style={MainStyles.groupsNone}>

@@ -4,6 +4,7 @@
 
 let mongoose = require('mongoose');
 let BettingGroup = mongoose.model('BettingGroup');
+let User = mongoose.model('User');
 
 let multer = require('multer');
 let fs = require('fs-extra');
@@ -33,17 +34,24 @@ let prepareRouter = function (app) {
                 res.ok({}, 'Usuario no autorizado.');
                 return;
             }
-            res.ok({});
-            /*  User
-             .findById(req.payload._id)
-             .select('_id name surname email')
-             .exec(function (err, user) {
-             if (err) {
-             res.ok({}, 'Al seleccionar usuario.');
-             return;
-             }
-             res.ok(user);
-             });*/
+            User
+                .findById(req.payload._id)
+                .select('_id bettingGroups')
+                .exec(function (err, user) {
+                    if (err) {
+                        res.ok({}, err);
+                        return;
+                    }
+                    BettingGroup.find({'_id': {$in: user.bettingGroups}}, function (err, groupArray) {
+                        if (err) {
+                            console.log(err);
+                            res.ok({},'error finding groups, try later');
+                        } else {
+                            console.log(groupArray);
+                            res.ok({results:groupArray,err:null});
+                        }
+                    });
+                });
         })
         .get('/allGroups', function (req, res) {
             BettingGroup
@@ -78,7 +86,17 @@ let prepareRouter = function (app) {
                     res.ok({err}, 'GROUP ERROR ONM SAVE.');
                     return;
                 }
-                res.ok(groupModel._id, 'group registered successfully.');
+                let updateUserGroup = {
+                    $push: { bettingGroups: groupModel._id }
+                };
+                User.findByIdAndUpdate(req.payload._id, updateUserGroup, function (err, data) {
+                    if (err) {
+                        res.ok({}, 'Data not updated');
+                    }
+                    else {
+                        res.ok(data);
+                    }
+                });
             });
         });
     return router;

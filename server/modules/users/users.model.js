@@ -21,6 +21,7 @@ let UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Profile'
     },
+    bettingGroups: [{type: String}],
     gender: String,
     birthDate: Date,
     city: String,
