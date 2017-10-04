@@ -12,9 +12,9 @@ let passport = require('passport');
 let customResponses = require('express-custom-response');
 
 
-//const databaseUri = 'mongodb://192.168.99.100:27017/shank'; //docker macOs enviroment
+const databaseUri = 'mongodb://192.168.99.100:27017/shank'; //docker macOs enviroment
 //const databaseUri = 'mongodb://db/shank';
-const databaseUri = 'mongodb://docker.com:27017/shank';
+//const databaseUri = 'mongodb://docker.com:27017/shank';
 
 
 mongoose.connect(databaseUri, {useMongoClient: true})
