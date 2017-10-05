@@ -182,6 +182,7 @@ export default class MainScreen extends Component {
                                     subtitle={item.tournament}
                                     avatar={{uri: item.photo.path}}
                                     containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
+                                    onPress={() => navigation.dispatch({type: 'SingleGroup'})}
                                 />
                             )}
                             keyExtractor={item => item.tournament}

@@ -11,6 +11,7 @@ import Slider from '../screens/Slider/Slider';
 import Tournament from '../screens/Tournament/Tournament';
 import Group from '../screens/Group/Group';
 import Register from '../screens/Register/Register';
+import SingleGroup from '../screens/Group/SingleGroup';
 
 let Icon = require('react-native-vector-icons/Ionicons');
 
@@ -43,6 +44,7 @@ export const AppNavigator = StackNavigator({
     Slider: {screen: Slider},
     Group: {screen: Group},
     Register: {screen: Register},
+    SingleGroup: {screen: SingleGroup},
 });
 
 const AppWithNavigationState = ({dispatch, nav, auth}) => (
