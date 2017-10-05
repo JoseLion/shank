@@ -118,6 +118,46 @@ let BaseModel = {
             return json.response;
         }
     },
+//TODO: REFACTOR MULTIPART
+    async multiPartCreate(resource, params) {
+
+        let token = await AsyncStorage.getItem(AuthToken);
+
+        if (!token) {
+            throw notLogged;
+        }
+
+        const data = JSON.stringify(params);
+
+        let options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: data
+        }
+
+        const response = await fetch(ApiHost + resource, options).catch(
+            error => {
+                throw requestServerError;
+            }
+        );
+
+        const json = await response.json().catch(
+            error => {
+                throw parsingResponseError;
+            }
+        );
+
+        if (json.error !== '') {
+            throw json.error;
+        }
+        else {
+            return json.response;
+        }
+    },
 
     async update(resource, params) {
 

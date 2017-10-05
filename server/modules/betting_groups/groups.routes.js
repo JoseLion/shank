@@ -7,12 +7,14 @@ let BettingGroup = mongoose.model('BettingGroup');
 let User = mongoose.model('User');
 
 let multer = require('multer');
-let fs = require('fs-extra');
+let ds1 = require('fs-extra');
+let fs = require('fs');
+let formidable = require('formidable');
 
 let bettingGroupPhoto = multer.diskStorage({
     destination: function (req, file, cb) {
         let path = `../../uploads/betting_groups/${req.body.user}`;
-        fs.mkdirsSync(path);
+        ds1.mkdirsSync(path);
         cb(null, path);
     },
     filename: function (req, file, cb) {
@@ -81,6 +83,23 @@ let prepareRouter = function (app) {
              res.end('GroupFile is uploaded')
              });
              */
+
+
+            var form = new formidable.IncomingForm();
+            form.parse(req, function (err, fields, files) {
+                console.log(err)
+                if (err) res.ok({}, 'error!');
+                let oldpath = files.photo.path;
+                let newpath = `../../public/uploads/betting_groups/${files.photo.name}`;
+                fs.rename(oldpath, newpath, function (err) {
+                    console.log(err)
+                    if (err) {
+                        res.ok({}, 'error!');
+                        return;
+                    }
+                });
+            });
+
             groupModel.save(function (err) {
                 if (err) {
                     res.ok({err}, 'GROUP ERROR ONM SAVE.');

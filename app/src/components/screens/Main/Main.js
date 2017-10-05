@@ -96,26 +96,6 @@ export default class MainScreen extends Component {
             });
     }
 
-    makeRemoteRequest = () => {
-        const {page, seed} = this.state;
-        const url = `https://randomuser.me/api/?seed=${seed}&page=${page}&results=10`;
-        this.setState({loading: true});
-
-        fetch(url)
-            .then(res => res.json())
-            .then(res => {
-                this.setState({
-                    data: page === 1 ? res.results : [...this.state.data, ...res.results],
-                    error: res.error || null,
-                    loading: false,
-                    refreshing: false
-                });
-            })
-            .catch(error => {
-                this.setState({error, loading: false});
-            });
-    };
-
     handleRefresh = () => {
         this.setState(
             {
@@ -124,18 +104,9 @@ export default class MainScreen extends Component {
                 refreshing: true
             },
             () => {
-                this.makeRemoteRequest();
-            }
-        );
-    };
-
-    handleLoadMore = () => {
-        this.setState(
-            {
-                page: this.state.page + 1
-            },
-            () => {
-                this.makeRemoteRequest();
+                this._myGroupsAsyncRemoteRequest().then((res) => {
+                    console.log(res)
+                });
             }
         );
     };
@@ -209,7 +180,7 @@ export default class MainScreen extends Component {
                                     roundAvatar
                                     title={`${item.name}`}
                                     subtitle={item.tournament}
-                                    avatar={{uri: ''}}
+                                    avatar={{uri: item.photo.path}}
                                     containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
                                 />
                             )}

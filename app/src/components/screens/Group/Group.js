@@ -267,18 +267,16 @@ export default class Group extends Component {
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
 
-        // Upload the image using the fetch and FormData APIs
-        let formData = new FormData();
-        // Assume "photo" is the name of the form field the server expects
-        formData.append('photo', {path: localUri, name: filename, type});
-        console.log("******************formData*******************");
-        console.log(formData);
-
         let data = {
             name: this.state.name,
             tournament: this.state.selectTournament,
-            prize: this.state.prize
+            prize: this.state.prize,
+            photo: {path: localUri, name: filename, type: type},
+            users: []
         };
+
+        console.log('datadatadatadata')
+        console.log(data)
 
         BaseModel.create('createGroup', data).then((response) => {
             this.setLoading(false);
