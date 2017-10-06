@@ -71,26 +71,21 @@ export default class TournamentsScreen extends Component {
         // let httpsUrl = data.urlToImage.replace("http", "https");
         let httpsUrl = data.urlToImage;
         return (
-            <Card>
-                <CardItem>
-                    <Left style={{flex: 0.8}}>
-                        <Icon name="ios-book"/>
-                        <Body>
-                        <Text style={{fontWeight: 'bold', fontSize: 17}}>{data.title}</Text>
-                        <Text note style={{fontSize: 15}}>{data.author}</Text>
-                        </Body>
-                    </Left>
-                    {/*<Right style={{flex: 0.2}}>*/}
-                    {/*<Icon name="ios-heart"/>*/}
-                    {/*</Right>*/}
-                </CardItem>
-                <CardItem cardBody>
-                    <Image source={{uri: httpsUrl}} style={{height: 200, width: viewportWidth, flex: 1}}/>
-                </CardItem>
-                <CardItem content>
-                    <Text>{data.description}</Text>
-                </CardItem>
-            </Card>
+            <View style={LocalStyles.container}>
+                <Card style={LocalStyles.card}>
+                    <CardItem cardBody>
+                        <Image source={{uri: httpsUrl}} style={LocalStyles.gridItemImage}>
+                            <View style={LocalStyles.fixedFooter}>
+                            <Text style={LocalStyles.headline}>{data.title}</Text>
+                            <Text note style={LocalStyles.headline}>{data.author}</Text>
+                            </View>
+                        </Image>
+                    </CardItem>
+                    <CardItem style={LocalStyles.gridItemText}>
+                        <Text style={MainStyles.mediumShankGreenFont}> {data.description}</Text>
+                    </CardItem>
+                </Card>
+            </View>
         )
     }
 
@@ -99,6 +94,7 @@ export default class TournamentsScreen extends Component {
             this.state.isLoading ? <View><ProgressBar/></View> :
                 <View>
                     <ListView
+                        contentContainerStyle={LocalStyles.listView}
                         dataSource={this.state.data}
                         initialListSize={20}
                         stickyHeaderIndices={[]}

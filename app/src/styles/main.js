@@ -66,7 +66,10 @@ const MainStyles = StyleSheet.create({
         fontSize: Style.FONT_13,
         color: '#000',
     },
-
+    mediumShankGreenFont: {
+        fontSize: Style.FONT_14,
+        color: '#556E3E',
+    },
     shankGray: {
         color: '#3C4635'
     },
@@ -75,27 +78,27 @@ const MainStyles = StyleSheet.create({
     },
     greenMedShankFont: {
         fontSize: Style.FONT_16,
-        color: '#556E3E'
+        color: '#556E3E',
     },
-    centerText : {
+    centerText: {
         textAlign: 'center',
     },
-    leftText : {
+    leftText: {
         textAlign: 'left',
     },
 
     goldenShankButton: {
         alignItems: 'center',
-        paddingBottom:Style.SMALL_PADDING,
-        paddingTop:Style.SMALL_PADDING,
-        width:'70%',
+        paddingBottom: Style.SMALL_PADDING,
+        paddingTop: Style.SMALL_PADDING,
+        width: '70%',
         marginTop: Style.PX_15,
         backgroundColor: '#A39534',
-        borderRadius:10
+        borderRadius: 10
     },
     loginInput: {
         height: 50,
-        width:'80%',
+        width: '80%',
         marginTop: Style.PX_15,
         padding: 4,
         fontSize: 18,
@@ -104,10 +107,10 @@ const MainStyles = StyleSheet.create({
         borderRadius: 0,
         color: '#333'
     },
-    fbButton :{
-        width:'70%',
-        paddingBottom:Style.SMALL_PADDING,
-        paddingTop:Style.SMALL_PADDING,
+    fbButton: {
+        width: '70%',
+        paddingBottom: Style.SMALL_PADDING,
+        paddingTop: Style.SMALL_PADDING,
         backgroundColor: '#3B5998',
         marginTop: 15,
         alignItems: 'center',
@@ -120,7 +123,7 @@ const MainStyles = StyleSheet.create({
         marginBottom: 7,
         borderRadius: 10,
     },
-    inputTopSeparation :{
+    inputTopSeparation: {
         marginTop: Style.PX_13,
     }
 });
