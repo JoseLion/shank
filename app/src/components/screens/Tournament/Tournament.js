@@ -4,7 +4,6 @@ import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import * as Constants from '../../../core/Constans';
 import ProgressBar from '../../../global/ProgressBar';
-import SGListView from 'react-native-sglistview';
 import {Container, Content, Card, CardItem, Left, Right, Body, Thumbnail, Spinner, Icon, CardImage} from 'native-base';
 
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
@@ -99,7 +98,7 @@ export default class TournamentsScreen extends Component {
         return (
             this.state.isLoading ? <View><ProgressBar/></View> :
                 <View>
-                    <SGListView
+                    <ListView
                         dataSource={this.state.data}
                         initialListSize={20}
                         stickyHeaderIndices={[]}

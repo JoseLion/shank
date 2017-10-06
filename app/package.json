@@ -26,7 +26,6 @@
     "react-native": "^0.48.4",
     "react-native-elements": "^0.17.0",
     "react-native-loading-spinner-overlay": "^0.5.2",
-    "react-native-sglistview": "^0.4.3",
     "react-native-swiper": "^1.5.12",
     "react-native-vector-icons": "^4.4.0",
     "react-navigation": "^1.0.0-beta.11",
