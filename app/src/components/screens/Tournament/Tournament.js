@@ -69,7 +69,8 @@ export default class TournamentsScreen extends Component {
 
 
     renderCards(data) {
-        let httpsUrl = data.urlToImage.replace("http", "https");
+        // let httpsUrl = data.urlToImage.replace("http", "https");
+        let httpsUrl = data.urlToImage;
         return (
             <Card>
                 <CardItem>
