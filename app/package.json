@@ -20,6 +20,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo/vector-icons": "^5.2.0",
     "expo": "^21.0.2",
     "native-base": "^2.3.2",
     "react": "16.0.0-alpha.12",
