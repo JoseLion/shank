@@ -79,6 +79,71 @@ const LocalStyles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 16
+    },
+    absoluteFill :{
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    singleGroupTitle :{
+        fontSize: Style.FONT_14,
+        color: '#fff',
+    },
+    singleGroupTitleBold :{
+        fontSize: Style.FONT_18,
+        color: '#fff',
+        fontWeight: 'bold'
+    },
+    singleGroupBoxes: {
+        width:'100%',
+        height: '13%',
+        backgroundColor: 'white',
+        borderBottomColor: '#2F1C1C',
+        borderBottomWidth: 0.7,
+        paddingHorizontal: '8%',
+        paddingVertical: '3%',
+    },
+    singleGroupSliderBorder: {
+        borderTopColor: '#3c3c3c',
+        borderTopWidth: 1.7,
+    },
+    singleGroupSliderHighlightedBorder: {
+        borderTopColor: '#556E3E',
+        borderTopWidth: 1.9,
+    },
+    innerScoreGroupBox:{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    singleGroupPrize: {
+        fontSize: Style.FONT_15,
+        fontWeight: 'bold'
+    },
+    singleGroupPrizeDescription: {
+        fontSize: Style.FONT_14,
+    },
+    singleGroupScoreTab: {
+        fontSize: Style.FONT_15,
+        fontWeight: 'bold'
+    },
+    singleGroupScoreTabDescription: {
+        fontSize: Style.FONT_13,
+        color: '#3c3c3c',
+    },
+    singleGroupSliderText: {
+        fontSize: Style.FONT_14
+    },
+    linearGradient: {
+        height: '2%',
+        width:'100%'
+    },
+    slideBorderStyle: {
+        backgroundColor: 'white',
     }
 });
 

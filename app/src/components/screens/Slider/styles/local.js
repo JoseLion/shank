@@ -52,7 +52,6 @@ const LocalStyles = StyleSheet.create({
         fontSize: Style.FONT_14,
         color: '#556E3E',
         textAlign: 'left',
-
     },
     shankLogoSlideOne: {
         width: Style.iconXXXLG,

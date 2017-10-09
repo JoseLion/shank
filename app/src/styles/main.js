@@ -12,6 +12,11 @@ const MainStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
+    stretchContainer :{
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'stretch',
+    },
     mainContainer: {
         flex: 1,
         alignItems: 'center',
@@ -44,6 +49,10 @@ const MainStyles = StyleSheet.create({
     },
     shankGreen: {
         color: '#556E3E',
+    },
+    centeredObject: {
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     shankTitle: {
         fontSize: Style.FONT_50,
@@ -125,6 +134,16 @@ const MainStyles = StyleSheet.create({
     },
     inputTopSeparation: {
         marginTop: Style.PX_13,
+    },
+    imageOpacity: {
+        backgroundColor: 'rgba(0,0,0,.4)'
+    },
+    listRenderSeparator : {
+        height: 1,
+        width: "76%",
+        backgroundColor: "#CED0CE",
+        marginBottom: "5%",
+        marginHorizontal: '10%'
     }
 });
 

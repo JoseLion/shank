@@ -57,7 +57,6 @@ export default class SplashScreen extends Component {
                 <Image source={imgSource}
                        style={MainStyles.iconXLG}/>
             </View>
-
         );
     }
 }
