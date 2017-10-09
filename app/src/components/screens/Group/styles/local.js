@@ -144,7 +144,10 @@ const LocalStyles = StyleSheet.create({
     },
     slideBorderStyle: {
         backgroundColor: 'white',
-    }
+        height:'100%'
+    },
+    listContainer: {borderTopWidth: 0, borderBottomWidth: 0, paddingHorizontal:'8%'}
+
 });
 
 export default LocalStyles;

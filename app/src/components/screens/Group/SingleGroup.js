@@ -133,7 +133,7 @@ export default class SingleGroup extends Component {
                         }}
                     />
                 </View>*/}
-                <Swiper>
+                <Swiper showsHorizontalScrollIndicator={true} showsVerticalScrollIndicator={true} showsButtons={false} showsPagination={false}>
                     <View style={LocalStyles.slideBorderStyle}>
                         <LinearGradient
                             start={{ x: 0, y: 1 }}
@@ -142,7 +142,7 @@ export default class SingleGroup extends Component {
                             locations={[0, 0.5, 1]}
                             style={LocalStyles.linearGradient}
                         />
-                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                        <List containerStyle={LocalStyles.listContainer}>
                             <FlatList
                                 data={[{
                                     name: 'raulss',
@@ -178,7 +178,7 @@ export default class SingleGroup extends Component {
                             />
                         </List>
                     </View>
-                    <View style={LocalStyles.slideBorderStyle}>
+                    <View style={[LocalStyles.slideBorderStyle]}>
                         <LinearGradient
                             start={{ x: 0, y: 1 }}
                             end={{ x: 1, y: 1 }}
@@ -186,7 +186,7 @@ export default class SingleGroup extends Component {
                             locations={[0, 0.5, 1]}
                             style={LocalStyles.linearGradient}
                         />
-                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                        <List containerStyle={LocalStyles.listContainer}>
                             <FlatList
                                 data={[{
                                     name: 'raul',
@@ -230,6 +230,13 @@ export default class SingleGroup extends Component {
                                 ItemSeparatorComponent={this.renderSeparator}
                             />
                         </List>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',}}>
+                            <TouchableOpacity
+                                onPress={() => this._handleNewRegistry()}
+                                style={[{position:'absolute',bottom:'4%'},MainStyles.goldenShankButton]}>
+                                <Text style={LocalStyles.buttonText}>2 movements ($1.99)</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     <View style={LocalStyles.slideBorderStyle}>
                         <LinearGradient
@@ -239,7 +246,7 @@ export default class SingleGroup extends Component {
                             locations={[0, 0.5, 1]}
                             style={LocalStyles.linearGradient}
                         />
-                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                        <List containerStyle={LocalStyles.listContainer}>
                             <FlatList
                                 data={[{
                                     name: 'raul',
