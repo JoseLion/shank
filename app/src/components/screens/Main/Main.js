@@ -16,8 +16,6 @@ import LocalStyles from './styles/local';
 import {List, ListItem, SearchBar} from "react-native-elements";
 import * as Constants from '../../../core/Constans';
 
-let Icon = require('react-native-vector-icons/Ionicons');
-
 import LoginStatusMessage from './LoginStatusMessage';
 import AuthButton from './AuthButton';
 import BaseModel from '../../../core/BaseModel';
@@ -181,6 +179,7 @@ export default class MainScreen extends Component {
                                     title={`${item.name}`}
                                     subtitle={item.tournament}
                                     avatar={{uri: item.photo.path}}
+                                    underlayColor={"#b3b3b3"}
                                     containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
                                     onPress={() => navigation.dispatch({type: 'SingleGroup',params: {groupId:item._id}})}
                                 />
@@ -206,7 +205,7 @@ export default class MainScreen extends Component {
                     <Text style={MainStyles.groupsNone}>
                         Tap on the "+" button to create {"\n"} or join a betting group
                     </Text>
-                    <Text></Text>
+                    <Text/>
                 </View>
             )
         }

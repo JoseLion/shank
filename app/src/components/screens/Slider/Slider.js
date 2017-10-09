@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, Text, View, Image, Button, TouchableHighlight} from 'react-native';
+import {StyleSheet, Text, View, Image, Button, TouchableHighlight, TouchableOpacity} from 'react-native';
 import MainStyles from '../../../styles/main';
 import Swiper from 'react-native-swiper';
 import LocalStyles from './styles/local'
@@ -74,10 +74,10 @@ export default class SliderScreen extends Component {
                                source={logoRegular}>
                         </Image>
                     </Image>
-                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor='#cbbeb5'
+                    <TouchableOpacity style={LocalStyles.buttonStart}
                                         onPress={() => this.props.navigation.dispatch({type: 'Main'})}>
                         <Text style={LocalStyles.text}>Let's get start</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
             </Swiper>
         );

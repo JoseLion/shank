@@ -13,8 +13,6 @@ import Group from '../screens/Group/Group';
 import Register from '../screens/Register/Register';
 import SingleGroup from '../screens/Group/SingleGroup';
 
-let Icon = require('react-native-vector-icons/Ionicons');
-
 export const TabNav = TabNavigator({
         Groups: {
             screen: Main,

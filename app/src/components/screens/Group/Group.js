@@ -22,6 +22,7 @@ import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 import Notifier from '../../../core/Notifier';
 import BaseModel from '../../../core/BaseModel';
+import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
@@ -59,13 +60,18 @@ export default class Group extends Component {
             page: 1,
             seed: 1,
             error: null,
-            refreshing: false
+            refreshing: false,
+            tournamentData: [],
         };
 
     }
 
     componentDidMount() {
-        this.makeRemoteRequest();
+        //this.makeRemoteRequest();
+        this.setLoading(true);
+        this.initialRequest('pga', '2018').then((data) => {
+            console.log(data)
+        });
     }
 
     setLoading(loading) {
@@ -130,8 +136,8 @@ export default class Group extends Component {
     };
 
     /*renderHeader = () => {
-        return <SearchBar placeholder="Type Here..." lightTheme round/>;
-    };*/
+     return <SearchBar placeholder="Type Here..." lightTheme round/>;
+     };*/
 
     renderFooter = () => {
         if (!this.state.loading) return null;
@@ -153,6 +159,11 @@ export default class Group extends Component {
         let {groupPhoto} = this.state;
         let navigation = this.props.navigation;
         let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
+
+        let tournamentItems = this.state.tournamentData.map( (s, i) => {
+            return <Picker.Item key={i} value={s.id} label={s.name} />
+        });
+
         return (
             <View style={MainStyles.container}>
                 <Spinner visible={this.state.loading}/>
@@ -180,14 +191,10 @@ export default class Group extends Component {
                 />
                 <View style={LocalStyles.tournamentPicker}>
                     <Picker
-                        selectedValue={this.state.language}
+                        selectedValue={this.state.selectTournament}
                         onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
                         <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
-                        <Picker.Item label="Presidents Cup" value="15151515zxcasd515"/>
-                        <Picker.Item label="Safeway Open" value="15415a1s5d1a5sd"/>
-                        <Picker.Item label="CIMB Classic" value="15415a1s5d1a5sd"/>
-                        <Picker.Item label="PGA Tour" value="asdasdzxczxc12515"/>
-                        <Picker.Item label="US Opens" value="asdasd15151656123123"/>
+                        {tournamentItems}
                     </Picker>
                 </View>
                 <TextInput
@@ -202,26 +209,26 @@ export default class Group extends Component {
                         PARTICIPANTS
                     </Text>
                 </View>
-                    {/*<List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, width: '100%'}}>
-                        <FlatList
-                            data={this.state.data}
-                            renderItem={({item}) => (
-                                <ListItem
-                                    roundAvatar
-                                    title={`${item.name.first} ${item.name.last}`}
-                                    subtitle={item.email}
-                                    avatar={{uri: item.picture.thumbnail}}
-                                    containerStyle={{borderBottomWidth: 0}}
-                                />
-                            )}
-                            keyExtractor={item => item.email}
-                            ItemSeparatorComponent={this.renderSeparator}
-                            ListFooterComponent={this.renderFooter}
-                            onRefresh={this.handleRefresh}
-                            refreshing={this.state.refreshing}
-                            onEndReachedThreshold={1}
-                        />
-                    </List>*/}
+                {/*<List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, width: '100%'}}>
+                 <FlatList
+                 data={this.state.data}
+                 renderItem={({item}) => (
+                 <ListItem
+                 roundAvatar
+                 title={`${item.name.first} ${item.name.last}`}
+                 subtitle={item.email}
+                 avatar={{uri: item.picture.thumbnail}}
+                 containerStyle={{borderBottomWidth: 0}}
+                 />
+                 )}
+                 keyExtractor={item => item.email}
+                 ItemSeparatorComponent={this.renderSeparator}
+                 ListFooterComponent={this.renderFooter}
+                 onRefresh={this.handleRefresh}
+                 refreshing={this.state.refreshing}
+                 onEndReachedThreshold={1}
+                 />
+                 </List>*/}
                 <View style={LocalStyles.addNewParticipant}>
                     <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
                         Add new participant
@@ -235,6 +242,23 @@ export default class Group extends Component {
             </View>
         );
     }
+
+    //GET TOURNAMENTS AND FRIENDS
+
+    initialRequest = async (tour, year) => {
+        let tournamentsApi = `http://api.sportradar.us/golf-t2/schedule/${tour}/${year}/tournaments/schedule.json?api_key=${Constants.API_KEY_SPORT_RADAR}`;
+        console.log("tournamentsApitournamentsApi")
+        console.log(tournamentsApi)
+        try {
+            const response = await fetch(tournamentsApi)
+            const JsonResponse = await response.json()
+            this.setState({tournamentData: JsonResponse.tournaments});
+        } catch (e) {
+            console.log(e)
+        }
+        this.setLoading(false);
+       // this.setState({tournamentData: response});
+    };
 
     async _handleNewGroupRegistry() {
 
@@ -291,6 +315,7 @@ export default class Group extends Component {
                 }, Constants.TIME_OUT_NOTIFIER);
             });
     }
+
     _pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
