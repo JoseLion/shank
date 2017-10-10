@@ -24,7 +24,9 @@ const ImageHeader = navigation => (
             <Text style={LocalStyles.singleGroupTitle}>{navigation.state.params.data.currentGroup.name}</Text>
             <Text style={LocalStyles.singleGroupTitleBold}>{navigation.state.params.data.tName}</Text>
         </Image>
-        <Header style={{backgroundColor: 'transparent'}}/>
+        <Header onPress={() => console.log('fuckfuckfuck')} {...navigation} style={{ backgroundColor: 'transparent', height: '100%' }}
+                leftComponent={{ icon: 'chevron-left', color: '#fff' }}
+        />
     </View>
 );
 
