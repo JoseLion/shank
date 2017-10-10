@@ -51,6 +51,7 @@ export default class Group extends Component {
         super(props);
         this._handleNewGroupRegistry = this._handleNewGroupRegistry.bind(this);
         this._pickImage = this._pickImage.bind(this);
+        this.getUserList = this.getUserList.bind(this);
         this.state = {
             name: '',
             selectTournament: '',
@@ -62,6 +63,7 @@ export default class Group extends Component {
             error: null,
             refreshing: false,
             tournamentData: [],
+            assignUsers:[]
         };
 
     }
@@ -78,24 +80,32 @@ export default class Group extends Component {
         this.setState({loading: loading});
     }
 
-    makeRemoteRequest = () => {
-        const {page, seed} = this.state;
-        const url = `https://randomuser.me/api/?seed=${seed}&page=${page}&results=10`;
-        this.setState({loading: true});
-
-        fetch(url)
-            .then(res => res.json())
-            .then(res => {
-                this.setState({
-                    data: page === 1 ? res.results : [...this.state.data, ...res.results],
-                    error: res.error || null,
-                    loading: false,
-                    refreshing: false
+    getUserList = (cb) => {
+        try {
+            BaseModel.get('users', cb).then((users) => {
+                let userGroupUsers = users.map(function(user) {
+                    return {
+                        userId:user._id,
+                        name: user.name,
+                        score:0,
+                        currentRanking:0,
+                        currentDailyMovements:0,
+                        dailyMovementsDone:false,
+                        playerRanking: [/*{
+                            playerId:user.value,
+                            TR:user.value,
+                            Score:user.value,
+                            currentPosition:user.value,
+                            playerPhotoUrl:user.value,
+                        }*/]
+                    };
                 });
-            })
-            .catch(error => {
-                this.setState({error, loading: false});
+                this.setState({data: users, assignUsers: userGroupUsers});
             });
+        } catch (e) {
+            console.log('error in getUserList: Group.js')
+            console.log(e)
+        }
     };
 
     handleRefresh = () => {
@@ -106,7 +116,7 @@ export default class Group extends Component {
                 refreshing: true
             },
             () => {
-                this.makeRemoteRequest();
+                this.getUserList();
             }
         );
     };
@@ -117,7 +127,7 @@ export default class Group extends Component {
                 page: this.state.page + 1
             },
             () => {
-                this.makeRemoteRequest();
+                this.getUserList();
             }
         );
     };
@@ -160,8 +170,8 @@ export default class Group extends Component {
         let navigation = this.props.navigation;
         let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
 
-        let tournamentItems = this.state.tournamentData.map( (s, i) => {
-            return <Picker.Item key={i} value={s.id} label={s.name} />
+        let tournamentItems = this.state.tournamentData.map((s, i) => {
+            return <Picker.Item key={i} value={s.id} label={s.name}/>
         });
 
         return (
@@ -201,7 +211,7 @@ export default class Group extends Component {
                     underlineColorAndroid='transparent'
                     placeholder={'Prize'}
                     style={[LocalStyles.createTInput, {paddingBottom: 5}]}
-                    onChangeText={(prize) => this.setState({prize})}
+                    onChangeText={(prize) => this.setState({prize: prize})}
                     value={this.state.prize}
                 />
                 <View style={LocalStyles.participantsTxt}>
@@ -209,26 +219,24 @@ export default class Group extends Component {
                         PARTICIPANTS
                     </Text>
                 </View>
-                {/*<List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, width: '100%'}}>
-                 <FlatList
-                 data={this.state.data}
-                 renderItem={({item}) => (
-                 <ListItem
-                 roundAvatar
-                 title={`${item.name.first} ${item.name.last}`}
-                 subtitle={item.email}
-                 avatar={{uri: item.picture.thumbnail}}
-                 containerStyle={{borderBottomWidth: 0}}
-                 />
-                 )}
-                 keyExtractor={item => item.email}
-                 ItemSeparatorComponent={this.renderSeparator}
-                 ListFooterComponent={this.renderFooter}
-                 onRefresh={this.handleRefresh}
-                 refreshing={this.state.refreshing}
-                 onEndReachedThreshold={1}
-                 />
-                 </List>*/}
+                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, width: '100%'}}>
+                    <FlatList
+                        data={this.state.data}
+                        renderItem={({item}) => (
+                            <ListItem
+                                roundAvatar
+                                title={`${item.name}`}
+                                containerStyle={{borderBottomWidth: 0}}
+                            />
+                        )}
+                        keyExtractor={item => item.name}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        ListFooterComponent={this.renderFooter}
+                        onRefresh={this.handleRefresh}
+                        refreshing={this.state.refreshing}
+                        onEndReachedThreshold={1}
+                    />
+                </List>
                 <View style={LocalStyles.addNewParticipant}>
                     <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
                         Add new participant
@@ -247,17 +255,16 @@ export default class Group extends Component {
 
     initialRequest = async (tour, year) => {
         let tournamentsApi = `http://api.sportradar.us/golf-t2/schedule/${tour}/${year}/tournaments/schedule.json?api_key=${Constants.API_KEY_SPORT_RADAR}`;
-        console.log("tournamentsApitournamentsApi")
-        console.log(tournamentsApi)
         try {
             const response = await fetch(tournamentsApi)
             const JsonResponse = await response.json()
             this.setState({tournamentData: JsonResponse.tournaments});
+            this.getUserList()
         } catch (e) {
             console.log(e)
         }
         this.setLoading(false);
-       // this.setState({tournamentData: response});
+        // this.setState({tournamentData: response});
     };
 
     async _handleNewGroupRegistry() {
@@ -296,17 +303,12 @@ export default class Group extends Component {
             tournament: this.state.selectTournament,
             prize: this.state.prize,
             photo: {path: localUri, name: filename, type: type},
-            users: []
+            users: this.state.assignUsers,
         };
-
-        console.log('datadatadatadata')
-        console.log(data)
 
         BaseModel.create('createGroup', data).then((response) => {
             this.setLoading(false);
-            console.log("Success CREATED A GROUP in")
-            console.log("CREATE GROUP RESPONSE", response)
-            /*  this.props.navigation.dispatch({type: 'Main'})*/
+            this.props.navigation.dispatch({type: 'Main'})
         })
             .catch((error) => {
                 this.setLoading(false);

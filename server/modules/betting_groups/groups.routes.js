@@ -58,7 +58,7 @@ let prepareRouter = function (app) {
         .get('/allGroups', function (req, res) {
             BettingGroup
                 .find()
-                .select('_id name users tournament city photo')
+                .select('_id name users tournament city photo prize users')
                 .exec(function (err, user) {
                     if (err) {
                         res.ok({}, 'Al seleccionar grupos.');
@@ -102,6 +102,7 @@ let prepareRouter = function (app) {
 
             groupModel.save(function (err) {
                 if (err) {
+                    console.log(err)
                     res.ok({err}, 'GROUP ERROR ONM SAVE.');
                     return;
                 }

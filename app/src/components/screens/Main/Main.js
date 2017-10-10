@@ -20,6 +20,7 @@ import LoginStatusMessage from './LoginStatusMessage';
 import AuthButton from './AuthButton';
 import BaseModel from '../../../core/BaseModel';
 import Notifier from '../../../core/Notifier';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class MainScreen extends Component {
 
@@ -30,6 +31,7 @@ export default class MainScreen extends Component {
     constructor(props) {
         super(props);
         this._removeStorage = this._removeStorage.bind(this);
+        this.collectGroupData = this.collectGroupData.bind(this);
         this.state = {
             loading: false,
             data: [],
@@ -39,6 +41,10 @@ export default class MainScreen extends Component {
             refreshing: false,
             auth: null
         };
+    }
+
+    setLoading(loading) {
+        this.setState({loading: loading});
     }
 
     componentDidMount() {
@@ -75,7 +81,7 @@ export default class MainScreen extends Component {
 
     async _myGroupsAsyncRemoteRequest(data) {
         const {page, seed} = this.state;
-        this.setState({loading: true});
+        this.setState({refreshing: true});
         await BaseModel.get('myGroups', data).then((group) => {
             console.log("groupgroupgroup")
             console.log(group)
@@ -157,11 +163,41 @@ export default class MainScreen extends Component {
         }
     }
 
+    collectGroupData = async (tour, year, tId, groupId, navigation, cb) => {
+        this.setLoading(true);
+        let tournamentsSummaryApi = `http://api.sportradar.us/golf-t2/summary/${tour}/${year}/tournaments/${tId}/summary.json?api_key=${Constants.API_KEY_SPORT_RADAR}`;
+        let data = {}
+        try {
+            const response = await fetch(tournamentsSummaryApi)
+            const JsonResponse = await response.json()
+            if (JsonResponse.field) {
+                data.players = JsonResponse.field
+            }
+            if (JsonResponse.name) {
+                data.tName = JsonResponse.name
+                data.tStartingDate = JsonResponse.start_date
+                data.tEndDate = JsonResponse.end_date
+            }
+            const currentGroup = await BaseModel.get(`groups/${groupId}`, cb)
+            if (currentGroup) {
+                data.currentGroup = currentGroup
+                console.log("datadatadatadata")
+                console.log(data)
+            }
+            this.setLoading(false);
+            navigation.navigate('SingleGroup', {data:data})
+        } catch (e) {
+            console.log('error in initialRequest: SingleGroup.js')
+            console.log(e)
+        }
+    };
+//PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
     render() {
         let navigation = this.props.navigation;
         if (this.state.auth) {
             return (
                 <View>
+                    <Spinner visible={this.state.loading}/>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={() => navigation.dispatch({type: 'Group'})}>
                         <Text>+</Text>
@@ -181,10 +217,10 @@ export default class MainScreen extends Component {
                                     avatar={{uri: item.photo.path}}
                                     underlayColor={"#b3b3b3"}
                                     containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
-                                    onPress={() => navigation.dispatch({type: 'SingleGroup',params: {groupId:item._id}})}
+                                    onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
                                 />
                             )}
-                            keyExtractor={item => item.tournament}
+                            keyExtractor={item => item._id}
                             ItemSeparatorComponent={this.renderSeparator}
                             ListHeaderComponent={this.renderHeader}
                             ListFooterComponent={this.renderFooter}

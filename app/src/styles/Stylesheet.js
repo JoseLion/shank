@@ -55,6 +55,7 @@ const Style = {
     FONT_SIZE_SMALLER: em(0.75),
     FONT_SIZE_SMALL: em(0.875),
     FONT_SIZE_TITLE: em(1.25),
+    FONT_12: em(0.45),
     FONT_13: em(0.55),
     FONT_14: em(0.70),
     FONT_15: em(0.85),

@@ -9,17 +9,20 @@ import React, {Component} from 'react';
 import {Text, View, StatusBar, FlatList, Image, TouchableOpacity} from 'react-native';
 import {List, ListItem, Header} from "react-native-elements"; // 0.17.0
 import Swiper from 'react-native-swiper';
-import { LinearGradient } from 'expo';
+import {LinearGradient} from 'expo';
+import BaseModel from '../../../core/BaseModel';
 
 import {Ionicons} from '@expo/vector-icons'; // 5.2.0
+import * as Constants from '../../../core/Constans';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-const ImageHeader = props => (
+const ImageHeader = navigation => (
     <View style={{backgroundColor: '#eee', height: '16%'}}>
         <Image
             style={[MainStyles.imageOpacity, LocalStyles.absoluteFill]}
             source={{uri: 'https://www.bigonsports.com/wp-content/uploads/2016/04/2016-the-Masters-golf-tournament.jpg'}}>
-            <Text style={LocalStyles.singleGroupTitle}>AMIGOS DEL CLUB</Text>
-            <Text style={LocalStyles.singleGroupTitleBold}>The Masters</Text>
+            <Text style={LocalStyles.singleGroupTitle}>{navigation.state.params.data.currentGroup.name}</Text>
+            <Text style={LocalStyles.singleGroupTitleBold}>{navigation.state.params.data.tName}</Text>
         </Image>
         <Header style={{backgroundColor: 'transparent'}}/>
     </View>
@@ -30,20 +33,32 @@ export default class SingleGroup extends Component {
     constructor(props) {
         super(props);
         // this._removeStorage = this._removeStorage.bind(this);
-        this.state = {};
+        this.state = {
+            tournamentRankings: [],
+            currentGroup: {},
+            initialState: false,
+            stillLoading: false,
+            tournamentName: '',
+            tournamentEndDate: '',
+            tournamentStartDate: '',
+            loading: false,
+            currentDate: new Date(),
+        };
     }
 
-    static navigationOptions = {
+    static navigationOptions = ({navigation}) => ({
         title: 'The Masters',
         headerTintColor: 'white',
         headerTitleStyle: {alignSelf: 'center', color: '#fff'},
-        header: (props => <ImageHeader {...props} />),
-    };
+        header: (<ImageHeader {...navigation}/>),
+    });
 
+    setLoading(loading) {
+        this.setState({loading: loading});
+    }
 
     componentDidMount() {
-        console.log("this.propsthis.sdada.props")
-        console.log(this.props)
+        console.log(this.state.currentDate)
     }
 
     renderSeparator = () => {
@@ -53,15 +68,18 @@ export default class SingleGroup extends Component {
     };
 
     render() {
+        let navigation = this.props.navigation;
+        let whistleIcon = require('../../../../resources/singleGroup/ios/Recurso18.png');
         return (
             <View style={MainStyles.stretchContainer}>
+                <Spinner visible={this.state.loading}/>
                 <StatusBar hidden={true}/>
                 <View style={LocalStyles.singleGroupBoxes}>
                     <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrize]}>
                         PRIZE
                     </Text>
                     <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrizeDescription]}>
-                        A Johnny Walker Black Label Whisky
+                        {navigation.state.params.data.currentGroup.prize}
                     </Text>
                 </View>
                 <View style={LocalStyles.singleGroupBoxes}>
@@ -84,7 +102,7 @@ export default class SingleGroup extends Component {
                         </View>
                         <View style={MainStyles.centeredObject}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                                2
+                                {navigation.state.params.data.tStartingDate}
                             </Text>
                             <Text style={LocalStyles.singleGroupScoreTabDescription}>
                                 Days Left
@@ -95,82 +113,57 @@ export default class SingleGroup extends Component {
                 <View style={LocalStyles.singleGroupBoxes}>
                     <View style={{flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-between'}}>
                         <View style={[MainStyles.centeredObject]}>
-                            <Text style={[MainStyles.shankGreen,  LocalStyles.singleGroupSliderText]}>
+                            <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Participants
                             </Text>
-                            <Text style={[MainStyles.shankGreen,  LocalStyles.singleGroupSliderText]}>
+                            <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 rankings
                             </Text>
                         </View>
                         <View style={[MainStyles.centeredObject]}>
-                            <Text style={[MainStyles.shankGreen,  LocalStyles.singleGroupSliderText]}>
+                            <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 My players
                             </Text>
-                            <Text style={[MainStyles.shankGreen,  LocalStyles.singleGroupSliderText]}>
+                            <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 rankings
                             </Text>
                         </View>
                         <View style={[MainStyles.centeredObject]}>
-                            <Text style={[MainStyles.shankGreen,  LocalStyles.singleGroupSliderText]}>
+                            <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Tournament
                             </Text>
-                            <Text style={[MainStyles.shankGreen,  LocalStyles.singleGroupSliderText]}>
+                            <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 rankings
                             </Text>
                         </View>
                     </View>
                 </View>
-              {/*  <View style={{ flex: 1 }}>
-                    <View style={{ backgroundColor: 'orange', flex: 1 }} />
-                    <LinearGradient
-                        colors={['rgba(0,0,0,0.8)', 'transparent']}
-                        style={{
-                            position: 'absolute',
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            height: 300,
-                        }}
-                    />
-                </View>*/}
-                <Swiper showsHorizontalScrollIndicator={true} showsVerticalScrollIndicator={true} showsButtons={false} showsPagination={false}>
+                <Swiper showsHorizontalScrollIndicator={true} showsVerticalScrollIndicator={true} showsButtons={false}
+                        showsPagination={false}>
                     <View style={LocalStyles.slideBorderStyle}>
                         <LinearGradient
-                            start={{ x: 0, y: 1 }}
-                            end={{ x: 1, y: 1 }}
+                            start={{x: 0, y: 1}}
+                            end={{x: 1, y: 1}}
                             colors={['#556E3E', '#C0C0C1', '#C0C0C1']}
                             locations={[0, 0.5, 1]}
                             style={LocalStyles.linearGradient}
                         />
                         <List containerStyle={LocalStyles.listContainer}>
                             <FlatList
-                                data={[{
-                                    name: 'raulss',
-                                    phone: '12',
-                                    score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
-                                }, {
-                                    name: 'awww',
-                                    phone: '092928383',
-                                    score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
-                                }, {
-                                    name: 'awww2',
-                                    phone: '092928383',
-                                    score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
-                                }]}
+                                data={navigation.state.params.data.currentGroup.users}
                                 renderItem={({item}) => (
                                     <ListItem
+                                        key={item.userId}
                                         titleContainerStyle={{marginLeft: '3%'}}
                                         title={`${item.name}`}
+                                        titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
                                         rightTitle={`${'Score: ' + item.score}`}
+                                        rightTitleStyle={LocalStyles.participantsScore}
                                         containerStyle={{borderBottomWidth: 0}}
-                                        hideChevron
-                                        rightIcon={<Image style={{width: 50, height: 50}}
-                                                          source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}/>}
+                                        rightIcon={<Image style={{ marginHorizontal: '2%'}}
+                                                          source={whistleIcon}/>}
                                         leftIcon={<Text
-                                            style={{color: 'black', marginTop: '3%', marginRight: '2%'}}>1</Text>}
+                                            style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
                                     />
                                 )}
                                 keyExtractor={item => item.name}
@@ -180,8 +173,8 @@ export default class SingleGroup extends Component {
                     </View>
                     <View style={[LocalStyles.slideBorderStyle]}>
                         <LinearGradient
-                            start={{ x: 0, y: 1 }}
-                            end={{ x: 1, y: 1 }}
+                            start={{x: 0, y: 1}}
+                            end={{x: 1, y: 1}}
                             colors={['#C0C0C1', '#556E3E', '#C0C0C1']}
                             locations={[0, 0.5, 1]}
                             style={LocalStyles.linearGradient}
@@ -210,6 +203,7 @@ export default class SingleGroup extends Component {
                                         titleNumberOfLines={2}
                                         titleContainerStyle={{marginLeft: '3%'}}
                                         title={`${item.name}`}
+                                        titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
                                         subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
                                         avatar={{uri: item.photo.path}}
                                         containerStyle={{borderBottomWidth: 0}}
@@ -223,25 +217,25 @@ export default class SingleGroup extends Component {
                                         }}><Text>REPLACE</Text></TouchableOpacity>}
                                         key={1}
                                         leftIcon={<Text
-                                            style={{color: 'black', marginTop: '3%', marginRight: '2%'}}>1</Text>}
+                                            style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
                                     />
                                 )}
                                 keyExtractor={item => item.name}
                                 ItemSeparatorComponent={this.renderSeparator}
                             />
                         </List>
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',}}>
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
                             <TouchableOpacity
                                 onPress={() => this._handleNewRegistry()}
-                                style={[{position:'absolute',bottom:'4%'},MainStyles.goldenShankButton]}>
+                                style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankButton]}>
                                 <Text style={LocalStyles.buttonText}>2 movements ($1.99)</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View style={LocalStyles.slideBorderStyle}>
                         <LinearGradient
-                            start={{ x: 0, y: 1 }}
-                            end={{ x: 1, y: 1 }}
+                            start={{x: 0, y: 1}}
+                            end={{x: 1, y: 1}}
                             colors={['#C0C0C1', '#C0C0C1', '#556E3E']}
                             locations={[0, 0.5, 1]}
                             style={LocalStyles.linearGradient}
@@ -270,12 +264,13 @@ export default class SingleGroup extends Component {
                                         titleNumberOfLines={2}
                                         titleContainerStyle={{marginLeft: '3%'}}
                                         title={`${item.name}`}
-                                        subtitle={`  'TR: ' ${item.phone + '           SCORE: ' + item.score}`}
+                                        titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
+                                        subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
                                         avatar={{uri: item.photo.path}}
                                         containerStyle={{borderBottomWidth: 0}}
                                         hideChevron
                                         leftIcon={<Text
-                                            style={{color: 'black', marginTop: '3%', marginRight: '2%'}}>1</Text>}
+                                            style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
                                     />
                                 )}
                                 keyExtractor={item => item.name}

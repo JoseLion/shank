@@ -20,10 +20,25 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
         //marginLeft:'-50%'
     },
+    positionParticipants: {
+        marginTop: '1%',
+        marginRight: '2%',
+        fontSize: Style.FONT_15
+    },
     participantsList: {
         flex: 1,
     },
-
+    titleStyle: {
+        fontSize: Style.FONT_14
+    },
+    subtitleStyle: {
+        fontSize: Style.FONT_12,
+        color: '#3F3F3F'
+    },
+    participantsScore: {
+        fontSize: Style.FONT_14,
+        color: '#3F3F3F'
+    },
     addNewParticipant: {
         flex: 1,
         paddingTop: 22,

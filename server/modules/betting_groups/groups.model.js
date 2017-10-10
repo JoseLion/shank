@@ -7,8 +7,26 @@ let Schema = mongoose.Schema,
 
 let BettingGroupSchema = new mongoose.Schema({
     name: String,
-    users: [{type: ObjectId, ref: 'User'}],
+    groupStatus: Boolean,
+    users: [{
+        userId: {type: String},
+        isWinner: Boolean,
+        name: {type: String},
+        score: {type: Number},
+        currentRanking: {type: Number},
+        currentDailyMovements: {type: Number},
+        dailyMovementsDone: {type: Boolean},
+        playerRanking: [{
+            playerId: {type: String},
+            TR: {type: Number},
+            Score: {type: Number},
+            currentPosition: {type: Number},
+            playerPhotoUrl: {type: String},
+        }],
+    }],
+    prize: String,
     tournament: String,
+    tournamentName: String,
     city: String,
     photo: {
         name: {type: String},
