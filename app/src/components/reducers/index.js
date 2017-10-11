@@ -63,6 +63,12 @@ function nav(state = initialNavState, action) {
                 state
             );
             break;
+        case 'PlayerSelection':
+            nextState = AppNavigator.router.getStateForAction(
+                NavigationActions.navigate({routeName: 'PlayerSelection'}),
+                state
+            );
+            break;
         default:
             nextState = AppNavigator.router.getStateForAction(action, state);
             break;
@@ -72,7 +78,7 @@ function nav(state = initialNavState, action) {
 
 const initialAuthState = {isLoggedIn: false};
 
-async function  _isItLoggedAsync(){
+async function _isItLoggedAsync() {
     return await AsyncStorage.getItem(Constants.AUTH_TOKEN)
 }
 

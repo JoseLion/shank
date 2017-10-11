@@ -12,6 +12,7 @@ import Tournament from '../screens/Tournament/Tournament';
 import Group from '../screens/Group/Group';
 import Register from '../screens/Register/Register';
 import SingleGroup from '../screens/Group/SingleGroup';
+import PlayerSelection from '../screens/Group/PlayerSelection';
 
 export const TabNav = TabNavigator({
         Groups: {
@@ -43,6 +44,7 @@ export const AppNavigator = StackNavigator({
     Group: {screen: Group},
     Register: {screen: Register},
     SingleGroup: {screen: SingleGroup},
+    PlayerSelection: {screen: PlayerSelection},
 });
 
 const AppWithNavigationState = ({dispatch, nav, auth}) => (

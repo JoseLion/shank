@@ -32,6 +32,10 @@ const ImageHeader = navigation => (
 
 export default class SingleGroup extends Component {
 
+    static propTypes = {
+        navigation: PropTypes.object.isRequired,
+    };
+
     constructor(props) {
         super(props);
         // this._removeStorage = this._removeStorage.bind(this);
@@ -71,6 +75,8 @@ export default class SingleGroup extends Component {
 
     render() {
         let navigation = this.props.navigation;
+        console.log(navigation.state.params.data.players)
+        console.log(navigation.state.params.data)
         let whistleIcon = require('../../../../resources/singleGroup/ios/Recurso18.png');
         return (
             <View style={MainStyles.stretchContainer}>
@@ -209,7 +215,7 @@ export default class SingleGroup extends Component {
                                         subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
                                         avatar={{uri: item.photo.path}}
                                         containerStyle={{borderBottomWidth: 0}}
-                                        badge={{element: <Ionicons name="md-menu" size={29} color="green"/>}}
+                                        badge={{element: <Ionicons onPress = {() => navigation.navigate('PlayerSelection',{tPlayers:navigation.state.params.data.players})} name="md-menu" size={29} color="green"/>}}
                                         rightIcon={<TouchableOpacity style={{
                                             justifyContent: 'center',
                                             borderWidth: 1,
@@ -217,6 +223,7 @@ export default class SingleGroup extends Component {
                                             marginLeft: '2%',
                                             paddingHorizontal: '3%'
                                         }}><Text>REPLACE</Text></TouchableOpacity>}
+                                        onPressRightIcon = {() => navigation.dispatch({type: 'Main'})}
                                         key={1}
                                         leftIcon={<Text
                                             style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}

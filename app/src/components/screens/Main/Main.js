@@ -170,6 +170,7 @@ export default class MainScreen extends Component {
         try {
             const response = await fetch(tournamentsSummaryApi)
             const JsonResponse = await response.json()
+            data.players = []
             if (JsonResponse.field) {
                 data.players = JsonResponse.field
             }
