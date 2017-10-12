@@ -13,7 +13,8 @@ import {
     TextInput,
     TouchableHighlight,
     TouchableOpacity,
-    Alert
+    Alert,
+    KeyboardAvoidingView
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -174,7 +175,7 @@ export default class Register extends Component {
     render() {
         let navigation = this.props.navigation;
         return (
-            <View style={MainStyles.container}>
+            <KeyboardAvoidingView style={MainStyles.container} behavior="padding">
                 <Spinner visible={this.state.loading}/>
                 <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
                     WELCOME
@@ -183,28 +184,42 @@ export default class Register extends Component {
                     LETS START BY CREATING {"\n"} AN ACCOUNT
                 </Text>
                 <TextInput
+                    autoFocus = {true}
+                    returnKeyType = {"next"}
                     underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(name) => this.setState({name})}
                     value={this.state.name}
                     placeholder={'Name'}
+                    onSubmitEditing={(event) => {
+                        this.refs.email.focus();
+                    }}
                 />
                 <TextInput
+                    ref='email'
                     underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(email) => this.setState({email})}
                     value={this.state.email}
                     placeholder={'Email'}
+                    onSubmitEditing={(event) => {
+                        this.refs.pass1.focus();
+                    }}
                 />
                 <TextInput
+                    ref='pass1'
                     secureTextEntry={true}
                     underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(password) => this.setState({password})}
                     value={this.state.password}
                     placeholder={'Password'}
+                    onSubmitEditing={(event) => {
+                        this.refs.pass2.focus();
+                    }}
                 />
                 <TextInput
+                    ref='pass2'
                     secureTextEntry={true}
                     underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
@@ -228,7 +243,7 @@ export default class Register extends Component {
                         I already have an account
                     </Text>
                 </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
         );
     }
 }

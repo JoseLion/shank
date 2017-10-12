@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import {Dimensions, Platform} from 'react-native';
+import {Dimensions, Platform, PixelRatio} from 'react-native';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 
@@ -32,6 +32,14 @@ function em(value) {
     return unit * value;
 }
 
+function normalize(size) {
+    if (Platform.OS === 'ios') {
+        return Math.round(PixelRatio.roundToNearestPixel(size))
+    } else {
+        return Math.round(PixelRatio.roundToNearestPixel(size)) - 2
+    }
+}
+
 // Then we set our styles with the help of the em() function
 const Style = {
 
@@ -49,6 +57,16 @@ const Style = {
     CARD_HEIGHT: (x - em(1.25) * 2) * (3 / 5),
     CARD_PADDING_X: em(1.875),
     CARD_PADDING_Y: em(1.25),
+
+
+    //FONT_PIXEL_RATIO
+
+    FONT_MINI: normalize(12),
+
+    FONT_SMALL:normalize(15),
+    FONT_MEDIUM: normalize(17),
+    FONT_LARGE: normalize(20),
+    FONT_XLARGE: normalize(24),
 
     // FONT
     FONT_SIZE: em(1),

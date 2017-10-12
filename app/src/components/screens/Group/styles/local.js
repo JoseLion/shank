@@ -115,7 +115,7 @@ const LocalStyles = StyleSheet.create({
     },
     singleGroupBoxes: {
         width:'100%',
-        height: '13%',
+        height: '9%',
         backgroundColor: 'white',
         borderBottomColor: '#2F1C1C',
         borderBottomWidth: 0.7,
@@ -151,7 +151,7 @@ const LocalStyles = StyleSheet.create({
         color: '#3c3c3c',
     },
     singleGroupSliderText: {
-        fontSize: Style.FONT_14
+        fontSize: Style.FONT_MEDIUM
     },
     linearGradient: {
         height: '2%',
@@ -161,7 +161,7 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: 'white',
         height:'100%'
     },
-    listContainer: {borderTopWidth: 0, borderBottomWidth: 0, paddingHorizontal:'8%'}
+    listContainer: {borderTopWidth: 0, borderBottomWidth: 0, paddingHorizontal:'8%', height: '80%'}
 
 });
 

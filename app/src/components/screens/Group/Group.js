@@ -16,7 +16,8 @@ import {
     FlatList,
     TouchableOpacity,
     Picker,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -175,7 +176,7 @@ export default class Group extends Component {
         });
 
         return (
-            <View style={MainStyles.container}>
+            <KeyboardAvoidingView style={MainStyles.container} behavior="padding">
                 <Spinner visible={this.state.loading}/>
 
                 <TouchableOpacity style={LocalStyles.addPhotoLogo} onPress={this._pickImage}>
@@ -219,7 +220,7 @@ export default class Group extends Component {
                         PARTICIPANTS
                     </Text>
                 </View>
-                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, width: '100%'}}>
+                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, height:'80%', width: '100%'}}>
                     <FlatList
                         data={this.state.data}
                         renderItem={({item}) => (
@@ -247,7 +248,7 @@ export default class Group extends Component {
                     style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                     <Text style={LocalStyles.buttonText}>Create group</Text>
                 </TouchableHighlight>
-            </View>
+            </KeyboardAvoidingView>
         );
     }
 

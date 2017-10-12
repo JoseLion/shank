@@ -1,5 +1,9 @@
 {
   "expo": {
-    "sdkVersion": "21.0.0"
+    "version": "1.0.1",
+    "sdkVersion": "21.0.0",
+    "name": "shank",
+    "orientation": "portrait",
+    "permissions": [ "CAMERA", "ACCESS_FINE_LOCATION" ]
   }
 }

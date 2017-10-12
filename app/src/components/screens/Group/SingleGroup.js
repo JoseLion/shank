@@ -134,33 +134,33 @@ export default class SingleGroup extends Component {
                 </View>
                 <View style={LocalStyles.singleGroupBoxes}>
                     <View style={{flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-between'}}>
-                        <View style={[MainStyles.centeredObject]}>
+                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(1)}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Participants
                             </Text>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 rankings
                             </Text>
-                        </View>
-                        <View style={[MainStyles.centeredObject]}>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(2)}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 My players
                             </Text>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 rankings
                             </Text>
-                        </View>
-                        <View style={[MainStyles.centeredObject]}>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(3)}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Tournament
                             </Text>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 rankings
                             </Text>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
-                <Swiper showsHorizontalScrollIndicator={true} showsVerticalScrollIndicator={true} showsButtons={false}
+                <Swiper ref='swiper' showsHorizontalScrollIndicator={true} showsVerticalScrollIndicator={true} showsButtons={false}
                         showsPagination={false}>
                     <View style={LocalStyles.slideBorderStyle}>
                         <LinearGradient
