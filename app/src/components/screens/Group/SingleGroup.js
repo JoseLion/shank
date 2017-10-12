@@ -6,7 +6,7 @@ import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 
 import React, {Component} from 'react';
-import {Text, View, StatusBar, FlatList, Image, TouchableOpacity} from 'react-native';
+import {Text, View, StatusBar, FlatList, Image, TouchableOpacity, AsyncStorage} from 'react-native';
 import {List, ListItem, Header} from "react-native-elements"; // 0.17.0
 import Swiper from 'react-native-swiper';
 import {LinearGradient} from 'expo';
@@ -20,12 +20,14 @@ const ImageHeader = navigation => (
     <View style={{backgroundColor: '#eee', height: '16%'}}>
         <Image
             style={[MainStyles.imageOpacity, LocalStyles.absoluteFill]}
-            source={{uri: 'https://www.bigonsports.com/wp-content/uploads/2016/04/2016-the-Masters-golf-tournament.jpg'}}>
+            source={{uri: 'http://cdn.snappages.com/txd52k/assets/731979_1517216_1464724369.png'}}>
             <Text style={LocalStyles.singleGroupTitle}>{navigation.state.params.data.currentGroup.name}</Text>
             <Text style={LocalStyles.singleGroupTitleBold}>{navigation.state.params.data.tName}</Text>
         </Image>
-        <Header onPress={() => console.log('fuckfuckfuck')} {...navigation} style={{ backgroundColor: 'transparent', height: '100%' }}
-                leftComponent={{ icon: 'chevron-left', color: '#fff' }}
+        <Header onPress={() => console.log('hueheuheueu')} {...navigation}
+                style={{backgroundColor: 'transparent', height: '100%'}}
+                leftComponent={{icon: 'chevron-left', color: '#fff', onPress: () => navigation.goBack(null)}}
+                outerContainerStyles={{width: '50', paddingVertical: '40%'}}
         />
     </View>
 );
@@ -49,6 +51,7 @@ export default class SingleGroup extends Component {
             tournamentStartDate: '',
             loading: false,
             currentDate: new Date(),
+            currentUser: {}
         };
     }
 
@@ -64,7 +67,7 @@ export default class SingleGroup extends Component {
     }
 
     componentDidMount() {
-        console.log(this.state.currentDate)
+
     }
 
     renderSeparator = () => {
@@ -75,9 +78,20 @@ export default class SingleGroup extends Component {
 
     render() {
         let navigation = this.props.navigation;
-        console.log(navigation.state.params.data.players)
-        console.log(navigation.state.params.data)
         let whistleIcon = require('../../../../resources/singleGroup/ios/Recurso18.png');
+        let notAbsoluteDiff = new Date(navigation.state.params.data.tStartingDate) - this.state.currentDate.getTime();
+        let diffDays = 0;
+        if (notAbsoluteDiff > 0) {
+            let daysLeft = Math.abs(notAbsoluteDiff);
+            diffDays = Math.ceil(daysLeft / (1000 * 3600 * 24));
+        }
+        let playerRankings = [{none:true,position:1},{none:true,position:2},{none:true,position:3},{none:true,position:4},{none:true,position:5}];
+        let groupLoggedUser = navigation.state.params.data.currentGroup.users.find(user => user.userId === navigation.state.params.currentUser._id);
+        if (groupLoggedUser.playerRanking.length > 0) {
+            playerRankings = groupLoggedUser.playerRanking
+        }
+        console.log('ssdsdsdsadasczxczxc')
+        console.log(playerRankings)
         return (
             <View style={MainStyles.stretchContainer}>
                 <Spinner visible={this.state.loading}/>
@@ -110,7 +124,7 @@ export default class SingleGroup extends Component {
                         </View>
                         <View style={MainStyles.centeredObject}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                                {navigation.state.params.data.tStartingDate}
+                                {diffDays}
                             </Text>
                             <Text style={LocalStyles.singleGroupScoreTabDescription}>
                                 Days Left
@@ -168,7 +182,7 @@ export default class SingleGroup extends Component {
                                         rightTitle={`${'Score: ' + item.score}`}
                                         rightTitleStyle={LocalStyles.participantsScore}
                                         containerStyle={{borderBottomWidth: 0}}
-                                        rightIcon={<Image style={{ marginHorizontal: '2%'}}
+                                        rightIcon={<Image style={{marginHorizontal: '2%'}}
                                                           source={whistleIcon}/>}
                                         leftIcon={<Text
                                             style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
@@ -189,47 +203,49 @@ export default class SingleGroup extends Component {
                         />
                         <List containerStyle={LocalStyles.listContainer}>
                             <FlatList
-                                data={[{
-                                    name: 'raul',
-                                    phone: '12',
-                                    score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
-                                }, {
-                                    name: 'awww',
-                                    phone: '092928383',
-                                    score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
-                                }, {
-                                    name: 'awww2',
-                                    phone: '092928383',
-                                    score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
-                                }]}
+                                data={playerRankings}
                                 renderItem={({item}) => (
-                                    <ListItem
-                                        roundAvatar
-                                        titleNumberOfLines={2}
-                                        titleContainerStyle={{marginLeft: '3%'}}
-                                        title={`${item.name}`}
-                                        titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                        subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
-                                        avatar={{uri: item.photo.path}}
-                                        containerStyle={{borderBottomWidth: 0}}
-                                        badge={{element: <Ionicons onPress = {() => navigation.navigate('PlayerSelection',{tPlayers:navigation.state.params.data.players})} name="md-menu" size={29} color="green"/>}}
-                                        rightIcon={<TouchableOpacity style={{
-                                            justifyContent: 'center',
-                                            borderWidth: 1,
-                                            borderColor: 'black',
-                                            marginLeft: '2%',
-                                            paddingHorizontal: '3%'
-                                        }}><Text>REPLACE</Text></TouchableOpacity>}
-                                        onPressRightIcon = {() => navigation.dispatch({type: 'Main'})}
-                                        key={1}
-                                        leftIcon={<Text
-                                            style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
-                                    />
+                                    (item.none ?
+                                        <ListItem
+                                            hideChevron
+                                            titleContainerStyle={{marginLeft: '3%',paddingHorizontal:'40%'}}
+                                            label={<Text style={{marginRight:'43%', color:'#3c3c3c', alignSelf:'center'}}>EMPTY SLOT</Text>}
+                                            leftIcon={<Text style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
+                                            containerStyle={{borderBottomWidth: 0}}
+                                            onPress={() => navigation.navigate('PlayerSelection', {tPlayers: navigation.state.params.data.players})}
+                                            key={1}
+                                        />
+                                        :
+                                        <ListItem
+                                            roundAvatar
+                                            titleNumberOfLines={2}
+                                            titleContainerStyle={{marginLeft: '3%'}}
+                                            title={`${item.name}`}
+                                            titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
+                                            subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
+                                            avatar={{uri: item.photo.path}}
+                                            containerStyle={{borderBottomWidth: 0}}
+                                            badge={{
+                                                element: <Ionicons
+                                                    onPress={() => navigation.navigate('PlayerSelection', {tPlayers: navigation.state.params.data.players})}
+                                                    name="md-menu" size={29} color="green"/>
+                                            }}
+                                            rightIcon={<TouchableOpacity style={{
+                                                justifyContent: 'center',
+                                                borderWidth: 1,
+                                                borderColor: 'black',
+                                                marginLeft: '2%',
+                                                paddingHorizontal: '3%'
+                                            }}><Text>REPLACE</Text></TouchableOpacity>}
+                                            onPressRightIcon={() => navigation.dispatch({type: 'Main'})}
+                                            key={1}
+                                            leftIcon={<Text
+                                                style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
+                                        />)
+
                                 )}
-                                keyExtractor={item => item.name}
+                                keyExtractor={item => item.position}
+                               /* keyExtractor={item => item.name}*/
                                 ItemSeparatorComponent={this.renderSeparator}
                             />
                         </List>

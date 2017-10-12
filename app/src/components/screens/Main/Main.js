@@ -182,11 +182,11 @@ export default class MainScreen extends Component {
             const currentGroup = await BaseModel.get(`groups/${groupId}`, cb)
             if (currentGroup) {
                 data.currentGroup = currentGroup
-                console.log("datadatadatadata")
-                console.log(data)
             }
-            this.setLoading(false);
-            navigation.navigate('SingleGroup', {data:data})
+            AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
+                this.setLoading(false);
+                navigation.navigate('SingleGroup', {data:data,currentUser:JSON.parse(user)})
+            });
         } catch (e) {
             console.log('error in initialRequest: SingleGroup.js')
             console.log(e)

@@ -10,5 +10,5 @@ export const APP_FB_ID = '135776033719994'; //chris enviroment 135776033719994
 
 export const APIKEYNEWS = '992cdafbd3be4e3892828a84328873a6';
 /*export const API_KEY_SPORT_RADAR = 'vs9dk4wn7egcvbjta4ysnjkf'; //CADUCADA*/
-export const API_KEY_SPORT_RADAR = 'hdhz83ubk3wwsd7jzec5jrha';
+export const API_KEY_SPORT_RADAR = 'vs9dk4wn7egcvbjta4ysnjkf';
 export const SPORT_RADAR_GET_TOURNAMENTS = 'http://api.sportradar.us/golf-t2/schedule/${tour}/${year}/tournaments/schedule.json?api_key=${apiKey}';
