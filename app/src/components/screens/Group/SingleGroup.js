@@ -142,7 +142,7 @@ export default class SingleGroup extends Component {
                                 rankings
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(2)}>
+                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(1)}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 My players
                             </Text>
@@ -150,7 +150,7 @@ export default class SingleGroup extends Component {
                                 rankings
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(3)}>
+                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(1)}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Tournament
                             </Text>
@@ -161,7 +161,7 @@ export default class SingleGroup extends Component {
                     </View>
                 </View>
                 <Swiper ref='swiper' showsHorizontalScrollIndicator={true} showsVerticalScrollIndicator={true} showsButtons={false}
-                        showsPagination={false}>
+                        showsPagination={false} loop={false}>
                     <View style={LocalStyles.slideBorderStyle}>
                         <LinearGradient
                             start={{x: 0, y: 1}}

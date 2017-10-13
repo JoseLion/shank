@@ -27,7 +27,7 @@ export default class SliderScreen extends Component {
         let ImgSlideTwo = require('../../../../resources/initSlider/IOS/slider/init2/sliderInit2.png');
         let ImgSlideThree = require('../../../../resources/initSlider/IOS/slider/init3/sliterInit3.png');
         return (
-            <Swiper style={LocalStyles.wrapper} showsButtons={false}>
+            <Swiper style={LocalStyles.wrapper} showsButtons={false} loop={false}>
                 <View style={LocalStyles.slide}>
                     <Image style={LocalStyles.coverImage}
                            source={ImgSlideOne}>

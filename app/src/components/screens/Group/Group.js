@@ -220,24 +220,25 @@ export default class Group extends Component {
                         PARTICIPANTS
                     </Text>
                 </View>
-                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, height:'80%', width: '100%'}}>
-                    <FlatList
-                        data={this.state.data}
-                        renderItem={({item}) => (
-                            <ListItem
-                                roundAvatar
-                                title={`${item.name}`}
-                                containerStyle={{borderBottomWidth: 0}}
-                            />
-                        )}
-                        keyExtractor={item => item.name}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        ListFooterComponent={this.renderFooter}
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.state.refreshing}
-                        onEndReachedThreshold={1}
-                    />
-                </List>
+                <View style={LocalStyles.List}>
+                    <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, }}>
+                        <FlatList
+                            data={this.state.data}
+                            renderItem={({item}) => (
+                                <ListItem
+                                    roundAvatar
+                                    title={`${item.name}`}
+                                    containerStyle={{borderBottomWidth: 0}}
+                                />
+                            )}
+                            keyExtractor={item => item.name}
+                            ItemSeparatorComponent={this.renderSeparator}
+                            onRefresh={this.handleRefresh}
+                            refreshing={this.state.refreshing}
+                            onEndReachedThreshold={1}
+                        />
+                    </List>
+                </View>
                 <View style={LocalStyles.addNewParticipant}>
                     <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
                         Add new participant

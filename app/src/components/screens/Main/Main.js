@@ -129,10 +129,6 @@ export default class MainScreen extends Component {
         );
     };
 
-    renderHeader = () => {
-        return <SearchBar placeholder="Type Here..." lightTheme round/>;
-    };
-
     renderFooter = () => {
         if (!this.state.loading) return null;
 
@@ -223,7 +219,6 @@ export default class MainScreen extends Component {
                             )}
                             keyExtractor={item => item._id}
                             ItemSeparatorComponent={this.renderSeparator}
-                            ListHeaderComponent={this.renderHeader}
                             ListFooterComponent={this.renderFooter}
                             onRefresh={this.handleRefresh}
                             refreshing={this.state.refreshing}

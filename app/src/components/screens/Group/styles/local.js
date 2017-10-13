@@ -20,6 +20,11 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
         //marginLeft:'-50%'
     },
+    List: {
+        flex: 2,
+        width: '100%',
+        height: '80%'
+    },
     positionParticipants: {
         marginTop: '1%',
         marginRight: '2%',
@@ -49,7 +54,7 @@ const LocalStyles = StyleSheet.create({
     addPhotoLogo: {
         width:  Style.iconLG,
         height: Style.iconLG,
-        marginTop: '5%',
+        marginTop: '3%',
         alignItems: 'center',
     },
     groupImage:{
@@ -105,17 +110,17 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center'
     },
     singleGroupTitle :{
-        fontSize: Style.FONT_14,
+        fontSize: Style.FONT_SMALL,
         color: '#fff',
     },
     singleGroupTitleBold :{
-        fontSize: Style.FONT_18,
+        fontSize: Style.FONT_MEDIUM,
         color: '#fff',
         fontWeight: 'bold'
     },
     singleGroupBoxes: {
         width:'100%',
-        height: '9%',
+        height: '10%',
         backgroundColor: 'white',
         borderBottomColor: '#2F1C1C',
         borderBottomWidth: 0.7,
@@ -151,7 +156,7 @@ const LocalStyles = StyleSheet.create({
         color: '#3c3c3c',
     },
     singleGroupSliderText: {
-        fontSize: Style.FONT_MEDIUM
+        fontSize: Style.FONT_SMALL
     },
     linearGradient: {
         height: '2%',
