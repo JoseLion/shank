@@ -25,6 +25,11 @@ const LocalStyles = StyleSheet.create({
         width: '100%',
         height: '80%'
     },
+    GroupList: {
+        flex: 2,
+        width: '100%',
+        height: '92%'
+    },
     positionParticipants: {
         marginTop: '1%',
         marginRight: '2%',
@@ -166,7 +171,7 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: 'white',
         height:'100%'
     },
-    listContainer: {borderTopWidth: 0, borderBottomWidth: 0, paddingHorizontal:'8%', height: '80%'}
+    listContainer: {borderTopWidth: 0, borderBottomWidth: 0, paddingHorizontal:'8%'}
 
 });
 

@@ -85,7 +85,10 @@ export default class SingleGroup extends Component {
             let daysLeft = Math.abs(notAbsoluteDiff);
             diffDays = Math.ceil(daysLeft / (1000 * 3600 * 24));
         }
-        let playerRankings = [{none:true,position:1},{none:true,position:2},{none:true,position:3},{none:true,position:4},{none:true,position:5}];
+        let playerRankings = [{none: true, position: 1}, {none: true, position: 2}, {
+            none: true,
+            position: 3
+        }, {none: true, position: 4}, {none: true, position: 5}];
         let groupLoggedUser = navigation.state.params.data.currentGroup.users.find(user => user.userId === navigation.state.params.currentUser._id);
         if (groupLoggedUser.playerRanking.length > 0) {
             playerRankings = groupLoggedUser.playerRanking
@@ -134,7 +137,8 @@ export default class SingleGroup extends Component {
                 </View>
                 <View style={LocalStyles.singleGroupBoxes}>
                     <View style={{flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-between'}}>
-                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(1)}>
+                        <TouchableOpacity style={[MainStyles.centeredObject]}
+                                          onPress={() => this.refs.swiper.scrollBy(1)}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Participants
                             </Text>
@@ -142,7 +146,8 @@ export default class SingleGroup extends Component {
                                 rankings
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(1)}>
+                        <TouchableOpacity style={[MainStyles.centeredObject]}
+                                          onPress={() => this.refs.swiper.scrollBy(1)}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 My players
                             </Text>
@@ -150,7 +155,8 @@ export default class SingleGroup extends Component {
                                 rankings
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[MainStyles.centeredObject]} onPress={() => this.refs.swiper.scrollBy(1)}>
+                        <TouchableOpacity style={[MainStyles.centeredObject]}
+                                          onPress={() => this.refs.swiper.scrollBy(1)}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Tournament
                             </Text>
@@ -160,7 +166,8 @@ export default class SingleGroup extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <Swiper ref='swiper' showsHorizontalScrollIndicator={true} showsVerticalScrollIndicator={true} showsButtons={false}
+                <Swiper ref='swiper' showsHorizontalScrollIndicator={true} showsVerticalScrollIndicator={true}
+                        showsButtons={false}
                         showsPagination={false} loop={false}>
                     <View style={LocalStyles.slideBorderStyle}>
                         <LinearGradient
@@ -201,54 +208,63 @@ export default class SingleGroup extends Component {
                             locations={[0, 0.5, 1]}
                             style={LocalStyles.linearGradient}
                         />
-                        <List containerStyle={LocalStyles.listContainer}>
-                            <FlatList
-                                data={playerRankings}
-                                renderItem={({item}) => (
-                                    (item.none ?
-                                        <ListItem
-                                            hideChevron
-                                            titleContainerStyle={{marginLeft: '3%',paddingHorizontal:'40%'}}
-                                            label={<Text style={{marginRight:'43%', color:'#3c3c3c', alignSelf:'center'}}>EMPTY SLOT</Text>}
-                                            leftIcon={<Text style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
-                                            containerStyle={{borderBottomWidth: 0}}
-                                            onPress={() => navigation.navigate('PlayerSelection', {tPlayers: navigation.state.params.data.players})}
-                                            key={1}
-                                        />
-                                        :
-                                        <ListItem
-                                            roundAvatar
-                                            titleNumberOfLines={2}
-                                            titleContainerStyle={{marginLeft: '3%'}}
-                                            title={`${item.name}`}
-                                            titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                            subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
-                                            avatar={{uri: item.photo.path}}
-                                            containerStyle={{borderBottomWidth: 0}}
-                                            badge={{
-                                                element: <Ionicons
-                                                    onPress={() => navigation.navigate('PlayerSelection', {tPlayers: navigation.state.params.data.players})}
-                                                    name="md-menu" size={29} color="green"/>
-                                            }}
-                                            rightIcon={<TouchableOpacity style={{
-                                                justifyContent: 'center',
-                                                borderWidth: 1,
-                                                borderColor: 'black',
-                                                marginLeft: '2%',
-                                                paddingHorizontal: '3%'
-                                            }}><Text>REPLACE</Text></TouchableOpacity>}
-                                            onPressRightIcon={() => navigation.dispatch({type: 'Main'})}
-                                            key={1}
-                                            leftIcon={<Text
-                                                style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
-                                        />)
+                        <View style={LocalStyles.GroupList}>
+                            <List containerStyle={LocalStyles.listContainer}>
+                                <FlatList
+                                    data={playerRankings}
+                                    renderItem={({item}) => (
 
-                                )}
-                                keyExtractor={item => item.position}
-                               /* keyExtractor={item => item.name}*/
-                                ItemSeparatorComponent={this.renderSeparator}
-                            />
-                        </List>
+                                        (item.none ?
+                                                <ListItem
+                                                    hideChevron
+                                                    titleContainerStyle={{marginLeft: '3%', paddingHorizontal: '40%'}}
+                                                    label={<Text style={{
+                                                        marginRight: '43%',
+                                                        color: '#3c3c3c',
+                                                        alignSelf: 'center'
+                                                    }}>EMPTY SLOT</Text>}
+                                                    leftIcon={<Text
+                                                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
+                                                    containerStyle={{borderBottomWidth: 0}}
+                                                    onPress={() => navigation.navigate('PlayerSelection', {tPlayers: navigation.state.params.data.players})}
+                                                    key={1}
+                                                />
+                                                :
+                                                <ListItem
+                                                    roundAvatar
+                                                    titleNumberOfLines={2}
+                                                    titleContainerStyle={{marginLeft: '3%'}}
+                                                    title={`${item.name}`}
+                                                    titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
+                                                    subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
+                                                    avatar={{uri: item.photo.path}}
+                                                    containerStyle={{borderBottomWidth: 0}}
+                                                    badge={{
+                                                        element: <Ionicons
+                                                            onPress={() => navigation.navigate('PlayerSelection', {tPlayers: navigation.state.params.data.players})}
+                                                            name="md-menu" size={29} color="green"/>
+                                                    }}
+                                                    rightIcon={<TouchableOpacity style={{
+                                                        justifyContent: 'center',
+                                                        borderWidth: 1,
+                                                        borderColor: 'black',
+                                                        marginLeft: '2%',
+                                                        paddingHorizontal: '3%'
+                                                    }}><Text>REPLACE</Text></TouchableOpacity>}
+                                                    onPressRightIcon={() => navigation.dispatch({type: 'Main'})}
+                                                    key={1}
+                                                    leftIcon={<Text
+                                                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
+                                                />
+                                        )
+
+                                    )}
+                                    keyExtractor={item => item.position}
+                                    /* keyExtractor={item => item.name}*/
+                                    ItemSeparatorComponent={this.renderSeparator}
+                                />
+                            </List>
+                        </View>
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
                             <TouchableOpacity
                                 onPress={() => this._handleNewRegistry()}
