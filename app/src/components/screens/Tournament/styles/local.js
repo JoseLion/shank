@@ -39,6 +39,15 @@ const LocalStyles = StyleSheet.create({
         fontSize: Style.FONT_13,
         backgroundColor: 'rgba(0,0,0,0)',
         color: 'white',
+    },
+    justifyCenterContent: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    centerContent: {
+       justifyContent: 'center', alignItems: 'center'
     }
 });
 
