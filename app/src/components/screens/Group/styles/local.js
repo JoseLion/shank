@@ -171,8 +171,16 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: 'white',
         height:'100%'
     },
-    listContainer: {borderTopWidth: 0, borderBottomWidth: 0, paddingHorizontal:'8%'}
-
+    listContainer: {borderTopWidth: 0, borderBottomWidth: 0, paddingHorizontal:'8%'},
+    textHeaderPlayerList : {
+        textAlign:'center',
+        color:'#fff',
+        fontWeight:'700',
+        fontSize:16
+    },
+    viewHeaderPlayerList : {
+        backgroundColor: '#ccc'
+    },
 });
 
 export default LocalStyles;

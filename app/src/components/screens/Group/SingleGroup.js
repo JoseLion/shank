@@ -51,7 +51,8 @@ export default class SingleGroup extends Component {
             tournamentStartDate: '',
             loading: false,
             currentDate: new Date(),
-            currentUser: {}
+            currentUser: {},
+            sliderPosition: 0
         };
     }
 
@@ -64,6 +65,35 @@ export default class SingleGroup extends Component {
 
     setLoading(loading) {
         this.setState({loading: loading});
+    }
+
+    setSlidingState(index) {
+        this.setState({sliderPosition: index});
+    }
+
+    onClickScroll(index){
+        let currentIndex = this.state.sliderPosition;
+        if(currentIndex !== index) {
+            let resultSlide = undefined;
+            let countSlides = 3; // 2
+
+            if(index > currentIndex && index !== countSlides) {
+                resultSlide = index - currentIndex;
+                this.swiper.scrollBy(resultSlide, true);
+            }
+            else if(index>currentIndex && index === countSlides) {
+                resultSlide = currentIndex+1;
+                this.swiper.scrollBy(resultSlide, true);
+            }
+            else if(index < currentIndex && index !== 0){
+                resultSlide = (currentIndex - index) * (-1);
+                this.swiper.scrollBy(resultSlide, true);
+            }
+            else if(index < currentIndex && index === 0){
+                resultSlide = currentIndex * (-1);
+                this.swiper.scrollBy(resultSlide, true);
+            }
+        }
     }
 
     componentDidMount() {
@@ -138,7 +168,7 @@ export default class SingleGroup extends Component {
                 <View style={LocalStyles.singleGroupBoxes}>
                     <View style={{flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-between'}}>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
-                                          onPress={() => this.refs.swiper.scrollBy(1)}>
+                                          onPress={() => {this.setSlidingState(1); this.onClickScroll(1)}}> /*TODO: try to scrollBy 2*/
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Participants
                             </Text>
@@ -147,7 +177,7 @@ export default class SingleGroup extends Component {
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
-                                          onPress={() => this.refs.swiper.scrollBy(1)}>
+                                          onPress={() => {this.setSlidingState(2); this.onClickScroll(2)}}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 My players
                             </Text>
@@ -156,7 +186,7 @@ export default class SingleGroup extends Component {
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
-                                          onPress={() => this.refs.swiper.scrollBy(1)}>
+                                          onPress={() => {this.setSlidingState(3); this.onClickScroll(3)}}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Tournament
                             </Text>
