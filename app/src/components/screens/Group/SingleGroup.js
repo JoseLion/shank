@@ -52,9 +52,23 @@ export default class SingleGroup extends Component {
             loading: false,
             currentDate: new Date(),
             currentUser: {},
-            sliderPosition: 0
+            sliderPosition: 0,
+            newPlayer: {},
+            playerRankings: [{none: true, position: 1}, {none: true, position: 2}, {none: true, position: 3}, {none: true, position: 4}, {none: true, position: 5}],
+            playerSelectionPosition: 0
         };
     }
+
+
+    onNewPlayer = newPlayer => {
+        let obj = {}
+        newPlayer.onNewPlayer.position = this.state.playerSelectionPosition
+        obj[this.state.playerSelectionPosition -1] = newPlayer.onNewPlayer
+        let oldReportCopy = Object.assign(this.state.playerRankings, obj)
+        console.log("newPlayernewPlayer")
+        console.log(newPlayer)
+        this.setState({newPlayer, playerRankings:oldReportCopy})
+    };
 
     static navigationOptions = ({navigation}) => ({
         title: 'The Masters',
@@ -71,25 +85,25 @@ export default class SingleGroup extends Component {
         this.setState({sliderPosition: index});
     }
 
-    onClickScroll(index){
+    onClickScroll(index) {
         let currentIndex = this.state.sliderPosition;
-        if(currentIndex !== index) {
+        if (currentIndex !== index) {
             let resultSlide = undefined;
             let countSlides = 3; // 2
 
-            if(index > currentIndex && index !== countSlides) {
+            if (index > currentIndex && index !== countSlides) {
                 resultSlide = index - currentIndex;
                 this.swiper.scrollBy(resultSlide, true);
             }
-            else if(index>currentIndex && index === countSlides) {
-                resultSlide = currentIndex+1;
+            else if (index > currentIndex && index === countSlides) {
+                resultSlide = currentIndex + 1;
                 this.swiper.scrollBy(resultSlide, true);
             }
-            else if(index < currentIndex && index !== 0){
+            else if (index < currentIndex && index !== 0) {
                 resultSlide = (currentIndex - index) * (-1);
                 this.swiper.scrollBy(resultSlide, true);
             }
-            else if(index < currentIndex && index === 0){
+            else if (index < currentIndex && index === 0) {
                 resultSlide = currentIndex * (-1);
                 this.swiper.scrollBy(resultSlide, true);
             }
@@ -106,7 +120,16 @@ export default class SingleGroup extends Component {
         );
     };
 
+    addPlayer = () => {
+        return (
+            <View style={MainStyles.listRenderSeparator}/>
+        );
+    };
+
     render() {
+        console.log('got in render')
+        console.log('playerRankingsplayerRankings')
+        console.log(this.state.playerRankings)
         let navigation = this.props.navigation;
         let whistleIcon = require('../../../../resources/singleGroup/ios/Recurso18.png');
         let notAbsoluteDiff = new Date(navigation.state.params.data.tStartingDate) - this.state.currentDate.getTime();
@@ -115,19 +138,17 @@ export default class SingleGroup extends Component {
             let daysLeft = Math.abs(notAbsoluteDiff);
             diffDays = Math.ceil(daysLeft / (1000 * 3600 * 24));
         }
-        let playerRankings = [{none: true, position: 1}, {none: true, position: 2}, {
-            none: true,
-            position: 3
-        }, {none: true, position: 4}, {none: true, position: 5}];
+        let playerRankings = this.state.playerRankings
         let groupLoggedUser = navigation.state.params.data.currentGroup.users.find(user => user.userId === navigation.state.params.currentUser._id);
         if (groupLoggedUser.playerRanking.length > 0) {
             playerRankings = groupLoggedUser.playerRanking
         }
-        console.log('ssdsdsdsadasczxczxc')
-        console.log(playerRankings)
+        /*        console.log('ssdsdsdsadasczxczxc')
+         console.log(playerRankings)*/
+        console.log('navigationnavigationnavigation')
+        console.log(navigation)
         return (
             <View style={MainStyles.stretchContainer}>
-                <Spinner visible={this.state.loading}/>
                 <StatusBar hidden={true}/>
                 <View style={LocalStyles.singleGroupBoxes}>
                     <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrize]}>
@@ -141,7 +162,7 @@ export default class SingleGroup extends Component {
                     <View style={LocalStyles.innerScoreGroupBox}>
                         <View style={MainStyles.centeredObject}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                                230
+                                {groupLoggedUser.score}
                             </Text>
                             <Text style={LocalStyles.singleGroupScoreTabDescription}>
                                 Score
@@ -149,7 +170,7 @@ export default class SingleGroup extends Component {
                         </View>
                         <View style={MainStyles.centeredObject}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                                3/9
+                                {groupLoggedUser.currentRanking +'/'+ navigation.state.params.data.currentGroup.users.length}
                             </Text>
                             <Text style={LocalStyles.singleGroupScoreTabDescription}>
                                 Ranking
@@ -168,7 +189,10 @@ export default class SingleGroup extends Component {
                 <View style={LocalStyles.singleGroupBoxes}>
                     <View style={{flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-between'}}>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
-                                          onPress={() => {this.setSlidingState(1); this.onClickScroll(1)}}> /*TODO: try to scrollBy 2*/
+                                          onPress={() => {
+                                              this.setSlidingState(1);
+                                              this.onClickScroll(1)
+                                          }}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Participants
                             </Text>
@@ -177,7 +201,10 @@ export default class SingleGroup extends Component {
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
-                                          onPress={() => {this.setSlidingState(2); this.onClickScroll(2)}}>
+                                          onPress={() => {
+                                              this.setSlidingState(2);
+                                              this.onClickScroll(2)
+                                          }}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 My players
                             </Text>
@@ -186,7 +213,10 @@ export default class SingleGroup extends Component {
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
-                                          onPress={() => {this.setSlidingState(3); this.onClickScroll(3)}}>
+                                          onPress={() => {
+                                              this.setSlidingState(3);
+                                              this.onClickScroll(3)
+                                          }}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
                                 Tournament
                             </Text>
@@ -241,9 +271,9 @@ export default class SingleGroup extends Component {
                         <View style={LocalStyles.GroupList}>
                             <List containerStyle={LocalStyles.listContainer}>
                                 <FlatList
-                                    data={playerRankings}
+                                    data={this.state.playerRankings}
+                                    extraData={this.state}
                                     renderItem={({item}) => (
-
                                         (item.none ?
                                                 <ListItem
                                                     hideChevron
@@ -256,22 +286,28 @@ export default class SingleGroup extends Component {
                                                     leftIcon={<Text
                                                         style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
                                                     containerStyle={{borderBottomWidth: 0}}
-                                                    onPress={() => navigation.navigate('PlayerSelection', {tPlayers: navigation.state.params.data.players})}
-                                                    key={1}
+                                                    onPress={() => {this.setState({playerSelectionPosition:item.position});navigation.navigate('PlayerSelection', {
+                                                        tPlayers: navigation.state.params.data.players,
+                                                        onNewPlayer: this.onNewPlayer
+                                                    })}}
+                                                    key={item.position}
                                                 />
                                                 :
                                                 <ListItem
                                                     roundAvatar
                                                     titleNumberOfLines={2}
                                                     titleContainerStyle={{marginLeft: '3%'}}
-                                                    title={`${item.name}`}
+                                                    title={`${item.name} ${item.lastName}`}
                                                     titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                                    subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
-                                                    avatar={{uri: item.photo.path}}
+                                                    subtitle={`${'   TR: ' + '15' + '   SCORE: ' + '115'}`}
+                                                    avatar={{uri: item.urlPhoto}}
                                                     containerStyle={{borderBottomWidth: 0}}
                                                     badge={{
                                                         element: <Ionicons
-                                                            onPress={() => navigation.navigate('PlayerSelection', {tPlayers: navigation.state.params.data.players})}
+                                                            onPress={() => navigation.navigate('PlayerSelection', {
+                                                                tPlayers: navigation.state.params.data.players,
+                                                                onNewPlayer: this.onNewPlayer
+                                                            })}
                                                             name="md-menu" size={29} color="green"/>
                                                     }}
                                                     rightIcon={<TouchableOpacity style={{
@@ -282,12 +318,11 @@ export default class SingleGroup extends Component {
                                                         paddingHorizontal: '3%'
                                                     }}><Text>REPLACE</Text></TouchableOpacity>}
                                                     onPressRightIcon={() => navigation.dispatch({type: 'Main'})}
-                                                    key={1}
+                                                    key={item.position}
                                                     leftIcon={<Text
-                                                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
+                                                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
                                                 />
                                         )
-
                                     )}
                                     keyExtractor={item => item.position}
                                     /* keyExtractor={item => item.name}*/
@@ -314,20 +349,53 @@ export default class SingleGroup extends Component {
                         <List containerStyle={LocalStyles.listContainer}>
                             <FlatList
                                 data={[{
-                                    name: 'raul',
-                                    phone: '12',
+                                    name: 'Si Woo Kim',
+                                    tr: '1',
                                     score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
+                                    position: 1,
+                                    photo: {path: 'http://www.golfchannel.com/sites/golfchannel.prod.acquia-sites.com/files/styles/blog_header_image_304x176/public/9/C/C/%7B9CC84FBA-BEE3-482B-9EA7-16CB3EF643AF%7Dkim_si_woo_q-school12_final_day_610.jpg?itok=DCgt_CPy'}
                                 }, {
-                                    name: 'awww',
-                                    phone: '092928383',
-                                    score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
+                                    name: 'William Wheeler',
+                                    tr: '2',
+                                    score: '260',
+                                    position: 2,
+                                    photo: {path: 'http://media.golfdigest.com/photos/592442b5c45e221ebef6e668/master/w_768/satoshi-kodaira-sony-open-2017.jpg'}
                                 }, {
-                                    name: 'awww2',
-                                    phone: '092928383',
-                                    score: '150',
-                                    photo: {path: 'https://cdn4.iconfinder.com/data/icons/basic-1/64/basic_link-512.png'}
+                                    name: 'Issac Hines',
+                                    tr: '3',
+                                    score: '510',
+                                    position: 3,
+                                    photo: {path: 'https://static1.squarespace.com/static/58abbdb120099e0b12538e67/t/5923a3a1c534a5397b32c34b/1495507887454/Richie3.jpg?format=300w'}
+                                },{
+                                    name: 'Jared Williams',
+                                    tr: '4',
+                                    score: '185',
+                                    position: 4,
+                                    photo: {path: 'http://s3.amazonaws.com/golfcanada/app/uploads/golfcanada/production/2017/06/09093500/17.06.09-Ryan-Williams-370x213.jpg'}
+                                },{
+                                    name: 'Keegan Taylor',
+                                    tr: '5',
+                                    score: '225',
+                                    position: 5,
+                                    photo: {path: 'http://media.gettyimages.com/photos/may-2000-kevin-keegan-the-england-manager-plays-out-of-a-bunker-on-picture-id1030959'}
+                                },{
+                                    name: 'Boo Weekly',
+                                    tr: '6',
+                                    score: '350',
+                                    position: 6,
+                                    photo: {path: 'https://progolfnow.com/wp-content/blogs.dir/120/files/2014/12/boo-weekley-golf-u.s.-open-first-round.jpg'}
+                                },{
+                                    name: 'Bernard Ford',
+                                    tr: '7',
+                                    score: '100',
+                                    position: 7,
+                                    photo: {path: 'http://ichef.bbci.co.uk/onesport/cps/480/mcs/media/images/71780000/jpg/_71780044_gallacherpa.jpg'}
+                                },{
+                                    name: 'Shawn Harper',
+                                    tr: '8',
+                                    score: '110',
+                                    position: 8,
+                                    photo: {path: 'http://media.jrn.com/images/photo-0627bc6sacc_6137489_ver1.0_640_480.jpg'}
                                 }]}
                                 renderItem={({item}) => (
                                     <ListItem
@@ -336,12 +404,12 @@ export default class SingleGroup extends Component {
                                         titleContainerStyle={{marginLeft: '3%'}}
                                         title={`${item.name}`}
                                         titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                        subtitle={`${'   TR: ' + item.phone + '   SCORE: ' + item.score}`}
+                                        subtitle={`${'   TR: ' + item.tr + '   SCORE: ' + item.score}`}
                                         avatar={{uri: item.photo.path}}
                                         containerStyle={{borderBottomWidth: 0}}
                                         hideChevron
                                         leftIcon={<Text
-                                            style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
+                                            style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
                                     />
                                 )}
                                 keyExtractor={item => item.name}

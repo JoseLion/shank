@@ -3,8 +3,27 @@ import {Dimensions, Platform, StyleSheet} from 'react-native';
 const isAndroid = Platform.OS == 'android' ? true : false;
 const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
+import Style from '../../../../styles/Stylesheet';
 
 const LocalStyles = StyleSheet.create({
+    containerMain: {
+        backgroundColor: '#fff',
+        flex:1
+    },
+    avatarList: {
+        width: Style.MD,
+        height: Style.MD,
+        borderRadius: Style.MD/2
+    },
+    titleMainList: {
+       fontSize: Style.FONT_LARGE,
+       color: "#556E3E"
+    },
+    subTitleMainList: {
+        fontSize: Style.FONT_MEDIUM,
+        color: "#BFBFBF",
+        marginLeft:'2.5%'
+    },
     buttonStart: {
         width: '100%',
         paddingBottom:12,

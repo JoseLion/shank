@@ -115,11 +115,11 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center'
     },
     singleGroupTitle :{
-        fontSize: Style.FONT_SMALL,
+        fontSize: Style.FONT_15,
         color: '#fff',
     },
     singleGroupTitleBold :{
-        fontSize: Style.FONT_MEDIUM,
+        fontSize: Style.FONT_16,
         color: '#fff',
         fontWeight: 'bold'
     },
@@ -175,11 +175,16 @@ const LocalStyles = StyleSheet.create({
     textHeaderPlayerList : {
         textAlign:'center',
         color:'#fff',
-        fontWeight:'700',
-        fontSize:16
+        fontWeight:'800',
+        fontSize:Style.FONT_SMALL
+    },
+    alphabeticalText : {
+        color:'#556E3E',
+        fontWeight:'800',
+        fontSize:Style.FONT_MEDIUM
     },
     viewHeaderPlayerList : {
-        backgroundColor: '#ccc'
+        backgroundColor: '#556E3E'
     },
 });
 

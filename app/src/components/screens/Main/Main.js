@@ -129,6 +129,15 @@ export default class MainScreen extends Component {
         );
     };
 
+    renderHeader = () => {
+        if (!this.state.refreshing) return null;
+        return <View
+            style={{
+                height:100
+            }}
+        />;
+    };
+
     renderFooter = () => {
         if (!this.state.loading) return null;
 
@@ -181,7 +190,7 @@ export default class MainScreen extends Component {
             }
             AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
                 this.setLoading(false);
-                navigation.navigate('SingleGroup', {data:data,currentUser:JSON.parse(user)})
+                navigation.navigate('SingleGroup', {data: data, currentUser: JSON.parse(user)})
             });
         } catch (e) {
             console.log('error in initialRequest: SingleGroup.js')
@@ -193,7 +202,7 @@ export default class MainScreen extends Component {
         let navigation = this.props.navigation;
         if (this.state.auth) {
             return (
-                <View>
+                <View style={LocalStyles.containerMain}>
                     <Spinner visible={this.state.loading}/>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={() => navigation.dispatch({type: 'Group'})}>
@@ -209,9 +218,12 @@ export default class MainScreen extends Component {
                             renderItem={({item}) => (
                                 <ListItem
                                     roundAvatar
-                                    title={`${item.name}`}
-                                    subtitle={item.tournament}
+                                   /* avatarStyle={LocalStyles.avatarList}*/
                                     avatar={{uri: item.photo.path}}
+                                    title={`${item.name}`}
+                                    titleStyle={LocalStyles.titleMainList}
+                                    subtitleNumberOfLines={2}
+                                    subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"} Score: 230     Rank: 3/9</Text>}
                                     underlayColor={"#b3b3b3"}
                                     containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
                                     onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
@@ -222,6 +234,7 @@ export default class MainScreen extends Component {
                             ListFooterComponent={this.renderFooter}
                             onRefresh={this.handleRefresh}
                             refreshing={this.state.refreshing}
+                            ListHeaderComponent={this.renderHeader}
                             onEndReachedThreshold={1}
                         />
                     </List>

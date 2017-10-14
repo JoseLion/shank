@@ -4,61 +4,82 @@
 import React, {Component} from 'react';
 
 import PropTypes from 'prop-types';
-const AlphabetListView = require('react-native-alphabetlistview');
 import LocalStyles from './styles/local';
 import MainStyles from '../../../styles/main';
+import AtoZListView from 'react-native-atoz-listview';
+import {Avatar} from "react-native-elements";
 
 import {
     Text,
     View,
-    TouchableOpacity
+    TouchableOpacity,
 } from 'react-native';
 
-export default class PlayersList extends Component {
+class SectionHeader extends Component {
+    render() {
+        return (
+            <View style={LocalStyles.viewHeaderPlayerList}>
+                <Text style={LocalStyles.textHeaderPlayerList}>{this.props.title}</Text>
+            </View>
+        );
+    }
+}
 
+class SectionItem extends Component {
+    render() {
+        return (
+            <Text style={LocalStyles.alphabeticalText}>{this.props.title}</Text>
+        );
+    }
+}
+const rowHeight = 40;
+export default class PlayersList extends Component {
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,
     };
 
+
+
+    // Define your own renderRow
     constructor(props) {
         super(props);
         console.log("constructorconstructor")
-        console.log(this.props)
-        // this._removeStorage = this._removeStorage.bind(this);
+        //console.log(this.props.screenProps.tPlayers) heres gonna come the players
+
+        this.renderRow = this.renderRow.bind(this);
         this.state = {
             loading: false,
             tPLayers: this.props.tPlayers,
             data: {
-                A: ['some','entries','are here'],
-                B: ['some','entries','are here'],
-                C: ['some','entries','are here'],
-                D: ['some','entries','are here'],
-                E: ['some','entries','are here'],
-                F: ['some','entries','are here'],
-                G: ['some','entries','are here'],
-                H: ['some','entries','are here'],
-                I: ['some','entries','are here'],
-                J: ['some','entries','are here'],
-                K: ['some','entries','are here'],
-                L: ['some','entries','are here'],
-                M: ['some','entries','are here'],
-                N: ['some','entries','are here'],
-                O: ['some','entries','are here'],
-                P: ['some','entries','are here'],
-                Q: ['some','entries','are here'],
-                R: ['some','entries','are here'],
-                S: ['some','entries','are here'],
-                T: ['some','entries','are here'],
-                U: ['some','entries','are here'],
-                V: ['some','entries','are here'],
-                W: ['some','entries','are here'],
-                X: ['some','entries','are here'],
-                Y: ['some','entries','are here'],
-                Z: ['some','entries','are here'],
+                "A": [{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"},{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"} ],
+                "B": [{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"},{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"} ],
+                "C": [{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"},{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"} ],
+                "X": [{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"},{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"} ],
+                "Z": [{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"},{"name": "Anh Tuan", "lastName": "Nguyen", "urlPhoto":"https://res.cloudinary.com/pga-tour/image/upload/q_85,t_headshots_player_l/headshots_37455.png"} ],
             }
         };
     }
+
+    renderRow = (item, sectionId, index) =>{
+        let navigation = this.props.navigation;
+        console.log("this.propsthis.propsthis.propsthis.propsthis.propsthis.propsthis.propsthis.propsthis.props")
+        console.log(this.props)
+        return (
+            <TouchableOpacity style={[MainStyles.centeredObject, {height: '13%', justifyContent: 'center', alignItems: 'center'}]}
+                              onPress={() => navigation.goBack(null)/*navigation.navigate('SingleGroup', {extraPlayer: this.props.item})*/}>
+                <Avatar
+                    small
+                    rounded
+                    source={{uri: item.urlPhoto}}
+                    onPress={() => navigation.navigate('SingleGroup', {extraPlayer: index})}
+                    activeOpacity={0.7}
+                />
+                <Text>{item.name} {item.lastName}</Text>
+            </TouchableOpacity>
+        );
+    }
+
 
     setLoading(loading) {
         this.setState({loading: loading});
@@ -71,48 +92,43 @@ export default class PlayersList extends Component {
 
     }
 
-    SectionHeader = () => {
-        return (
-            <View style={LocalStyles.viewHeaderPlayerList}>
-                <Text style={LocalStyles.textHeaderPlayerList}>{this.props.title}</Text>
-            </View>
-        );
-    };
-
-    SectionItem = () => {
-        return (
-            <Text style={{color:'#f00'}}>{this.props.title}</Text>
-        );
-    };
-
-    Cell = (navigation) => {
-        return (
-            <View style={{height:30}}>
-                <TouchableOpacity style={[MainStyles.centeredObject]}
-                                  onPress={() => navigation.navigate('SingleGroup', {extraPlayer: this.props.item})}>
-                    <Text>{this.props.item}</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    };
-
-
-
     render() {
         let navigation = this.props.navigation;
         console.log("navigation.state.params.datanavigation.state.params.data")
-        console.log(navigation.state.params.tPlayers)
+        // console.log(navigation.state.params.tPlayers)
         /*        let tournamentItems = this.state.tPLayers.map((s, i) => {
-                    return <Text>{s.first_name} {s.last_name}</Text>
-                });*/
+         return <Text>{s.first_name} {s.last_name}</Text>
+         });*/
+        {/* <AlphabetListView
+         data={this.state.data}
+         cell={Cell}
+         cellHeight={30}
+         sectionListItem={SectionItem}
+         sectionHeader={SectionHeader}
+         sectionHeaderHeight={22.5}
+         />*/
+        }
         return (
-            <AlphabetListView
-                data={this.state.data}
-                cell={this.Cell}
-                cellHeight={30}
-                sectionListItem={this.SectionItem}
-                sectionHeader={this.SectionHeader}
-                sectionHeaderHeight={22.5}
+            <AtoZListView
+                data={this.state.data}     // required array|object
+                renderRow={this.renderRow} // required func
+                rowHeight={rowHeight}      // required number
+                sectionHeaderHeight={40}   // required number
+                sectionHeader={SectionHeader}
+                sectionListItem={SectionItem}
+                /**
+                 * Optional props: all props will passing to ListView
+                 * you simple look at ListView official document
+                 * headerHeight              number
+                 * footerHeigh               number
+                 * sectionListStyle          number|object
+                 * hideSectionList           bool
+                 * compareFunction           func
+                 * renderSelectionList       func
+                 * sectionListItem           func
+                 * contentOffset             object
+                 * style                     object|number
+                 */
             />
         )
     }
