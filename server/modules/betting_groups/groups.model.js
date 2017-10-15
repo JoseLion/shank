@@ -17,11 +17,13 @@ let BettingGroupSchema = new mongoose.Schema({
         currentDailyMovements: {type: Number},
         dailyMovementsDone: {type: Boolean},
         playerRanking: [{
+            name: {type: String},
+            lastName: {type: String},
+            urlPhoto: {type: String},
             playerId: {type: String},
             TR: {type: Number},
             Score: {type: Number},
-            currentPosition: {type: Number},
-            playerPhotoUrl: {type: String},
+            currentPosition: {type: Number}
         }],
     }],
     prize: String,

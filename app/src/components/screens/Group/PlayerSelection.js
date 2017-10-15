@@ -10,6 +10,7 @@ import LocalStyles from './styles/local';
 import MainStyles from '../../../styles/main';
 import {Avatar} from "react-native-elements";
 import AtoZListView from 'react-native-atoz-listview';
+import BaseModel from '../../../core/BaseModel';
 
 import {
     Button,
@@ -84,14 +85,36 @@ export default class PlayerSelection extends Component {
         }
     }
 
+    updatePlayerRankings = async (groupId,userGroupId,playerRankings,navigation,newAddition,currentPosition) => {
+        this.setLoading(true);
+        let newAdditionInPosition = {}
+        newAdditionInPosition[currentPosition -1] = newAddition
+        let updatedPlayerPredictions = Object.assign(playerRankings, newAdditionInPosition)
+        let data = {
+            userGroupId:userGroupId,
+            playerRankings:updatedPlayerPredictions,
+            groupId:groupId,
+        }
+        console.log("datadatadataupdatePlayerRanksssingsupdatePlayerRankingsupdatePlayerRankings")
+        console.log(data)
+        try {
+            const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data)
+            if (currentGroup) {
+                navigation.goBack()
+                navigation.state.params.onNewPlayer({ onNewPlayer: newAddition })
+            }
+        } catch (e) {
+            console.log('error in initialRequest: SingleGroup.js')
+            console.log(e)
+        }
+    };
+
     renderRow = (item, sectionId, index) =>{
         let navigation = this.props.navigation;
-        console.log("this.propsthis.propsthis.propsthis.propsthis.propsthis.propsthis.propsthis.propsthis.props")
-        console.log(this.props)
         item['none'] = false;
         return (
             <TouchableOpacity style={[MainStyles.centeredObject, {height: '13%', justifyContent: 'center', alignItems: 'center'}]}
-                              onPress={() => {navigation.goBack();navigation.state.params.onNewPlayer({ onNewPlayer: item });}/*navigation.navigate('SingleGroup', {extraPlayer: this.props.item})*/}>
+                              onPress={() => this.updatePlayerRankings(navigation.state.params.groupId,navigation.state.params.userGroupId,navigation.state.params.tPlayers,navigation,item,navigation.state.params.currentPosition)/*navigation.navigate('SingleGroup', {extraPlayer: this.props.item})*/}>
                 <Avatar
                     small
                     rounded

@@ -287,7 +287,10 @@ export default class SingleGroup extends Component {
                                                         style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
                                                     containerStyle={{borderBottomWidth: 0}}
                                                     onPress={() => {this.setState({playerSelectionPosition:item.position});navigation.navigate('PlayerSelection', {
-                                                        tPlayers: navigation.state.params.data.players,
+                                                        tPlayers: playerRankings,
+                                                        userGroupId: groupLoggedUser._id,
+                                                        groupId: navigation.state.params.data.currentGroup._id,
+                                                        currentPosition: item.position,
                                                         onNewPlayer: this.onNewPlayer
                                                     })}}
                                                     key={item.position}
