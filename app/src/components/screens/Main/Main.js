@@ -52,10 +52,12 @@ export default class MainScreen extends Component {
             this.setState({
                 auth: authToken
             })
-        });
-        this._myGroupsAsyncRemoteRequest().then((group) => {
-            console.log('group')
-            console.log(group)
+            if(authToken){
+                this._myGroupsAsyncRemoteRequest().then((group) => {
+                    console.log('group')
+                    console.log(group)
+                });
+            }
         });
     }
 
