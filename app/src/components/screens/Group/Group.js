@@ -211,7 +211,7 @@ export default class Group extends Component {
                 <TextInput
                     underlineColorAndroid='transparent'
                     placeholder={'Prize'}
-                    style={[LocalStyles.createTInput, {paddingBottom: 5}]}
+                    style={[LocalStyles.richCreateTInput, {paddingBottom: 5}]}
                     onChangeText={(prize) => this.setState({prize: prize})}
                     value={this.state.prize}
                 />

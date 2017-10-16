@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, Image, StatusBar} from 'react-native';
+import {View, Image, StatusBar, AsyncStorage} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
+import * as Constants from '../../../core/Constans';
 
 const logoTrans = require('../../../../resources/shankLogo/IOS/trans/shankLogoTrans.png');
 const logoRegular = require('../../../../resources/shankLogo/IOS/regular/shankLogo.png');
@@ -19,9 +20,16 @@ export default class SplashScreen extends Component {
     };
 
     componentDidMount() {
-        this.timeoutHandle = setTimeout(() => {
+        AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
+            if (authToken) {
+                this.props.navigation.dispatch({type: 'Main'})
+            }else{
+                this.props.navigation.dispatch({type: 'Slider'})
+            }
+        });
+      /*  this.timeoutHandle = setTimeout(() => {
             this.props.navigation.dispatch({type: 'Slider'})
-        }, 2000);
+        }, 2000);*/
     };
 
     componentWillUnmount() {
