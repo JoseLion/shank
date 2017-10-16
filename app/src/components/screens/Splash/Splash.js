@@ -20,16 +20,15 @@ export default class SplashScreen extends Component {
     };
 
     componentDidMount() {
-        AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
-            if (authToken) {
-                this.props.navigation.dispatch({type: 'Main'})
-            }else{
-                this.props.navigation.dispatch({type: 'Slider'})
-            }
-        });
-      /*  this.timeoutHandle = setTimeout(() => {
-            this.props.navigation.dispatch({type: 'Slider'})
-        }, 2000);*/
+        this.timeoutHandle = setTimeout(() => {
+            AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
+                if (authToken) {
+                    this.props.navigation.dispatch({type: 'Main'})
+                }else{
+                    this.props.navigation.dispatch({type: 'Slider'})
+                }
+            });
+        }, 2000);
     };
 
     componentWillUnmount() {
