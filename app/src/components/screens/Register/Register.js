@@ -6,15 +6,13 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
     AsyncStorage,
-    Button,
-    StyleSheet,
     Text,
     View,
     TextInput,
     TouchableHighlight,
     TouchableOpacity,
     Alert,
-    KeyboardAvoidingView
+    findNodeHandle
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -22,6 +20,7 @@ import Notifier from '../../../core/Notifier';
 import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {Facebook} from 'expo';
 
 
@@ -45,6 +44,7 @@ export default class Register extends Component {
 
         this._handleNewRegistry = this._handleNewRegistry.bind(this);
         this._registerByFacebook = this._registerByFacebook.bind(this);
+        this._scrollToInput = this._scrollToInput.bind(this);
 
         this.state = {
             name: '',
@@ -75,6 +75,11 @@ export default class Register extends Component {
                 Notifier.message({title: 'ERROR', message: error});
             }, Constants.TIME_OUT_NOTIFIER);
         });
+    }
+
+    _scrollToInput (reactNode) {
+        // Add a 'scroll' ref to your ScrollView
+        this.refs.scroll.scrollToFocusedInput(reactNode)
     }
 
     _handleNewRegistry() {
@@ -129,12 +134,12 @@ export default class Register extends Component {
                     console.log("all data of profile --> ", profile);
                     console.log("facebook id --> ", profile.id);
 
-                    if (profile.email){
+                    if (profile.email) {
                         let data = {
                             name: profile.name,
                             email: profile.email,
-                            password:  profile.id,
-                            fbId:  profile.id,
+                            password: profile.id,
+                            fbId: profile.id,
                         };
 
                         console.log("parse data ", data);
@@ -175,75 +180,82 @@ export default class Register extends Component {
     render() {
         let navigation = this.props.navigation;
         return (
-            <KeyboardAvoidingView style={MainStyles.container} behavior="padding">
-                <Spinner visible={this.state.loading}/>
-                <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
-                    WELCOME
-                </Text>
-                <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
-                    LETS START BY CREATING {"\n"} AN ACCOUNT
-                </Text>
-                <TextInput
-                    autoFocus = {true}
-                    returnKeyType = {"next"}
-                    underlineColorAndroid="transparent"
-                    style={MainStyles.loginInput}
-                    onChangeText={(name) => this.setState({name})}
-                    value={this.state.name}
-                    placeholder={'Name'}
-                    onSubmitEditing={(event) => {
-                        this.refs.email.focus();
-                    }}
-                />
-                <TextInput
-                    ref='email'
-                    underlineColorAndroid="transparent"
-                    style={MainStyles.loginInput}
-                    onChangeText={(email) => this.setState({email})}
-                    value={this.state.email}
-                    placeholder={'Email'}
-                    onSubmitEditing={(event) => {
-                        this.refs.pass1.focus();
-                    }}
-                />
-                <TextInput
-                    ref='pass1'
-                    secureTextEntry={true}
-                    underlineColorAndroid="transparent"
-                    style={MainStyles.loginInput}
-                    onChangeText={(password) => this.setState({password})}
-                    value={this.state.password}
-                    placeholder={'Password'}
-                    onSubmitEditing={(event) => {
-                        this.refs.pass2.focus();
-                    }}
-                />
-                <TextInput
-                    ref='pass2'
-                    secureTextEntry={true}
-                    underlineColorAndroid="transparent"
-                    style={MainStyles.loginInput}
-                    onChangeText={(repeatedPassword) => this.setState({repeatedPassword})}
-                    value={this.state.repeatedPassword}
-                    placeholder={'Repeat your password'}
-                />
-                <TouchableOpacity
-                    onPress={() => this._handleNewRegistry()}
-                    style={MainStyles.goldenShankButton}>
-                    <Text style={LocalStyles.buttonText}>Register</Text>
-                </TouchableOpacity>
-                <TouchableHighlight
-                    onPress={this._registerByFacebook}
-                    style={MainStyles.fbButton}>
-                    <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
-                </TouchableHighlight>
-                <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
-                    <Text
-                        style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
-                        I already have an account
+            <KeyboardAwareScrollView ref='scroll'>
+                <View style={MainStyles.container} behavior="padding">
+                    <Spinner visible={this.state.loading}/>
+                    <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
+                        WELCOME
                     </Text>
-                </TouchableOpacity>
-            </KeyboardAvoidingView>
+                    <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
+                        LETS START BY CREATING {"\n"} AN ACCOUNT
+                    </Text>
+                    <TextInput
+                        autoFocus={true}
+                        returnKeyType={"next"}
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(name) => this.setState({name})}
+                        value={this.state.name}
+                        placeholder={'Name'}
+                        onFocus={(event) => {
+                            // `bind` the function if you're using ES6 classes
+                            this._scrollToInput(findNodeHandle(event.target))
+                        }}
+                        onSubmitEditing={(event) => {
+                            this.refs.email.focus();
+                        }}
+                    />
+                    <TextInput
+                        ref='email'
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(email) => this.setState({email})}
+                        value={this.state.email}
+                        placeholder={'Email'}
+                        onSubmitEditing={(event) => {
+                            this.refs.pass1.focus();
+                        }}
+                    />
+                    <TextInput
+                        ref='pass1'
+                        secureTextEntry={true}
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(password) => this.setState({password})}
+                        value={this.state.password}
+                        placeholder={'Password'}
+                        onSubmitEditing={(event) => {
+                            this.refs.pass2.focus();
+                        }}
+                    />
+                    <TextInput
+                        ref='pass2'
+                        secureTextEntry={true}
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(repeatedPassword) => this.setState({repeatedPassword})}
+                        value={this.state.repeatedPassword}
+                        placeholder={'Repeat your password'}
+                    />
+                    <TouchableOpacity
+                        onPress={() => this._handleNewRegistry()}
+                        style={MainStyles.goldenShankButton}>
+                        <Text style={LocalStyles.buttonText}>Register</Text>
+                    </TouchableOpacity>
+                    <TouchableHighlight
+                        onPress={this._registerByFacebook}
+                        style={MainStyles.fbButton}>
+                        <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
+                    </TouchableHighlight>
+                    <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
+                        <Text
+                            style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
+                            I already have an account
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAwareScrollView>
+
         );
     }
 }
