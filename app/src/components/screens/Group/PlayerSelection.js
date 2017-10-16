@@ -14,7 +14,6 @@ import BaseModel from '../../../core/BaseModel';
 import Notifier from '../../../core/Notifier';
 
 import {
-    Button,
     TouchableOpacity,
     Text,
     View
