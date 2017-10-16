@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, AsyncStorage, Alert} from 'react-native';
+import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, AsyncStorage} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import Notifier from '../../../core/Notifier';
@@ -50,19 +50,27 @@ export default class LoginScreen extends Component {
                     WELCOME BACK
                 </Text>
                 <TextInput
+                    returnKeyType={"next"}
                     underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(email) => this.setState({email})}
                     value={this.state.email}
                     placeholder={'Email'}
+                    onSubmitEditing={(event) => {
+                        this.refs.password.focus();
+                    }}
                 />
                 <TextInput
+                    ref='password'
                     secureTextEntry={true}
                     underlineColorAndroid="transparent"
                     style={MainStyles.loginInput}
                     onChangeText={(password) => this.setState({password})}
                     value={this.state.password}
-                    placeholder={'Password'}
+                    placeholder={'password'}
+                    onSubmitEditing={(event) =>
+                        this._onLoginPressed
+                    }
                 />
                 <TouchableHighlight
                     onPress={this._onLoginPressed}

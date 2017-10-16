@@ -12,7 +12,8 @@ import {
     TouchableHighlight,
     TouchableOpacity,
     Alert,
-    findNodeHandle
+    findNodeHandle,
+    Keyboard
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -196,7 +197,6 @@ export default class Register extends Component {
                             LETS START BY CREATING {"\n"} AN ACCOUNT
                         </Text>
                         <TextInput
-                            autoFocus={true}
                             returnKeyType={"next"}
                             underlineColorAndroid="transparent"
                             style={MainStyles.loginInput}
@@ -213,6 +213,7 @@ export default class Register extends Component {
                         <TextInput
                             ref='email'
                             underlineColorAndroid="transparent"
+                            returnKeyType={"next"}
                             style={MainStyles.loginInput}
                             onChangeText={(email) => this.setState({email})}
                             value={this.state.email}
@@ -227,6 +228,7 @@ export default class Register extends Component {
                         <TextInput
                             ref='pass1'
                             secureTextEntry={true}
+                            returnKeyType={"next"}
                             underlineColorAndroid="transparent"
                             style={MainStyles.loginInput}
                             onChangeText={(password) => this.setState({password})}
@@ -242,12 +244,16 @@ export default class Register extends Component {
                         <TextInput
                             ref='pass2'
                             secureTextEntry={true}
+                            returnKeyType={"next"}
                             underlineColorAndroid="transparent"
                             style={MainStyles.loginInput}
                             onChangeText={(repeatedPassword) => this.setState({repeatedPassword})}
                             value={this.state.repeatedPassword}
                             onFocus={(event) => {
                                 this._scrollToInput(findNodeHandle(event.target))
+                            }}
+                            onSubmitEditing={(event) => {
+                                Keyboard.dismiss()
                             }}
                             placeholder={'Repeat your password'}
                         />

@@ -52,7 +52,7 @@ export default class MainScreen extends Component {
             this.setState({
                 auth: authToken
             })
-            if(authToken){
+            if (authToken) {
                 this._myGroupsAsyncRemoteRequest().then((group) => {
                     console.log('group')
                     console.log(group)
@@ -135,7 +135,7 @@ export default class MainScreen extends Component {
         if (!this.state.refreshing) return null;
         return <View
             style={{
-                height:100
+                height: 100
             }}
         />;
     };
@@ -199,6 +199,7 @@ export default class MainScreen extends Component {
             console.log(e)
         }
     };
+
 //PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
     render() {
         let navigation = this.props.navigation;
@@ -214,32 +215,35 @@ export default class MainScreen extends Component {
                                         onPress={this._removeStorage}>
                         <Text>LOGOUT</Text>
                     </TouchableHighlight>
-                    <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
-                        <FlatList
-                            data={this.state.data}
-                            renderItem={({item}) => (
-                                <ListItem
-                                    roundAvatar
-                                   /* avatarStyle={LocalStyles.avatarList}*/
-                                    avatar={{uri: item.photo.path}}
-                                    title={`${item.name}`}
-                                    titleStyle={LocalStyles.titleMainList}
-                                    subtitleNumberOfLines={2}
-                                    subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"} Score: -     Rank: - </Text>}
-                                    underlayColor={"#b3b3b3"}
-                                    containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
-                                    onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
-                                />
-                            )}
-                            keyExtractor={item => item._id}
-                            ItemSeparatorComponent={this.renderSeparator}
-                            ListFooterComponent={this.renderFooter}
-                            onRefresh={this.handleRefresh}
-                            refreshing={this.state.refreshing}
-                            ListHeaderComponent={this.renderHeader}
-                            onEndReachedThreshold={1}
-                        />
-                    </List>
+                    <View style={{flex: 2, width: '100%', height: '92%'}}>
+                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                            <FlatList
+                                data={this.state.data}
+                                renderItem={({item}) => (
+                                    <ListItem
+                                        roundAvatar
+                                        /* avatarStyle={LocalStyles.avatarList}*/
+                                        avatar={{uri: item.photo.path}}
+                                        title={`${item.name}`}
+                                        titleStyle={LocalStyles.titleMainList}
+                                        subtitleNumberOfLines={2}
+                                        subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
+                                            Score: - Rank: - </Text>}
+                                        underlayColor={"#b3b3b3"}
+                                        containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
+                                        onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
+                                    />
+                                )}
+                                keyExtractor={item => item._id}
+                                ItemSeparatorComponent={this.renderSeparator}
+                                ListFooterComponent={this.renderFooter}
+                                onRefresh={this.handleRefresh}
+                                refreshing={this.state.refreshing}
+                                ListHeaderComponent={this.renderHeader}
+                                onEndReachedThreshold={1}
+                            />
+                        </List>
+                    </View>
                 </View>
             )
         } else {

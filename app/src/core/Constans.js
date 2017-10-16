@@ -1,6 +1,8 @@
 /**
  * Created by MnMistake on 9/27/2017.
  */
+import React from 'react';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 export const AUTH_TOKEN = "shank-auth-token";
 export const USER_PROFILE = 'shank-profile';
