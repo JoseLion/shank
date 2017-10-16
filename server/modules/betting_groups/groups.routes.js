@@ -67,6 +67,23 @@ let prepareRouter = function (app) {
                     res.ok(user);
                 });
         })
+        .get('/latestPlayerSelection', auth, function (req, res) {
+            if (!req.payload._id) {
+                res.ok({}, 'Usuario no autorizado.');
+                return;
+            }
+            let data = req.body;
+
+            BettingGroup.find({_id: data.groupId, 'users._id': data.userGroupId}).select('playerRanking')
+                .exec(function (err, playerRanking) {
+                    if (err) {
+                        res.ok({}, 'Al seleccionar player rankings.');
+                        return;
+                    }
+                    res.ok(playerRanking);
+                });
+
+        })
         .post('/updateUserPlayerRankingByGroup', auth, function (req, res) {
             if (!req.payload._id) {
                 res.ok({}, 'Usuario no autorizado.');
@@ -76,49 +93,49 @@ let prepareRouter = function (app) {
             console.log("ghosssssssssssssssssssssssssssssstttt")
             console.log(data)
 
-            BettingGroup.findOneAndUpdate(  { _id: data.groupId, 'users._id': data.userGroupId},
+            BettingGroup.findOneAndUpdate({_id: data.groupId, 'users._id': data.userGroupId},
                 {
-                    $push: {
+                    $set: {
                         'users.$.playerRanking': data.playerRankings,
                     }
-                },{new: true, upsert: true, setDefaultsOnInsert: true},
+                }, {new: true, upsert: true, setDefaultsOnInsert: true},
                 function (err, data) {
-                if (err) {
-                    console.log("okokokokokokokokokokokokokok")
-                    console.log(err)
-                    res.ok({}, 'Data not updated');
-                }
-                else {
-                    res.ok(data);
-                }
-            });
-
-/*            BettingGroup.findOneAndUpdate({id: data.groupId,'users._id': data.userGroupId}, SampleComment, {new: true, upsert: true, setDefaultsOnInsert: true}, function(error, result) {
-                if(error){
-                    console.log("Something wrong when updating data!");
-                }
-
-                console.log(result);
-            });*/
-
-    /*        User.findOneAndUpdate(
-                { id: data.groupId, 'users._id': data.userGroupId},
-                {
-                    $push: {
-                        'users.$.playerRanking': {  playerRanking: data.playerRankings},
+                    if (err) {
+                        console.log("okokokokokokokokokokokokokok")
+                        console.log(err)
+                        res.ok({}, 'Data not updated');
                     }
-                }
-            )*/
-
-           /* BettingGroup.findById(data.groupId, function(err, post) {
-                let subDoc = post.users.id(data.userGroupId);
-                subDoc.push(data.playerRankings);
-                post.save().then(function(savedUserGroup) {
-                    res.ok(savedUserGroup);
-                }).catch(function(err) {
-                    res.ok({}, 'Data not updated');
+                    else {
+                        res.ok(data);
+                    }
                 });
-            });*/
+
+            /*            BettingGroup.findOneAndUpdate({id: data.groupId,'users._id': data.userGroupId}, SampleComment, {new: true, upsert: true, setDefaultsOnInsert: true}, function(error, result) {
+             if(error){
+             console.log("Something wrong when updating data!");
+             }
+
+             console.log(result);
+             });*/
+
+            /*        User.findOneAndUpdate(
+             { id: data.groupId, 'users._id': data.userGroupId},
+             {
+             $push: {
+             'users.$.playerRanking': {  playerRanking: data.playerRankings},
+             }
+             }
+             )*/
+
+            /* BettingGroup.findById(data.groupId, function(err, post) {
+             let subDoc = post.users.id(data.userGroupId);
+             subDoc.push(data.playerRankings);
+             post.save().then(function(savedUserGroup) {
+             res.ok(savedUserGroup);
+             }).catch(function(err) {
+             res.ok({}, 'Data not updated');
+             });
+             });*/
         })
         .post('/createGroup', auth, function (req, res) {
             if (!req.payload._id) {

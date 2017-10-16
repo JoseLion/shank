@@ -223,7 +223,7 @@ export default class MainScreen extends Component {
                                     title={`${item.name}`}
                                     titleStyle={LocalStyles.titleMainList}
                                     subtitleNumberOfLines={2}
-                                    subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"} Score: 230     Rank: 3/9</Text>}
+                                    subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"} Score: -     Rank: - </Text>}
                                     underlayColor={"#b3b3b3"}
                                     containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
                                     onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}

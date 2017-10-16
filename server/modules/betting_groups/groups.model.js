@@ -22,8 +22,8 @@ let BettingGroupSchema = new mongoose.Schema({
             urlPhoto: {type: String},
             playerId: {type: String},
             TR: {type: Number},
-            Score: {type: Number},
-            currentPosition: {type: Number}
+            score: {type: Number},
+            position: {type: Number}
         }],
     }],
     prize: String,

@@ -12,7 +12,7 @@ import Swiper from 'react-native-swiper';
 import {LinearGradient} from 'expo';
 import BaseModel from '../../../core/BaseModel';
 
-import {Ionicons} from '@expo/vector-icons'; // 5.2.0
+import {Ionicons, Entypo} from '@expo/vector-icons'; // 5.2.0
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -24,12 +24,17 @@ const ImageHeader = navigation => (
             <Text style={LocalStyles.singleGroupTitle}>{navigation.state.params.data.currentGroup.name}</Text>
             <Text style={LocalStyles.singleGroupTitleBold}>{navigation.state.params.data.tName}</Text>
         </Image>
-        <Header onPress={() => console.log('hueheuheueu')} {...navigation}
+        <Header onPress={() => console.log('hueheuhSSeuSSeu')} {...navigation}
                 style={{backgroundColor: 'transparent', height: '100%'}}
-                leftComponent={{icon: 'chevron-left', color: '#fff', onPress: () => navigation.goBack(null)}}
-                outerContainerStyles={{width: '50', paddingVertical: '40%'}}
+                leftComponent={<Entypo
+                    onPress={() => {
+                        navigation.goBack(null)
+                    }}
+                    style={{backgroundColor: 'transparent', marginBottom : '100%'}}
+                    name="chevron-left" size={33} color="white"/>}
         />
     </View>
+    /*leftComponent={{icon: 'chevron-left', color: '#fff', onPress: () => navigation.goBack(null)}}*/
 );
 
 export default class SingleGroup extends Component {
@@ -40,7 +45,8 @@ export default class SingleGroup extends Component {
 
     constructor(props) {
         super(props);
-        // this._removeStorage = this._removeStorage.bind(this);
+        this.onNewPlayer = this.onNewPlayer.bind(this);
+        this.onClickScroll = this.onClickScroll.bind(this);
         this.state = {
             tournamentRankings: [],
             currentGroup: {},
@@ -54,20 +60,24 @@ export default class SingleGroup extends Component {
             currentUser: {},
             sliderPosition: 0,
             newPlayer: {},
-            playerRankings: [{none: true, position: 1}, {none: true, position: 2}, {none: true, position: 3}, {none: true, position: 4}, {none: true, position: 5}],
+            playerRankings: [{none: true, position: 1}, {none: true, position: 2}, {
+                none: true,
+                position: 3
+            }, {none: true, position: 4}, {none: true, position: 5}],
             playerSelectionPosition: 0
         };
+        this.lastPosition = 1;
     }
 
 
     onNewPlayer = newPlayer => {
         let obj = {}
         newPlayer.onNewPlayer.position = this.state.playerSelectionPosition
-        obj[this.state.playerSelectionPosition -1] = newPlayer.onNewPlayer
+        obj[this.state.playerSelectionPosition - 1] = newPlayer.onNewPlayer
         let oldReportCopy = Object.assign(this.state.playerRankings, obj)
         console.log("newPlayernewPlayer")
         console.log(newPlayer)
-        this.setState({newPlayer, playerRankings:oldReportCopy})
+        this.setState({newPlayer, playerRankings: oldReportCopy})
     };
 
     static navigationOptions = ({navigation}) => ({
@@ -86,27 +96,40 @@ export default class SingleGroup extends Component {
     }
 
     onClickScroll(index) {
-        let currentIndex = this.state.sliderPosition;
+        return;
+        let currentIndex = this.lastPosition;
+        console.log("before currentIndex")
+        console.log(currentIndex)
         if (currentIndex !== index) {
-            let resultSlide = undefined;
-            let countSlides = 3; // 2
-
-            if (index > currentIndex && index !== countSlides) {
-                resultSlide = index - currentIndex;
-                this.swiper.scrollBy(resultSlide, true);
+            switch (index) {
+                case 1:
+                    if(currentIndex == 2){
+                        this.refs.swiper.scrollBy(2,true);
+                    }
+                    if(currentIndex == 3){
+                        this.refs.swiper.scrollBy(1,true);
+                    }
+                    break;
+                case 2:
+                    if(currentIndex == 1){
+                        this.refs.swiper.scrollBy(1,true);
+                    }
+                    if(currentIndex == 3){
+                        this.refs.swiper.scrollBy(2,true);
+                    }
+                    break;
+                case 3:
+                    if(currentIndex == 1){
+                        this.refs.swiper.scrollBy(2,true);
+                    }
+                    if(currentIndex == 2){
+                        this.refs.swiper.scrollBy(1,true);
+                    }
+                    break;
             }
-            else if (index > currentIndex && index === countSlides) {
-                resultSlide = currentIndex + 1;
-                this.swiper.scrollBy(resultSlide, true);
-            }
-            else if (index < currentIndex && index !== 0) {
-                resultSlide = (currentIndex - index) * (-1);
-                this.swiper.scrollBy(resultSlide, true);
-            }
-            else if (index < currentIndex && index === 0) {
-                resultSlide = currentIndex * (-1);
-                this.swiper.scrollBy(resultSlide, true);
-            }
+            this.lastPosition = index;
+            console.log("after currentIndex")
+            console.log(this.lastPosition);
         }
     }
 
@@ -145,8 +168,8 @@ export default class SingleGroup extends Component {
         }
         /*        console.log('ssdsdsdsadasczxczxc')
          console.log(playerRankings)*/
-        console.log('navigationnavigationnavigation')
-        console.log(navigation)
+        console.log('playerRankingsplayerRankingsplayerRankingsplayerRasssnkingsplayerRankings')
+        console.log(playerRankings)
         return (
             <View style={MainStyles.stretchContainer}>
                 <StatusBar hidden={true}/>
@@ -170,7 +193,7 @@ export default class SingleGroup extends Component {
                         </View>
                         <View style={MainStyles.centeredObject}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                                {groupLoggedUser.currentRanking +'/'+ navigation.state.params.data.currentGroup.users.length}
+                                {groupLoggedUser.currentRanking + '/' + navigation.state.params.data.currentGroup.users.length}
                             </Text>
                             <Text style={LocalStyles.singleGroupScoreTabDescription}>
                                 Ranking
@@ -190,7 +213,6 @@ export default class SingleGroup extends Component {
                     <View style={{flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-between'}}>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
                                           onPress={() => {
-                                              this.setSlidingState(1);
                                               this.onClickScroll(1)
                                           }}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
@@ -202,7 +224,6 @@ export default class SingleGroup extends Component {
                         </TouchableOpacity>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
                                           onPress={() => {
-                                              this.setSlidingState(2);
                                               this.onClickScroll(2)
                                           }}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
@@ -214,7 +235,6 @@ export default class SingleGroup extends Component {
                         </TouchableOpacity>
                         <TouchableOpacity style={[MainStyles.centeredObject]}
                                           onPress={() => {
-                                              this.setSlidingState(3);
                                               this.onClickScroll(3)
                                           }}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupSliderText]}>
@@ -271,10 +291,54 @@ export default class SingleGroup extends Component {
                         <View style={LocalStyles.GroupList}>
                             <List containerStyle={LocalStyles.listContainer}>
                                 <FlatList
-                                    data={this.state.playerRankings}
+                                    data={playerRankings}
                                     extraData={this.state}
                                     renderItem={({item}) => (
-                                        (item.none ?
+                                        (item.name ?
+                                                <ListItem
+                                                    roundAvatar
+                                                    titleNumberOfLines={2}
+                                                    titleContainerStyle={{marginLeft: '3%'}}
+                                                    title={`${item.name} ${item.lastName}`}
+                                                    titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
+                                                    subtitle={`${'   TR: ' + '15' + '   SCORE: ' + item.position}`}
+                                                    avatar={{uri: item.urlPhoto}}
+                                                    containerStyle={{borderBottomWidth: 0}}
+                                                    badge={{
+                                                        element: <Ionicons
+                                                            onPress={() => {
+                                                                this.setState({playerSelectionPosition: item.position});
+                                                                navigation.navigate('PlayerSelection', {
+                                                                    tPlayers: playerRankings,
+                                                                    userGroupId: groupLoggedUser._id,
+                                                                    groupId: navigation.state.params.data.currentGroup._id,
+                                                                    currentPosition: item.position,
+                                                                    onNewPlayer: this.onNewPlayer
+                                                                })
+                                                            }}
+                                                            name="md-menu" size={29} color="green"/>
+                                                    }}
+                                                    rightIcon={<TouchableOpacity style={{
+                                                        justifyContent: 'center',
+                                                        borderWidth: 1,
+                                                        borderColor: 'black',
+                                                        marginLeft: '2%',
+                                                        paddingHorizontal: '3%'
+                                                    }} onPress={() => {
+                                                        this.setState({playerSelectionPosition: item.position});
+                                                        navigation.navigate('PlayerSelection', {
+                                                            tPlayers: playerRankings,
+                                                            userGroupId: groupLoggedUser._id,
+                                                            groupId: navigation.state.params.data.currentGroup._id,
+                                                            currentPosition: item.position,
+                                                            onNewPlayer: this.onNewPlayer
+                                                        })
+                                                    }}><Text>REPLACE</Text></TouchableOpacity>}
+                                                    key={item.position}
+                                                    leftIcon={<Text
+                                                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
+                                                />
+                                                :
                                                 <ListItem
                                                     hideChevron
                                                     titleContainerStyle={{marginLeft: '3%', paddingHorizontal: '40%'}}
@@ -286,45 +350,19 @@ export default class SingleGroup extends Component {
                                                     leftIcon={<Text
                                                         style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
                                                     containerStyle={{borderBottomWidth: 0}}
-                                                    onPress={() => {this.setState({playerSelectionPosition:item.position});navigation.navigate('PlayerSelection', {
-                                                        tPlayers: playerRankings,
-                                                        userGroupId: groupLoggedUser._id,
-                                                        groupId: navigation.state.params.data.currentGroup._id,
-                                                        currentPosition: item.position,
-                                                        onNewPlayer: this.onNewPlayer
-                                                    })}}
-                                                    key={item.position}
-                                                />
-                                                :
-                                                <ListItem
-                                                    roundAvatar
-                                                    titleNumberOfLines={2}
-                                                    titleContainerStyle={{marginLeft: '3%'}}
-                                                    title={`${item.name} ${item.lastName}`}
-                                                    titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                                    subtitle={`${'   TR: ' + '15' + '   SCORE: ' + '115'}`}
-                                                    avatar={{uri: item.urlPhoto}}
-                                                    containerStyle={{borderBottomWidth: 0}}
-                                                    badge={{
-                                                        element: <Ionicons
-                                                            onPress={() => navigation.navigate('PlayerSelection', {
-                                                                tPlayers: navigation.state.params.data.players,
-                                                                onNewPlayer: this.onNewPlayer
-                                                            })}
-                                                            name="md-menu" size={29} color="green"/>
+                                                    onPress={() => {
+                                                        this.setState({playerSelectionPosition: item.position});
+                                                        navigation.navigate('PlayerSelection', {
+                                                            tPlayers: playerRankings,
+                                                            userGroupId: groupLoggedUser._id,
+                                                            groupId: navigation.state.params.data.currentGroup._id,
+                                                            currentPosition: item.position,
+                                                            onNewPlayer: this.onNewPlayer
+                                                        })
                                                     }}
-                                                    rightIcon={<TouchableOpacity style={{
-                                                        justifyContent: 'center',
-                                                        borderWidth: 1,
-                                                        borderColor: 'black',
-                                                        marginLeft: '2%',
-                                                        paddingHorizontal: '3%'
-                                                    }}><Text>REPLACE</Text></TouchableOpacity>}
-                                                    onPressRightIcon={() => navigation.dispatch({type: 'Main'})}
                                                     key={item.position}
-                                                    leftIcon={<Text
-                                                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
                                                 />
+
                                         )
                                     )}
                                     keyExtractor={item => item.position}
@@ -369,31 +407,31 @@ export default class SingleGroup extends Component {
                                     score: '510',
                                     position: 3,
                                     photo: {path: 'https://static1.squarespace.com/static/58abbdb120099e0b12538e67/t/5923a3a1c534a5397b32c34b/1495507887454/Richie3.jpg?format=300w'}
-                                },{
+                                }, {
                                     name: 'Jared Williams',
                                     tr: '4',
                                     score: '185',
                                     position: 4,
                                     photo: {path: 'http://s3.amazonaws.com/golfcanada/app/uploads/golfcanada/production/2017/06/09093500/17.06.09-Ryan-Williams-370x213.jpg'}
-                                },{
+                                }, {
                                     name: 'Keegan Taylor',
                                     tr: '5',
                                     score: '225',
                                     position: 5,
                                     photo: {path: 'http://media.gettyimages.com/photos/may-2000-kevin-keegan-the-england-manager-plays-out-of-a-bunker-on-picture-id1030959'}
-                                },{
+                                }, {
                                     name: 'Boo Weekly',
                                     tr: '6',
                                     score: '350',
                                     position: 6,
                                     photo: {path: 'https://progolfnow.com/wp-content/blogs.dir/120/files/2014/12/boo-weekley-golf-u.s.-open-first-round.jpg'}
-                                },{
+                                }, {
                                     name: 'Bernard Ford',
                                     tr: '7',
                                     score: '100',
                                     position: 7,
                                     photo: {path: 'http://ichef.bbci.co.uk/onesport/cps/480/mcs/media/images/71780000/jpg/_71780044_gallacherpa.jpg'}
-                                },{
+                                }, {
                                     name: 'Shawn Harper',
                                     tr: '8',
                                     score: '110',
