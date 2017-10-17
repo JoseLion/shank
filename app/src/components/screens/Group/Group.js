@@ -17,7 +17,9 @@ import {
     TouchableOpacity,
     Picker,
     ActivityIndicator,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    findNodeHandle,
+    Keyboard
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -28,6 +30,7 @@ import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
 import {List, ListItem, SearchBar} from "react-native-elements";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 export default class Group extends Component {
 
@@ -64,7 +67,7 @@ export default class Group extends Component {
             error: null,
             refreshing: false,
             tournamentData: [],
-            assignUsers:[]
+            assignUsers: []
         };
 
     }
@@ -84,21 +87,21 @@ export default class Group extends Component {
     getUserList = (cb) => {
         try {
             BaseModel.get('users', cb).then((users) => {
-                let userGroupUsers = users.map(function(user) {
+                let userGroupUsers = users.map(function (user) {
                     return {
-                        userId:user._id,
+                        userId: user._id,
                         name: user.name,
-                        score:0,
-                        currentRanking:0,
-                        currentDailyMovements:0,
-                        dailyMovementsDone:false,
+                        score: 0,
+                        currentRanking: 0,
+                        currentDailyMovements: 0,
+                        dailyMovementsDone: false,
                         playerRanking: [/*{
-                            playerId:user.value,
-                            TR:user.value,
-                            Score:user.value,
-                            currentPosition:user.value,
-                            playerPhotoUrl:user.value,
-                        }*/]
+                         playerId:user.value,
+                         TR:user.value,
+                         Score:user.value,
+                         currentPosition:user.value,
+                         playerPhotoUrl:user.value,
+                         }*/]
                     };
                 });
                 this.setState({data: users, assignUsers: userGroupUsers});
@@ -176,80 +179,82 @@ export default class Group extends Component {
         });
 
         return (
-            <KeyboardAvoidingView style={MainStyles.container} behavior="padding">
-                <Spinner visible={this.state.loading}/>
+            <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
+                                     style={{backgroundColor: '#F5FCFF'}}>
+                <View style={[MainStyles.container]} behavior="padding">
+                    <Spinner visible={this.state.loading}/>
+                    <TouchableOpacity style={[LocalStyles.addPhotoLogo,MainStyles.inputTopSeparation]} onPress={this._pickImage}>
+                        {groupPhoto &&
+                        <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/>
+                        }
+                        {!groupPhoto &&
+                        <Image
+                            source={addPhoto}>
+                        </Image>
+                        }
+                        <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
+                            Add a photo
+                        </Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={LocalStyles.addPhotoLogo} onPress={this._pickImage}>
-                    {groupPhoto &&
-                    <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/>
-                    }
-                    {!groupPhoto &&
-                    <Image
-                        source={addPhoto}>
-                    </Image>
-                    }
-                    <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
-                        Add a photo
-                    </Text>
-                </TouchableOpacity>
-
-                <TextInput
-                    underlineColorAndroid='transparent'
-                    style={LocalStyles.createTInput}
-                    onChangeText={(name) => this.setState({name})}
-                    value={this.state.name}
-                    placeholder={'Group name'}
-                />
-                <View style={LocalStyles.tournamentPicker}>
-                    <Picker
-                        selectedValue={this.state.selectTournament}
-                        onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                        <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
-                        {tournamentItems}
-                    </Picker>
+                    <TextInput
+                        underlineColorAndroid='transparent'
+                        style={[LocalStyles.createTInput,MainStyles.inputTopSeparation]}
+                        onChangeText={(name) => this.setState({name})}
+                        value={this.state.name}
+                        placeholder={'Group name'}
+                    />
+                    <View style={LocalStyles.tournamentPicker}>
+                        <Picker
+                            selectedValue={this.state.selectTournament}
+                            onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+                            <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
+                            {tournamentItems}
+                        </Picker>
+                    </View>
+                    <TextInput
+                        underlineColorAndroid='transparent'
+                        placeholder={'Prize'}
+                        style={[LocalStyles.richCreateTInput, {paddingBottom: 5}]}
+                        onChangeText={(prize) => this.setState({prize: prize})}
+                        value={this.state.prize}
+                    />
+                    <View style={LocalStyles.participantsTxt}>
+                        <Text style={MainStyles.greenMedShankFont}>
+                            PARTICIPANTS
+                        </Text>
+                    </View>
+                    <View style={LocalStyles.List}>
+                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0,}}>
+                            <FlatList
+                                data={this.state.data}
+                                renderItem={({item}) => (
+                                    <ListItem
+                                        roundAvatar
+                                        title={`${item.name}`}
+                                        containerStyle={{borderBottomWidth: 0}}
+                                    />
+                                )}
+                                keyExtractor={item => item.name}
+                                ItemSeparatorComponent={this.renderSeparator}
+                                onRefresh={this.handleRefresh}
+                                refreshing={this.state.refreshing}
+                                onEndReachedThreshold={1}
+                            />
+                        </List>
+                    </View>
+                    <View style={LocalStyles.addNewParticipant}>
+                        <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
+                            Add new participant
+                        </Text>
+                    </View>
+                    <TouchableHighlight
+                        onPress={this._handleNewGroupRegistry}
+                        style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
+                        <Text style={LocalStyles.buttonText}>Create group</Text>
+                    </TouchableHighlight>
                 </View>
-                <TextInput
-                    underlineColorAndroid='transparent'
-                    placeholder={'Prize'}
-                    style={[LocalStyles.richCreateTInput, {paddingBottom: 5}]}
-                    onChangeText={(prize) => this.setState({prize: prize})}
-                    value={this.state.prize}
-                />
-                <View style={LocalStyles.participantsTxt}>
-                    <Text style={MainStyles.greenMedShankFont}>
-                        PARTICIPANTS
-                    </Text>
-                </View>
-                <View style={LocalStyles.List}>
-                    <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, }}>
-                        <FlatList
-                            data={this.state.data}
-                            renderItem={({item}) => (
-                                <ListItem
-                                    roundAvatar
-                                    title={`${item.name}`}
-                                    containerStyle={{borderBottomWidth: 0}}
-                                />
-                            )}
-                            keyExtractor={item => item.name}
-                            ItemSeparatorComponent={this.renderSeparator}
-                            onRefresh={this.handleRefresh}
-                            refreshing={this.state.refreshing}
-                            onEndReachedThreshold={1}
-                        />
-                    </List>
-                </View>
-                <View style={LocalStyles.addNewParticipant}>
-                    <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
-                        Add new participant
-                    </Text>
-                </View>
-                <TouchableHighlight
-                    onPress={this._handleNewGroupRegistry}
-                    style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
-                    <Text style={LocalStyles.buttonText}>Create group</Text>
-                </TouchableHighlight>
-            </KeyboardAvoidingView>
+            </KeyboardAwareScrollView>
         );
     }
 

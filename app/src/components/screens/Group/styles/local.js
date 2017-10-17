@@ -69,7 +69,7 @@ const LocalStyles = StyleSheet.create({
         borderColor: '#A39534',
     },
     tournamentPicker: {
-        height: '10%',
+        height: '7%',
         width:'80%',
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',
@@ -93,7 +93,7 @@ const LocalStyles = StyleSheet.create({
         textAlign:'left',
     },
     createTInput :{
-        height: '10%',
+        height: '7%',
         width:'80%',
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',
@@ -104,7 +104,7 @@ const LocalStyles = StyleSheet.create({
         color: '#333'
     },
     richCreateTInput :{
-        height: '18%',
+        height: '13%',
         width:'80%',
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',

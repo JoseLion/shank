@@ -12,6 +12,12 @@ const MainStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
+    outerContainer: {
+        flex: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
     stretchContainer :{
         flex: 1,
         flexDirection: 'column',
@@ -106,7 +112,6 @@ const MainStyles = StyleSheet.create({
         borderRadius: 10
     },
     loginInput: {
-        height: 50,
         width: '80%',
         marginTop: Style.PX_15,
         padding: 4,
@@ -133,7 +138,7 @@ const MainStyles = StyleSheet.create({
         borderRadius: 10,
     },
     inputTopSeparation: {
-        marginTop: Style.PX_13,
+        marginTop: Style.PX_14,
     },
     imageOpacity: {
         backgroundColor: 'rgba(0,0,0,.4)'

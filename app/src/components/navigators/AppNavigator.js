@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions} from 'react-navigation';
@@ -51,7 +51,7 @@ export const AppNavigator = StackNavigator({
 });
 
 
-class AppWithNavigationState extends Component {
+export class AppWithNavigationState extends Component {
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
     }

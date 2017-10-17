@@ -90,7 +90,7 @@ export default class PlayerSelection extends Component {
     updatePlayerRankings = async (groupId,userGroupId,playerRankings,navigation,newAddition,currentPosition) => {
         this.setLoading(true);
         let existingPlayer = playerRankings.find(o => o.name === newAddition.name && o.lastName === newAddition.lastName);
-        if (existingPlayer.name.length > 0){
+        if (existingPlayer){
             Notifier.message({title: 'RESPONSE', message: "You already have this player on your prediction list."});
         }else{
             let newAdditionInPosition = {}

@@ -68,9 +68,9 @@ export default class LoginScreen extends Component {
                     onChangeText={(password) => this.setState({password})}
                     value={this.state.password}
                     placeholder={'password'}
-                    onSubmitEditing={(event) =>
-                        this._onLoginPressed
-                    }
+                    onSubmitEditing={(event) => {
+                        this._onLoginPressed()
+                    }}
                 />
                 <TouchableHighlight
                     onPress={this._onLoginPressed}

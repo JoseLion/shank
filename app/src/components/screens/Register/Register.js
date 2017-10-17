@@ -79,7 +79,6 @@ export default class Register extends Component {
     }
 
     _scrollToInput(reactNode) {
-        // Add a 'scroll' ref to your ScrollView
         this.refs.scroll.scrollToFocusedInput(reactNode)
     }
 
@@ -185,97 +184,95 @@ export default class Register extends Component {
     render() {
         let navigation = this.props.navigation;
         return (
-            <DismissKeyboardView>
-                <KeyboardAwareScrollView ref='scroll'>
-                    <View style={MainStyles.container} behavior="padding">
-                        <Spinner visible={this.state.loading}/>
-                        <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
-                            WELCOME
-                        </Text>
+            <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5} style={{backgroundColor: '#F5FCFF'}}>
+                <View style={[MainStyles.container]} behavior="padding">
+                    <Spinner visible={this.state.loading}/>
+                    <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
+                        WELCOME
+                    </Text>
+                    <Text
+                        style={[MainStyles.centerText, MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
+                        LETS START BY CREATING {"\n"} AN ACCOUNT
+                    </Text>
+                    <TextInput
+                        returnKeyType={"next"}
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(name) => this.setState({name})}
+                        value={this.state.name}
+                        placeholder={'Name'}
+                        onFocus={(event) => {
+                            this._scrollToInput(findNodeHandle(event.target))
+                        }}
+                        onSubmitEditing={(event) => {
+                            this.refs.email.focus();
+                        }}
+                    />
+                    <TextInput
+                        ref='email'
+                        underlineColorAndroid="transparent"
+                        returnKeyType={"next"}
+                        style={MainStyles.loginInput}
+                        onChangeText={(email) => this.setState({email})}
+                        value={this.state.email}
+                        placeholder={'Email'}
+                        onFocus={(event) => {
+                            this._scrollToInput(findNodeHandle(event.target))
+                        }}
+                        onSubmitEditing={(event) => {
+                            this.refs.pass1.focus();
+                        }}
+                    />
+                    <TextInput
+                        ref='pass1'
+                        secureTextEntry={true}
+                        returnKeyType={"next"}
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(password) => this.setState({password})}
+                        value={this.state.password}
+                        placeholder={'Password'}
+                        onFocus={(event) => {
+                            this._scrollToInput(findNodeHandle(event.target))
+                        }}
+                        onSubmitEditing={(event) => {
+                            this.refs.pass2.focus();
+                        }}
+                    />
+                    <TextInput
+                        ref='pass2'
+                        secureTextEntry={true}
+                        returnKeyType={"next"}
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(repeatedPassword) => this.setState({repeatedPassword})}
+                        value={this.state.repeatedPassword}
+                        onFocus={(event) => {
+                            this._scrollToInput(findNodeHandle(event.target))
+                        }}
+                        onSubmitEditing={(event) => {
+                            Keyboard.dismiss()
+                        }}
+                        placeholder={'Repeat your password'}
+                    />
+                    <TouchableOpacity
+                        onPress={() => this._handleNewRegistry()}
+                        style={MainStyles.goldenShankButton}>
+                        <Text style={LocalStyles.buttonText}>Register</Text>
+                    </TouchableOpacity>
+                    <TouchableHighlight
+                        onPress={this._registerByFacebook}
+                        style={MainStyles.fbButton}>
+                        <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
+                    </TouchableHighlight>
+                    <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
                         <Text
-                            style={[MainStyles.centerText, MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
-                            LETS START BY CREATING {"\n"} AN ACCOUNT
+                            style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
+                            I already have an account
                         </Text>
-                        <TextInput
-                            returnKeyType={"next"}
-                            underlineColorAndroid="transparent"
-                            style={MainStyles.loginInput}
-                            onChangeText={(name) => this.setState({name})}
-                            value={this.state.name}
-                            placeholder={'Name'}
-                            onFocus={(event) => {
-                                this._scrollToInput(findNodeHandle(event.target))
-                            }}
-                            onSubmitEditing={(event) => {
-                                this.refs.email.focus();
-                            }}
-                        />
-                        <TextInput
-                            ref='email'
-                            underlineColorAndroid="transparent"
-                            returnKeyType={"next"}
-                            style={MainStyles.loginInput}
-                            onChangeText={(email) => this.setState({email})}
-                            value={this.state.email}
-                            placeholder={'Email'}
-                            onFocus={(event) => {
-                                this._scrollToInput(findNodeHandle(event.target))
-                            }}
-                            onSubmitEditing={(event) => {
-                                this.refs.pass1.focus();
-                            }}
-                        />
-                        <TextInput
-                            ref='pass1'
-                            secureTextEntry={true}
-                            returnKeyType={"next"}
-                            underlineColorAndroid="transparent"
-                            style={MainStyles.loginInput}
-                            onChangeText={(password) => this.setState({password})}
-                            value={this.state.password}
-                            placeholder={'Password'}
-                            onFocus={(event) => {
-                                this._scrollToInput(findNodeHandle(event.target))
-                            }}
-                            onSubmitEditing={(event) => {
-                                this.refs.pass2.focus();
-                            }}
-                        />
-                        <TextInput
-                            ref='pass2'
-                            secureTextEntry={true}
-                            returnKeyType={"next"}
-                            underlineColorAndroid="transparent"
-                            style={MainStyles.loginInput}
-                            onChangeText={(repeatedPassword) => this.setState({repeatedPassword})}
-                            value={this.state.repeatedPassword}
-                            onFocus={(event) => {
-                                this._scrollToInput(findNodeHandle(event.target))
-                            }}
-                            onSubmitEditing={(event) => {
-                                Keyboard.dismiss()
-                            }}
-                            placeholder={'Repeat your password'}
-                        />
-                        <TouchableOpacity
-                            onPress={() => this._handleNewRegistry()}
-                            style={MainStyles.goldenShankButton}>
-                            <Text style={LocalStyles.buttonText}>Register</Text>
-                        </TouchableOpacity>
-                        <TouchableHighlight
-                            onPress={this._registerByFacebook}
-                            style={MainStyles.fbButton}>
-                            <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
-                        </TouchableHighlight>
-                        <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
-                            <Text
-                                style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
-                                I already have an account
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </KeyboardAwareScrollView>
-            </DismissKeyboardView>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAwareScrollView>
         );
     }
 }
