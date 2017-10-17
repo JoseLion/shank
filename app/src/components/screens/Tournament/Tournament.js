@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {ActivityIndicator, ListView, Text, View, Image, Dimensions, ScrollView} from 'react-native';
+import {ActivityIndicator, ListView, Text, View, Image, Dimensions, ScrollView,Linking} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import * as Constants from '../../../core/Constans';
 import ProgressBar from '../../../global/ProgressBar';
+import {FontAwesome} from '@expo/vector-icons';
 import {Container, Content, Card, CardItem, Left, Right, Body, Thumbnail, Spinner, Icon, CardImage} from 'native-base';
 
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
@@ -76,6 +77,15 @@ export default class TournamentsScreen extends Component {
                     <CardItem cardBody>
                         <Image source={{uri: httpsUrl}} style={LocalStyles.gridItemImage}>
                             <View style={LocalStyles.fixedFooter}>
+                                <FontAwesome name="chain" size={25} color="white" onPress={()=> {
+                                    Linking.canOpenURL(data.url).then(supported => {
+                                        if (!supported) {
+                                            console.log('Can\'t handle url: ' + data.url);
+                                        } else {
+                                            return Linking.openURL(data.url);
+                                        }
+                                    }).catch(err => console.error('An error occurred', err));
+                                }}/>
                                 <Text style={LocalStyles.headline}>{data.title}</Text>
                                 <Text note style={LocalStyles.headline}>{data.author}</Text>
                             </View>
