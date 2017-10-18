@@ -15,6 +15,7 @@ import BaseModel from '../../../core/BaseModel';
 import {Ionicons, Entypo} from '@expo/vector-icons'; // 5.2.0
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
+import SortableListView from 'react-native-sortable-listview'
 
 const ImageHeader = navigation => (
     <View style={{backgroundColor: '#eee', height: '16%'}}>
@@ -30,7 +31,7 @@ const ImageHeader = navigation => (
                     onPress={() => {
                         navigation.goBack(null)
                     }}
-                    style={{backgroundColor: 'transparent', marginBottom : '100%'}}
+                    style={{backgroundColor: 'transparent', marginBottom: '100%'}}
                     name="chevron-left" size={33} color="white"/>}
         />
     </View>
@@ -103,27 +104,27 @@ export default class SingleGroup extends Component {
         if (currentIndex !== index) {
             switch (index) {
                 case 1:
-                    if(currentIndex == 2){
-                        this.refs.swiper.scrollBy(2,true);
+                    if (currentIndex == 2) {
+                        this.refs.swiper.scrollBy(2, true);
                     }
-                    if(currentIndex == 3){
-                        this.refs.swiper.scrollBy(1,true);
+                    if (currentIndex == 3) {
+                        this.refs.swiper.scrollBy(1, true);
                     }
                     break;
                 case 2:
-                    if(currentIndex == 1){
-                        this.refs.swiper.scrollBy(1,true);
+                    if (currentIndex == 1) {
+                        this.refs.swiper.scrollBy(1, true);
                     }
-                    if(currentIndex == 3){
-                        this.refs.swiper.scrollBy(2,true);
+                    if (currentIndex == 3) {
+                        this.refs.swiper.scrollBy(2, true);
                     }
                     break;
                 case 3:
-                    if(currentIndex == 1){
-                        this.refs.swiper.scrollBy(2,true);
+                    if (currentIndex == 1) {
+                        this.refs.swiper.scrollBy(2, true);
                     }
-                    if(currentIndex == 2){
-                        this.refs.swiper.scrollBy(1,true);
+                    if (currentIndex == 2) {
+                        this.refs.swiper.scrollBy(1, true);
                     }
                     break;
             }
@@ -166,8 +167,13 @@ export default class SingleGroup extends Component {
         if (groupLoggedUser.playerRanking.length > 0) {
             playerRankings = groupLoggedUser.playerRanking
         }
-        /*        console.log('ssdsdsdsadasczxczxc')
-         console.log(playerRankings)*/
+        let orderedPlayerRankings = playerRankings.reduce(function (obj, item) {
+            obj[item.position] = item;
+            return obj;
+        }, {});
+        let order = Object.keys(orderedPlayerRankings) //Array of keys positions
+        /*console.log('ssdsdsdsadasczxczxc')
+          console.log(playerRankings)*/
         console.log('playerRankingsplayerRankingsplayerRankingsplayerRasssnkingsplayerRankings')
         console.log(playerRankings)
         return (
@@ -289,87 +295,88 @@ export default class SingleGroup extends Component {
                             style={LocalStyles.linearGradient}
                         />
                         <View style={LocalStyles.GroupList}>
-                            <List containerStyle={LocalStyles.listContainer}>
-                                <FlatList
-                                    data={playerRankings}
-                                    extraData={this.state}
-                                    renderItem={({item}) => (
-                                        (item.name ?
-                                                <ListItem
-                                                    roundAvatar
-                                                    titleNumberOfLines={2}
-                                                    titleContainerStyle={{marginLeft: '3%'}}
-                                                    title={`${item.name} ${item.lastName}`}
-                                                    titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                                    subtitle={`${'   TR: ' + '15' + '   SCORE: ' + item.position}`}
-                                                    avatar={{uri: item.urlPhoto}}
-                                                    containerStyle={{borderBottomWidth: 0}}
-                                                    badge={{
-                                                        element: <Ionicons
-                                                            onPress={() => {
-                                                                this.setState({playerSelectionPosition: item.position});
-                                                                navigation.navigate('PlayerSelection', {
-                                                                    tPlayers: playerRankings,
-                                                                    userGroupId: groupLoggedUser._id,
-                                                                    groupId: navigation.state.params.data.currentGroup._id,
-                                                                    currentPosition: item.position,
-                                                                    onNewPlayer: this.onNewPlayer
-                                                                })
-                                                            }}
-                                                            name="md-menu" size={29} color="green"/>
-                                                    }}
-                                                    rightIcon={<TouchableOpacity style={{
-                                                        justifyContent: 'center',
-                                                        borderWidth: 1,
-                                                        borderColor: 'black',
-                                                        marginLeft: '2%',
-                                                        paddingHorizontal: '3%'
-                                                    }} onPress={() => {
-                                                        this.setState({playerSelectionPosition: item.position});
-                                                        navigation.navigate('PlayerSelection', {
-                                                            tPlayers: playerRankings,
-                                                            userGroupId: groupLoggedUser._id,
-                                                            groupId: navigation.state.params.data.currentGroup._id,
-                                                            currentPosition: item.position,
-                                                            onNewPlayer: this.onNewPlayer
-                                                        })
-                                                    }}><Text>REPLACE</Text></TouchableOpacity>}
-                                                    key={item.position}
-                                                    leftIcon={<Text
-                                                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
-                                                />
-                                                :
-                                                <ListItem
-                                                    hideChevron
-                                                    titleContainerStyle={{marginLeft: '3%', paddingHorizontal: '40%'}}
-                                                    label={<Text style={{
-                                                        marginRight: '43%',
-                                                        color: '#3c3c3c',
-                                                        alignSelf: 'center'
-                                                    }}>EMPTY SLOT</Text>}
-                                                    leftIcon={<Text
-                                                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
-                                                    containerStyle={{borderBottomWidth: 0}}
-                                                    onPress={() => {
-                                                        this.setState({playerSelectionPosition: item.position});
-                                                        navigation.navigate('PlayerSelection', {
-                                                            tPlayers: playerRankings,
-                                                            userGroupId: groupLoggedUser._id,
-                                                            groupId: navigation.state.params.data.currentGroup._id,
-                                                            currentPosition: item.position,
-                                                            onNewPlayer: this.onNewPlayer
-                                                        })
-                                                    }}
-                                                    key={item.position}
-                                                />
+                            <SortableListView
+                                style={{flex: 1}}
+                                data={orderedPlayerRankings}
+                                order={order}
+                                onRowMoved={e => {
+                                    // order.splice(e.to, 0, order.splice(e.from, 1)[0])
+                                    // this.forceUpdate()
+                                    console.log("Updated")
+                                }}
+                                renderRow={({item}) => (
+                                    (item.name ?
+                                            <ListItem
+                                                roundAvatar
+                                                titleNumberOfLines={2}
+                                                titleContainerStyle={{marginLeft: '3%'}}
+                                                title={`${item.name} ${item.lastName}`}
+                                                titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
+                                                subtitle={`${'   TR: ' + '15' + '   SCORE: ' + item.position}`}
+                                                avatar={{uri: item.urlPhoto}}
+                                                containerStyle={{borderBottomWidth: 0}}
+                                                badge={{
+                                                    element: <Ionicons
+                                                        onPress={() => {
+                                                            this.setState({playerSelectionPosition: item.position});
+                                                            navigation.navigate('PlayerSelection', {
+                                                                tPlayers: playerRankings,
+                                                                userGroupId: groupLoggedUser._id,
+                                                                groupId: navigation.state.params.data.currentGroup._id,
+                                                                currentPosition: item.position,
+                                                                onNewPlayer: this.onNewPlayer
+                                                            })
+                                                        }}
+                                                        name="md-menu" size={29} color="green"/>
+                                                }}
+                                                rightIcon={<TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    borderWidth: 1,
+                                                    borderColor: 'black',
+                                                    marginLeft: '2%',
+                                                    paddingHorizontal: '3%'
+                                                }} onPress={() => {
+                                                    this.setState({playerSelectionPosition: item.position});
+                                                    navigation.navigate('PlayerSelection', {
+                                                        tPlayers: playerRankings,
+                                                        userGroupId: groupLoggedUser._id,
+                                                        groupId: navigation.state.params.data.currentGroup._id,
+                                                        currentPosition: item.position,
+                                                        onNewPlayer: this.onNewPlayer
+                                                    })
+                                                }}><Text>REPLACE</Text></TouchableOpacity>}
+                                                key={item.position}
+                                                leftIcon={<Text
+                                                    style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
+                                            />
+                                            :
+                                            <ListItem
+                                                hideChevron
+                                                titleContainerStyle={{marginLeft: '3%', paddingHorizontal: '40%'}}
+                                                label={<Text style={{
+                                                    marginRight: '43%',
+                                                    color: '#3c3c3c',
+                                                    alignSelf: 'center'
+                                                }}>EMPTY SLOT</Text>}
+                                                leftIcon={<Text
+                                                    style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
+                                                containerStyle={{borderBottomWidth: 0}}
+                                                onPress={() => {
+                                                    this.setState({playerSelectionPosition: item.position});
+                                                    navigation.navigate('PlayerSelection', {
+                                                        tPlayers: playerRankings,
+                                                        userGroupId: groupLoggedUser._id,
+                                                        groupId: navigation.state.params.data.currentGroup._id,
+                                                        currentPosition: item.position,
+                                                        onNewPlayer: this.onNewPlayer
+                                                    })
+                                                }}
+                                                key={item.position}
+                                            />
 
-                                        )
-                                    )}
-                                    keyExtractor={item => item.position}
-                                    /* keyExtractor={item => item.name}*/
-                                    ItemSeparatorComponent={this.renderSeparator}
-                                />
-                            </List>
+                                    )
+                                )}/>}
+                            {/*<List containerStyle={LocalStyles.listContainer}>*/}
                         </View>
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
                             <TouchableOpacity
@@ -459,7 +466,6 @@ export default class SingleGroup extends Component {
                         </List>
                     </View>
                 </Swiper>
-            </View>
-        );
+            </View>);
     }
 }
