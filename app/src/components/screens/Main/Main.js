@@ -21,7 +21,7 @@ import AuthButton from './AuthButton';
 import BaseModel from '../../../core/BaseModel';
 import Notifier from '../../../core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Entypo} from '@expo/vector-icons';
+import {Entypo, FontAwesome} from '@expo/vector-icons';
 
 export default class MainScreen extends Component {
 
@@ -70,14 +70,11 @@ export default class MainScreen extends Component {
 
         },
         headerLeft: null,
-/*        headerRight: <Entypo name="plus" size={25} color="white" onPress={()=> {}}/>,*/
+        /*        headerRight: <Entypo name="plus" size={25} color="white" onPress={()=> {}}/>,*/
         showIcon: true,
         tabBarIcon: () => {
             return (
-                <Image
-                    source={require('../../../../resources/mainMenu/menuTaskBar/ios/Recurso9.png')}
-                    style={MainStyles.iconXS}
-                />
+                <FontAwesome name="group" size={29} color="white"/>
             )
         },
     });

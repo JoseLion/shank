@@ -4,7 +4,7 @@ import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import * as Constants from '../../../core/Constans';
 import ProgressBar from '../../../global/ProgressBar';
-import {FontAwesome} from '@expo/vector-icons';
+import {FontAwesome,Ionicons} from '@expo/vector-icons';
 import {Container, Content, Card, CardItem, Left, Right, Body, Thumbnail, Spinner, Icon, CardImage} from 'native-base';
 
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
@@ -20,9 +20,7 @@ export default class TournamentsScreen extends Component {
         showIcon: true,
         tabBarIcon: () => {
             return (
-                <Image
-                    source={require('../../../../resources/mainMenu/menuTaskBar/ios/Recurso10.png')}
-                    style={MainStyles.iconXS}/>
+                <Ionicons name="md-trophy" size={29} color="white"/>
             )
         },
     };
