@@ -69,7 +69,6 @@ export default class Group extends Component {
             tournamentData: [],
             assignUsers: []
         };
-
     }
 
     componentDidMount() {

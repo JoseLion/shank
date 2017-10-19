@@ -183,7 +183,7 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: 'white',
         height:'100%'
     },
-    listContainer: {borderTopWidth: 0, borderBottomWidth: 0, paddingHorizontal:'8%'},
+    listContainer: {paddingHorizontal:'6%'},
     textHeaderPlayerList : {
         textAlign:'center',
         color:'#fff',

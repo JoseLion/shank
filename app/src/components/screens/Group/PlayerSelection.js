@@ -77,11 +77,15 @@ export default class PlayerSelection extends Component {
             tPLayers: this.props.tPlayers,
             data: {
                 "F": [{"name": "Bernard", "lastName": "Ford", "urlPhoto":"http://ichef.bbci.co.uk/onesport/cps/480/mcs/media/images/71780000/jpg/_71780044_gallacherpa.jpg"} ],
+                "G": [{"name": "Emiliano", "lastName": "Grillo", "urlPhoto":"http://fedegolfcba.com.ar/sites/default/files/styles/slider-home/public/field/image/grillo_emiliano.jpg?itok=X4SviB3z"} ],
                 "H": [{"name": "Issac", "lastName": "Hines", "urlPhoto":"https://static1.squarespace.com/static/58abbdb120099e0b12538e67/t/5923a3a1c534a5397b32c34b/1495507887454/Richie3.jpg?format=300w"},{"name": "Shawn", "lastName": "Harper", "urlPhoto":"http://media.jrn.com/images/photo-0627bc6sacc_6137489_ver1.0_640_480.jpg"} ],
                 "K": [{"name": "Si Woo", "lastName": "Kim", "urlPhoto":"http://www.golfchannel.com/sites/golfchannel.prod.acquia-sites.com/files/styles/blog_header_image_304x176/public/9/C/C/%7B9CC84FBA-BEE3-482B-9EA7-16CB3EF643AF%7Dkim_si_woo_q-school12_final_day_610.jpg?itok=DCgt_CPy"} ],
+                "L": [{"name": "David", "lastName": "Lightnment", "urlPhoto":"http://news.xinhuanet.com/english/photo/2015-06/08/134307137_14337441855531n.jpg"} ],
+                "M": [{"name": "Graeme", "lastName": "Mcdowell ", "urlPhoto":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Graeme_McDowell_2012.jpg/220px-Graeme_McDowell_2012.jpg"} ],
+                "R": [{"name": "Patrick", "lastName": "Rodgers ", "urlPhoto":"https://i1.wp.com/blog.trackmangolf.com/wp-content/uploads/2016/11/Patrick-Rodgers-Swing-optimization-with-TrackMan.png?fit=1200%2C823&ssl=1"} ],
+                "S": [{"name": "Daniel", "lastName": "Summerhays", "urlPhoto":"http://i2.cdn.turner.com/dr/pga/sites/default/files/articles/summerhays-daniel-071813-640x360.jpg"} ],
                 "T": [{"name": "Keegan", "lastName": "Taylor", "urlPhoto":"http://media.gettyimages.com/photos/may-2000-kevin-keegan-the-england-manager-plays-out-of-a-bunker-on-picture-id1030959"} ],
                 "W": [{"name": "William", "lastName": "Wheeler", "urlPhoto":"http://media.golfdigest.com/photos/592442b5c45e221ebef6e668/master/w_768/satoshi-kodaira-sony-open-2017.jpg"} ],
-
             }
 /*        {"name": "Jared", "lastName": "Williams", "urlPhoto":"http://s3.amazonaws.com/golfcanada/app/uploads/golfcanada/production/2017/06/09093500/17.06.09-Ryan-Williams-370x213.jpg"}*/
         }

@@ -38,6 +38,103 @@ const ImageHeader = navigation => (
     /*leftComponent={{icon: 'chevron-left', color: '#fff', onPress: () => navigation.goBack(null)}}*/
 );
 
+class RowComponent extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.onNewPlayer = this.onNewPlayer.bind(this);
+    }
+
+    onNewPlayer = newPlayer => {
+        let obj = {}
+        newPlayer.onNewPlayer.position = this.state.playerSelectionPosition
+        obj[this.state.playerSelectionPosition - 1] = newPlayer.onNewPlayer
+        let oldReportCopy = Object.assign(this.state.playerRankings, obj)
+        console.log("newPlayernewPlayer")
+        console.log(newPlayer)
+        this.setState({newPlayer, playerRankings: oldReportCopy})
+    };
+
+    render() {
+        if (this.props.data.name){
+            return(
+                <ListItem
+                    {...this.props.sortHandlers}
+                    roundAvatar
+                    titleNumberOfLines={2}
+                    titleContainerStyle={{marginLeft: '3%'}}
+                    title={`${this.props.data.name} ${this.props.data.lastName}`}
+                    titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
+                    subtitle={`${'   TR: ' + '15' + '   SCORE: ' + this.props.data.position}`}
+                    avatar={{uri: this.props.data.urlPhoto}}
+                    containerStyle={{borderBottomWidth: 0}}
+                    badge={{
+                        element: <Ionicons
+                            onPress={() => {
+                                this.setState({playerSelectionPosition: this.props.data.position});
+                                this.props.navigation.navigate('PlayerSelection', {
+                                    tPlayers: this.props.playerRankings,
+                                    userGroupId: this.props.groupLoggedUser._id,
+                                    groupId: this.props.navigation.state.params.data.currentGroup._id,
+                                    currentPosition: this.props.data.position,
+                                    onNewPlayer: this.onNewPlayer
+                                })
+                            }}
+                            name="md-menu" size={29} color="green"/>
+                    }}
+                    rightIcon={<TouchableOpacity style={{
+                        justifyContent: 'center',
+                        borderWidth: 1,
+                        borderColor: 'black',
+                        marginLeft: '2%',
+                        paddingHorizontal: '3%'
+                    }} onPress={() => {
+                        this.setState({playerSelectionPosition: this.props.data.position});
+                        this.props.navigation.navigate('PlayerSelection', {
+                            tPlayers: this.props.playerRankings,
+                            userGroupId: this.props.groupLoggedUser._id,
+                            groupId: this.props.navigation.state.params.data.currentGroup._id,
+                            currentPosition: this.props.data.position,
+                            onNewPlayer: this.onNewPlayer
+                        })
+                    }}><Text>REPLACE</Text></TouchableOpacity>}
+                    key={this.props.data.position}
+                    leftIcon={<Text
+                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>}
+                />
+            )
+        } else {
+            return (
+                <ListItem
+                    {...this.props.sortHandlers}
+                    hideChevron
+                    titleContainerStyle={{marginLeft: '3%', paddingHorizontal: '40%'}}
+                    label={<Text style={{
+                        marginRight: '43%',
+                        color: '#3c3c3c',
+                        alignSelf: 'center'
+                    }}>EMPTY SLOT</Text>}
+                    leftIcon={<Text
+                        style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>}
+                    containerStyle={{borderBottomWidth: 0}}
+                    onPress={() => {
+                        this.setState({playerSelectionPosition: this.props.data.position});
+                        this.props.navigation.navigate('PlayerSelection', {
+                            tPlayers: this.props.playerRankings,
+                            userGroupId: this.props.groupLoggedUser._id,
+                            groupId: this.props.navigation.state.params.data.currentGroup._id,
+                            currentPosition: this.props.data.position,
+                            onNewPlayer: this.onNewPlayer
+                        })
+                    }}
+                    key={this.props.data.position}
+                />
+            )
+        }
+    }
+}
+
+
 export default class SingleGroup extends Component {
 
     static propTypes = {
@@ -46,7 +143,6 @@ export default class SingleGroup extends Component {
 
     constructor(props) {
         super(props);
-        this.onNewPlayer = this.onNewPlayer.bind(this);
         this.onClickScroll = this.onClickScroll.bind(this);
         this.state = {
             tournamentRankings: [],
@@ -69,17 +165,6 @@ export default class SingleGroup extends Component {
         };
         this.lastPosition = 1;
     }
-
-
-    onNewPlayer = newPlayer => {
-        let obj = {}
-        newPlayer.onNewPlayer.position = this.state.playerSelectionPosition
-        obj[this.state.playerSelectionPosition - 1] = newPlayer.onNewPlayer
-        let oldReportCopy = Object.assign(this.state.playerRankings, obj)
-        console.log("newPlayernewPlayer")
-        console.log(newPlayer)
-        this.setState({newPlayer, playerRankings: oldReportCopy})
-    };
 
     static navigationOptions = ({navigation}) => ({
         title: 'The Masters',
@@ -150,6 +235,23 @@ export default class SingleGroup extends Component {
         );
     };
 
+    updatePlayerRankings = async (groupId,userGroupId,playerRankings) => {
+        this.setLoading(true);
+        let data = {
+            userGroupId:userGroupId,
+            playerRankings:playerRankings,
+            groupId:groupId,
+        }
+        console.log("datadatadataupdatePlayerRanksssingsupdatePlayerRankingsupdatePlayerRankings")
+        console.log(data)
+        try {
+            const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data)
+        } catch (e) {
+            console.log('error in initialRequest: SingleGroup.js')
+            console.log(e)
+        }
+    };
+
     render() {
         console.log('got in render')
         console.log('playerRankingsplayerRankings')
@@ -171,7 +273,11 @@ export default class SingleGroup extends Component {
             obj[item.position] = item;
             return obj;
         }, {});
+        console.log("orderedPlayerRankingsorderedPlayerRankissngs")
+        console.log(orderedPlayerRankings)
         let order = Object.keys(orderedPlayerRankings) //Array of keys positions
+        console.log("orderorderorderorder")
+        console.log(order)
         /*console.log('ssdsdsdsadasczxczxc')
           console.log(playerRankings)*/
         console.log('playerRankingsplayerRankingsplayerRankingsplayerRasssnkingsplayerRankings')
@@ -296,86 +402,19 @@ export default class SingleGroup extends Component {
                         />
                         <View style={LocalStyles.GroupList}>
                             <SortableListView
-                                style={{flex: 1}}
+                                style={[LocalStyles.listContainer,{flex: 1}]}
                                 data={orderedPlayerRankings}
                                 order={order}
                                 onRowMoved={e => {
-                                    // order.splice(e.to, 0, order.splice(e.from, 1)[0])
-                                    // this.forceUpdate()
-                                    console.log("Updated")
-                                }}
-                                renderRow={({item}) => (
-                                    (item.name ?
-                                            <ListItem
-                                                roundAvatar
-                                                titleNumberOfLines={2}
-                                                titleContainerStyle={{marginLeft: '3%'}}
-                                                title={`${item.name} ${item.lastName}`}
-                                                titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                                subtitle={`${'   TR: ' + '15' + '   SCORE: ' + item.position}`}
-                                                avatar={{uri: item.urlPhoto}}
-                                                containerStyle={{borderBottomWidth: 0}}
-                                                badge={{
-                                                    element: <Ionicons
-                                                        onPress={() => {
-                                                            this.setState({playerSelectionPosition: item.position});
-                                                            navigation.navigate('PlayerSelection', {
-                                                                tPlayers: playerRankings,
-                                                                userGroupId: groupLoggedUser._id,
-                                                                groupId: navigation.state.params.data.currentGroup._id,
-                                                                currentPosition: item.position,
-                                                                onNewPlayer: this.onNewPlayer
-                                                            })
-                                                        }}
-                                                        name="md-menu" size={29} color="green"/>
-                                                }}
-                                                rightIcon={<TouchableOpacity style={{
-                                                    justifyContent: 'center',
-                                                    borderWidth: 1,
-                                                    borderColor: 'black',
-                                                    marginLeft: '2%',
-                                                    paddingHorizontal: '3%'
-                                                }} onPress={() => {
-                                                    this.setState({playerSelectionPosition: item.position});
-                                                    navigation.navigate('PlayerSelection', {
-                                                        tPlayers: playerRankings,
-                                                        userGroupId: groupLoggedUser._id,
-                                                        groupId: navigation.state.params.data.currentGroup._id,
-                                                        currentPosition: item.position,
-                                                        onNewPlayer: this.onNewPlayer
-                                                    })
-                                                }}><Text>REPLACE</Text></TouchableOpacity>}
-                                                key={item.position}
-                                                leftIcon={<Text
-                                                    style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
-                                            />
-                                            :
-                                            <ListItem
-                                                hideChevron
-                                                titleContainerStyle={{marginLeft: '3%', paddingHorizontal: '40%'}}
-                                                label={<Text style={{
-                                                    marginRight: '43%',
-                                                    color: '#3c3c3c',
-                                                    alignSelf: 'center'
-                                                }}>EMPTY SLOT</Text>}
-                                                leftIcon={<Text
-                                                    style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
-                                                containerStyle={{borderBottomWidth: 0}}
-                                                onPress={() => {
-                                                    this.setState({playerSelectionPosition: item.position});
-                                                    navigation.navigate('PlayerSelection', {
-                                                        tPlayers: playerRankings,
-                                                        userGroupId: groupLoggedUser._id,
-                                                        groupId: navigation.state.params.data.currentGroup._id,
-                                                        currentPosition: item.position,
-                                                        onNewPlayer: this.onNewPlayer
-                                                    })
-                                                }}
-                                                key={item.position}
-                                            />
 
-                                    )
-                                )}/>}
+                                    console.log("SortableListViewSortableListView RANKS")
+                                    console.log(orderedPlayerRankings)
+                                    this.updatePlayerRankings(navigation.state.params.data.currentGroup._id,groupLoggedUser._id,playerRankings).then(() => {
+                                        console.log("Updated Player Ranking on swap")
+                                    })
+                                    order.splice(e.to, 0, order.splice(e.from, 1)[0])
+                                }}
+                                renderRow={row => <RowComponent data={row} navigation={this.props.navigation} playerRankings={playerRankings} groupLoggedUser={groupLoggedUser}/>}/>
                             {/*<List containerStyle={LocalStyles.listContainer}>*/}
                         </View>
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>

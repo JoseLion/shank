@@ -184,6 +184,7 @@ let prepareRouter = function (app) {
                         res.ok({}, 'Data not updated');
                     }
                     else {
+
                         res.ok(data);
                     }
                 });
