@@ -16,11 +16,13 @@ import {
     FlatList,
     TouchableOpacity,
     Picker,
+    PickerIOS,
     ActivityIndicator,
     KeyboardAvoidingView,
     findNodeHandle,
     Keyboard,
-    Alert
+    Alert,
+    Platform
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -30,8 +32,11 @@ import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
-import {List, ListItem, SearchBar} from "react-native-elements";
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import {List, ListItem} from "react-native-elements";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import ModalPicker from 'react-native-modal-picker'
+
+const isAndroid = Platform.OS == 'android' ? true : false;
 
 export default class Group extends Component {
 
@@ -68,7 +73,8 @@ export default class Group extends Component {
             error: null,
             refreshing: false,
             tournamentData: [],
-            assignUsers: []
+            assignUsers: [],
+            tId: ""
         };
     }
 
@@ -188,9 +194,9 @@ export default class Group extends Component {
                                           Alert.alert(
                                               'RESPONSE',
                                               'Choose how to get your picture',
+                                              {text: 'Open your gallery', onPress: () => this._pickImage()},
+                                              {text: 'Take a picture', onPress: () => this._takePicture()},
                                               [
-                                                  {text: 'Open your gallery', onPress: () => this._pickImage()},
-                                                  {text: 'Take a picture', onPress: () => this._takePicture()},
                                                   {
                                                       text: 'Cancel',
                                                       onPress: () => console.log('cancel Pressed'),
@@ -229,6 +235,18 @@ export default class Group extends Component {
                             <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
                             {tournamentItems}
                         </Picker>
+                        <ModalPicker
+                            data={this.state.tournamentData}
+                            initValue="Select a tournament to bet on"
+                            onChange={(option)=>{ this.setState({tId:option.id,selectTournament: option.name})}}>
+
+                            <TextInput
+                                style={{borderWidth:1, borderColor:'#ccc', padding:10, height:30}}
+                                editable={false}
+                                placeholder="what this does"
+                                value={this.state.selectTournament} />
+
+                        </ModalPicker>
                     </View>
                     <TextInput
                         underlineColorAndroid='transparent'
@@ -325,7 +343,7 @@ export default class Group extends Component {
 
         let data = {
             name: this.state.name,
-            tournament: this.state.selectTournament,
+            tournament: this.state.tId,
             prize: this.state.prize,
             photo: {path: localUri, name: filename, type: type},
             users: this.state.assignUsers,
