@@ -30,8 +30,8 @@ const MainStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     groupsNone: {
-        fontSize: 15,
-        color: 'rgba(0,0,0,.2)'
+        fontSize: Style.FONT_16,
+        color: 'black'
     },
     iconXLG: {
         width: Style.iconXLG,
@@ -79,6 +79,10 @@ const MainStyles = StyleSheet.create({
     },
     smallShankBlackFont: {
         fontSize: Style.FONT_13,
+        color: '#000',
+    },
+    medShankBlackFont: {
+        fontSize: Style.FONT_15,
         color: '#000',
     },
     mediumShankGreenFont: {

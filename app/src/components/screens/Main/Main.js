@@ -70,7 +70,7 @@ export default class MainScreen extends Component {
 
         },
         headerLeft: null,
-        /*        headerRight: <Entypo name="plus" size={25} color="white" onPress={()=> {}}/>,*/
+        headerRight: <Entypo name="user" size={25} color="white" onPress={()=> console.log("fluck")}/>,
         showIcon: true,
         tabBarIcon: () => {
             return (
@@ -214,33 +214,42 @@ export default class MainScreen extends Component {
                         <Text>LOGOUT</Text>
                     </TouchableHighlight>
                     <View style={{flex: 2, width: '100%', height: '92%'}}>
-                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
-                            <FlatList
-                                data={this.state.data}
-                                renderItem={({item}) => (
-                                    <ListItem
-                                        roundAvatar
-                                        /* avatarStyle={LocalStyles.avatarList}*/
-                                        avatar={{uri: item.photo.path}}
-                                        title={`${item.name}`}
-                                        titleStyle={LocalStyles.titleMainList}
-                                        subtitleNumberOfLines={2}
-                                        subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
-                                            Score: - Rank: - </Text>}
-                                        underlayColor={"#b3b3b3"}
-                                        containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
-                                        onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
-                                    />
-                                )}
-                                keyExtractor={item => item._id}
-                                ItemSeparatorComponent={this.renderSeparator}
-                                ListFooterComponent={this.renderFooter}
-                                onRefresh={this.handleRefresh}
-                                refreshing={this.state.refreshing}
-                                ListHeaderComponent={this.renderHeader}
-                                onEndReachedThreshold={1}
-                            />
-                        </List>
+                        {this.state.data.length > 0
+                            ?
+                            <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                                <FlatList
+                                    data={this.state.data}
+                                    renderItem={({item}) => (
+                                        <ListItem
+                                            roundAvatar
+                                            /* avatarStyle={LocalStyles.avatarList}*/
+                                            avatar={{uri: item.photo.path}}
+                                            title={`${item.name}`}
+                                            titleStyle={LocalStyles.titleMainList}
+                                            subtitleNumberOfLines={2}
+                                            subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
+                                                Score: - Rank: - </Text>}
+                                            underlayColor={"#b3b3b3"}
+                                            containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
+                                            onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
+                                        />
+                                    )}
+                                    keyExtractor={item => item._id}
+                                    ItemSeparatorComponent={this.renderSeparator}
+                                    ListFooterComponent={this.renderFooter}
+                                    onRefresh={this.handleRefresh}
+                                    refreshing={this.state.refreshing}
+                                    ListHeaderComponent={this.renderHeader}
+                                    onEndReachedThreshold={1}
+                                />
+                            </List>
+                            :
+                            <TouchableOpacity onPress={() => navigation.dispatch({type: 'Group'})}>
+                                <Text style={MainStyles.groupsNone}>
+                                    Tap on the "+" button to create {"\n"} or join a betting group
+                                </Text>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
             )
@@ -251,9 +260,11 @@ export default class MainScreen extends Component {
                                         onPress={() => navigation.dispatch({type: 'Register'})}>
                         <Text>+</Text>
                     </TouchableHighlight>
-                    <Text style={MainStyles.groupsNone}>
-                        Tap on the "+" button to create {"\n"} or join a betting group
-                    </Text>
+                    <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
+                        <Text style={MainStyles.groupsNone}>
+                            Tap on the "+" button to create {"\n"} or join a betting group
+                        </Text>
+                    </TouchableOpacity>
                     <Text/>
                 </View>
             )

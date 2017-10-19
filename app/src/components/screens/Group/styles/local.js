@@ -63,9 +63,9 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center',
     },
     groupImage:{
-        width:  Style.iconMD,
+/*        width:  Style.iconMD,
         height: Style.iconMD,
-        borderRadius: Style.iconMD / 2,
+        borderRadius: Style.iconMD / 2,*/
         borderColor: '#A39534',
     },
     tournamentPicker: {

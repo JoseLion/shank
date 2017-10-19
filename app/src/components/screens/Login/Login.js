@@ -104,7 +104,7 @@ export default class LoginScreen extends Component {
         };
         this._onLoginPressedAsync(data).then((response) => {
             this.setLoading(false);
-            this.props.navigation.dispatch({type: 'Main'});
+            this.props.navigation.dispatch({type: 'Group'});
         })
     }
 

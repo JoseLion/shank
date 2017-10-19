@@ -267,7 +267,7 @@ export default class Register extends Component {
                     </TouchableHighlight>
                     <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
                         <Text
-                            style={[MainStyles.centerText, MainStyles.smallShankBlackFont, MainStyles.inputTopSeparation]}>
+                            style={[MainStyles.centerText, MainStyles.medShankBlackFont, MainStyles.inputTopSeparation]}>
                             I already have an account
                         </Text>
                     </TouchableOpacity>
