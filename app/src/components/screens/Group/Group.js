@@ -19,7 +19,8 @@ import {
     ActivityIndicator,
     KeyboardAvoidingView,
     findNodeHandle,
-    Keyboard
+    Keyboard,
+    Alert
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -182,7 +183,25 @@ export default class Group extends Component {
                                      style={{backgroundColor: '#F5FCFF'}}>
                 <View style={[MainStyles.container]} behavior="padding">
                     <Spinner visible={this.state.loading}/>
-                    <TouchableOpacity style={[LocalStyles.addPhotoLogo,MainStyles.inputTopSeparation]} onPress={this._pickImage}>
+                    <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]}
+                                      onPress={ () => {
+                                          Alert.alert(
+                                              'RESPONSE',
+                                              'Choose how to get your picture',
+                                              [
+                                                  {text: 'Open your gallery', onPress: () => this._pickImage()},
+                                                  {text: 'Take a picture', onPress: () => this._takePicture()},
+                                                  {
+                                                      text: 'Cancel',
+                                                      onPress: () => console.log('cancel Pressed'),
+                                                      style: 'cancel'
+                                                  },
+                                              ],
+                                              {cancelable: true}
+                                          )
+                                      }
+
+                                      }>
                         {groupPhoto &&
                         <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/>
                         }
@@ -198,7 +217,7 @@ export default class Group extends Component {
 
                     <TextInput
                         underlineColorAndroid='transparent'
-                        style={[LocalStyles.createTInput,MainStyles.inputTopSeparation]}
+                        style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
                         onChangeText={(name) => this.setState({name})}
                         value={this.state.name}
                         placeholder={'Group name'}
@@ -329,7 +348,16 @@ export default class Group extends Component {
             allowsEditing: true,
             aspect: [4, 3],
         });
-        console.log(result);
+        if (!result.cancelled) {
+            this.setState({groupPhoto: result.uri});
+        }
+    };
+
+    _takePicture = async () => {
+        let result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+        });
         if (!result.cancelled) {
             this.setState({groupPhoto: result.uri});
         }

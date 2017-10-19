@@ -117,9 +117,7 @@ export default class LoginScreen extends Component {
         })
             .catch((error) => {
                 this.setLoading(false);
-                setTimeout(() => {
-                    Notifier.message({title: 'ERROR', message: error});
-                }, Constants.TIME_OUT_NOTIFIER);
+                Notifier.message({title: 'ERROR', message: error});
             });
     }
 }
