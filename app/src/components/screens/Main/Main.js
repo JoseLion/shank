@@ -9,7 +9,8 @@ import {
     FlatList,
     ActivityIndicator,
     TouchableHighlight,
-    AsyncStorage
+    AsyncStorage,
+    TouchableOpacity
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
@@ -64,15 +65,15 @@ export default class MainScreen extends Component {
 
     static navigationOptions = ({navigation}) => ({
         title: 'BETTING GROUPS',
+        showIcon: true,
         headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E',
-
+            paddingHorizontal: '3%'
         },
         headerLeft: null,
-        headerRight: <Entypo name="user" size={25} color="white" onPress={()=> console.log("fluck")}/>,
-        showIcon: true,
-        tabBarIcon: () => {
+        headerRight: <Entypo name="user" size={25} color="white" onPress={() => console.log("fluck")}/>,
+        tabBarIcon: ({focused, tintColor}) => {
             return (
                 <FontAwesome name="group" size={29} color="white"/>
             )
@@ -201,6 +202,7 @@ export default class MainScreen extends Component {
 //PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
     render() {
         let navigation = this.props.navigation;
+        let showPlus = this.state.data.length > 0
         if (this.state.auth) {
             return (
                 <View style={LocalStyles.containerMain}>
@@ -214,42 +216,33 @@ export default class MainScreen extends Component {
                         <Text>LOGOUT</Text>
                     </TouchableHighlight>
                     <View style={{flex: 2, width: '100%', height: '92%'}}>
-                        {this.state.data.length > 0
-                            ?
-                            <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
-                                <FlatList
-                                    data={this.state.data}
-                                    renderItem={({item}) => (
-                                        <ListItem
-                                            roundAvatar
-                                            /* avatarStyle={LocalStyles.avatarList}*/
-                                            avatar={{uri: item.photo.path}}
-                                            title={`${item.name}`}
-                                            titleStyle={LocalStyles.titleMainList}
-                                            subtitleNumberOfLines={2}
-                                            subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
-                                                Score: - Rank: - </Text>}
-                                            underlayColor={"#b3b3b3"}
-                                            containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
-                                            onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
-                                        />
-                                    )}
-                                    keyExtractor={item => item._id}
-                                    ItemSeparatorComponent={this.renderSeparator}
-                                    ListFooterComponent={this.renderFooter}
-                                    onRefresh={this.handleRefresh}
-                                    refreshing={this.state.refreshing}
-                                    ListHeaderComponent={this.renderHeader}
-                                    onEndReachedThreshold={1}
-                                />
-                            </List>
-                            :
-                            <TouchableOpacity onPress={() => navigation.dispatch({type: 'Group'})}>
-                                <Text style={MainStyles.groupsNone}>
-                                    Tap on the "+" button to create {"\n"} or join a betting group
-                                </Text>
-                            </TouchableOpacity>
-                        }
+                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                            <FlatList
+                                data={this.state.data}
+                                renderItem={({item}) => (
+                                    <ListItem
+                                        roundAvatar
+                                        /* avatarStyle={LocalStyles.avatarList}*/
+                                        avatar={{uri: item.photo.path}}
+                                        title={`${item.name}`}
+                                        titleStyle={LocalStyles.titleMainList}
+                                        subtitleNumberOfLines={2}
+                                        subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
+                                            Score: - Rank: - </Text>}
+                                        underlayColor={"#b3b3b3"}
+                                        containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
+                                        onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
+                                    />
+                                )}
+                                keyExtractor={item => item._id}
+                                ItemSeparatorComponent={this.renderSeparator}
+                                ListFooterComponent={this.renderFooter}
+                                onRefresh={this.handleRefresh}
+                                refreshing={this.state.refreshing}
+                                ListHeaderComponent={this.renderHeader}
+                                onEndReachedThreshold={1}
+                            />
+                        </List>
                     </View>
                 </View>
             )

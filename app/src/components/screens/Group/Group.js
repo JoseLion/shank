@@ -229,23 +229,19 @@ export default class Group extends Component {
                         placeholder={'Group name'}
                     />
                     <View style={LocalStyles.tournamentPicker}>
-                        <Picker
-                            selectedValue={this.state.selectTournament}
-                            onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                            <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
-                            {tournamentItems}
-                        </Picker>
                         <ModalPicker
                             data={this.state.tournamentData}
                             initValue="Select a tournament to bet on"
-                            onChange={(option)=>{ this.setState({tId:option.id,selectTournament: option.name})}}>
-
+                            onChange={(option) => {
+                                this.setState({tId: option.id, selectTournament: option.name})
+                            }}>
                             <TextInput
-                                style={{borderWidth:1, borderColor:'#ccc', padding:10, height:30}}
+                                underlineColorAndroid='transparent'
+                                style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
                                 editable={false}
-                                placeholder="what this does"
-                                value={this.state.selectTournament} />
-
+                                value={this.state.selectTournament}
+                                placeholder="Choose a tournamnet"
+                            />
                         </ModalPicker>
                     </View>
                     <TextInput

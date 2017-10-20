@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions} from 'react-navigation';
+import {Entypo, FontAwesome} from '@expo/vector-icons';
 import {
     BackHandler,
 } from 'react-native';

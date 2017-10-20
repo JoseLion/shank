@@ -407,11 +407,11 @@ export default class SingleGroup extends Component {
                                 order={order}
                                 onRowMoved={e => {
 
-                                    console.log("SortableListViewSortableListView RANKS")
+/*                                    console.log("SortableListViewSortableListView RANKS")
                                     console.log(orderedPlayerRankings)
                                     this.updatePlayerRankings(navigation.state.params.data.currentGroup._id,groupLoggedUser._id,playerRankings).then(() => {
                                         console.log("Updated Player Ranking on swap")
-                                    })
+                                    })*/
                                     order.splice(e.to, 0, order.splice(e.from, 1)[0])
                                 }}
                                 renderRow={row => <RowComponent data={row} navigation={this.props.navigation} playerRankings={playerRankings} groupLoggedUser={groupLoggedUser}/>}/>
