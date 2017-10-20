@@ -28,7 +28,7 @@ const LocalStyles = StyleSheet.create({
     GroupList: {
         flex: 2,
         width: '100%',
-        height: '92%'
+        height: '96%'
     },
     positionParticipants: {
         marginTop: '1%',

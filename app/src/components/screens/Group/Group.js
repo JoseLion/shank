@@ -34,7 +34,13 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
 import {List, ListItem} from "react-native-elements";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import ModalPicker from 'react-native-modal-picker'
+
+import {
+    Select,
+    Option,
+    OptionList,
+    updatePosition
+} from 'react-native-dropdown';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 
@@ -80,6 +86,8 @@ export default class Group extends Component {
 
     componentDidMount() {
         //this.makeRemoteRequest();
+        updatePosition(this.refs['SELECT1']);
+        updatePosition(this.refs['OPTIONLIST']);
         this.setLoading(true);
         this.initialRequest('pga', '2018').then((data) => {
             console.log(data)
@@ -117,6 +125,10 @@ export default class Group extends Component {
             console.log(e)
         }
     };
+
+    _getOptionList() {
+        return this.refs['OPTIONLIST'];
+    }
 
     handleRefresh = () => {
         this.setState(
@@ -183,6 +195,9 @@ export default class Group extends Component {
         let tournamentItems = this.state.tournamentData.map((s, i) => {
             return <Picker.Item key={i} value={s.id} label={s.name}/>
         });
+        let tournamentOptions= this.state.tournamentData.map((s, i) => {
+            return <Option key={i} value={s.id} label={s.name}>{s.name}</Option>
+        });
 
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
@@ -190,7 +205,7 @@ export default class Group extends Component {
                 <View style={[MainStyles.container]} behavior="padding">
                     <Spinner visible={this.state.loading}/>
                     <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]}
-                                      onPress={ () => {
+                                      onPress={() => {
                                           Alert.alert(
                                               'RESPONSE',
                                               'Choose how to get your picture',
@@ -228,21 +243,24 @@ export default class Group extends Component {
                         value={this.state.name}
                         placeholder={'Group name'}
                     />
+                    {/*https://github.com/alinz/react-native-dropdown*/}
                     <View style={LocalStyles.tournamentPicker}>
-                        <ModalPicker
-                            data={this.state.tournamentData}
-                            initValue="Select a tournament to bet on"
-                            onChange={(option) => {
-                                this.setState({tId: option.id, selectTournament: option.name})
-                            }}>
-                            <TextInput
-                                underlineColorAndroid='transparent'
-                                style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
-                                editable={false}
-                                value={this.state.selectTournament}
-                                placeholder="Choose a tournamnet"
-                            />
-                        </ModalPicker>
+                        <Select
+                            width={'100%'}
+                            ref="SELECT1"
+                            optionListRef={this._getOptionList.bind(this)}
+                            defaultValue="Select a tornament ..."
+                            onSelect={this.setState({selectTournament: this.id})}>
+                            {tournamentOptions}
+                        </Select>
+                        <TextInput
+                            underlineColorAndroid='transparent'
+                            style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
+                            editable={false}
+                            value={this.state.selectTournament}
+                            placeholder="Choose a tournamnet"
+                        />
+                        <OptionList ref="OPTIONLIST"/>
                     </View>
                     <TextInput
                         underlineColorAndroid='transparent'

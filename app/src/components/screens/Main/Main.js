@@ -65,7 +65,7 @@ export default class MainScreen extends Component {
 
     static navigationOptions = ({navigation}) => ({
         title: 'BETTING GROUPS',
-        showIcon: true,
+        showIcon:{true},
         headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E',

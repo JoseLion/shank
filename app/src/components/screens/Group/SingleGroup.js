@@ -56,8 +56,8 @@ class RowComponent extends React.Component {
     };
 
     render() {
-        if (this.props.data.name){
-            return(
+        if (this.props.data.name) {
+            return (
                 <ListItem
                     {...this.props.sortHandlers}
                     roundAvatar
@@ -235,12 +235,12 @@ export default class SingleGroup extends Component {
         );
     };
 
-    updatePlayerRankings = async (groupId,userGroupId,playerRankings) => {
+    updatePlayerRankings = async (groupId, userGroupId, playerRankings) => {
         this.setLoading(true);
         let data = {
-            userGroupId:userGroupId,
-            playerRankings:playerRankings,
-            groupId:groupId,
+            userGroupId: userGroupId,
+            playerRankings: playerRankings,
+            groupId: groupId,
         }
         console.log("datadatadataupdatePlayerRanksssingsupdatePlayerRankingsupdatePlayerRankings")
         console.log(data)
@@ -402,19 +402,21 @@ export default class SingleGroup extends Component {
                         />
                         <View style={LocalStyles.GroupList}>
                             <SortableListView
-                                style={[LocalStyles.listContainer,{flex: 1}]}
+                                style={[LocalStyles.listContainer, {flex: 1}]}
                                 data={orderedPlayerRankings}
                                 order={order}
                                 onRowMoved={e => {
 
-/*                                    console.log("SortableListViewSortableListView RANKS")
-                                    console.log(orderedPlayerRankings)
-                                    this.updatePlayerRankings(navigation.state.params.data.currentGroup._id,groupLoggedUser._id,playerRankings).then(() => {
-                                        console.log("Updated Player Ranking on swap")
-                                    })*/
+                                    /*                                    console.log("SortableListViewSortableListView RANKS")
+                                                                        console.log(orderedPlayerRankings)
+                                                                        this.updatePlayerRankings(navigation.state.params.data.currentGroup._id,groupLoggedUser._id,playerRankings).then(() => {
+                                                                            console.log("Updated Player Ranking on swap")
+                                                                        })*/
                                     order.splice(e.to, 0, order.splice(e.from, 1)[0])
                                 }}
-                                renderRow={row => <RowComponent data={row} navigation={this.props.navigation} playerRankings={playerRankings} groupLoggedUser={groupLoggedUser}/>}/>
+                                renderRow={row => <RowComponent data={row} navigation={this.props.navigation}
+                                                                playerRankings={playerRankings}
+                                                                groupLoggedUser={groupLoggedUser}/>}/>
                             {/*<List containerStyle={LocalStyles.listContainer}>*/}
                         </View>
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
