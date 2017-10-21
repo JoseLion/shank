@@ -6,8 +6,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import {
-    Button,
-    StyleSheet,
     Text,
     View,
     TextInput,
@@ -16,11 +14,7 @@ import {
     FlatList,
     TouchableOpacity,
     Picker,
-    PickerIOS,
     ActivityIndicator,
-    KeyboardAvoidingView,
-    findNodeHandle,
-    Keyboard,
     Alert,
     Platform
 } from 'react-native';
@@ -35,12 +29,13 @@ import {ImagePicker} from 'expo';
 import {List, ListItem} from "react-native-elements";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {
+const DropDown = require('react-native-dropdown');
+const {
     Select,
     Option,
     OptionList,
     updatePosition
-} from 'react-native-dropdown';
+} = DropDown;
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 
@@ -86,10 +81,11 @@ export default class Group extends Component {
 
     componentDidMount() {
         //this.makeRemoteRequest();
-        updatePosition(this.refs['SELECT1']);
-        updatePosition(this.refs['OPTIONLIST']);
         this.setLoading(true);
         this.initialRequest('pga', '2018').then((data) => {
+         /*   updatePosition(this.refs['SELECT1']);
+            updatePosition(this.refs['OPTIONLIST']);*/
+            console.log('pgapga 20182018')
             console.log(data)
         });
     }
@@ -167,6 +163,13 @@ export default class Group extends Component {
         );
     };
 
+    _tournamentSelect(t) {
+        this.setState({
+            ...this.state,
+            selectTournament: t
+        });
+    }
+
     /*renderHeader = () => {
      return <SearchBar placeholder="Type Here..." lightTheme round/>;
      };*/
@@ -195,10 +198,9 @@ export default class Group extends Component {
         let tournamentItems = this.state.tournamentData.map((s, i) => {
             return <Picker.Item key={i} value={s.id} label={s.name}/>
         });
-        let tournamentOptions= this.state.tournamentData.map((s, i) => {
+        let tournamentOptions = this.state.tournamentData.map((s, i) => {
             return <Option key={i} value={s.id} label={s.name}>{s.name}</Option>
         });
-
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
                                      style={{backgroundColor: '#F5FCFF'}}>
@@ -246,11 +248,11 @@ export default class Group extends Component {
                     {/*https://github.com/alinz/react-native-dropdown*/}
                     <View style={LocalStyles.tournamentPicker}>
                         <Select
-                            width={'100%'}
+                            width={100}
                             ref="SELECT1"
                             optionListRef={this._getOptionList.bind(this)}
                             defaultValue="Select a tornament ..."
-                            onSelect={this.setState({selectTournament: this.id})}>
+                            onSelect={this._tournamentSelect.bind(this)}>
                             {tournamentOptions}
                         </Select>
                         <TextInput
