@@ -381,8 +381,8 @@ export default class SingleGroup extends Component {
                                         rightTitle={`${'Score: ' + item.score}`}
                                         rightTitleStyle={LocalStyles.participantsScore}
                                         containerStyle={{borderBottomWidth: 0}}
-                                        rightIcon={<Image style={{marginHorizontal: '2%'}}
-                                                          source={whistleIcon}/>}
+                                     /*   rightIcon={<Image style={{marginHorizontal: '2%'}}
+                                                          source={whistleIcon}/>}*/
                                         leftIcon={<Text
                                             style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
                                     />

@@ -15,9 +15,26 @@ const LocalStyles = StyleSheet.create({
         height: Style.MD,
         borderRadius: Style.MD/2
     },
+    roundAvatar: {
+        width: Style.iconSM,
+        height: Style.iconSM,
+        borderRadius: Style.iconSM/2,
+    },
+    containerRoundAvatar: {
+        height: Style.iconSM,
+        width: Style.iconSM,
+        borderRadius: Style.iconSM/2,
+        marginVertical:'10%'
+    },
+    overlayRoundAvatar: {
+        backgroundColor: 'transparent',
+    },
+    containerList: {
+        height: Style.INPUT_INSIDE_BUBBLE,
+    },
     titleMainList: {
        fontSize: Style.FONT_LARGE,
-       color: "#556E3E"
+       color: "#556E3E",
     },
     subTitleMainList: {
         fontSize: Style.FONT_MEDIUM,

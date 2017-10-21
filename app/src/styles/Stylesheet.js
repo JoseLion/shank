@@ -117,6 +117,8 @@ const Style = {
     MD: em(15),
     SM: em(10),
     XS: em(6.25),
+    //RADIUS
+    RAD_MD: em(15) / 2,
     //Horizontal SPACES
     HS_10: em(0.625),
     //ICONS

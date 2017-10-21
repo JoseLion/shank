@@ -16,7 +16,8 @@ import {
     Picker,
     ActivityIndicator,
     Alert,
-    Platform
+    Platform,
+    PickerIOS
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -29,7 +30,6 @@ import {ImagePicker} from 'expo';
 import {List, ListItem} from "react-native-elements";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import ModalDropdown from 'react-native-modal-dropdown';
 const isAndroid = Platform.OS == 'android' ? true : false;
 
 export default class Group extends Component {
@@ -177,14 +177,6 @@ export default class Group extends Component {
         );
     };
 
-    _dropdown_6_onSelect(idx, value) {
-        console.log("idx,valueidx,value")
-        console.log(idx, value)
-        this.setState({
-            selectTournament: value,
-        })
-    }
-
     render() {
         let {groupPhoto} = this.state;
         let navigation = this.props.navigation;
@@ -192,6 +184,9 @@ export default class Group extends Component {
 
         let tournamentItems = this.state.tournamentData.map((s, i) => {
             return <Picker.Item key={i} value={s.id} label={s.name}/>
+        });
+        let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
+            return <PickerIOS.Item key={i} value={s.id} label={s.name}/>
         });
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
@@ -203,26 +198,20 @@ export default class Group extends Component {
                                           Alert.alert(
                                               'RESPONSE',
                                               'Choose how to get your picture',
-                                              {text: 'Open your gallery', onPress: () => this._pickImage()},
-                                              {text: 'Take a picture', onPress: () => this._takePicture()},
                                               [
-                                                  {
-                                                      text: 'Cancel',
-                                                      onPress: () => console.log('cancel Pressed'),
-                                                      style: 'cancel'
-                                                  },
+                                                  {text: 'Open your gallery', onPress: () => this._pickImage()},
+                                                  {text: 'Take a picture', onPress: () => this._takePicture()},
                                               ],
                                               {cancelable: true}
                                           )
                                       }
-
                                       }>
                         {groupPhoto &&
                         <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/>
                         }
                         {!groupPhoto &&
-                        <Image
-                            source={addPhoto}>
+                        <Image style={LocalStyles.groupImage}
+                               source={addPhoto}>
                         </Image>
                         }
                         <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
@@ -239,21 +228,22 @@ export default class Group extends Component {
                     />
                     {/*https://github.com/alinz/react-native-dropdown*/}
                     <View style={LocalStyles.tournamentPicker}>
-
-                        <ModalDropdown style={{
-                            flex: 1,
-                            left: 8,
-                        }}
-                                       options={this.state.tournamentData}
-                                       onSelect={(idx, value) => this._dropdown_6_onSelect(idx, value)}>
-                            <TextInput
-                                underlineColorAndroid='transparent'
-                                style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
-                                editable={false}
-                                value={this.state.selectTournament}
-                                placeholder="Choose a tournamnet"
-                            />
-                        </ModalDropdown>
+                        {isAndroid
+                            ?
+                            <Picker
+                                selectedValue={this.state.selectTournament}
+                                onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+                                <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
+                                {tournamentItems}
+                            </Picker>
+                            :
+                            <PickerIos
+                                selectedValue={this.state.selectTournament}
+                                onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+                                <PickerIOS.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
+                                {tournamentItemsIos}
+                            </PickerIos>
+                        }
                     </View>
                     <TextInput
                         underlineColorAndroid='transparent'
@@ -262,11 +252,6 @@ export default class Group extends Component {
                         onChangeText={(prize) => this.setState({prize: prize})}
                         value={this.state.prize}
                     />
-                    <View style={LocalStyles.participantsTxt}>
-                        <Text style={MainStyles.greenMedShankFont}>
-                            PARTICIPANTS
-                        </Text>
-                    </View>
                     <View style={LocalStyles.List}>
                         <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0,}}>
                             <FlatList

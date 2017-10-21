@@ -12,6 +12,14 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#1D222D',
     },
+    dropdown_2_text: {
+        marginVertical: 10,
+        marginHorizontal: 6,
+        fontSize: 18,
+        color: 'white',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+    },
     participantsTxt: {
         //flex: 1,
         paddingTop: 20,
@@ -19,6 +27,13 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
         //marginLeft:'-50%'
+    },
+    dropdown_2_dropdown: {
+        width: 150,
+        height: 300,
+        borderColor: 'cornflowerblue',
+        borderWidth: 2,
+        borderRadius: 3,
     },
     List: {
         flex: 2,
@@ -39,7 +54,7 @@ const LocalStyles = StyleSheet.create({
         flex: 1,
     },
     titleStyle: {
-        fontSize: Style.FONT_14
+        fontSize: Style.FONT_15
     },
     subtitleStyle: {
         fontSize: Style.FONT_12,
@@ -57,15 +72,13 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
     },
     addPhotoLogo: {
-        width:  Style.iconLG,
-        height: Style.iconLG,
         marginTop: '3%',
         alignItems: 'center',
     },
     groupImage:{
-/*        width:  Style.iconMD,
+        width:  Style.iconMD,
         height: Style.iconMD,
-        borderRadius: Style.iconMD / 2,*/
+        borderRadius: Style.iconMD / 2,
         borderColor: '#A39534',
     },
     tournamentPicker: {

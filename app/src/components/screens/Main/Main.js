@@ -224,13 +224,17 @@ export default class MainScreen extends Component {
                                         roundAvatar
                                         /* avatarStyle={LocalStyles.avatarList}*/
                                         avatar={{uri: item.photo.path}}
+                                        avatarStyle={LocalStyles.roundAvatar}
+                                        avatarContainerStyle={LocalStyles.containerRoundAvatar}
+                                        avatarOverlayContainerStyle={LocalStyles.overlayRoundAvatar}
                                         title={`${item.name}`}
                                         titleStyle={LocalStyles.titleMainList}
-                                        subtitleNumberOfLines={2}
+                                        titleContainerStyle={{marginVertical:'5%',marginHorizontal:'10%'}}
+                                      /*  subtitleNumberOfLines={2}
                                         subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
-                                            Score: - Rank: - </Text>}
+                                            Score: - Rank: - </Text>}*/
                                         underlayColor={"#b3b3b3"}
-                                        containerStyle={{borderBottomWidth: 0, marginHorizontal: '8%'}}
+                                        containerStyle={[LocalStyles.containerList,{borderBottomWidth: 0, marginHorizontal: '9%'}]}
                                         onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
                                     />
                                 )}
