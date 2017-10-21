@@ -102,9 +102,11 @@ export default class LoginScreen extends Component {
             email: email,
             password: this.state.password,
         };
-        this._onLoginPressedAsync(data).then((response) => {
+        this._onLoginPressedAsync(data).then((login) => {
+            console.log(":::login data:::")
+            console.log(data)
+            console.log(login)
             this.setLoading(false);
-            this.props.navigation.dispatch({type: 'Group'});
         })
     }
 
@@ -114,6 +116,8 @@ export default class LoginScreen extends Component {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(login.user), () => {
                 });
             });
+            this.setLoading(false);
+            this.props.navigation.dispatch({type: 'Group'});
         })
             .catch((error) => {
                 this.setLoading(false);
