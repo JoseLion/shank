@@ -29,14 +29,7 @@ import {ImagePicker} from 'expo';
 import {List, ListItem} from "react-native-elements";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-const DropDown = require('react-native-dropdown');
-const {
-    Select,
-    Option,
-    OptionList,
-    updatePosition
-} = DropDown;
-
+import ModalDropdown from 'react-native-modal-dropdown';
 const isAndroid = Platform.OS == 'android' ? true : false;
 
 export default class Group extends Component {
@@ -83,8 +76,6 @@ export default class Group extends Component {
         //this.makeRemoteRequest();
         this.setLoading(true);
         this.initialRequest('pga', '2018').then((data) => {
-         /*   updatePosition(this.refs['SELECT1']);
-            updatePosition(this.refs['OPTIONLIST']);*/
             console.log('pgapga 20182018')
             console.log(data)
         });
@@ -121,10 +112,6 @@ export default class Group extends Component {
             console.log(e)
         }
     };
-
-    _getOptionList() {
-        return this.refs['OPTIONLIST'];
-    }
 
     handleRefresh = () => {
         this.setState(
@@ -190,6 +177,14 @@ export default class Group extends Component {
         );
     };
 
+    _dropdown_6_onSelect(idx, value) {
+        console.log("idx,valueidx,value")
+        console.log(idx, value)
+        this.setState({
+            selectTournament: value,
+        })
+    }
+
     render() {
         let {groupPhoto} = this.state;
         let navigation = this.props.navigation;
@@ -197,9 +192,6 @@ export default class Group extends Component {
 
         let tournamentItems = this.state.tournamentData.map((s, i) => {
             return <Picker.Item key={i} value={s.id} label={s.name}/>
-        });
-        let tournamentOptions = this.state.tournamentData.map((s, i) => {
-            return <Option key={i} value={s.id} label={s.name}>{s.name}</Option>
         });
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
@@ -247,22 +239,21 @@ export default class Group extends Component {
                     />
                     {/*https://github.com/alinz/react-native-dropdown*/}
                     <View style={LocalStyles.tournamentPicker}>
-                        <Select
-                            width={100}
-                            ref="SELECT1"
-                            optionListRef={this._getOptionList.bind(this)}
-                            defaultValue="Select a tornament ..."
-                            onSelect={this._tournamentSelect.bind(this)}>
-                            {tournamentOptions}
-                        </Select>
-                        <TextInput
-                            underlineColorAndroid='transparent'
-                            style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
-                            editable={false}
-                            value={this.state.selectTournament}
-                            placeholder="Choose a tournamnet"
-                        />
-                        <OptionList ref="OPTIONLIST"/>
+
+                        <ModalDropdown style={{
+                            flex: 1,
+                            left: 8,
+                        }}
+                                       options={this.state.tournamentData}
+                                       onSelect={(idx, value) => this._dropdown_6_onSelect(idx, value)}>
+                            <TextInput
+                                underlineColorAndroid='transparent'
+                                style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
+                                editable={false}
+                                value={this.state.selectTournament}
+                                placeholder="Choose a tournamnet"
+                            />
+                        </ModalDropdown>
                     </View>
                     <TextInput
                         underlineColorAndroid='transparent'
