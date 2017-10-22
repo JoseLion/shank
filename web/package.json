@@ -1,7 +1,7 @@
 {
-  "name": "mayflower-2017-front",
+  "name": "shank-2017-admin",
   "version": "1.0.0",
-  "description": "Mayflower 2017 Website",
+  "description": "shank 2017 Website",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
     "start": "NODE_ENV=production node server.js"
   },
   "keywords": [],
-  "author": "Gabriel Peña",
+  "author": "Raul Hinojosa",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^4.0.0",
