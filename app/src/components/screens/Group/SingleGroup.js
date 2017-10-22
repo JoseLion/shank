@@ -12,7 +12,7 @@ import Swiper from 'react-native-swiper';
 import {LinearGradient} from 'expo';
 import BaseModel from '../../../core/BaseModel';
 
-import {Ionicons, Entypo} from '@expo/vector-icons'; // 5.2.0
+import {FontAwesome, Entypo} from '@expo/vector-icons'; // 5.2.0
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SortableListView from 'react-native-sortable-listview'
@@ -61,15 +61,16 @@ class RowComponent extends React.Component {
                 <ListItem
                     {...this.props.sortHandlers}
                     roundAvatar
-                    titleNumberOfLines={2}
-                    titleContainerStyle={{marginLeft: '3%'}}
+                    titleContainerStyle={{marginLeft: '7%'}}
+                    subtitleContainerStyle={{marginLeft: '7%'}}
                     title={`${this.props.data.name} ${this.props.data.lastName}`}
                     titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
                     subtitle={`${'   TR: ' + '15' + '   SCORE: ' + this.props.data.position}`}
                     avatar={{uri: this.props.data.urlPhoto}}
                     containerStyle={{borderBottomWidth: 0}}
+                    hideChevron
                     badge={{
-                        element: <Ionicons
+                        element: <FontAwesome
                             onPress={() => {
                                 this.setState({playerSelectionPosition: this.props.data.position});
                                 this.props.navigation.navigate('PlayerSelection', {
@@ -80,9 +81,9 @@ class RowComponent extends React.Component {
                                     onNewPlayer: this.onNewPlayer
                                 })
                             }}
-                            name="md-menu" size={29} color="green"/>
+                            name="pencil" size={29} color="green"/>
                     }}
-                    rightIcon={<TouchableOpacity style={{
+                 /*   rightIcon={<TouchableOpacity style={{
                         justifyContent: 'center',
                         borderWidth: 1,
                         borderColor: 'black',
@@ -97,7 +98,7 @@ class RowComponent extends React.Component {
                             currentPosition: this.props.data.position,
                             onNewPlayer: this.onNewPlayer
                         })
-                    }}><Text>REPLACE</Text></TouchableOpacity>}
+                    }}><Text>REPLACE</Text></TouchableOpacity>}*/
                     key={this.props.data.position}
                     leftIcon={<Text
                         style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>}
@@ -375,8 +376,9 @@ export default class SingleGroup extends Component {
                                 renderItem={({item}) => (
                                     <ListItem
                                         key={item.userId}
-                                        titleContainerStyle={{marginLeft: '3%'}}
+                                        titleContainerStyle={{marginLeft: '6%'}}
                                         title={`${item.name}`}
+                                        hideChevron
                                         titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
                                         rightTitle={`${'Score: ' + item.score}`}
                                         rightTitleStyle={LocalStyles.participantsScore}
@@ -419,10 +421,10 @@ export default class SingleGroup extends Component {
                                                                 groupLoggedUser={groupLoggedUser}/>}/>
                             {/*<List containerStyle={LocalStyles.listContainer}>*/}
                         </View>
-                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                             <TouchableOpacity
                                 onPress={() => this._handleNewRegistry()}
-                                style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankButton]}>
+                                style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankButtonPayment]}>
                                 <Text style={LocalStyles.buttonText}>2 movements ($1.99)</Text>
                             </TouchableOpacity>
                         </View>

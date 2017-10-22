@@ -43,10 +43,9 @@ const LocalStyles = StyleSheet.create({
     GroupList: {
         flex: 2,
         width: '100%',
-        height: '96%'
+        height: '97%'
     },
     positionParticipants: {
-        marginTop: '1%',
         marginRight: '2%',
         fontSize: Style.FONT_15
     },

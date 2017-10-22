@@ -208,10 +208,6 @@ export default class MainScreen extends Component {
                 <View style={LocalStyles.containerMain}>
                     <Spinner visible={this.state.loading}/>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
-                                        onPress={() => navigation.dispatch({type: 'Group'})}>
-                        <Text>+</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={this._removeStorage}>
                         <Text>LOGOUT</Text>
                     </TouchableHighlight>
@@ -248,6 +244,15 @@ export default class MainScreen extends Component {
                             />
                         </List>
                     </View>
+                    <View style={{  flex: 2,
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        justifyContent: 'center',}}>
+                        <TouchableHighlight style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankAddGroupButton]} underlayColor="gray"
+                                            onPress={() => navigation.dispatch({type: 'Group'})}>
+                            <Text style={{color:'white'}}>ADD GROUP</Text>
+                        </TouchableHighlight>
+                    </View>
                 </View>
             )
         } else {
@@ -257,11 +262,16 @@ export default class MainScreen extends Component {
                                         onPress={() => navigation.dispatch({type: 'Register'})}>
                         <Text>+</Text>
                     </TouchableHighlight>
-                    <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
-                        <Text style={MainStyles.groupsNone}>
-                            Tap on the "+" button to create {"\n"} or join a betting group
-                        </Text>
-                    </TouchableOpacity>
+                    <View style={{  flex: 2,
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        justifyContent: 'center',}}>
+                        <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
+                            <Text style={MainStyles.groupsNone}>
+                                Tap on the "+" button to create {"\n"} or join a betting group
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                     <Text/>
                 </View>
             )

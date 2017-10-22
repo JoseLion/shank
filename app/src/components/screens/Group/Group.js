@@ -185,9 +185,9 @@ export default class Group extends Component {
         let tournamentItems = this.state.tournamentData.map((s, i) => {
             return <Picker.Item key={i} value={s.id} label={s.name}/>
         });
-        let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
+      /*  let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
             return <PickerIOS.Item key={i} value={s.id} label={s.name}/>
-        });
+        });*/
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
                                      style={{backgroundColor: '#F5FCFF'}}>
@@ -240,8 +240,8 @@ export default class Group extends Component {
                             <PickerIos
                                 selectedValue={this.state.selectTournament}
                                 onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                                <PickerIOS.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
-                                {tournamentItemsIos}
+                            {/*    <PickerIOS.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
+                                {tournamentItemsIos}*/}
                             </PickerIos>
                         }
                     </View>
