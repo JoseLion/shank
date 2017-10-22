@@ -10,7 +10,7 @@ import {
     ActivityIndicator,
     TouchableHighlight,
     AsyncStorage,
-    TouchableOpacity
+    TouchableOpacity,
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
@@ -243,15 +243,15 @@ export default class MainScreen extends Component {
                                 onEndReachedThreshold={1}
                             />
                         </List>
-                    </View>
-                    <View style={{  flex: 2,
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                        justifyContent: 'center',}}>
-                        <TouchableHighlight style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankAddGroupButton]} underlayColor="gray"
-                                            onPress={() => navigation.dispatch({type: 'Group'})}>
-                            <Text style={{color:'white'}}>ADD GROUP</Text>
-                        </TouchableHighlight>
+                        <View style={{  flex: 3,
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            justifyContent: 'center',}}>
+                            <TouchableHighlight style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankAddGroupButton]} underlayColor="gray"
+                                                onPress={() => navigation.dispatch({type: 'Group'})}>
+                                <Text style={{color:'white'}}>ADD GROUP</Text>
+                            </TouchableHighlight>
+                        </View>
                     </View>
                 </View>
             )
