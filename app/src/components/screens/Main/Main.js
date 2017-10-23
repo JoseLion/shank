@@ -11,6 +11,9 @@ import {
     TouchableHighlight,
     AsyncStorage,
     TouchableOpacity,
+    ActionSheetIOS,
+    Platform,
+    Picker
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
@@ -23,6 +26,18 @@ import BaseModel from '../../../core/BaseModel';
 import Notifier from '../../../core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Entypo, FontAwesome} from '@expo/vector-icons';
+import ModalDropdown from 'react-native-modal-dropdown';
+
+const isAndroid = Platform.OS == 'android' ? true : false;
+BUTTONS = [
+    'Profile',
+    'Option 1',
+    'Logout',
+    'Delete',
+    'Cancel',
+]
+
+const DEMO_OPTIONS_1 = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5', 'option 6', 'option 7', 'option 8', 'option 9'];
 
 export default class MainScreen extends Component {
 
@@ -41,7 +56,9 @@ export default class MainScreen extends Component {
             seed: 1,
             error: null,
             refreshing: false,
-            auth: null
+            auth: null,
+            clicked: false,
+            actionSelected: ''
         };
     }
 
@@ -63,16 +80,41 @@ export default class MainScreen extends Component {
         });
     }
 
+
+    static showActionSheet = () => {
+        ActionSheetIOS.showActionSheetWithOptions({
+                options: BUTTONS,
+                cancelButtonIndex: 3,
+                destructiveButtonIndex: 4,
+            },
+            (buttonIndex) => {
+                this.setState({clicked: BUTTONS[buttonIndex]});
+            });
+    };
+
+    static showAndroidPicker = () => {
+        return (
+            <Picker
+                selectedValue={this.state.actionSelected}
+                onValueChange={(tValue, itemIndex) => this.setState({actionSelected: tValue})}>
+                <Picker.Item color="#rgba(0, 0, 0, .2)" key={0} value={0} label={'Profile'}/>
+                <Picker.Item color="#rgba(0, 0, 0, .2)" key={2} value={1} label={'LogOut'}/>
+            </Picker>)
+    };
+
+
     static navigationOptions = ({navigation}) => ({
         title: 'BETTING GROUPS',
-        showIcon:true,
+        showIcon: true,
         headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E',
             paddingHorizontal: '3%'
         },
         headerLeft: null,
-        headerRight: <Entypo name="user" size={25} color="white" onPress={() => console.log("fluck")}/>,
+        headerRight: <Entypo name="user" size={25} color="white"
+                             onPress={() => isAndroid ? console.log("asdasds") : this.showActionSheet}/>
+        ,
         tabBarIcon: ({focused, tintColor}) => {
             return (
                 <FontAwesome name="group" size={29} color="white"/>
@@ -84,7 +126,7 @@ export default class MainScreen extends Component {
         const {page, seed} = this.state;
         this.setState({refreshing: true});
         await BaseModel.get('myGroups', data).then((group) => {
-            console.log("groupgroupgroup")
+            console.log("groupgroupgssroup")
             console.log(group)
             this.setState({
                 data: page === 1 ? group.results : [...this.state.data, ...group.results],
@@ -199,7 +241,7 @@ export default class MainScreen extends Component {
         }
     };
 
-//PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
+    //PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
     render() {
         let navigation = this.props.navigation;
         let showPlus = this.state.data.length > 0
@@ -225,12 +267,15 @@ export default class MainScreen extends Component {
                                         avatarOverlayContainerStyle={LocalStyles.overlayRoundAvatar}
                                         title={`${item.name}`}
                                         titleStyle={LocalStyles.titleMainList}
-                                        titleContainerStyle={{marginVertical:'5%',marginHorizontal:'10%'}}
-                                      /*  subtitleNumberOfLines={2}
-                                        subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
-                                            Score: - Rank: - </Text>}*/
+                                        titleContainerStyle={{marginVertical: '5%', marginHorizontal: '10%'}}
+                                        /*  subtitleNumberOfLines={2}
+                                         subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
+                                         Score: - Rank: - </Text>}*/
                                         underlayColor={"#b3b3b3"}
-                                        containerStyle={[LocalStyles.containerList,{borderBottomWidth: 0, marginHorizontal: '9%'}]}
+                                        containerStyle={[LocalStyles.containerList, {
+                                            borderBottomWidth: 0,
+                                            marginHorizontal: '9%'
+                                        }]}
                                         onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
                                     />
                                 )}
@@ -243,13 +288,17 @@ export default class MainScreen extends Component {
                                 onEndReachedThreshold={1}
                             />
                         </List>
-                        <View style={{  flex: 3,
+                        <View style={{
+                            flex: 3,
                             alignItems: 'center',
                             flexDirection: 'column',
-                            justifyContent: 'center',}}>
-                            <TouchableHighlight style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankAddGroupButton]} underlayColor="gray"
-                                                onPress={() => navigation.dispatch({type: 'Group'})}>
-                                <Text style={{color:'white'}}>ADD GROUP</Text>
+                            justifyContent: 'center',
+                        }}>
+                            <TouchableHighlight
+                                style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankAddGroupButton]}
+                                underlayColor="gray"
+                                onPress={() => navigation.dispatch({type: 'Group'})}>
+                                <Text style={{color: 'white'}}>ADD GROUP</Text>
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -262,10 +311,12 @@ export default class MainScreen extends Component {
                                         onPress={() => navigation.dispatch({type: 'Register'})}>
                         <Text>+</Text>
                     </TouchableHighlight>
-                    <View style={{  flex: 2,
+                    <View style={{
+                        flex: 2,
                         alignItems: 'center',
                         flexDirection: 'column',
-                        justifyContent: 'center',}}>
+                        justifyContent: 'center',
+                    }}>
                         <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
                             <Text style={MainStyles.groupsNone}>
                                 Tap on the "+" button to create {"\n"} or join a betting group

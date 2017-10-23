@@ -60,7 +60,7 @@ const ImageHeader = navigation => (
                     onPress={() => {
                         navigation.goBack(null)
                     }}
-                    style={{backgroundColor: 'black', height: '100%', left: '3%', top: '40%'}}
+                    style={{backgroundColor: 'transparent', height: '100%', left: '4%', paddingVertical: '100%'}}
                     name="chevron-left" size={33} color="white"/>}
         />
     </View>
