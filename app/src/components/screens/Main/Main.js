@@ -29,13 +29,12 @@ import {Entypo, FontAwesome} from '@expo/vector-icons';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
-BUTTONS = [
+
+ACTION_BUTTONS = [
     'Profile',
-    'Option 1',
     'Logout',
-    'Delete',
     'Cancel',
-]
+];
 
 const DEMO_OPTIONS_1 = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5', 'option 6', 'option 7', 'option 8', 'option 9'];
 
@@ -80,18 +79,6 @@ export default class MainScreen extends Component {
         });
     }
 
-
-    static showActionSheet = () => {
-        ActionSheetIOS.showActionSheetWithOptions({
-                options: BUTTONS,
-                cancelButtonIndex: 3,
-                destructiveButtonIndex: 4,
-            },
-            (buttonIndex) => {
-                this.setState({clicked: BUTTONS[buttonIndex]});
-            });
-    };
-
     static showAndroidPicker = () => {
         return (
             <Picker
@@ -102,6 +89,19 @@ export default class MainScreen extends Component {
             </Picker>)
     };
 
+    async _removeStorage() {
+        try {
+            let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
+            if (!token) {
+                this.props.navigation.dispatch({type: 'Splash'})
+            } else {
+                this.props.navigation.dispatch({type: 'Main'})
+            }
+            console.log('Token removed from.');
+        } catch (error) {
+            console.log('error on  :Token removed from disk.');
+        }
+    }
 
     static navigationOptions = ({navigation}) => ({
         title: 'BETTING GROUPS',
@@ -113,8 +113,19 @@ export default class MainScreen extends Component {
         },
         headerLeft: null,
         headerRight: <Entypo name="user" size={25} color="white"
-                             onPress={() => isAndroid ? console.log("asdasds") : this.showActionSheet}/>
-        ,
+                             onPress={() => isAndroid ? console.log("asdasds") :
+                                 ActionSheetIOS.showActionSheetWithOptions({
+                                         options: ACTION_BUTTONS,
+                                         cancelButtonIndex: 2,
+                                     },
+                                     (buttonIndex) => {
+                                         if (buttonIndex) {
+
+                                         } else {
+                                             console.log("GO TO PROFILE SCREEN")
+                                         }
+                                     })
+                             }/>,
         tabBarIcon: ({focused, tintColor}) => {
             return (
                 <FontAwesome name="group" size={29} color="white"/>
@@ -196,20 +207,6 @@ export default class MainScreen extends Component {
             </View>
         );
     };
-
-    async _removeStorage() {
-        try {
-            let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
-            if (!token) {
-                this.props.navigation.dispatch({type: 'Splash'})
-            } else {
-                this.props.navigation.dispatch({type: 'Main'})
-            }
-            console.log('Token removed from.');
-        } catch (error) {
-            console.log('error on  :Token removed from disk.');
-        }
-    }
 
     collectGroupData = async (tour, year, tId, groupId, navigation, cb) => {
         this.setLoading(true);
