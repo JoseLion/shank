@@ -17,7 +17,8 @@ import {
     ActivityIndicator,
     Alert,
     Platform,
-    PickerIOS
+    PickerIOS,
+    ActionSheetIOS
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -68,7 +69,8 @@ export default class Group extends Component {
             refreshing: false,
             tournamentData: [],
             assignUsers: [],
-            tId: ""
+            tId: "",
+            TName:""
         };
     }
 
@@ -181,13 +183,20 @@ export default class Group extends Component {
         let {groupPhoto} = this.state;
         let navigation = this.props.navigation;
         let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
+        let tournamentName = []
+        let tournamentKeys = []
 
         let tournamentItems = this.state.tournamentData.map((s, i) => {
+            tournamentName[i] = s.name
+            tournamentKeys[i] = s.id
             return <Picker.Item key={i} value={s.id} label={s.name}/>
         });
-      /*  let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
-            return <PickerIOS.Item key={i} value={s.id} label={s.name}/>
-        });*/
+
+        tournamentName.push('Cancel');
+        tournamentKeys.push('none');
+        /*  let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
+         return <PickerIOS.Item key={i} value={s.id} label={s.name}/>
+         });*/
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
                                      style={{backgroundColor: '#F5FCFF'}}>
@@ -227,24 +236,39 @@ export default class Group extends Component {
                         placeholder={'Group name'}
                     />
                     {/*https://github.com/alinz/react-native-dropdown*/}
-                    <View style={LocalStyles.tournamentPicker}>
-                        {isAndroid
-                            ?
+
+                    {isAndroid
+                        ?
+                        <View style={LocalStyles.tournamentPicker}>
                             <Picker
                                 selectedValue={this.state.selectTournament}
                                 onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
                                 <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
                                 {tournamentItems}
                             </Picker>
-                            :
-                            <PickerIos
-                                selectedValue={this.state.selectTournament}
-                                onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                            {/*    <PickerIOS.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
-                                {tournamentItemsIos}*/}
-                            </PickerIos>
-                        }
-                    </View>
+                        </View>
+                        :
+                        <TouchableOpacity style={LocalStyles.tournamentPicker} onPress={() => {
+                            ActionSheetIOS.showActionSheetWithOptions({
+                                    options: tournamentName,
+                                    cancelButtonIndex: tournamentName.length - 1,
+                                },
+                                (buttonIndex) => {
+                                    if (tournamentKeys[buttonIndex] != 'none'){
+                                        this.setState({selectTournament: tournamentKeys[buttonIndex],TName:tournamentName[buttonIndex]})
+                                    }
+                                })
+                        }}>
+                            <TextInput
+                                editable={false}
+                                style={LocalStyles.innerInput}
+                                underlineColorAndroid='transparent'
+                                placeholder={'Select a tournament'}
+                                value={this.state.TName}
+                            />
+                        </TouchableOpacity>
+                    }
+
                     <TextInput
                         underlineColorAndroid='transparent'
                         placeholder={'Prize'}

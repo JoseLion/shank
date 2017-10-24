@@ -115,6 +115,10 @@ const LocalStyles = StyleSheet.create({
         borderBottomWidth: 0,
         color: '#333'
     },
+    innerInput:{
+        color: '#333',
+        padding: 5,
+    },
     richCreateTInput :{
         height: '13%',
         width:'80%',
