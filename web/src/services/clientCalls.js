@@ -140,4 +140,4 @@ let ClientCalls = {
     },
 };
 
-export { NoAuthModel as ClientCalls };
+export { ClientCalls as ClientCalls };

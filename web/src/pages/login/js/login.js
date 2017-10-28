@@ -7,9 +7,9 @@ define(
   ],
   function (React, ReactDOM, $, reactjsAdminlte) {
 
-      var commonFunctions = reactjsAdminlte.commonFunctions;
+      var clientCalls = reactjsAdminlte.clientCalls;
 
-      var TimelinePage = React.createClass({
+      var LoginPage = React.createClass({
           getInitialState: function() {
               return {
               
@@ -59,7 +59,7 @@ define(
           }
       });
 
-      ReactDOM.render(<TimelinePage />,  document.getElementById('login-container'));
+      ReactDOM.render(<LoginPage />,  document.getElementById('login-container'));
 
       //commonFunctions.initialize().bootstrapTooltips("[data-toggle='tooltip']");
   }
