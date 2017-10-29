@@ -10,6 +10,8 @@ let internetError = 'No internet connection available.';
 let requestServerError = 'We couldn\'t connect to the server. Please try later';
 let parsingResponseError = 'Error getting server response.';
 
+import 'isomorphic-fetch';
+
 let clientCalls = {
 
     get(resource) {
