@@ -62,19 +62,19 @@ let clientCalls = {
             if (response.status >= 400) {
                 throw new Error("Bad response from server");
             }
-            return response.json();
+
+            const json = response.json();
+            if (json.error !== '') {
+                throw json.error;
+            }
+            else {
+                return json.response;
+            }
         }).catch(
             error => {
                 throw requestServerError;
             }
         );
-
-        if (json.error !== '') {
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
     },
 
      update(resource, params) {
