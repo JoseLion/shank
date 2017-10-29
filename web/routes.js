@@ -1,4 +1,6 @@
 let clientCalls = require('./src/services/clientCalls');
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
 
 function initialize(app){
 
