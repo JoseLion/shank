@@ -1,3 +1,4 @@
+var ClientCalls = require('./src/services/clientCalls');
 function initialize(app){
 
 	//These are the API end points that you can write.
@@ -41,8 +42,21 @@ function initialize(app){
 
     app.get('/login', function(req, res){ 
         res.render('login.html');		
-	});
+    });
 
+    app.post('/login', function(req, res){ 
+        let data = req.body;
+        await ClientCalls.create('login', {
+            email: data.email,
+            password: data.password,
+        }).then((login) => {
+          console.log("login cpost")
+          console.log(login)
+        })
+            .catch((error) => {
+                console.log(error)
+            });
+	});
 }
 
 exports.initialize = initialize;
