@@ -47,6 +47,7 @@ function initialize(app){
 
     app.post('/login', function(req, res){ 
         let data = req.body;
+
         clientCalls.create('login', {
             email: data.email,
             password: data.password,
