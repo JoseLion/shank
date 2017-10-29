@@ -139,4 +139,4 @@ let clientCalls = {
     },
 };
 
-export { clientCalls as default };
+module.exports = clientCalls
