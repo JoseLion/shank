@@ -58,15 +58,14 @@ let clientCalls = {
             body: data
         };
 
-        const response = fetch(ApiHost + resource, options).catch(
+        const response = fetch(ApiHost + resource, options).then(function(response) {
+            if (response.status >= 400) {
+                throw new Error("Bad response from server");
+            }
+            return response.json();
+        }).catch(
             error => {
                 throw requestServerError;
-            }
-        );
-
-        const json = response.json().catch(
-            error => {
-                throw parsingResponseError;
             }
         );
 
