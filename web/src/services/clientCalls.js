@@ -57,7 +57,8 @@ let clientCalls = {
             },
             body: data
         };
-
+        console.log("data func")
+        console.log(data)
         const response = fetch(ApiHost + resource, options).then(function(response) {
             if (response.status >= 400) {
                 throw new Error("Bad response from server");
