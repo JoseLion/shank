@@ -1,20 +1,17 @@
 /**
  * Created by MnMistake on 9/27/2017.
  */
-'use strict';
-
-const Host = 'http://192.168.1.3:3000/';
-const ApiHost = Host + 'api/';
-
-let internetError = 'No internet connection available.';
-let requestServerError = 'We couldn\'t connect to the server. Please try later';
-let parsingResponseError = 'Error getting server response.';
-
-
 define(
     [],
     function () {
-        exports.get = async function(resource){
+        const Host = 'http://192.168.1.3:3000/';
+        const ApiHost = Host + 'api/';
+        
+        let internetError = 'No internet connection available.';
+        let requestServerError = 'We couldn\'t connect to the server. Please try later';
+        let parsingResponseError = 'Error getting server response.';
+        
+        exports.get = function(resource){
             let options = {
                 method: 'GET',
                 headers: {
