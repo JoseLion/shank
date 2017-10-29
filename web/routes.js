@@ -48,16 +48,12 @@ function initialize(app){
     app.post('/login', function(req, res){ 
         let data = req.body;
 
-        clientCalls.create('login', {
+        let response = clientCalls.create('login', {
             email: data.email,
             password: data.password,
-        }).then((login) => {
-          console.log("login cpost")
-          console.log(login)
         })
-            .catch((error) => {
-                console.log(error)
-            });
+        console.log("json respopndes")
+        console.log(response)
 	});
 }
 
