@@ -72,6 +72,8 @@ let clientCalls = {
             }
         }).catch(
             error => {
+                console.log("error error error")
+                console.log(error)
                 throw requestServerError;
             }
         );
