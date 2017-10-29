@@ -2,6 +2,7 @@
  * Created by MnMistake on 9/27/2017.
  */
 'use strict';
+
 const Host = 'http://192.168.1.3:3000/';
 const ApiHost = Host + 'api/';
 
@@ -11,7 +12,7 @@ let parsingResponseError = 'Error getting server response.';
 
 let clientCalls = {
 
-    async get(resource) {
+    get(resource) {
 
         let options = {
             method: 'GET',
@@ -21,13 +22,13 @@ let clientCalls = {
             }
         };
 
-        const response = await fetch(ApiHost + resource, options).catch(
+        const response = fetch(ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
             }
         );
 
-        const json = await response.json().catch(
+        const json = response.json().catch(
             error => {
                 throw parsingResponseError;
             }
@@ -41,7 +42,7 @@ let clientCalls = {
         }
     },
 
-    async create(resource, params) {
+    create(resource, params) {
 
         const data = JSON.stringify(params);
 
@@ -54,13 +55,13 @@ let clientCalls = {
             body: data
         };
 
-        const response = await fetch(ApiHost + resource, options).catch(
+        const response = fetch(ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
             }
         );
 
-        const json = await response.json().catch(
+        const json = response.json().catch(
             error => {
                 throw parsingResponseError;
             }
@@ -74,7 +75,7 @@ let clientCalls = {
         }
     },
 
-    async update(resource, params) {
+     update(resource, params) {
 
         const data = JSON.stringify(params);
 
@@ -87,13 +88,13 @@ let clientCalls = {
             body: data
         }
 
-        const response = await fetch(ApiHost + resource, options).catch(
+        const response =  fetch(ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
             }
         );
 
-        const json = await response.json().catch(
+        const json =  response.json().catch(
             error => {
                 throw parsingResponseError;
             }
@@ -107,7 +108,7 @@ let clientCalls = {
         }
     },
 
-    async remove(resource) {
+     remove(resource) {
 
         let options = {
             method: 'DELETE',
@@ -117,13 +118,12 @@ let clientCalls = {
             }
         }
 
-        const response = await fetch(ApiHost + resource, options).catch(
+        const response =  fetch(ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
             }
         );
-
-        const json = await response.json().catch(
+        const json =  response.json().catch(
             error => {
                 throw parsingResponseError;
             }
