@@ -71,7 +71,6 @@ function initialize(app){
             parsedResponse = JSON.parse(body);
             console.log("parsedResponse")
             console.log(parsedResponse)
-            console.log(parsedResponse.error)
 
             if(parsedResponse.error != ""){
                 res.render('dashboard.html');
