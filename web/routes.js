@@ -51,7 +51,7 @@ function initialize(app){
         let data = req.body;
 
 
-        const data = JSON.stringify({
+        const asd = JSON.stringify({
             email: data.email,
             password: data.password,
         });
@@ -62,10 +62,10 @@ function initialize(app){
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: data
+            body: asd
         };
         console.log("data func")
-        console.log(data)
+        console.log(asd)
         fetch(ApiHost + resource, options).then(function(response) {
             console.log("response")
             console.log(response)
