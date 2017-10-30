@@ -6,17 +6,20 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import {
+    Modal,
     Text,
     View,
     TextInput,
     TouchableHighlight,
+    TouchableWithoutFeedback,
     Image,
     FlatList,
     TouchableOpacity,
     Picker,
     ActivityIndicator,
     Alert,
-    Platform
+    Platform,
+    Share
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -42,8 +45,12 @@ const isAndroid = Platform.OS == 'android' ? true : false;
 export default class Group extends Component {
 
     state = {
-        groupPhoto: null,
+        groupPhoto: null
     };
+
+  setModalVisible(visible) {
+  this.setState({modalVisible: visible});
+  }
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -71,6 +78,7 @@ export default class Group extends Component {
             data: [],
             page: 1,
             seed: 1,
+            modalVisible: false,
             error: null,
             refreshing: false,
             tournamentData: [],
@@ -78,7 +86,6 @@ export default class Group extends Component {
             tId: ""
         };
     }
-
     componentDidMount() {
         //this.makeRemoteRequest();
         this.setLoading(true);
@@ -162,6 +169,7 @@ export default class Group extends Component {
             />
         );
     };
+
 
     _tournamentSelect(t) {
         this.setState({
@@ -295,16 +303,51 @@ export default class Group extends Component {
                             />
                         </List>
                     </View>
+
+                    <TouchableWithoutFeedback
+                    onPress={() => this.setModalVisible(true)}
+                    >
                     <View style={LocalStyles.addNewParticipant}>
                         <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
                             Add new participant
                         </Text>
                     </View>
+                    </TouchableWithoutFeedback>
                     <TouchableHighlight
                         onPress={this._handleNewGroupRegistry}
                         style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                         <Text style={LocalStyles.buttonText}>Create group</Text>
                     </TouchableHighlight>
+                           <Modal
+                             animationType="slide"
+                             transparent={true}
+                             visible={this.state.modalVisible}
+                             onRequestClose={() => {alert("Modal has been closed.")}}
+                             >
+                             <View style={{
+                                    marginTop: 150,
+                                     justifyContent: 'center',
+                                     alignItems: 'center'}}>
+                               <View style={LocalStyles.modalhead}>
+                               <Text style={LocalStyles.buttonText}>INVITE  TO GROUP</Text>
+                               </View>
+                              <View style={LocalStyles.modalbody}>
+                               <TouchableHighlight
+                                   onPress={this._shareTextWithTitle}
+                                   style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
+                                   <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
+                               </TouchableHighlight>
+                              </View>
+                               <View style={LocalStyles.modalfooter}>
+                               <TouchableHighlight onPress={() => {
+                                 this.setModalVisible(!this.state.modalVisible)
+                               }}>
+                                 <Text>Hide Modal</Text>
+                                 </TouchableHighlight>
+                                 </View>
+
+                            </View>
+                           </Modal>
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -396,4 +439,21 @@ export default class Group extends Component {
             this.setState({groupPhoto: result.uri});
         }
     };
+    _shareTextWithTitle () {
+    Share.share({
+      message: 'Invite you : http://codingmiles.com',
+      title: 'Invite you',
+      url: 'http://codingmiles.com'
+    }, {
+      dialogTitle: 'This is share dialog title',
+      excludedActivityTypes: [
+        'com.apple.UIKit.activity.PostToTwitter',
+        'com.apple.uikit.activity.mail'
+      ],
+      tintColor: 'green'
+    })
+    .then(this._showResult)
+    .catch(err => console.log(err))
+  }
+
 }
