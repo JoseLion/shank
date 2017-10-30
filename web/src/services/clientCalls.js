@@ -59,22 +59,9 @@ let clientCalls = {
         };
         console.log("data func")
         console.log(data)
-        const response = fetch(ApiHost + resource, options).then(function(response) {
-            response.json().then(function(jsonResponse) {
-                console.log("huehue")
-                console.log(jsonResponse)
-                if (jsonResponse.error !== '') {
-                    throw jsonResponse.error;
-                }
-                else {
-                    return jsonResponse.response;
-                }
-            }).catch(
-                error => {
-                    console.log("error asdasdasdsa error")
-                    console.log(error)
-                }
-            );
+        fetch(ApiHost + resource, options).then(function(response) {
+            return response.json();
+           
         }).catch(
             error => {
                 console.log("error error error")
