@@ -68,6 +68,9 @@ function initialize(app){
                 throw requestServerError;
             }
 
+            console.log("body.error")
+            console.log(body.error)
+
             if(body.error != ""){
                 res.render('dashboard.html');
             }else{
