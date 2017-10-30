@@ -60,7 +60,7 @@ function initialize(app){
         let data = req.body;
 
 
-         request.post({url:ApiHost + resource, form: {
+         request.post({url:ApiHost + 'login', form: {
             email: data.email,
             password: data.password,
         },  headers: {  'Accept': 'application/json', 'Content-Type': 'application/json'}}, function(err,httpResponse,body){ 
