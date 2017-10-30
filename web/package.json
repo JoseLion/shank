@@ -30,6 +30,7 @@
     "raphael": "^2.1.4",
     "react": "^15.6.1",
     "react-dom": "^15.4.2",
+    "request": "^2.83.0",
     "velocity-animate": "^1.4.0",
     "webpack": "^1.14.0",
     "webpack-raphael": "^2.1.4"
