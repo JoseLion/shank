@@ -73,7 +73,12 @@ let clientCalls = {
                 else {
                     return json.response;
                 }
-            })
+            }).catch(
+                error => {
+                    console.log("error asdasdasdsa error")
+                    console.log(error)
+                }
+            );
         }).catch(
             error => {
                 console.log("error error error")
