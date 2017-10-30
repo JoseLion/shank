@@ -59,9 +59,10 @@ let clientCalls = {
         };
         console.log("data func")
         console.log(data)
-        fetch(ApiHost + resource, options).then(function(response) {
+        return fetch(ApiHost + resource, options).then(function(response) {
+            console.log("response")
+            console.log(response)
             return response.json();
-           
         }).catch(
             error => {
                 console.log("error error error")
