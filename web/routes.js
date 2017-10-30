@@ -50,10 +50,18 @@ function initialize(app){
     app.post('/login', function(req, res){ 
         let data = req.body;
 
-        let some = clientCalls.create('login', {
+        clientCalls.create('login', {
             email: data.email,
             password: data.password,
+        }).resolve()
+        .then(testError)
+        .catch(err => {
+          console.error(err);
+          return err; 
         })
+        .then(ok => {
+          console.log(ok.message)
+        });
         console.log(some)
         console.log("console.log(some)console.log(some)")
 	});

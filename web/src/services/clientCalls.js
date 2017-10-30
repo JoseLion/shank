@@ -45,8 +45,7 @@ let clientCalls = {
         }
     },
 
-    async create(resource, params) {
-
+    create(resource, params) {
         const data = JSON.stringify(params);
 
         let options = {
