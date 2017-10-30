@@ -69,6 +69,8 @@ function initialize(app){
             }
 
             parsedResponse = JSON.parse(body);
+            console.log("parsedResponse")
+            console.log(parsedResponse)
 
             if(parsedResponse.error != ""){
                 res.render('dashboard.html');
