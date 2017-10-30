@@ -45,7 +45,7 @@ let clientCalls = {
         }
     },
 
-    create(resource, params) {
+    async create(resource, params) {
 
         const data = JSON.stringify(params);
 
@@ -59,7 +59,7 @@ let clientCalls = {
         };
         console.log("data func")
         console.log(data)
-        return fetch(ApiHost + resource, options).then(function(response) {
+        fetch(ApiHost + resource, options).then(function(response) {
             console.log("response")
             console.log(response)
             return response.json();
