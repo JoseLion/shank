@@ -60,18 +60,14 @@ let clientCalls = {
         console.log("data func")
         console.log(data)
         const response = fetch(ApiHost + resource, options).then(function(response) {
-            if (response.status >= 400) {
-                throw new Error("Bad response from server");
-            }
-
-            const json = response.json().then(function(response) {
+            response.json().then(function(jsonResponse) {
                 console.log("huehue")
-                console.log(json)
-                if (json.error !== '') {
-                    throw json.error;
+                console.log(jsonResponse)
+                if (jsonResponse.error !== '') {
+                    throw jsonResponse.error;
                 }
                 else {
-                    return json.response;
+                    return jsonResponse.response;
                 }
             }).catch(
                 error => {
