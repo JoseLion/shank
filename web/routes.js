@@ -68,13 +68,12 @@ function initialize(app){
                 throw requestServerError;
             }
 
-            console.log("body.error")
-            console.log(body.error)
+            parsedResponse = JSON.parse(body);
 
-            if(body.error != ""){
+            if(parsedResponse.error != ""){
                 res.render('dashboard.html');
             }else{
-                res.render(body.error);
+                res.render(parsedResponse.error);
             }
          
             console.log("body")
