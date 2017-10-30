@@ -50,18 +50,34 @@ function initialize(app){
     app.post('/login', function(req, res){ 
         let data = req.body;
 
-        clientCalls.create('login', {
+
+        const data = JSON.stringify({
             email: data.email,
             password: data.password,
-        }).resolve()
-        .then(testError)
-        .catch(err => {
-          console.error(err);
-          return err; 
-        })
-        .then(ok => {
-          console.log(ok.message)
         });
+        
+        let options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: data
+        };
+        console.log("data func")
+        console.log(data)
+        fetch(ApiHost + resource, options).then(function(response) {
+            console.log("response")
+            console.log(response)
+            return response.json();
+        }).catch(
+            error => {
+                console.log("error error error")
+                console.log(error)
+                throw requestServerError;
+            }
+        );
+
         console.log(some)
         console.log("console.log(some)console.log(some)")
 	});
