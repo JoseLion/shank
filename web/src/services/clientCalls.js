@@ -13,6 +13,8 @@ let parsingResponseError = 'Error getting server response.';
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
+var request = require('request');
+
 let clientCalls = {
 
     get(resource) {
@@ -56,19 +58,17 @@ let clientCalls = {
             },
             body: data
         };
-        console.log("data func")
-        console.log(data)
-        fetch(ApiHost + resource, options).then(function(response) {
-            console.log("response")
-            console.log(response)
-            return response.json();
-        }).catch(
-            error => {
-                console.log("error error error")
-                console.log(error)
-                throw requestServerError;
-            }
-        );
+
+
+        request.post({url:resource, form: params}, function(err,httpResponse,body){ 
+            console.log("body")
+            console.log(body)
+            console.log("httpResponse")
+            console.log(httpResponse)
+            console.log("err")
+            console.log(err)
+            return body;
+         })
     },
 
      update(resource, params) {

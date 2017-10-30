@@ -50,35 +50,12 @@ function initialize(app){
     app.post('/login', function(req, res){ 
         let data = req.body;
 
-        const Host = 'http://192.168.1.3:3000/';
-        const ApiHost = Host + 'api/';
-
-        const asd = JSON.stringify({
+        clientCalls.create('login', {
             email: data.email,
             password: data.password,
-        });
-        
-        let options = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: asd
-        };
-        console.log("data func")
-        console.log(asd)
-        fetch(ApiHost + 'login', options).then(function(response) {
-            console.log("response")
-            console.log(response)
-            return response.json();
-        }).catch(
-            error => {
-                console.log("error error error")
-                console.log(error)
-                throw requestServerError;
-            }
-        );
+        })
+        console.log(some)
+        console.log("console.log(some)console.log(some)")
 	});
 }
 
