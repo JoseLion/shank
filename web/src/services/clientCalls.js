@@ -65,6 +65,8 @@ let clientCalls = {
             }
 
             const json = response.json();
+            console.log("huehue")
+            console.log(json)
             if (json.error !== '') {
                 throw json.error;
             }
