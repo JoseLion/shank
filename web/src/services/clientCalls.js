@@ -64,15 +64,16 @@ let clientCalls = {
                 throw new Error("Bad response from server");
             }
 
-            const json = response.json();
-            console.log("huehue")
-            console.log(json)
-            if (json.error !== '') {
-                throw json.error;
-            }
-            else {
-                return json.response;
-            }
+            const json = response.json().then(function(response) {
+                console.log("huehue")
+                console.log(json)
+                if (json.error !== '') {
+                    throw json.error;
+                }
+                else {
+                    return json.response;
+                }
+            })
         }).catch(
             error => {
                 console.log("error error error")
