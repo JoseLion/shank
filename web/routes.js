@@ -73,9 +73,11 @@ function initialize(app){
             console.log(parsedResponse)
             console.log(parsedResponse.error)
 
-            if(parsedResponse.error != ""){
+            if (!parsedResponse.error) {
+                // is emtpy
                 res.render('dashboard.html');
-            }else{
+              }
+            else{
                 res.render(parsedResponse.error);
             }
          
