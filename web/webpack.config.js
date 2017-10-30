@@ -65,7 +65,7 @@ var config = {
         widgets: ['./src/pages/widgets-page/js/widgets-page'],
         timeline: './src/pages/timeline-page/js/timeline-page',
         generalUIElements: './src/pages/ui-elements-page/general/js/page-ui-elements',
-
+        userListing: './src/pages/userListing/js/userListing',
         vendors: ['react', 'react-dom', 'jquery', 'velocity-animate', 'jqueryUi', 'bootstrap', 'moment', 'bootstrapDatepicker'],
         chartVendors: ['jquery', 'raphael', 'morris', 'jvectormap', 'jvectormapWorld'],
     },
