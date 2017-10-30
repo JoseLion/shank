@@ -54,8 +54,6 @@ function initialize(app){
             email: data.email,
             password: data.password,
         })
-        console.log(some)
-        console.log("console.log(some)console.log(some)")
 	});
 }
 
