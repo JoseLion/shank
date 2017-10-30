@@ -60,7 +60,7 @@ let clientCalls = {
         };
 
 
-        request.post({url:resource, form: params}, function(err,httpResponse,body){ 
+        request.post({url:ApiHost + resource, form: params}, function(err,httpResponse,body){ 
             console.log("body")
             console.log(body)
             console.log("httpResponse")
