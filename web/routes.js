@@ -2,6 +2,15 @@ let clientCalls = require('./src/services/clientCalls');
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
+const Host = 'http://192.168.1.3:3000/';
+const ApiHost = Host + 'api/';
+
+let internetError = 'No internet connection available.';
+let requestServerError = 'We couldn\'t connect to the server. Please try later';
+let parsingResponseError = 'Error getting server response.';
+
+var request = require('request');
+
 function initialize(app){
 
 	//These are the API end points that you can write.
@@ -50,14 +59,25 @@ function initialize(app){
     app.post('/login', function(req, res){ 
         let data = req.body;
 
-        let response = clientCalls.create('login', {
+
+         request.post({url:ApiHost + resource, form: {
             email: data.email,
             password: data.password,
-        }).then((login) => {
-            console.log("loginloginlogin")
-            console.log(login)
-        })
-    
+        },  headers: {  'Accept': 'application/json', 'Content-Type': 'application/json'}}, function(err,httpResponse,body){ 
+            if (err){
+                throw requestServerError;
+            }
+
+            if(body.error != ""){
+                res.render('dashboard.html');
+            }else{
+                res.render(body.error);
+            }
+         
+            console.log("body")
+            console.log(body)
+            return body;
+         })
 	});
 }
 
