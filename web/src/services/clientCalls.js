@@ -50,23 +50,9 @@ let clientCalls = {
     create(resource, params) {
         const data = JSON.stringify(params);
 
-        let options = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: data
-        };
-
-
-        request.post({url:ApiHost + resource, form: params}, function(err,httpResponse,body){ 
+        request.post({url:ApiHost + resource, form: params,  headers: {  'Accept': 'application/json', 'Content-Type': 'application/json'}}, function(err,httpResponse,body){ 
             console.log("body")
             console.log(body)
-            console.log("httpResponse")
-            console.log(httpResponse)
-            console.log("err")
-            console.log(err)
             return body;
          })
     },
