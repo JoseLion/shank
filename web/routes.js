@@ -53,9 +53,11 @@ function initialize(app){
         let response = clientCalls.create('login', {
             email: data.email,
             password: data.password,
+        }).then((login) => {
+            console.log("loginloginlogin")
+            console.log(login)
         })
-        console.log("response")
-        console.log(response)
+    
 	});
 }
 

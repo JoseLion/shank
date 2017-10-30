@@ -51,6 +51,9 @@ let clientCalls = {
         const data = JSON.stringify(params);
 
         request.post({url:ApiHost + resource, form: params,  headers: {  'Accept': 'application/json', 'Content-Type': 'application/json'}}, function(err,httpResponse,body){ 
+            if (err){
+                throw requestServerError;
+            }
          
             console.log("body")
             console.log(body)
