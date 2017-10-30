@@ -79,9 +79,6 @@ function initialize(app){
                 throw requestServerError;
             }
         );
-
-        console.log(some)
-        console.log("console.log(some)console.log(some)")
 	});
 }
 
