@@ -50,6 +50,8 @@ function initialize(app){
     app.post('/login', function(req, res){ 
         let data = req.body;
 
+        const Host = 'http://192.168.1.3:3000/';
+        const ApiHost = Host + 'api/';
 
         const asd = JSON.stringify({
             email: data.email,
@@ -66,7 +68,7 @@ function initialize(app){
         };
         console.log("data func")
         console.log(asd)
-        fetch(ApiHost + resource, options).then(function(response) {
+        fetch(ApiHost + 'login', options).then(function(response) {
             console.log("response")
             console.log(response)
             return response.json();
