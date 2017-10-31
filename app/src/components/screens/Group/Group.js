@@ -21,7 +21,8 @@ import {
     PickerIOS,
     ActionSheetIOS,
     Share,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    AsyncStorage
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -91,7 +92,7 @@ export default class Group extends Component {
         this.setLoading(true);
         this._generateGroupToken(20)
         this.initialRequest('pga', '2018').then((data) => {
-            console.log('pgapga 2018SS2018')
+            console.log('pgapga 2018SS20ss18sss')
             console.log(data)
         });
     }
@@ -112,15 +113,17 @@ export default class Group extends Component {
                         currentDailyMovements: 0,
                         dailyMovementsDone: false,
                         playerRanking: [/*{
-                         playerId:user.value,
-                         TR:user.value,
-                         Score:user.value,
-                         currentPosition:user.value,
-                         playerPhotoUrl:user.value,
-                         }*/]
-                    };
+                         playerId: user.value,
+                         TR: user.value,
+                         Score: user.value,
+                         currentPosition: user.value,
+                         playerPhotoUrl: user.value,
+                         } */
+                        ]
+                    }
+                        ;
                 });
-                this.setState({data: users, assignUsers: userGroupUsers});
+                this.setState({data: users});
             });
         } catch (e) {
             console.log('error in getUserList: Group.js')
@@ -371,6 +374,20 @@ export default class Group extends Component {
             const JsonResponse = await response.json()
             this.setState({tournamentData: JsonResponse.tournaments});
             this.getUserList()
+            const value = await AsyncStorage.getItem(Constants.USER_PROFILE);
+            if (value !== null){
+                let jsonData = JSON.parse(value)
+                let groupUser = [{
+                    userId: jsonData._id,
+                    name: jsonData.name,
+                    score: 0,
+                    currentRanking: 0,
+                    currentDailyMovements: 0,
+                    dailyMovementsDone: false,
+                    playerRanking: []
+                }]
+                this.setState({assignUsers: groupUser});
+            }
         } catch (e) {
             console.log(e)
         }
@@ -415,11 +432,10 @@ export default class Group extends Component {
 
         let data = {
             name: this.state.name,
-            tournament: this.state.tId,
+            tournament: this.state.selectTournament,
             prize: this.state.prize,
             photo: {path: localUri, name: filename, type: type},
-            /*users: this.state.assignUsers,*/
-            users: {},
+            users: this.state.assignUsers,
             groupToken: this.state.currentGroupToken,
         };
 
@@ -459,7 +475,7 @@ export default class Group extends Component {
         Share.share({
             message: 'Shank Group Invitation : ' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
             title: 'Shank Group Invitation',
-            url: ClienHost + '?tag=' + this.state.currentGroupToken
+            url: ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken
         }, {
             dialogTitle: 'Shank Group Invitation',
             excludedActivityTypes: [

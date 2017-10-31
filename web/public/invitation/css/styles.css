@@ -134,6 +134,8 @@ header {
     }
 }
 
+li {list-style:none;}
+
 header h1 {
     margin: 0 auto;
     padding: 0;
@@ -162,7 +164,7 @@ header h1 {
     header h1 {
         width:160px !important;
         height: 92px !important;
-        background-size: 80px 92px !important
+        background-size:  92px !important
     }
 }
 
@@ -548,7 +550,7 @@ body.lang-fa .button {
 }
 
 .button.brand {
-    background-color: #0689fc
+    background-color: #556E3E
 }
 
 .button.brand:active {
@@ -556,7 +558,7 @@ body.lang-fa .button {
 }
 
 .button.brand.negative {
-    background-color: #ffab18
+    background-color: #A39534
 }
 
 .button.brand.negative:active {
@@ -1120,3 +1122,66 @@ footer .social svg * {
 }
 
 /*# sourceMappingURL=styles.css.map */
+
+label {
+    position:absolute;
+    transform:translateY(6px);
+    left:13px;
+    color:rgba($white,.5);
+    transition:all 0.25s ease;
+    -webkit-backface-visibility: hidden;
+    pointer-events: none;
+    font-size:22px;
+.req {
+    margin:2px;
+    color:$main;
+}
+}
+
+label.active {
+    transform:translateY(50px);
+    left:2px;
+    font-size:14px;
+.req {
+    opacity:0;
+}
+}
+
+label.highlight {
+    color:$white;
+}
+input, textarea {
+    font-size:22px;
+    display:block;
+    width:100%;
+    height:100%;
+    padding:5px 10px;
+    background:none;
+    background-image:none;
+    border:1px solid $gray-light;
+    color:$white;
+    border-radius:0;
+    transition:border-color .25s ease, box-shadow .25s ease;
+&:focus {
+     outline:0;
+     border-color:$main;
+ }
+}
+
+textarea {
+    border:2px solid $gray-light;
+    resize: vertical;
+}
+
+
+.field-wrap {
+    position:relative;
+    margin-bottom:40px;
+}
+
+.top-row {
+&:after {
+     content: "";
+     display: table;
+     clear: both;
+ }

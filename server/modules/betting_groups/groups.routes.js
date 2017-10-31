@@ -173,6 +173,9 @@ let prepareRouter = function (app) {
              res.end('GroupFile is uploaded')
              });
              */
+            console.log("groupModelgroupModel")
+            console.log(data)
+
 
 
             var form = new formidable.IncomingForm();

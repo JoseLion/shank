@@ -15,7 +15,7 @@
 
 const Host = 'http://192.168.1.3:3000/';
 const ApiHost = Host + 'api/';
-const ClienHost = 'http://192.168.1.3:8000/';
+const ClienHost = 'localhost:8000/';
 
 const AuthToken = 'shank-auth-token';
 const ApiKey = 'MTU2NDJkYzcxZjkwNTk4NjdlNjVlYWRjZTI5Zjdl';
@@ -23,4 +23,4 @@ const AssetsURL = 'http://192.168.1.3:3000/uploads';
 const Timeout = 60000;
 const version = '2.8';
 
-export {Host, ApiHost, AuthToken, ApiKey, AssetsURL, Timeout, version};
+export {Host, ApiHost, AuthToken, ApiKey, AssetsURL, Timeout, version, ClienHost};

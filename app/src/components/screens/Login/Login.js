@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, Text, View, TextInput, TouchableHighlight, AsyncStorage} from 'react-native';
+import {
+    Button, StyleSheet, Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle,
+    Keyboard
+} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import Notifier from '../../../core/Notifier';
@@ -8,6 +11,7 @@ import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Facebook} from 'expo';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 
 export default class LoginScreen extends Component {
@@ -28,6 +32,7 @@ export default class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this._onLoginPressed = this._onLoginPressed.bind(this);
+        this._scrollToInput = this._scrollToInput.bind(this);
 
         this.state = {
             userName: '',
@@ -41,47 +46,57 @@ export default class LoginScreen extends Component {
         this.setState({loading: loading});
     }
 
+    _scrollToInput(reactNode) {
+        this.refs.scroll.scrollToFocusedInput(reactNode)
+    }
+
     render() {
         let navigation = this.props.navigation;
         return (
-            <View style={MainStyles.container}>
-                <Spinner visible={this.state.loading}/>
-                <Text style={MainStyles.greenMedShankFont}>
-                    WELCOME BACK
-                </Text>
-                <TextInput
-                    returnKeyType={"next"}
-                    underlineColorAndroid="transparent"
-                    style={MainStyles.loginInput}
-                    onChangeText={(email) => this.setState({email})}
-                    value={this.state.email}
-                    placeholder={'Email'}
-                    onSubmitEditing={(event) => {
-                        this.refs.password.focus();
-                    }}
-                />
-                <TextInput
-                    ref='password'
-                    secureTextEntry={true}
-                    underlineColorAndroid="transparent"
-                    style={MainStyles.loginInput}
-                    onChangeText={(password) => this.setState({password})}
-                    value={this.state.password}
-                    placeholder={'password'}
-                    onSubmitEditing={(event) => {
-                        this._onLoginPressed()
-                    }}
-                />
-                <TouchableHighlight
-                    onPress={this._onLoginPressed}
-                    style={MainStyles.goldenShankButton}>
-                    <Text style={LocalStyles.buttonText}>Log in</Text>
-                </TouchableHighlight>
+            <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
+                                     style={{backgroundColor: '#F5FCFF'}}>
+                <View style={MainStyles.container} behavior="padding">
+                    <Spinner visible={this.state.loading}/>
+                    <Text style={MainStyles.greenMedShankFont}>
+                        WELCOME BACK
+                    </Text>
+                    <TextInput
+                        returnKeyType={"next"}
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(email) => this.setState({email})}
+                        value={this.state.email}
+                        onFocus={(event) => {
+                            this._scrollToInput(findNodeHandle(event.target))
+                        }}
+                        placeholder={'Email'}
+                        onSubmitEditing={(event) => {
+                            this.refs.password.focus();
+                        }}
+                    />
+                    <TextInput
+                        ref='password'
+                        secureTextEntry={true}
+                        underlineColorAndroid="transparent"
+                        style={MainStyles.loginInput}
+                        onChangeText={(password) => this.setState({password})}
+                        value={this.state.password}
+                        placeholder={'password'}
+                        onSubmitEditing={(event) => {
+                            this._onLoginPressed()
+                        }}
+                    />
+                    <TouchableHighlight
+                        onPress={this._onLoginPressed}
+                        style={MainStyles.goldenShankButton}>
+                        <Text style={LocalStyles.buttonText}>Log in</Text>
+                    </TouchableHighlight>
 
-                <Text style={[MainStyles.smallShankFont, MainStyles.inputTopSeparation]}>
-                    Forgot my password
-                </Text>
-            </View>
+                    <Text style={[MainStyles.smallShankFont, MainStyles.inputTopSeparation]}>
+                        Forgot my password
+                    </Text>
+                </View>
+            </KeyboardAwareScrollView>
         );
     }
 
