@@ -55,10 +55,30 @@ let prepareRouter = function (app) {
                     });
                 });
         })
+        .get('/findGroupByHash', function (req, res) {
+            let data = req.body;
+            if(!data.groupToken){
+                return;
+            }
+            BettingGroup
+                .find({'groupToken': data.groupToken})
+                .select('_id name users tournament city photo prize users')
+                .exec(function (err, user) {
+                    if (err) {
+                        res.ok({}, 'Al seleccionar grupos.');
+                        return;
+                    }
+                    if(user){
+                        res.ok(user);
+                    }else{
+                        res.ok({},'Group doesnt exist');
+                    }
+            });
+        })
         .get('/allGroups', function (req, res) {
             BettingGroup
                 .find()
-                .select('_id name users tournament city photo prize users')
+                .select('_id name users tournament city photo prize users groupToken')
                 .exec(function (err, user) {
                     if (err) {
                         res.ok({}, 'Al seleccionar grupos.');
@@ -184,7 +204,6 @@ let prepareRouter = function (app) {
                         res.ok({}, 'Data not updated');
                     }
                     else {
-
                         res.ok(data);
                     }
                 });

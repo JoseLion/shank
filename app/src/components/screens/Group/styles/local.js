@@ -6,6 +6,45 @@ const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
 
 const LocalStyles = StyleSheet.create({
+    //Modal
+    modalhead:{
+        alignItems: 'center',
+        backgroundColor: '#556E3E',
+        width: '70%',
+    },
+    modalbody:{
+        paddingTop:10,
+        alignItems: 'center',
+        backgroundColor: 'white',
+        width: '70%',
+        height: '65%',
+    },
+    modalfooter:{
+        paddingTop:10,
+        backgroundColor: 'white',
+        width: '70%',
+    },
+    inputModal:{
+        width: '50%',
+        marginTop: Style.PX_10,
+        padding: Style.SMALL_PADDING,
+        fontSize: Style.FONT_SMALL,
+        borderWidth: 1,
+        borderColor: '#rgba(0, 0, 0, .2)',
+        borderRadius: 0,
+        color: '#333',
+    },
+    goldenShankButton: {
+        alignItems: 'center',
+        alignContent: 'center',
+        paddingBottom: Style.SMALL_PADDING,
+        paddingTop: Style.SMALL_PADDING,
+        width: '60%',
+        marginTop: Style.PX_10,
+        marginLeft: Style.PX_10,
+        backgroundColor: '#A39534',
+        borderRadius: 10,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',

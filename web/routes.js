@@ -10,6 +10,7 @@ let requestServerError = 'We couldn\'t connect to the server. Please try later';
 let parsingResponseError = 'Error getting server response.';
 
 let request = require('request');
+url = require('url');
 
 function initialize(app) {
 
@@ -58,11 +59,15 @@ function initialize(app) {
 
     app.post('/login', function (req, res) {
         let data = req.body;
+        let form = {
+            email: data.email,
+            password: data.password,
+        };
+        if (data.tag){
+            form.tag = data.tag
+        }
         request.post({
-            url: ApiHost + 'login', form: {
-                email: data.email,
-                password: data.password,
-            }, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
+            url: ApiHost + 'login', form: form, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
         }, function (err, httpResponse, body) {
             if (err) {
                 throw requestServerError;
@@ -79,7 +84,37 @@ function initialize(app) {
             else {
                 console.log(parsedResponse.error)
             }
+            console.log("body")
+            console.log(body)
+            return body;
+        })
+    });
 
+    app.post('/register', function (req, res) {
+        let data = req.body;
+        let form = {
+            email: data.email,
+            name: data.name,
+            password: data.password,
+            matchPassword: data.matchPassword,
+        };
+        if (data.tag){
+            form.tag = data.tag
+        }
+        request.post({
+            url: ApiHost + 'register', form: form, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        }, function (err, httpResponse, body) {
+            if (err) {
+                throw requestServerError;
+            }
+            let parsedResponse = JSON.parse(body);
+
+            if (!parsedResponse.error) {
+                res.render('<div>ADDED TO GROUP!</div>');
+            }
+            else {
+                console.log(parsedResponse.error)
+            }
             console.log("body")
             console.log(body)
             return body;
@@ -91,10 +126,11 @@ function initialize(app) {
     });
 
     app.get('/invite/friend', function (req, res) {
-        res.render('userListing.html');
+        res.render('tournamentInvitation.html');
     });
+
     app.post('/invite/friend', function (req, res) {
-        res.render('userListing.html');
+        res.render('tournamentInvitation.html');
     });
 }
 

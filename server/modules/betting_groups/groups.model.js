@@ -27,6 +27,7 @@ let BettingGroupSchema = new mongoose.Schema({
         }],
     }],
     prize: String,
+    groupToken: String,
     tournament: String,
     tournamentName: String,
     city: String,

@@ -6,6 +6,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import {
+    Modal,
     Text,
     View,
     TextInput,
@@ -18,13 +19,17 @@ import {
     Alert,
     Platform,
     PickerIOS,
-    ActionSheetIOS
+    ActionSheetIOS,
+    Share,
+    TouchableWithoutFeedback
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 import Notifier from '../../../core/Notifier';
 import BaseModel from '../../../core/BaseModel';
 import NoAuthModel from '../../../core/NoAuthModel';
+
+import {ClienHost} from '../../../config/variables';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
@@ -38,6 +43,10 @@ export default class Group extends Component {
     state = {
         groupPhoto: null,
     };
+
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+    }
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -57,6 +66,7 @@ export default class Group extends Component {
         this._handleNewGroupRegistry = this._handleNewGroupRegistry.bind(this);
         this._pickImage = this._pickImage.bind(this);
         this.getUserList = this.getUserList.bind(this);
+        this._shareTextWithTitle = this._shareTextWithTitle.bind(this);
         this.state = {
             name: '',
             selectTournament: '',
@@ -69,16 +79,19 @@ export default class Group extends Component {
             refreshing: false,
             tournamentData: [],
             assignUsers: [],
+            modalVisible: false,
             tId: "",
-            TName:""
+            TName: "",
+            currentGroupToken: ""
         };
     }
 
     componentDidMount() {
         //this.makeRemoteRequest();
         this.setLoading(true);
+        this._generateGroupToken(20)
         this.initialRequest('pga', '2018').then((data) => {
-            console.log('pgapga 20182018')
+            console.log('pgapga 2018SS2018')
             console.log(data)
         });
     }
@@ -254,8 +267,11 @@ export default class Group extends Component {
                                     cancelButtonIndex: tournamentName.length - 1,
                                 },
                                 (buttonIndex) => {
-                                    if (tournamentKeys[buttonIndex] != 'none'){
-                                        this.setState({selectTournament: tournamentKeys[buttonIndex],TName:tournamentName[buttonIndex]})
+                                    if (tournamentKeys[buttonIndex] != 'none') {
+                                        this.setState({
+                                            selectTournament: tournamentKeys[buttonIndex],
+                                            TName: tournamentName[buttonIndex]
+                                        })
                                     }
                                 })
                         }}>
@@ -295,16 +311,52 @@ export default class Group extends Component {
                             />
                         </List>
                     </View>
-                    <View style={LocalStyles.addNewParticipant}>
-                        <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
-                            Add new participant
-                        </Text>
-                    </View>
+                    <TouchableWithoutFeedback
+                        onPress={() => this.setModalVisible(true)}
+                    >
+                        <View style={LocalStyles.addNewParticipant}>
+                            <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
+                                Add new participant
+                            </Text>
+                        </View>
+                    </TouchableWithoutFeedback>
                     <TouchableHighlight
                         onPress={this._handleNewGroupRegistry}
                         style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                         <Text style={LocalStyles.buttonText}>Create group</Text>
                     </TouchableHighlight>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {
+                            this.setModalVisible(!this.state.modalVisible)
+                        }}
+                    >
+                        <View style={{
+                            marginTop: 150,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <View style={LocalStyles.modalhead}>
+                                <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
+                            </View>
+                            <View style={LocalStyles.modalbody}>
+                                <TouchableHighlight
+                                    onPress={this._shareTextWithTitle}
+                                    style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
+                                    <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
+                                </TouchableHighlight>
+                            </View>
+                            <View style={LocalStyles.modalfooter}>
+                                <TouchableHighlight onPress={() => {
+                                    this.setModalVisible(!this.state.modalVisible)
+                                }}>
+                                    <Text style={{fontSize: 6}}>Close</Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -325,6 +377,10 @@ export default class Group extends Component {
         this.setLoading(false);
         // this.setState({tournamentData: response});
     };
+
+    _generateGroupToken(length) {
+        this.setState({currentGroupToken: Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1)});
+    }
 
     async _handleNewGroupRegistry() {
 
@@ -362,7 +418,9 @@ export default class Group extends Component {
             tournament: this.state.tId,
             prize: this.state.prize,
             photo: {path: localUri, name: filename, type: type},
-            users: this.state.assignUsers,
+            /*users: this.state.assignUsers,*/
+            users: {},
+            groupToken: this.state.currentGroupToken,
         };
 
         BaseModel.create('createGroup', data).then((response) => {
@@ -396,4 +454,21 @@ export default class Group extends Component {
             this.setState({groupPhoto: result.uri});
         }
     };
+
+    _shareTextWithTitle() {
+        Share.share({
+            message: 'Shank Group Invitation : ' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
+            title: 'Shank Group Invitation',
+            url: ClienHost + '?tag=' + this.state.currentGroupToken
+        }, {
+            dialogTitle: 'Shank Group Invitation',
+            excludedActivityTypes: [
+                'com.apple.UIKit.activity.PostToTwitter',
+                'com.apple.uikit.activity.mail'
+            ],
+            tintColor: 'green'
+        })
+            .then(this._showResult)
+            .catch(err => console.log(err))
+    }
 }

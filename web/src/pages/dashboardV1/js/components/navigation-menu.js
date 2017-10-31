@@ -53,7 +53,7 @@ define(
                                         <span className="label label-primary pull-right">4</span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        <li><a href="#"><i className="fa fa-circle-o"></i> User Listing</a></li>
+                                        <li><a href="/users"><i className="fa fa-circle-o"></i> User Listing</a></li>
                                       </ul>
                                 </li>
                                 <li>
