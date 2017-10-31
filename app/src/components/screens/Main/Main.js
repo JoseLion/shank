@@ -122,10 +122,10 @@ export default class MainScreen extends Component {
                                          if (buttonIndex) {
 
                                          } else {
-                                            AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
+                                           /* AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
                                                 this.setLoading(false);
                                                 navigation.navigate('Profile', {currentUser: JSON.parse(user)})
-                                            });
+                                            });*/
                                          }
                                      })
                              }/>,

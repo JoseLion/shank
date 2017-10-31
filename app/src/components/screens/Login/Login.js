@@ -54,7 +54,7 @@ export default class LoginScreen extends Component {
         let navigation = this.props.navigation;
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
-                                     style={{backgroundColor: '#F5FCFF'}}>
+                                     style={{backgroundColor: '#F5FCFF', marginVertical:'2%'}}>
                 <View style={MainStyles.container} behavior="padding">
                     <Spinner visible={this.state.loading}/>
                     <Text style={MainStyles.greenMedShankFont}>

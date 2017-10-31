@@ -110,7 +110,7 @@ function initialize(app) {
             let parsedResponse = JSON.parse(body);
 
             if (!parsedResponse.error) {
-                res.render('<div>ADDED TO GROUP!</div>');
+                res.send('ADDED TO GROUP!');
             }
             else {
                 console.log(parsedResponse.error)
