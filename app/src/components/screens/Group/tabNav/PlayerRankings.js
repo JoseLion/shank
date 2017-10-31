@@ -46,10 +46,10 @@ class RowComponent extends React.Component {
                         element: <FontAwesome
                             onPress={() => {
                                 this.setState({playerSelectionPosition: this.props.data.position});
-                                this.props.navigation.navigate('PlayerSelection', {
+                                this.props.navi.navigate('PlayerSelection', {
                                     tPlayers: this.props.playerRankings,
                                     userGroupId: this.props.groupLoggedUser._id,
-                                    groupId: this.props.navigation.state.params.data.currentGroup._id,
+                                    groupId: this.props.currentGroup._id,
                                     currentPosition: this.props.data.position,
                                     onNewPlayer: this.onNewPlayer
                                 })
@@ -93,10 +93,10 @@ class RowComponent extends React.Component {
                     containerStyle={{borderBottomWidth: 0}}
                     onPress={() => {
                         this.setState({playerSelectionPosition: this.props.data.position});
-                        this.props.navigation.navigate('PlayerSelection', {
+                        this.props.navi.navigate('PlayerSelection', {
                             tPlayers: this.props.playerRankings,
                             userGroupId: this.props.groupLoggedUser._id,
-                            groupId: this.props.navigation.state.params.data.currentGroup._id,
+                            groupId: this.props.currentGroup._id,
                             currentPosition: this.props.data.position,
                             onNewPlayer: this.onNewPlayer
                         })
@@ -198,6 +198,8 @@ export default class PlayerRankings extends Component {
                             order.splice(e.to, 0, order.splice(e.from, 1)[0])
                         }}
                         renderRow={row => <RowComponent data={row} navigation={this.props.navigation}
+                                                        navi={this.props.screenProps.navi}
+                                                        currentGroup={this.props.screenProps.currentGroup}
                                                         playerRankings={this.props.screenProps.playerRankings}
                                                         groupLoggedUser={this.props.screenProps.groupLoggedUser}/>}/>
                     {/*<List containerStyle={LocalStyles.listContainer}>*/}

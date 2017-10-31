@@ -198,10 +198,12 @@ export default class SingleGroup extends Component {
                     </View>
                 </View>
                 <InnerSingleGroupTabNav screenProps={{
+                    currentGroup : navigation.state.params.data.currentGroup,
                     groupUsers: navigation.state.params.data.currentGroup.users,
                     orderedPlayerRankings: orderedPlayerRankings,
                     playerRankings: playerRankings,
-                    groupLoggedUser: groupLoggedUser
+                    groupLoggedUser: groupLoggedUser,
+                    navi: navigation
                 }}/>
             </View>);
     }
