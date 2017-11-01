@@ -82,7 +82,7 @@ export default class Group extends Component {
             assignUsers: [],
             modalVisible: false,
             tId: "",
-            TName: "",
+            TName: "Select a tournament",
             currentGroupToken: ""
         };
     }
@@ -264,7 +264,7 @@ export default class Group extends Component {
                             </Picker>
                         </View>
                         :
-                        <TouchableOpacity style={LocalStyles.tournamentPicker} onPress={() => {
+                        <TouchableOpacity style={[LocalStyles.tournamentPicker]} onPress={() => {
                             ActionSheetIOS.showActionSheetWithOptions({
                                     options: tournamentName,
                                     cancelButtonIndex: tournamentName.length - 1,
@@ -278,13 +278,9 @@ export default class Group extends Component {
                                     }
                                 })
                         }}>
-                            <TextInput
-                                editable={false}
-                                style={LocalStyles.innerInput}
-                                underlineColorAndroid='transparent'
-                                placeholder={'Select a tournament'}
-                                value={this.state.TName}
-                            />
+                            <Text style={LocalStyles.innerInput}>
+                                {this.state.TName}
+                            </Text>
                         </TouchableOpacity>
                     }
 
@@ -334,13 +330,18 @@ export default class Group extends Component {
                         visible={this.state.modalVisible}
                         onRequestClose={() => {
                             this.setModalVisible(!this.state.modalVisible)
-                        }}
-                    >
-                        <View style={{
-                            marginTop: 150,
-                            justifyContent: 'center',
-                            alignItems: 'center'
                         }}>
+                        <TouchableOpacity
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height:'100%'
+                            }}
+                            activeOpacity={1}
+                            onPressOut={() => {
+                                this.setModalVisible(false)
+                            }}
+                        >
                             <View style={LocalStyles.modalhead}>
                                 <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
                             </View>
@@ -358,8 +359,9 @@ export default class Group extends Component {
                                     <Text style={{fontSize: 6}}>Close</Text>
                                 </TouchableHighlight>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </Modal>
+
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -375,7 +377,7 @@ export default class Group extends Component {
             this.setState({tournamentData: JsonResponse.tournaments});
             this.getUserList()
             const value = await AsyncStorage.getItem(Constants.USER_PROFILE);
-            if (value !== null){
+            if (value !== null) {
                 let jsonData = JSON.parse(value)
                 let groupUser = [{
                     userId: jsonData._id,
