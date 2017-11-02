@@ -115,6 +115,23 @@ const MainStyles = StyleSheet.create({
         backgroundColor: '#A39534',
         borderRadius: 10
     },
+    goldenShankButtonPayment: {
+        alignItems: 'center',
+        paddingBottom: Style.SMALL_PADDING,
+        paddingTop: Style.SMALL_PADDING,
+        width: '60%',
+        marginTop: '4%',
+        backgroundColor: '#A39534',
+        borderRadius: 10
+    },
+    goldenShankAddGroupButton: {
+        alignItems: 'center',
+        paddingBottom: Style.SMALL_PADDING,
+        paddingTop: Style.SMALL_PADDING,
+        width: '26%',
+        backgroundColor: '#A39534',
+        borderRadius: 10
+    },
     loginInput: {
         width: '80%',
         marginTop: Style.PX_15,

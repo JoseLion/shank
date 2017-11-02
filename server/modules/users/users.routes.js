@@ -5,6 +5,7 @@ let multer = require('multer');
 let fs = require('fs-extra');
 let authHelper = require('../helpers/auth.helper');
 let passport = require('passport');
+let BettingGroup = mongoose.model('BettingGroup');
 
 multer.diskStorage({
     destination: function (req, file, cb) {
@@ -84,6 +85,31 @@ let prepareRouter = function (app) {
                                             name: user.name,
                                             attachments: user.attachments
                                         };
+
+                                        if (data.tag) {
+                                            let newGroupUser = {
+                                                userId: user._id,
+                                                score: 0,
+                                                currentRanking: 0,
+                                                currentDailyMovements: 0,
+                                                dailyMovementsDone: false,
+                                                playerRanking: [],
+                                                name: user.name,
+                                            };
+                                            BettingGroup.findOneAndUpdate({'groupToken': data.tag},
+                                                {
+                                                    $push: {users: newGroupUser},
+                                                },
+                                                function (err, data) {
+                                                    if (err) {
+                                                        console.log("errerr findOneAndUpdate")
+                                                        console.log(err)
+                                                        res.ok({}, 'Data not updated');
+                                                    }
+                                                    console.log("datadatadata findOneAndUpdate")
+                                                    console.log(data)
+                                                });
+                                        }
                                         res.ok({user: new_user, token: token, response: ''});
                                     }
                                     else {

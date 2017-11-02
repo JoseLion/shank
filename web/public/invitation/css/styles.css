@@ -1,0 +1,1187 @@
+@font-face {
+    font-family: 'supercell-magicregular';
+    src: url('webfonts/supercell-magic.eot');
+    src: url('webfonts/supercell-magic.eot?#iefix') format('embedded-opentype'),url('webfonts/supercell-magic.woff') format('woff'),url('webfonts/supercell-magic.ttf') format('truetype'),url('webfonts/supercell-magic.svg#supercell-magicregular') format('svg');
+    font-weight: normal;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'roboto_slabbold';
+    src: url('webfonts/RobotoSlab-Bold-webfont.eot?#iefix') format('embedded-opentype'),url('webfonts/RobotoSlab-Bold-webfont.woff') format('woff'),url('webfonts/RobotoSlab-Bold-webfont.ttf') format('truetype'),url('webfonts/RobotoSlab-Bold-webfont.svg#roboto_slabbold') format('svg');
+    font-weight: normal;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'SC COC Display Bold';
+    src: url('webfonts/SC_COC_Display_appBold.eot');
+    src: url('webfonts/SC_COC_Display_appBold.eot?#iefix') format('embedded-opentype'),url('webfonts/SC_COC_Display_appBold.woff') format('woff'),url('webfonts/SC_COC_Display_appBold.ttf') format('truetype'),url('webfonts/SC_COC_Display_appBold.svg#sc_coc_display_appbold') format('svg');
+    font-weight: normal;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'HiraKakuStd-W8-AlphaNum';
+    src: url('webfonts/HiraKakuStd-W8-AlphaNum.eot?#iefix') format('embedded-opentype'),url('webfonts/HiraKakuStd-W8-AlphaNum.otf') format('opentype'),url('webfonts/HiraKakuStd-W8-AlphaNum.woff') format('woff'),url('webfonts/HiraKakuStd-W8-AlphaNum.ttf') format('truetype'),url('webfonts/HiraKakuStd-W8-AlphaNum.svg#HiraKakuStd-W8-AlphaNum') format('svg');
+    font-weight: normal;
+    font-style: normal
+}
+
+html,body {
+    background: #f2f2f2;
+    color: #010101;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden
+}
+
+html.wf-loading #content-wrapper,body.wf-loading #content-wrapper {
+    display: none
+}
+
+html.wf-active #content-wrapper,body.wf-active #content-wrapper,html.wf-inactive #content-wrapper,body.wf-inactive #content-wrapper {
+    display: block
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    background: #002442 url(../images/background@2x.jpg) no-repeat fixed;
+    background-size: auto 100% !important;
+    font-family: 'roboto_slabbold','Lantinghei SC','Hiragino Sans GB','SimHei',Arial,sans-serif;
+    font-size: 16px
+}
+
+@media only screen and (orientation: landscape) {
+    body {
+        background-size:100% auto !important
+    }
+}
+
+@media screen and (min-width: 667px) {
+    body {
+        background-size:100% auto !important
+    }
+}
+
+@media screen and (max-width: 1279px) {
+    body {
+        background:#002442 url(../images/background_m@2x.jpg) no-repeat fixed
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    body {
+        background:#002442 url(../images/background@2x.jpg) no-repeat fixed;
+        background-size: 110% auto !important
+    }
+}
+
+body.lang-cn {
+    font-weight: bolder
+}
+
+body.lang-cnt {
+    font-weight: bolder
+}
+
+body.lang-jp {
+    font-family: "ãƒ’ãƒ©ã‚®ãƒŽè§’ã‚´ Pro W3","Hiragino Kaku Gothic Pro","ï¼­ï¼³ ã‚´ã‚·ãƒƒã‚¯","MS Gothic",Arial,sans-serif
+}
+
+body.lang-ru {
+    font-family: Arial,sans-serif;
+    font-weight: bolder
+}
+
+body.lang-ar {
+    font-family: Arial,sans-serif;
+    direction: rtl
+}
+
+body.lang-fa {
+    font-family: Arial,sans-serif;
+    direction: rtl
+}
+
+body.hidden {
+    visibility: hidden
+}
+
+a {
+    text-decoration: none;
+    color: #444
+}
+
+p {
+    margin: 0;
+    padding: 0 0 1em 0
+}
+
+header {
+    padding-top: 18px
+}
+
+@media screen and (min-width: 667px) {
+    header {
+        padding-top:48px
+    }
+}
+
+li {list-style:none;}
+
+header h1 {
+    margin: 0 auto;
+    padding: 0;
+    background: url('../images/shankLogo.png') center center no-repeat;
+    background-size: 140px auto;
+    width: 140px;
+    height: 62px;
+    text-indent: -9999px
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx) {
+    header h1 {
+        background:url(../images/shankLogo.png) center center no-repeat;
+        background-size: 140px auto
+    }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),(min-resolution:2 * 96dpi) {
+    header h1 {
+        background:url(../images/shankLogo.png) center center no-repeat;
+        background-size: 55px auto
+    }
+}
+
+@media screen and (min-width: 667px) {
+    header h1 {
+        width:160px !important;
+        height: 92px !important;
+        background-size:  92px !important
+    }
+}
+
+#content-wrapper {
+    margin: -34px auto 0 auto;
+    width: 95%;
+    width: 375px;
+    text-align: center
+}
+
+@media screen and (max-width: 374px) {
+    #content-wrapper {
+        width:100%
+    }
+}
+
+@media screen and (min-width: 667px) {
+    #content-wrapper {
+        margin-top:-16px;
+        margin-top: 8px;
+        width: 520px
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #content-wrapper {
+        width:780px;
+        margin-top: -10px
+    }
+}
+
+#content-wrapper #stamp {
+    width: 100%;
+    height: 200px;
+    background-size: 164px auto;
+    background-position: center top;
+    position: absolute;
+    top: -138px;
+    left: 0
+}
+
+#content-wrapper #stamp.clan {
+    background-image: url(../images/stamp_clan@2x.png)
+}
+
+@media screen and (min-width: 667px) {
+    #content-wrapper #stamp {
+        top:-152px;
+        background-size: 182px auto
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #content-wrapper #stamp {
+        top:-218px;
+        background-size: 240px auto;
+        height: 230px
+    }
+}
+
+#content-wrapper h2 {
+    margin: 0;
+    padding: 0px 10px 0 10px;
+    font-weight: normal;
+    font-family: 'supercell-magicregular','Lantinghei SC','Hiragino Sans GB','SimHei',Arial,sans-serif;
+    font-size: 16px
+}
+
+body.lang-cn #content-wrapper h2 {
+    font-weight: bolder
+}
+
+body.lang-cnt #content-wrapper h2 {
+    font-weight: bolder
+}
+
+body.lang-kr #content-wrapper h2 {
+    font-family: 'SC COC Display Bold',Arial,sans-serif
+}
+
+body.lang-jp #content-wrapper h2 {
+    font-family: "HiraKakuStd-W8-AlphaNum","ãƒ’ãƒ©ã‚®ãƒŽè§’ã‚´ StdN W8","Hiragino Kaku Gothic StdN","MS UI Gothic",Arial,sans-serif
+}
+
+body.lang-ru #content-wrapper h2 {
+    font-family: Arial,sans-serif;
+    font-weight: bolder
+}
+
+body.lang-ar #content-wrapper h2 {
+    font-family: Damascus,Arial,sans-serif;
+    font-weight: bolder;
+    font-size: 120%
+}
+
+body.lang-fa #content-wrapper h2 {
+    font-family: Damascus,Arial,sans-serif;
+    font-weight: bolder;
+    font-size: 120%
+}
+
+@media screen and (min-width: 667px) {
+    #content-wrapper h2 {
+        padding-top:32px;
+        font-size: 17px
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #content-wrapper h2 {
+        padding-top:0;
+        margin-top: -227px;
+        font-size: 22px
+    }
+}
+
+#content-wrapper p {
+    padding: 12px 30px 5px 30px;
+    font-size: 14px;
+    color: #888
+}
+
+@media screen and (min-width: 667px) {
+    #content-wrapper p {
+        font-size:15px;
+        padding-top: 16px;
+        padding-bottom: 10px
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #content-wrapper p {
+        font-size:17px;
+        padding-bottom: 12px
+    }
+}
+
+#content-wrapper section p {
+    padding: 8px 0 9px 0
+}
+
+@media screen and (min-width: 1024px) {
+    #content-wrapper section p {
+        padding:11px 0 12px 0
+    }
+}
+
+#content-wrapper hr {
+    height: 1px;
+    border: 0;
+    background: none;
+    border-bottom: 2px solid #dcdcdc;
+    width: 180px;
+    display: block
+}
+
+#cover-top {
+    height: 203px;
+    background: url(../images/bg_container_top_m@2x.png) no-repeat;
+    background-size: 450px 203px;
+    background-position: center bottom
+}
+
+@media screen and (min-width: 667px) {
+    #cover-top {
+        background-size:100% auto;
+        height: 200px
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #cover-top {
+        height:300px
+    }
+}
+
+#cover {
+    background: url(../images/bg_container_m@2x.png) repeat-y;
+    background-size: 450px 84px;
+    padding: 0 56px;
+    background-position: center top;
+    position: relative
+}
+
+@media screen and (max-width: 374px) {
+    #cover {
+        padding:0 42px
+    }
+}
+
+@media screen and (min-width: 667px) {
+    #cover {
+        background-size:100% auto;
+        padding: 0 130px
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #cover {
+        padding:0 233px;
+        padding-top: 1px
+    }
+}
+
+#cover-bottom {
+    height: 70px;
+    background: url(../images/bg_container_bottom_m@2x.png) no-repeat;
+    background-size: 450px 70px;
+    background-position: center top
+}
+
+@media screen and (min-width: 667px) {
+    #cover-bottom {
+        background-size:100% auto;
+        height: 78px
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #cover-bottom {
+        height:100px
+    }
+}
+
+section {
+    text-align: center
+}
+
+section#app-download {
+    display: none;
+    margin-top: 4px;
+    padding-bottom: 4px
+}
+
+section#app-download.active {
+    display: block
+}
+
+section#app-download p {
+    padding-top: 0
+}
+
+section#app-download .buttons {
+    text-align: center;
+    padding-top: 0;
+    padding-bottom: 0
+}
+
+@media screen and (min-width: 1024px) {
+    section#app-download .buttons {
+        padding-top:4px
+    }
+}
+
+section#app-download .buttons .button.other {
+    padding: 14px 4px 13px 4px;
+    border-color: #a6a6a6
+}
+
+section#app-download .others {
+    display: none;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 0;
+    padding-bottom: 0;
+    vertical-align: top
+}
+
+section#app-download .others.visible {
+    display: inline-block
+}
+
+section#app-installed .notes {
+    display: none;
+    font-size: 11px;
+    width: 80%
+}
+
+@media screen and (min-width: 1024px) {
+    section#app-installed .notes {
+        font-size:13px
+    }
+}
+
+section#app-installed .notes.active {
+    display: inline-block
+}
+
+section#app-installed .notes span {
+    color: #0689fc
+}
+
+section#link-copy p {
+    padding-bottom: 0
+}
+
+section#deco {
+    margin-top: 0
+}
+
+section#deco.push {
+    margin-top: 30px
+}
+
+section#deco img {
+    display: block;
+    margin: 0 auto;
+    max-width: 94%;
+    height: auto
+}
+
+section#notes {
+    display: none;
+    width: 80%
+}
+
+section#notes.active {
+    display: inline-block
+}
+
+section#notes p {
+    font-size: 11px
+}
+
+.button {
+    display: block;
+    background: #fff;
+    border-radius: 6px;
+    line-height: 1em;
+    padding: 19px 4px 19px 4px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    background: #000;
+    font-family: 'supercell-magicregular','Lantinghei SC','Hiragino Sans GB','SimHei',Arial,sans-serif;
+    font-size: 14px;
+    text-shadow: 0 2px rgba(0,0,0,0.15)
+}
+
+body.lang-cn .button {
+    font-weight: bolder
+}
+
+body.lang-cnt .button {
+    font-weight: bolder
+}
+
+body.lang-kr .button {
+    font-family: 'SC COC Display Bold',Arial,sans-serif
+}
+
+body.lang-jp .button {
+    font-family: "HiraKakuStd-W8-AlphaNum","ãƒ’ãƒ©ã‚®ãƒŽè§’ã‚´ StdN W8","Hiragino Kaku Gothic StdN","MS UI Gothic",Arial,sans-serif
+}
+
+body.lang-ru .button {
+    font-family: Arial,sans-serif;
+    font-weight: bolder
+}
+
+body.lang-ar .button {
+    font-family: Damascus,Arial,sans-serif;
+    font-weight: bolder;
+    font-size: 120%
+}
+
+body.lang-fa .button {
+    font-family: Damascus,Arial,sans-serif;
+    font-weight: bolder;
+    font-size: 120%
+}
+
+@media screen and (min-width: 1024px) {
+    .button {
+        font-size:16px
+    }
+}
+
+.button:active {
+    -webkit-transform: scale(.95);
+    transform: scale(.95)
+}
+
+.button.brand {
+    background-color: #556E3E
+}
+
+.button.brand:active {
+    background-color: #0783f0
+}
+
+.button.brand.negative {
+    background-color: #A39534
+}
+
+.button.brand.negative:active {
+    background-color: #f6a518
+}
+
+.button#other-stores {
+    background: #000 url(../images/icon_more@2x.png) no-repeat 7px 5px;
+    background-size: 25px 10px;
+    background-position: 93% 50%;
+    display: none
+}
+
+.button#other-stores.hidden {
+    display: none
+}
+
+.button#other-stores.active {
+    display: block;
+    margin-top: 6px;
+    margin-bottom: 10px
+}
+
+.button#other-stores:active {
+    background-color: #222
+}
+
+.button.other {
+    background-color: #000;
+    color: #fff;
+    width: 155px;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    display: none;
+    line-height: 1em
+}
+
+.button.other:active {
+    background-color: #222
+}
+
+.button.other.active {
+    display: inline-block
+}
+
+.button.other.long {
+    width: 100%;
+    margin-top: 6px
+}
+
+#copy-link-text {
+    width: 100%;
+    padding: 16px 10px;
+    margin: 8px 0 0 0;
+    border: 0;
+    background: #f8f8f8 !important;
+    color: #333;
+    font-family: 'roboto_slabbold','Lantinghei SC','Hiragino Sans GB','SimHei',Arial,sans-serif;
+    font-size: 12px;
+    outline: none;
+    border: 1px solid #eee;
+    -webkit-appearance: none;
+    opacity: 0;
+    height: 3px;
+    padding: 0;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: 30px
+}
+
+#copy-link-text:focus {
+    color: #333
+}
+
+#copy-link-text::-moz-selection {
+    background-color: #3b77a1;
+    color: #fff
+}
+
+#copy-link-text::selection {
+    background-color: #3b77a1;
+    color: #fff
+}
+
+#copy-link-text.active {
+    opacity: 1;
+    height: auto;
+    padding: 16px 10px
+}
+
+.store {
+    display: inline-block;
+    text-indent: -9999px;
+    width: 154px;
+    height: 45px;
+    background: #000;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    display: none;
+    line-height: 1em;
+    vertical-align: top;
+    margin-bottom: 4px
+}
+
+.store.appstore {
+    background: url(../images/Download_on_the_App_Store_Badge_US-UK_135x40.svg) no-repeat;
+    background-size: 100% auto !important
+}
+
+.store.appstore.lang-fr {
+    background-image: url(../images/Download_on_the_App_Store_Badge_FR_135x40.svg)
+}
+
+.store.appstore.lang-de {
+    background-image: url(../images/Download_on_the_App_Store_Badge_DE_Source_135x40.svg)
+}
+
+.store.appstore.lang-es {
+    background-image: url(../images/Download_on_the_App_Store_Badge_ES_135x40.svg)
+}
+
+.store.appstore.lang-it {
+    background-image: url(../images/Download_on_the_App_Store_Badge_IT_135x40.svg)
+}
+
+.store.appstore.lang-nl {
+    background-image: url(../images/Download_on_the_App_Store_Badge_NL_135x40.svg)
+}
+
+.store.appstore.lang-no {
+    background-image: url(../images/Download_on_the_App_Store_Badge_NO_135x40.svg)
+}
+
+.store.appstore.lang-tr {
+    background-image: url(../images/Download_on_the_App_Store_Badge_TR_135x40.svg)
+}
+
+.store.appstore.lang-jp {
+    background-image: url(../images/Download_on_the_App_Store_JP_135x40.svg)
+}
+
+.store.appstore.lang-kr {
+    background-image: url(../images/Download_on_the_App_Store_Badge_KR_135x40.svg)
+}
+
+.store.appstore.lang-ru {
+    background-image: url(../images/Download_on_the_App_Store_Badge_RU_135x40.svg)
+}
+
+.store.appstore.lang-ar {
+    background-image: url(../images/Download_on_the_App_Store_Badge_AR_135x40.svg)
+}
+
+.store.appstore.lang-pt {
+    background-image: url(../images/Download_on_the_App_Store_Badge_PT_135x40.svg)
+}
+
+.store.appstore.lang-cn {
+    background-image: url(../images/Download_on_the_App_Store_Badge_CN_135x40.svg)
+}
+
+.store.appstore.lang-cnt {
+    background-image: url(../images/Download_on_the_App_Store_Badge_HK_TW_135x40.svg)
+}
+
+.store.appstore.lang-fa {
+    background-image: url(../images/Download_on_the_App_Store_Badge_AR_135x40.svg)
+}
+
+.store.appstore.lang-id {
+    background-image: url(../images/Download_on_the_App_Store_Badge_ID_135x40.svg)
+}
+
+.store.appstore.lang-ms {
+    background-image: url(../images/Download_on_the_App_Store_Badge_MY_135x40.svg)
+}
+
+.store.googleplay {
+    width: 154px;
+    background: url(../images/google-play-badge_en.png) no-repeat;
+    background-size: 100% auto !important
+}
+
+.store.googleplay.lang-fr {
+    background-image: url(../images/google-play-badge_fr.png)
+}
+
+.store.googleplay.lang-de {
+    background-image: url(../images/google-play-badge_de.png)
+}
+
+.store.googleplay.lang-es {
+    background-image: url(../images/google-play-badge_es.png)
+}
+
+.store.googleplay.lang-it {
+    background-image: url(../images/google-play-badge_it.png)
+}
+
+.store.googleplay.lang-nl {
+    background-image: url(../images/google-play-badge_nl.png)
+}
+
+.store.googleplay.lang-no {
+    background-image: url(../images/google-play-badge_no.png)
+}
+
+.store.googleplay.lang-tr {
+    background-image: url(../images/google-play-badge_tr.png)
+}
+
+.store.googleplay.lang-jp {
+    background-image: url(../images/google-play-badge_jp.png)
+}
+
+.store.googleplay.lang-kr {
+    background-image: url(../images/google-play-badge_kr.png)
+}
+
+.store.googleplay.lang-ru {
+    background-image: url(../images/google-play-badge_ru.png)
+}
+
+.store.googleplay.lang-ar {
+    background-image: url(../images/google-play-badge_ar.png)
+}
+
+.store.googleplay.lang-pt {
+    background-image: url(../images/google-play-badge_pt.png)
+}
+
+.store.googleplay.lang-cn {
+    background-image: url(../images/google-play-badge_cn.png)
+}
+
+.store.googleplay.lang-cnt {
+    background-image: url(../images/google-play-badge_cnt.png)
+}
+
+.store.googleplay.lang-fa {
+    background-image: url(../images/google-play-badge_fa.png)
+}
+
+.store.googleplay.lang-id {
+    background-image: url(../images/google-play-badge_id.png)
+}
+
+.store.googleplay.lang-ms {
+    background-image: url(../images/google-play-badge_ms.png)
+}
+
+.store.active {
+    display: inline-block
+}
+
+.store-cn-only {
+    text-indent: -9999px;
+    width: 155px;
+    height: 45px;
+    background: #000;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    display: none;
+    line-height: 1em;
+    vertical-align: top;
+    margin-bottom: 4px
+}
+
+.store-cn-only.kunlun {
+    width: 152px;
+    background: url(../images/kunlun-english-button.png) no-repeat;
+    background-size: 100% auto;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 0;
+    margin-right: 2px
+}
+
+@media screen and (max-width: 374px) {
+    .store-cn-only.kunlun {
+        width:49%;
+        max-width: 152px;
+        margin-right: 0
+    }
+}
+
+.store-cn-only.kunlun.lang-zh {
+    background: url(../images/kunlun-chinese-button.png) no-repeat;
+    border: 0;
+    background-size: 100% auto
+}
+
+.store-cn-only.tencent {
+    width: 154px;
+    background: url(../images/tencent-chinese-button.png) no-repeat;
+    background-size: 100% auto;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 0
+}
+
+@media screen and (max-width: 374px) {
+    .store-cn-only.tencent {
+        width:49%
+    }
+}
+
+.store-cn-only.active {
+    display: inline-block
+}
+
+footer {
+    background: #000;
+    padding: 30px 0 10px 0;
+    color: #fff;
+    text-align: left !important;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box
+}
+
+footer .container {
+    margin: 0 auto 0 auto;
+    max-width: 316px
+}
+
+@media screen and (max-width: 374px) {
+    footer .container {
+        max-width:300px
+    }
+}
+
+@media screen and (min-width: 667px) {
+    footer .container {
+        max-width:88%
+    }
+}
+
+footer .links {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 10px;
+    letter-spacing: 0;
+    color: #00f;
+    text-transform: none;
+    font-size: 14px;
+    text-align: center;
+    width: 238px;
+    margin: 8px auto 0 auto;
+    line-height: 2em
+}
+
+@media screen and (min-width: 667px) {
+    footer .links {
+        display:inline-block;
+        width: 100%;
+        width: auto;
+        text-align: left;
+        padding-bottom: 26px
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    footer .links {
+        width:100%;
+        width: auto;
+        margin-top: 34px
+    }
+}
+
+body.lang-ar footer .links {
+    font-size: 120%
+}
+
+@media screen and (min-width: 667px) {
+    body.lang-ar footer .links {
+        text-align:right
+    }
+}
+
+body.lang-fa footer .links {
+    font-size: 120%
+}
+
+@media screen and (min-width: 667px) {
+    body.lang-fa footer .links {
+        text-align:right
+    }
+}
+
+footer .links a {
+    color: #fff;
+    margin: 0 6px;
+    -webkit-transition: all .25s ease-in-out;
+    transition: all .25s ease-in-out
+}
+
+@media screen and (min-width: 667px) {
+    footer .links a {
+        float:left;
+        margin-left: 12px
+    }
+
+    footer .links a:first-child {
+        margin-left: 0
+    }
+}
+
+footer .links a.hover {
+    -moz-opacity: .5;
+    -khtml-opacity: .5;
+    -webkit-opacity: .5;
+    opacity: .5;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+    filter: alpha(opacity=50)
+}
+
+footer .links a.hover:hover {
+    -moz-opacity: 1;
+    -khtml-opacity: 1;
+    -webkit-opacity: 1;
+    opacity: 1;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+    filter: alpha(opacity=100);
+    opacity: 1 !important
+}
+
+footer .supercell {
+    margin: 10px auto 28px auto;
+    width: 52px;
+    text-align: left !important
+}
+
+@media screen and (min-width: 667px) {
+    footer .supercell {
+        display:inline-block;
+        float: right;
+        margin: 0
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    footer .supercell {
+        display:inline-block;
+        margin-top: 30px;
+        width: auto
+    }
+}
+
+footer .supercell a {
+    display: block;
+    width: 52px;
+    height: 42px;
+    text-indent: -9999px;
+    background: url('../images/logo_supercell.png') center center no-repeat;
+    background-size: 52px 42px
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx) {
+    footer .supercell a {
+        background:url(../images/logo_supercell@2x.png) center center no-repeat;
+        background-size: 52px 42px
+    }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),(min-resolution:2 * 96dpi) {
+    footer .supercell a {
+        background:url(../images/logo_supercell@2x.png) center center no-repeat;
+        background-size: 52px 42px
+    }
+}
+
+body.lang-ar footer .supercell a {
+    text-indent: 9999px
+}
+
+body.lang-fa footer .supercell a {
+    text-indent: 9999px
+}
+
+footer .social {
+    clear: both;
+    width: 100%;
+    border-top: 1px solid #262626;
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 85px;
+    margin-top: 10px
+}
+
+@media screen and (min-width: 667px) {
+    footer .social {
+        margin-top:0;
+        text-align: right;
+        padding-top: 30px
+    }
+}
+
+@media screen and (max-width: 1279px) {
+    footer .social {
+        padding-bottom:35px
+    }
+}
+
+footer .social.inactive {
+    visibility: hidden
+}
+
+footer .social a {
+    margin: 0 6px;
+    display: inline-block;
+    color: #fff;
+    -webkit-transition: all .25s ease-in-out;
+    transition: all .25s ease-in-out;
+    -moz-opacity: .5;
+    -khtml-opacity: .5;
+    -webkit-opacity: .5;
+    opacity: .5;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+    filter: alpha(opacity=50)
+}
+
+@media screen and (max-width: 374px) {
+    footer .social a {
+        margin:0 4px
+    }
+}
+
+@media screen and (min-width: 667px) {
+    footer .social a {
+        margin:0 10px
+    }
+}
+
+footer .social a.hover {
+    -moz-opacity: .3;
+    -khtml-opacity: .3;
+    -webkit-opacity: .3;
+    opacity: .3;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=30);
+    filter: alpha(opacity=30)
+}
+
+footer .social a.hover:hover {
+    -moz-opacity: 1;
+    -khtml-opacity: 1;
+    -webkit-opacity: 1;
+    opacity: 1;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+    filter: alpha(opacity=100);
+    opacity: 1 !important
+}
+
+footer .social svg {
+    width: 22px;
+    height: 23px
+}
+
+footer .social svg * {
+    fill: #fff
+}
+
+/*# sourceMappingURL=styles.css.map */
+
+label {
+    position:absolute;
+    transform:translateY(6px);
+    left:13px;
+    color:rgba($white,.5);
+    transition:all 0.25s ease;
+    -webkit-backface-visibility: hidden;
+    pointer-events: none;
+    font-size:22px;
+.req {
+    margin:2px;
+    color:$main;
+}
+}
+
+label.active {
+    transform:translateY(50px);
+    left:2px;
+    font-size:14px;
+.req {
+    opacity:0;
+}
+}
+
+label.highlight {
+    color:$white;
+}
+input, textarea {
+    font-size:22px;
+    display:block;
+    width:100%;
+    height:100%;
+    padding:5px 10px;
+    background:none;
+    background-image:none;
+    border:1px solid $gray-light;
+    color:$white;
+    border-radius:0;
+    transition:border-color .25s ease, box-shadow .25s ease;
+&:focus {
+     outline:0;
+     border-color:$main;
+ }
+}
+
+textarea {
+    border:2px solid $gray-light;
+    resize: vertical;
+}
+
+
+.field-wrap {
+    position:relative;
+    margin-bottom:40px;
+}
+
+.top-row {
+&:after {
+     content: "";
+     display: table;
+     clear: both;
+ }

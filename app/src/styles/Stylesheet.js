@@ -98,6 +98,7 @@ const Style = {
     FONT_55: em(5.45),
     FONT_60: em(6.20),
     //PX
+    PX_10: em(0.69),
     PX_12: em(0.89),
     PX_13: em(1.25),
     PX_14: em(1.40),
@@ -117,6 +118,8 @@ const Style = {
     MD: em(15),
     SM: em(10),
     XS: em(6.25),
+    //RADIUS
+    RAD_MD: em(15) / 2,
     //Horizontal SPACES
     HS_10: em(0.625),
     //ICONS

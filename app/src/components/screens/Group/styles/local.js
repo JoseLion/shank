@@ -6,6 +6,7 @@ const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
 
 const LocalStyles = StyleSheet.create({
+<<<<<<< HEAD
   //Modal
   modalhead:{
     alignItems: 'center',
@@ -45,11 +46,60 @@ const LocalStyles = StyleSheet.create({
       backgroundColor: '#A39534',
       borderRadius: 10,
   },
+=======
+    //Modal
+    modalhead:{
+        alignItems: 'center',
+        backgroundColor: '#556E3E',
+        width: '70%',
+    },
+    modalbody:{
+        paddingTop:10,
+        alignItems: 'center',
+        backgroundColor: 'white',
+        width: '70%',
+        height: '65%',
+    },
+    modalfooter:{
+        paddingTop:10,
+        backgroundColor: 'white',
+        width: '70%',
+    },
+    inputModal:{
+        width: '50%',
+        marginTop: Style.PX_10,
+        padding: Style.SMALL_PADDING,
+        fontSize: Style.FONT_SMALL,
+        borderWidth: 1,
+        borderColor: '#rgba(0, 0, 0, .2)',
+        borderRadius: 0,
+        color: '#333',
+    },
+    goldenShankButton: {
+        alignItems: 'center',
+        alignContent: 'center',
+        paddingBottom: Style.SMALL_PADDING,
+        paddingTop: Style.SMALL_PADDING,
+        width: '60%',
+        marginTop: Style.PX_10,
+        marginLeft: Style.PX_10,
+        backgroundColor: '#A39534',
+        borderRadius: 10,
+    },
+>>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#1D222D',
+    },
+    dropdown_2_text: {
+        marginVertical: 10,
+        marginHorizontal: 6,
+        fontSize: 18,
+        color: 'white',
+        textAlign: 'center',
+        textAlignVertical: 'center',
     },
     participantsTxt: {
         //flex: 1,
@@ -59,6 +109,13 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
         //marginLeft:'-50%'
     },
+    dropdown_2_dropdown: {
+        width: 150,
+        height: 300,
+        borderColor: 'cornflowerblue',
+        borderWidth: 2,
+        borderRadius: 3,
+    },
     List: {
         flex: 2,
         width: '100%',
@@ -67,10 +124,9 @@ const LocalStyles = StyleSheet.create({
     GroupList: {
         flex: 2,
         width: '100%',
-        height: '96%'
+        height: '97%'
     },
     positionParticipants: {
-        marginTop: '1%',
         marginRight: '2%',
         fontSize: Style.FONT_15
     },
@@ -78,7 +134,7 @@ const LocalStyles = StyleSheet.create({
         flex: 1,
     },
     titleStyle: {
-        fontSize: Style.FONT_14
+        fontSize: Style.FONT_15
     },
     subtitleStyle: {
         fontSize: Style.FONT_12,
@@ -96,15 +152,13 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
     },
     addPhotoLogo: {
-        width:  Style.iconLG,
-        height: Style.iconLG,
         marginTop: '3%',
         alignItems: 'center',
     },
     groupImage:{
-/*        width:  Style.iconMD,
+        width:  Style.iconMD,
         height: Style.iconMD,
-        borderRadius: Style.iconMD / 2,*/
+        borderRadius: Style.iconMD / 2,
         borderColor: '#A39534',
     },
     tournamentPicker: {
@@ -141,6 +195,10 @@ const LocalStyles = StyleSheet.create({
         fontSize: 18,
         borderBottomWidth: 0,
         color: '#333'
+    },
+    innerInput:{
+        color: '#333',
+        padding: 5,
     },
     richCreateTInput :{
         height: '13%',

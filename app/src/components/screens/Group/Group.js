@@ -19,26 +19,28 @@ import {
     ActivityIndicator,
     Alert,
     Platform,
+<<<<<<< HEAD
     Share
+=======
+    PickerIOS,
+    ActionSheetIOS,
+    Share,
+    TouchableWithoutFeedback,
+    AsyncStorage
+>>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 import Notifier from '../../../core/Notifier';
 import BaseModel from '../../../core/BaseModel';
 import NoAuthModel from '../../../core/NoAuthModel';
+
+import {ClienHost} from '../../../config/variables';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
 import {List, ListItem} from "react-native-elements";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
-const DropDown = require('react-native-dropdown');
-const {
-    Select,
-    Option,
-    OptionList,
-    updatePosition
-} = DropDown;
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 
@@ -48,9 +50,15 @@ export default class Group extends Component {
         groupPhoto: null
     };
 
+<<<<<<< HEAD
   setModalVisible(visible) {
   this.setState({modalVisible: visible});
   }
+=======
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+    }
+>>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -70,6 +78,7 @@ export default class Group extends Component {
         this._handleNewGroupRegistry = this._handleNewGroupRegistry.bind(this);
         this._pickImage = this._pickImage.bind(this);
         this.getUserList = this.getUserList.bind(this);
+        this._shareTextWithTitle = this._shareTextWithTitle.bind(this);
         this.state = {
             name: '',
             selectTournament: '',
@@ -83,16 +92,18 @@ export default class Group extends Component {
             refreshing: false,
             tournamentData: [],
             assignUsers: [],
-            tId: ""
+            modalVisible: false,
+            tId: "",
+            TName: "Select a tournament",
+            currentGroupToken: ""
         };
     }
     componentDidMount() {
         //this.makeRemoteRequest();
         this.setLoading(true);
+        this._generateGroupToken(20)
         this.initialRequest('pga', '2018').then((data) => {
-         /*   updatePosition(this.refs['SELECT1']);
-            updatePosition(this.refs['OPTIONLIST']);*/
-            console.log('pgapga 20182018')
+            console.log('pgapga 2018SS20ss18sss')
             console.log(data)
         });
     }
@@ -113,25 +124,23 @@ export default class Group extends Component {
                         currentDailyMovements: 0,
                         dailyMovementsDone: false,
                         playerRanking: [/*{
-                         playerId:user.value,
-                         TR:user.value,
-                         Score:user.value,
-                         currentPosition:user.value,
-                         playerPhotoUrl:user.value,
-                         }*/]
-                    };
+                         playerId: user.value,
+                         TR: user.value,
+                         Score: user.value,
+                         currentPosition: user.value,
+                         playerPhotoUrl: user.value,
+                         } */
+                        ]
+                    }
+                        ;
                 });
-                this.setState({data: users, assignUsers: userGroupUsers});
+                this.setState({data: users});
             });
         } catch (e) {
             console.log('error in getUserList: Group.js')
             console.log(e)
         }
     };
-
-    _getOptionList() {
-        return this.refs['OPTIONLIST'];
-    }
 
     handleRefresh = () => {
         this.setState(
@@ -202,13 +211,20 @@ export default class Group extends Component {
         let {groupPhoto} = this.state;
         let navigation = this.props.navigation;
         let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
+        let tournamentName = []
+        let tournamentKeys = []
 
         let tournamentItems = this.state.tournamentData.map((s, i) => {
+            tournamentName[i] = s.name
+            tournamentKeys[i] = s.id
             return <Picker.Item key={i} value={s.id} label={s.name}/>
         });
-        let tournamentOptions = this.state.tournamentData.map((s, i) => {
-            return <Option key={i} value={s.id} label={s.name}>{s.name}</Option>
-        });
+
+        tournamentName.push('Cancel');
+        tournamentKeys.push('none');
+        /*  let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
+         return <PickerIOS.Item key={i} value={s.id} label={s.name}/>
+         });*/
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
                                      style={{backgroundColor: '#F5FCFF'}}>
@@ -219,26 +235,20 @@ export default class Group extends Component {
                                           Alert.alert(
                                               'RESPONSE',
                                               'Choose how to get your picture',
-                                              {text: 'Open your gallery', onPress: () => this._pickImage()},
-                                              {text: 'Take a picture', onPress: () => this._takePicture()},
                                               [
-                                                  {
-                                                      text: 'Cancel',
-                                                      onPress: () => console.log('cancel Pressed'),
-                                                      style: 'cancel'
-                                                  },
+                                                  {text: 'Open your gallery', onPress: () => this._pickImage()},
+                                                  {text: 'Take a picture', onPress: () => this._takePicture()},
                                               ],
                                               {cancelable: true}
                                           )
                                       }
-
                                       }>
                         {groupPhoto &&
                         <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/>
                         }
                         {!groupPhoto &&
-                        <Image
-                            source={addPhoto}>
+                        <Image style={LocalStyles.groupImage}
+                               source={addPhoto}>
                         </Image>
                         }
                         <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
@@ -254,24 +264,38 @@ export default class Group extends Component {
                         placeholder={'Group name'}
                     />
                     {/*https://github.com/alinz/react-native-dropdown*/}
-                    <View style={LocalStyles.tournamentPicker}>
-                        <Select
-                            width={100}
-                            ref="SELECT1"
-                            optionListRef={this._getOptionList.bind(this)}
-                            defaultValue="Select a tornament ..."
-                            onSelect={this._tournamentSelect.bind(this)}>
-                            {tournamentOptions}
-                        </Select>
-                        <TextInput
-                            underlineColorAndroid='transparent'
-                            style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
-                            editable={false}
-                            value={this.state.selectTournament}
-                            placeholder="Choose a tournamnet"
-                        />
-                        <OptionList ref="OPTIONLIST"/>
-                    </View>
+
+                    {isAndroid
+                        ?
+                        <View style={LocalStyles.tournamentPicker}>
+                            <Picker
+                                selectedValue={this.state.selectTournament}
+                                onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+                                <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
+                                {tournamentItems}
+                            </Picker>
+                        </View>
+                        :
+                        <TouchableOpacity style={[LocalStyles.tournamentPicker]} onPress={() => {
+                            ActionSheetIOS.showActionSheetWithOptions({
+                                    options: tournamentName,
+                                    cancelButtonIndex: tournamentName.length - 1,
+                                },
+                                (buttonIndex) => {
+                                    if (tournamentKeys[buttonIndex] != 'none') {
+                                        this.setState({
+                                            selectTournament: tournamentKeys[buttonIndex],
+                                            TName: tournamentName[buttonIndex]
+                                        })
+                                    }
+                                })
+                        }}>
+                            <Text style={LocalStyles.innerInput}>
+                                {this.state.TName}
+                            </Text>
+                        </TouchableOpacity>
+                    }
+
                     <TextInput
                         underlineColorAndroid='transparent'
                         placeholder={'Prize'}
@@ -279,11 +303,6 @@ export default class Group extends Component {
                         onChangeText={(prize) => this.setState({prize: prize})}
                         value={this.state.prize}
                     />
-                    <View style={LocalStyles.participantsTxt}>
-                        <Text style={MainStyles.greenMedShankFont}>
-                            PARTICIPANTS
-                        </Text>
-                    </View>
                     <View style={LocalStyles.List}>
                         <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0,}}>
                             <FlatList
@@ -303,6 +322,7 @@ export default class Group extends Component {
                             />
                         </List>
                     </View>
+<<<<<<< HEAD
 
                     <TouchableWithoutFeedback
                     onPress={() => this.setModalVisible(true)}
@@ -312,12 +332,23 @@ export default class Group extends Component {
                             Add new participant
                         </Text>
                     </View>
+=======
+                    <TouchableWithoutFeedback
+                        onPress={() => this.setModalVisible(true)}
+                    >
+                        <View style={LocalStyles.addNewParticipant}>
+                            <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
+                                Add new participant
+                            </Text>
+                        </View>
+>>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
                     </TouchableWithoutFeedback>
                     <TouchableHighlight
                         onPress={this._handleNewGroupRegistry}
                         style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                         <Text style={LocalStyles.buttonText}>Create group</Text>
                     </TouchableHighlight>
+<<<<<<< HEAD
                            <Modal
                              animationType="slide"
                              transparent={true}
@@ -348,6 +379,46 @@ export default class Group extends Component {
 
                             </View>
                            </Modal>
+=======
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {
+                            this.setModalVisible(!this.state.modalVisible)
+                        }}>
+                        <TouchableOpacity
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height:'100%'
+                            }}
+                            activeOpacity={1}
+                            onPressOut={() => {
+                                this.setModalVisible(false)
+                            }}
+                        >
+                            <View style={LocalStyles.modalhead}>
+                                <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
+                            </View>
+                            <View style={LocalStyles.modalbody}>
+                                <TouchableHighlight
+                                    onPress={this._shareTextWithTitle}
+                                    style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
+                                    <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
+                                </TouchableHighlight>
+                            </View>
+                            <View style={LocalStyles.modalfooter}>
+                                <TouchableHighlight onPress={() => {
+                                    this.setModalVisible(!this.state.modalVisible)
+                                }}>
+                                    <Text style={{fontSize: 6}}>Close</Text>
+                                </TouchableHighlight>
+                            </View>
+                        </TouchableOpacity>
+                    </Modal>
+
+>>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -362,12 +433,30 @@ export default class Group extends Component {
             const JsonResponse = await response.json()
             this.setState({tournamentData: JsonResponse.tournaments});
             this.getUserList()
+            const value = await AsyncStorage.getItem(Constants.USER_PROFILE);
+            if (value !== null) {
+                let jsonData = JSON.parse(value)
+                let groupUser = [{
+                    userId: jsonData._id,
+                    name: jsonData.name,
+                    score: 0,
+                    currentRanking: 0,
+                    currentDailyMovements: 0,
+                    dailyMovementsDone: false,
+                    playerRanking: []
+                }]
+                this.setState({assignUsers: groupUser});
+            }
         } catch (e) {
             console.log(e)
         }
         this.setLoading(false);
         // this.setState({tournamentData: response});
     };
+
+    _generateGroupToken(length) {
+        this.setState({currentGroupToken: Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1)});
+    }
 
     async _handleNewGroupRegistry() {
 
@@ -402,10 +491,11 @@ export default class Group extends Component {
 
         let data = {
             name: this.state.name,
-            tournament: this.state.tId,
+            tournament: this.state.selectTournament,
             prize: this.state.prize,
             photo: {path: localUri, name: filename, type: type},
             users: this.state.assignUsers,
+            groupToken: this.state.currentGroupToken,
         };
 
         BaseModel.create('createGroup', data).then((response) => {
@@ -439,6 +529,7 @@ export default class Group extends Component {
             this.setState({groupPhoto: result.uri});
         }
     };
+<<<<<<< HEAD
     _shareTextWithTitle () {
     Share.share({
       message: 'Invite you : http://codingmiles.com',
@@ -457,3 +548,23 @@ export default class Group extends Component {
   }
 
 }
+=======
+
+    _shareTextWithTitle() {
+        Share.share({
+            message: 'Shank Group Invitation : ' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
+            title: 'Shank Group Invitation',
+            url: ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken
+        }, {
+            dialogTitle: 'Shank Group Invitation',
+            excludedActivityTypes: [
+                'com.apple.UIKit.activity.PostToTwitter',
+                'com.apple.uikit.activity.mail'
+            ],
+            tintColor: 'green'
+        })
+            .then(this._showResult)
+            .catch(err => console.log(err))
+    }
+}
+>>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
