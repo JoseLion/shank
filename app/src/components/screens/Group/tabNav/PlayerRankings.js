@@ -22,9 +22,9 @@ class RowComponent extends React.Component {
         let obj = {}
         newPlayer.onNewPlayer.position = this.state.playerSelectionPosition
         obj[this.state.playerSelectionPosition - 1] = newPlayer.onNewPlayer
-        let oldReportCopy = Object.assign(this.state.playerRankings, obj)
-        console.log("newPlayernewPlssssayer")
-        console.log(newPlayer)
+        let oldReportCopy = Object.assign(this.props.playerRankings, obj)
+        console.log("oldReportCopyoldReportCopyoldReportCopyoldReportCopy")
+        console.log(oldReportCopy)
         this.setState({newPlayer, playerRankings: oldReportCopy})
     };
 
@@ -40,7 +40,7 @@ class RowComponent extends React.Component {
                     titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
                     subtitle={`${'   TR: ' + '15' + '   SCORE: ' + this.props.data.position}`}
                     avatar={{uri: this.props.data.urlPhoto}}
-                    containerStyle={{borderBottomWidth: 0,height:'7%'}}
+                    containerStyle={{borderBottomWidth: 0}}
                     hideChevron
                     badge={{
                         element: <FontAwesome
@@ -51,7 +51,8 @@ class RowComponent extends React.Component {
                                     userGroupId: this.props.groupLoggedUser._id,
                                     groupId: this.props.currentGroup._id,
                                     currentPosition: this.props.data.position,
-                                    onNewPlayer: this.onNewPlayer
+                                    onNewPlayer: this.onNewPlayer,
+                                    updatePlayerRankingsList: this.props.updatePlayerRankingsList,
                                 })
                             }}
                             name="pencil" size={29} color="green"/>
@@ -98,7 +99,8 @@ class RowComponent extends React.Component {
                             userGroupId: this.props.groupLoggedUser._id,
                             groupId: this.props.currentGroup._id,
                             currentPosition: this.props.data.position,
-                            onNewPlayer: this.onNewPlayer
+                            onNewPlayer: this.onNewPlayer,
+                            updatePlayerRankingsList: this.props.updatePlayerRankingsList
                         })
                     }}
                     key={this.props.data.position}
@@ -185,7 +187,12 @@ export default class PlayerRankings extends Component {
         let order = Object.keys(this.props.screenProps.orderedPlayerRankings)
         return (
             <View style={[LocalStyles.slideBorderStyle]}>
-                <View style={[LocalStyles.GroupList,LocalStyles.listContainer,{width:'100%',borderTopWidth: 1, borderColor: '#C0C0C0', marginVertical: '5.5%'}]}>
+                <View style={[LocalStyles.GroupList, LocalStyles.listContainer, {
+                    width: '100%',
+                    borderTopWidth: 1,
+                    borderColor: '#C0C0C0',
+                    marginVertical: '5.5%'
+                }]}>
                     <SortableListView
                         data={this.props.screenProps.orderedPlayerRankings}
                         order={order}
@@ -201,14 +208,14 @@ export default class PlayerRankings extends Component {
                                                         navi={this.props.screenProps.navi}
                                                         currentGroup={this.props.screenProps.currentGroup}
                                                         playerRankings={this.props.screenProps.playerRankings}
-                                                        groupLoggedUser={this.props.screenProps.groupLoggedUser}/>}/>
-                    {/*<List containerStyle={LocalStyles.listContainer}>*/}
+                                                        groupLoggedUser={this.props.screenProps.groupLoggedUser}
+                                                        updatePlayerRankingsList={this.props.screenProps.updatePlayerRankingsList}/>}/>
                 </View>
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <TouchableOpacity
-                        onPress={() => this._handleNewRegistry()}
+                        onPress={() => this.props.screenProps.updatePlayerRankingsListPersist(this.props.screenProps.orderedPlayerRankings.position,this.props.screenProps.groupLoggedUser._id,this.props.screenProps.currentGroup._id)}
                         style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankButtonPayment]}>
-                        <Text style={LocalStyles.buttonText}>2 movements ($1.99)</Text>
+                        <Text style={LocalStyles.buttonText}>{ this.props.screenProps.movementsDone} movements ({this.state.movementsDone * 0.99})</Text>
                     </TouchableOpacity>
                 </View>
             </View>

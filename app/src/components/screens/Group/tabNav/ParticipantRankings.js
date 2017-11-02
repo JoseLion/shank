@@ -51,9 +51,6 @@ export default class ParticipantRankings extends Component {
 
     render() {
         let navigation = this.props.navigation;
-        console.log("this.props.screenPropsthissssaasas.props.scrssseenProps ParticipantRankingsParticipantRankings")
-        console.log(this.props.screenProps)
-
         return (
             <View style={LocalStyles.slideBorderStyle}>
                 <List containerStyle={LocalStyles.listContainer}>

@@ -106,8 +106,6 @@ export default class PlayerSelection extends Component {
                 groupId:groupId,
             }
             newAddition.position = currentPosition
-            console.log("datadatadataupdatePlayerRanksssingsupdatePlayerRankingsupdatePlayerRankings")
-            console.log(data)
             try {
                 const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data)
                 if (currentGroup) {
@@ -121,17 +119,22 @@ export default class PlayerSelection extends Component {
         }
     };
 
+    updateLocalPlayerList(navigation,item) {
+        navigation.state.params.updatePlayerRankingsList(navigation.state.params.currentPosition,item);
+        navigation.goBack()
+    }
+
     renderRow = (item, sectionId, index) =>{
         let navigation = this.props.navigation;
         item['none'] = false;
         return (
             <TouchableOpacity style={[MainStyles.centeredObject, {height: '13%', justifyContent: 'center', alignItems: 'center'}]}
-                              onPress={() => this.updatePlayerRankings(navigation.state.params.groupId,navigation.state.params.userGroupId,navigation.state.params.tPlayers,navigation,item,navigation.state.params.currentPosition)/*navigation.navigate('SingleGroup', {extraPlayer: this.props.item})*/}>
+                              onPress={() => this.updateLocalPlayerList(navigation,item)}>
                 <Avatar
                     small
                     rounded
                     source={{uri: item.urlPhoto}}
-                    onPress={() => this.updatePlayerRankings(navigation.state.params.groupId,navigation.state.params.userGroupId,navigation.state.params.tPlayers,navigation,item,navigation.state.params.currentPosition)}
+                    onPress={() => this.updateLocalPlayerList(navigation,item)}
                     activeOpacity={0.7}
                 />
                 <Text>{item.name} {item.lastName}</Text>

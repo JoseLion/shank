@@ -103,28 +103,28 @@ export default class Group extends Component {
 
     getUserList = (cb) => {
         try {
-            BaseModel.get('users', cb).then((users) => {
-                let userGroupUsers = users.map(function (user) {
-                    return {
-                        userId: user._id,
-                        name: user.name,
-                        score: 0,
-                        currentRanking: 0,
-                        currentDailyMovements: 0,
-                        dailyMovementsDone: false,
-                        playerRanking: [/*{
-                         playerId: user.value,
-                         TR: user.value,
-                         Score: user.value,
-                         currentPosition: user.value,
-                         playerPhotoUrl: user.value,
-                         } */
-                        ]
-                    }
-                        ;
-                });
-                this.setState({data: users});
-            });
+            /* BaseModel.get('users', cb).then((users) => {
+             let userGroupUsers = users.map(function (user) {
+             return {
+             userId: user._id,
+             name: user.name,
+             score: 0,
+             currentRanking: 0,
+             currentDailyMovements: 0,
+             dailyMovementsDone: false,
+             playerRanking: [/!*{
+             playerId: user.value,
+             TR: user.value,
+             Score: user.value,
+             currentPosition: user.value,
+             playerPhotoUrl: user.value,
+             } *!/
+             ]
+             }
+             ;
+             });
+             this.setState({data: users});
+             });*/
         } catch (e) {
             console.log('error in getUserList: Group.js')
             console.log(e)
@@ -335,7 +335,7 @@ export default class Group extends Component {
                             style={{
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                height:'100%'
+                                height: '100%'
                             }}
                             activeOpacity={1}
                             onPressOut={() => {
@@ -375,7 +375,7 @@ export default class Group extends Component {
             const response = await fetch(tournamentsApi)
             const JsonResponse = await response.json()
             this.setState({tournamentData: JsonResponse.tournaments});
-            this.getUserList()
+            //this.getUserList()
             const value = await AsyncStorage.getItem(Constants.USER_PROFILE);
             if (value !== null) {
                 let jsonData = JSON.parse(value)
@@ -420,6 +420,14 @@ export default class Group extends Component {
 
         if (!this.state.groupPhoto) {
             Notifier.message({title: 'NEW GROUP', message: 'Please select a group photo (tap on the empty image)'});
+            return;
+        }
+
+        if (this.state.data.length == 0) {
+            Notifier.message({
+                title: 'NEW GROUP',
+                message: 'You havent invited anyone yet. Invite at least one person please.'
+            });
             return;
         }
 

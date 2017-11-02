@@ -16,6 +16,7 @@ import {FontAwesome, Entypo} from '@expo/vector-icons'; // 5.2.0
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {TabNavigator} from 'react-navigation';
+import Notifier from '../../../core/Notifier';
 
 import ParticipantRankings from './tabNav/ParticipantRankings';
 import PlayerRankings from './tabNav/PlayerRankings';
@@ -75,6 +76,8 @@ export default class SingleGroup extends Component {
 
     constructor(props) {
         super(props);
+        this.updatePlayerRankingsList = this.updatePlayerRankingsList.bind(this);
+        this.updateUserRankingsListPersist = this.updateUserRankingsListPersist.bind(this);
         this.state = {
             tournamentRankings: [],
             currentGroup: {},
@@ -88,11 +91,15 @@ export default class SingleGroup extends Component {
             currentUser: {},
             sliderPosition: 0,
             newPlayer: {},
+            orderedPlayerRankings:{},
+            groupLoggedUser:{},
+            initialPlayerRankings: [],
             playerRankings: [{none: true, position: 1}, {none: true, position: 2}, {
                 none: true,
                 position: 3
             }, {none: true, position: 4}, {none: true, position: 5}],
-            playerSelectionPosition: 0
+            playerSelectionPosition: 0,
+            movementsDone: 0
         };
         this.lastPosition = 1;
     }
@@ -108,41 +115,53 @@ export default class SingleGroup extends Component {
         this.setState({loading: loading});
     }
 
-    componentDidMount() {
+    setStateMovements() {
+        this.setState({movementsDone: this.state.movementsDone++});
+    }
 
+    componentDidMount() {
+        this.setState({initialPlayerRankings: this.state.playerRankings})
+        this.setInitialPlayerRanking(this.props.navigation);
     }
 
 
-    updatePlayerRankings = async (groupId, userGroupId, playerRankings) => {
+    //TODO REFACTOR updatePlayerRankingsList AND DOES SOM LIKE THE setInitialPlayerRanking
+    updatePlayerRankingsList(currentPosition, newAddition) {
+        let existingPlayer = this.state.playerRankings.find(o => o.name === newAddition.name && o.lastName === newAddition.lastName);
+        if (existingPlayer){
+            Notifier.message({title: 'RESPONSE', message: "You already have this player on your prediction list."});
+        }else{
+            let newAdditionInPosition = {};
+            newAdditionInPosition[currentPosition - 1] = newAddition;
+            let oldReportCopy = Object.assign(this.state.playerRankings, newAdditionInPosition)
+            let orderedPlayerRankings = this.state.playerRankings.reduce(function (obj, item) {
+                obj[item.position] = item;
+                return obj;
+            }, {});
+            this.setState({playerRankings: oldReportCopy, orderedPlayerRankings: orderedPlayerRankings})
+        }
+    }
+
+    updateUserRankingsListPersist = async (currentPosition, userGroupId, groupId) => {
         this.setLoading(true);
         let data = {
             userGroupId: userGroupId,
-            playerRankings: playerRankings,
+            playerRankings: this.state.playerRankings,
             groupId: groupId,
-        }
-        console.log("datadatadataupdatePlayerRanksssingsupdatePlayerRankingsupdatePlayerRankings")
-        console.log(data)
+        };
         try {
-            const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data)
+            const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data);
+            if (currentGroup) {
+                console.log("UPDATED SUCESSFULY")
+            }
         } catch (e) {
             console.log('error in initialRequest: SingleGroup.js')
             console.log(e)
         }
     };
 
-    render() {
-        console.log('got in render')
-        console.log('playerRankingsplayerRankings')
-        console.log(this.state.playerRankings)
-        let navigation = this.props.navigation;
-        let whistleIcon = require('../../../../resources/singleGroup/ios/Recurso18.png');
-        let notAbsoluteDiff = new Date(navigation.state.params.data.tStartingDate) - this.state.currentDate.getTime();
-        let diffDays = 0;
-        if (notAbsoluteDiff > 0) {
-            let daysLeft = Math.abs(notAbsoluteDiff);
-            diffDays = Math.ceil(daysLeft / (1000 * 3600 * 24));
-        }
-        let playerRankings = this.state.playerRankings
+    setInitialPlayerRanking(navigation){
+        let playerRankings = this.state.playerRankings;
         let groupLoggedUser = navigation.state.params.data.currentGroup.users.find(user => user.userId === navigation.state.params.currentUser._id);
         if (groupLoggedUser.playerRanking.length > 0) {
             playerRankings = groupLoggedUser.playerRanking
@@ -151,15 +170,18 @@ export default class SingleGroup extends Component {
             obj[item.position] = item;
             return obj;
         }, {});
-        console.log("orderedPlayerRankingsorderedPlayerRankissngs")
-        console.log(orderedPlayerRankings)
-        let order = Object.keys(orderedPlayerRankings) //Array of keys positions
-        console.log("orderorderorderorder")
-        console.log(order)
-        /*console.log('ssdsdsdsadasczxczxc')
-         console.log(playerRankings)*/
-        console.log('playerRankingsplayerRankingsplayersssRasssnkingsplayerRasssnkingsplayerRankings')
-        console.log(playerRankings)
+        let order = Object.keys(orderedPlayerRankings); //Array of keys positions
+        this.setState({groupLoggedUser:groupLoggedUser,playerRankings: playerRankings, orderedPlayerRankings: orderedPlayerRankings})
+    }
+
+    render() {
+        let navigation = this.props.navigation;
+        let notAbsoluteDiff = new Date(navigation.state.params.data.tStartingDate) - this.state.currentDate.getTime();
+        let diffDays = 0;
+        if (notAbsoluteDiff > 0) {
+            let daysLeft = Math.abs(notAbsoluteDiff);
+            diffDays = Math.ceil(daysLeft / (1000 * 3600 * 24));
+        }
         return (
             <View style={MainStyles.stretchContainer}>
                 <StatusBar hidden={true}/>
@@ -174,7 +196,7 @@ export default class SingleGroup extends Component {
                 <View style={[LocalStyles.innerScoreGroupBox, LocalStyles.singleGroupBoxes]}>
                     <View style={MainStyles.centeredObject}>
                         <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                            {groupLoggedUser.score}
+                            {this.state.groupLoggedUser.score}
                         </Text>
                         <Text style={LocalStyles.singleGroupScoreTabDescription}>
                             Score
@@ -182,7 +204,7 @@ export default class SingleGroup extends Component {
                     </View>
                     <View style={MainStyles.centeredObject}>
                         <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                            {groupLoggedUser.currentRanking + '/' + navigation.state.params.data.currentGroup.users.length}
+                            {this.state.groupLoggedUser.currentRanking + '/' + navigation.state.params.data.currentGroup.users.length}
                         </Text>
                         <Text style={LocalStyles.singleGroupScoreTabDescription}>
                             Ranking
@@ -198,11 +220,15 @@ export default class SingleGroup extends Component {
                     </View>
                 </View>
                 <InnerSingleGroupTabNav screenProps={{
-                    currentGroup : navigation.state.params.data.currentGroup,
+                    currentGroup: navigation.state.params.data.currentGroup,
                     groupUsers: navigation.state.params.data.currentGroup.users,
-                    orderedPlayerRankings: orderedPlayerRankings,
-                    playerRankings: playerRankings,
-                    groupLoggedUser: groupLoggedUser,
+                    orderedPlayerRankings: this.state.orderedPlayerRankings,
+                    playerRankings: this.state.playerRankings,
+                    groupLoggedUser: this.state.groupLoggedUser,
+                    updatePlayerRankingsList: this.updatePlayerRankingsList,
+                    updatePlayerRankingsListPersist: this.updateUserRankingsListPersist,
+                    movementsDoneFunc: this.setStateMovements,
+                    movementsDone: this.state.movementsDone,
                     navi: navigation
                 }}/>
             </View>);
