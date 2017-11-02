@@ -8,16 +8,18 @@ const containerWidth = width > 500 ? 500 : width;
 const LocalStyles = StyleSheet.create({
     //Modal
     modalhead:{
-        alignItems: 'center',
         backgroundColor: '#556E3E',
         width: '70%',
+        height:'7%',
+        borderRadius: 10,
     },
     modalbody:{
         paddingTop:10,
         alignItems: 'center',
         backgroundColor: 'white',
         width: '70%',
-        height: '65%',
+        height: '45%',
+        borderRadius: 10,
     },
     modalfooter:{
         paddingTop:10,
@@ -27,9 +29,9 @@ const LocalStyles = StyleSheet.create({
     inputModal:{
         width: '50%',
         marginTop: Style.PX_10,
-        padding: Style.SMALL_PADDING,
         fontSize: Style.FONT_SMALL,
         borderWidth: 1,
+        paddingLeft:5,
         borderColor: '#rgba(0, 0, 0, .2)',
         borderRadius: 0,
         color: '#333',
@@ -104,7 +106,7 @@ const LocalStyles = StyleSheet.create({
     },
     addNewParticipant: {
         flex: 1,
-        paddingTop: 22,
+        marginTop: 22,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         backgroundColor: '#F5FCFF',

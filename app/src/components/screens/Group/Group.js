@@ -22,6 +22,7 @@ import {
     ActionSheetIOS,
     Share,
     TouchableWithoutFeedback,
+    KeyboardAvoidingView,
     AsyncStorage
 } from 'react-native';
 import MainStyles from '../../../styles/main';
@@ -36,13 +37,14 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
 import {List, ListItem} from "react-native-elements";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {Ionicons} from '@expo/vector-icons';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 
 export default class Group extends Component {
 
     state = {
-        groupPhoto: null,
+        groupPhoto: null
     };
 
     setModalVisible(visible) {
@@ -68,6 +70,8 @@ export default class Group extends Component {
         this._pickImage = this._pickImage.bind(this);
         this.getUserList = this.getUserList.bind(this);
         this._shareTextWithTitle = this._shareTextWithTitle.bind(this);
+        this._showResult = this._showResult.bind(this);
+
         this.state = {
             name: '',
             selectTournament: '',
@@ -76,6 +80,7 @@ export default class Group extends Component {
             data: [],
             page: 1,
             seed: 1,
+            modalVisible: false,
             error: null,
             refreshing: false,
             tournamentData: [],
@@ -83,10 +88,10 @@ export default class Group extends Component {
             modalVisible: false,
             tId: "",
             TName: "Select a tournament",
-            currentGroupToken: ""
+            currentGroupToken: "",
+            currentInvitationName: ""
         };
     }
-
     componentDidMount() {
         //this.makeRemoteRequest();
         this.setLoading(true);
@@ -125,6 +130,7 @@ export default class Group extends Component {
              });
              this.setState({data: users});
              });*/
+
         } catch (e) {
             console.log('error in getUserList: Group.js')
             console.log(e)
@@ -167,6 +173,7 @@ export default class Group extends Component {
             />
         );
     };
+
 
     _tournamentSelect(t) {
         this.setState({
@@ -310,20 +317,21 @@ export default class Group extends Component {
                             />
                         </List>
                     </View>
-                    <TouchableWithoutFeedback
+
+                    <TouchableHighlight
+                    underlayColor= '#dce2e5'
                         onPress={() => this.setModalVisible(true)}
-                    >
-                        <View style={LocalStyles.addNewParticipant}>
+                        style={LocalStyles.addNewParticipant}>
                             <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
                                 Add new participant
                             </Text>
-                        </View>
-                    </TouchableWithoutFeedback>
+                    </TouchableHighlight>
                     <TouchableHighlight
                         onPress={this._handleNewGroupRegistry}
                         style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                         <Text style={LocalStyles.buttonText}>Create group</Text>
                     </TouchableHighlight>
+                    <KeyboardAvoidingView behavior={'position'}>
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -335,7 +343,8 @@ export default class Group extends Component {
                             style={{
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                height: '100%'
+                                height:'100%',
+                                backgroundColor: this.props.transparent ? 'transparent' : 'rgba(0,0,0,0.5)',
                             }}
                             activeOpacity={1}
                             onPressOut={() => {
@@ -343,25 +352,44 @@ export default class Group extends Component {
                             }}
                         >
                             <View style={LocalStyles.modalhead}>
-                                <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
+                            <View style={{
+                              flex: 3,
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}>
+                              <View style={{width: '16%'}} />
+                              <View>
+                              <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
+                              </View>
+                              <TouchableHighlight
+                              activeOpacity= {0.4}
+                              underlayColor= '#768b64'
+                               onPress={() => {this.setModalVisible(!this.state.modalVisible)}}
+                               style={{paddingRight: '3%'}} >
+                              <Ionicons  name="ios-close-circle-outline" size={25} color="white"/>
+                              </TouchableHighlight>
+                            </View>
                             </View>
                             <View style={LocalStyles.modalbody}>
+                            <Text>Friend Name</Text>
+                            <TextInput
+                                underlineColorAndroid='transparent'
+                                style={LocalStyles.inputModal}
+                                onChangeText={(currentInvitationName) => this.setState({currentInvitationName})}
+                                value={this.state.currentInvitationName}
+                            />
                                 <TouchableHighlight
                                     onPress={this._shareTextWithTitle}
                                     style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
                                     <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
                                 </TouchableHighlight>
                             </View>
-                            <View style={LocalStyles.modalfooter}>
-                                <TouchableHighlight onPress={() => {
-                                    this.setModalVisible(!this.state.modalVisible)
-                                }}>
-                                    <Text style={{fontSize: 6}}>Close</Text>
-                                </TouchableHighlight>
-                            </View>
-                        </TouchableOpacity>
-                    </Modal>
 
+                        </TouchableOpacity>
+
+                    </Modal>
+</KeyboardAvoidingView>
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -483,7 +511,7 @@ export default class Group extends Component {
 
     _shareTextWithTitle() {
         Share.share({
-            message: 'Shank Group Invitation : ' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
+            message: 'Shank Group Invitation : ' + 'http://'+ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
             title: 'Shank Group Invitation',
             url: ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken
         }, {
@@ -497,4 +525,18 @@ export default class Group extends Component {
             .then(this._showResult)
             .catch(err => console.log(err))
     }
+
+  _showResult (result) {
+console.log('lokok');
+
+this.setState({
+  data: [...this.state.data, this.state.currentInvitationName]
+})
+
+    //let updateInitation= this.state.data.push({name:this.state.currentInvitationName});
+    console.log(data);
+    //this.setState({data: updateInitation})
+
+
+  }
 }
