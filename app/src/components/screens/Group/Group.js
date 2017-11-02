@@ -80,7 +80,6 @@ export default class Group extends Component {
             data: [],
             page: 1,
             seed: 1,
-            modalVisible: false,
             error: null,
             refreshing: false,
             tournamentData: [],
@@ -92,6 +91,7 @@ export default class Group extends Component {
             currentInvitationName: ""
         };
     }
+
     componentDidMount() {
         //this.makeRemoteRequest();
         this.setLoading(true);
@@ -319,12 +319,12 @@ export default class Group extends Component {
                     </View>
 
                     <TouchableHighlight
-                    underlayColor= '#dce2e5'
+                        underlayColor='#dce2e5'
                         onPress={() => this.setModalVisible(true)}
                         style={LocalStyles.addNewParticipant}>
-                            <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
-                                Add new participant
-                            </Text>
+                        <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
+                            Add new participant
+                        </Text>
                     </TouchableHighlight>
                     <TouchableHighlight
                         onPress={this._handleNewGroupRegistry}
@@ -332,64 +332,66 @@ export default class Group extends Component {
                         <Text style={LocalStyles.buttonText}>Create group</Text>
                     </TouchableHighlight>
                     <KeyboardAvoidingView behavior={'position'}>
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={this.state.modalVisible}
-                        onRequestClose={() => {
-                            this.setModalVisible(!this.state.modalVisible)
-                        }}>
-                        <TouchableOpacity
-                            style={{
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                height:'100%',
-                                backgroundColor: this.props.transparent ? 'transparent' : 'rgba(0,0,0,0.5)',
-                            }}
-                            activeOpacity={1}
-                            onPressOut={() => {
-                                this.setModalVisible(false)
-                            }}
-                        >
-                            <View style={LocalStyles.modalhead}>
-                            <View style={{
-                              flex: 3,
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={this.state.modalVisible}
+                            onRequestClose={() => {
+                                this.setModalVisible(!this.state.modalVisible)
                             }}>
-                              <View style={{width: '16%'}} />
-                              <View>
-                              <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
-                              </View>
-                              <TouchableHighlight
-                              activeOpacity= {0.4}
-                              underlayColor= '#768b64'
-                               onPress={() => {this.setModalVisible(!this.state.modalVisible)}}
-                               style={{paddingRight: '3%'}} >
-                              <Ionicons  name="ios-close-circle-outline" size={25} color="white"/>
-                              </TouchableHighlight>
-                            </View>
-                            </View>
-                            <View style={LocalStyles.modalbody}>
-                            <Text>Friend Name</Text>
-                            <TextInput
-                                underlineColorAndroid='transparent'
-                                style={LocalStyles.inputModal}
-                                onChangeText={(currentInvitationName) => this.setState({currentInvitationName})}
-                                value={this.state.currentInvitationName}
-                            />
-                                <TouchableHighlight
-                                    onPress={this._shareTextWithTitle}
-                                    style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
-                                    <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
-                                </TouchableHighlight>
-                            </View>
+                            <TouchableOpacity
+                                style={{
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    height: '100%',
+                                    backgroundColor: this.props.transparent ? 'transparent' : 'rgba(0,0,0,0.5)',
+                                }}
+                                activeOpacity={1}
+                                onPressOut={() => {
+                                    this.setModalVisible(false)
+                                }}
+                            >
+                                <View style={LocalStyles.modalhead}>
+                                    <View style={{
+                                        flex: 3,
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}>
+                                        <View style={{width: '16%'}}/>
+                                        <View>
+                                            <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
+                                        </View>
+                                        <TouchableHighlight
+                                            activeOpacity={0.4}
+                                            underlayColor='#768b64'
+                                            onPress={() => {
+                                                this.setModalVisible(!this.state.modalVisible)
+                                            }}
+                                            style={{paddingRight: '3%'}}>
+                                            <Ionicons name="ios-close-circle-outline" size={25} color="white"/>
+                                        </TouchableHighlight>
+                                    </View>
+                                </View>
+                                <View style={LocalStyles.modalbody}>
+                                    <Text>Friend Name</Text>
+                                    <TextInput
+                                        underlineColorAndroid='transparent'
+                                        style={LocalStyles.inputModal}
+                                        onChangeText={(currentInvitationName) => this.setState({currentInvitationName})}
+                                        value={this.state.currentInvitationName}
+                                    />
+                                    <TouchableHighlight
+                                        onPress={this._shareTextWithTitle}
+                                        style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
+                                        <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
+                                    </TouchableHighlight>
+                                </View>
 
-                        </TouchableOpacity>
+                            </TouchableOpacity>
 
-                    </Modal>
-</KeyboardAvoidingView>
+                        </Modal>
+                    </KeyboardAvoidingView>
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -511,7 +513,7 @@ export default class Group extends Component {
 
     _shareTextWithTitle() {
         Share.share({
-            message: 'Shank Group Invitation : ' + 'http://'+ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
+            message: 'Shank Group Invitation : ' + 'http://' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
             title: 'Shank Group Invitation',
             url: ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken
         }, {
@@ -522,21 +524,29 @@ export default class Group extends Component {
             ],
             tintColor: 'green'
         })
-            .then(this._showResult)
+            .then(/* this.setState({
+                data: [...this.state.data, 'asdasdasd']
+            })*/ this._showResult)
             .catch(err => console.log(err))
     }
 
-  _showResult (result) {
-console.log('lokok');
-
-this.setState({
-  data: [...this.state.data, this.state.currentInvitationName]
-})
-
-    //let updateInitation= this.state.data.push({name:this.state.currentInvitationName});
-    console.log(data);
-    //this.setState({data: updateInitation})
-
-
-  }
+    _showResult(result) {
+        if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+                console.log('shared with an activityType: ' + result.activityType)
+                this.setState({result: 'shared with an activityType: ' + result.activityType});
+            } else {
+                console.log('shared')
+                console.log('this.state.currentInvitationName')
+                console.log(this.state.currentInvitationName)
+                let updatedInvitations = this.state.data.slice();
+                updatedInvitations.push({name:this.state.currentInvitationName});
+                this.setState({data:updatedInvitations})
+                this.setState({result: 'shared'});
+            }
+        } else if (result.action === Share.dismissedAction) {
+            console.log('dismissed')
+            this.setState({result: 'dismissed'});
+        }
+    }
 }

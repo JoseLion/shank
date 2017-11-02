@@ -12,12 +12,12 @@ let passport = require('passport');
 let customResponses = require('express-custom-response');
 
 
-const databaseUri = 'mongodb://localhost/shank'; //docker macOs enviroment
+const databaseUri = 'mongodb://192.168.99.100:27017/shank'; //docker macOs enviroment
 //const databaseUri = 'mongodb://db/shank';
 //const databaseUri = 'mongodb://docker.com:27017/shank';
 
 
-mongoose.connect(databaseUri, {useMongoClient: true})
+mongoose.connect(databaseUri, {databaseUri: true})
     .then(() => console.log(`Database connected at ${databaseUri}`))
     .catch(err => console.log(`Database connection error: ${err.message}`));
 
