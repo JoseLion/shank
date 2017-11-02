@@ -11,7 +11,6 @@ import {
     View,
     TextInput,
     TouchableHighlight,
-    TouchableWithoutFeedback,
     Image,
     FlatList,
     TouchableOpacity,
@@ -19,15 +18,12 @@ import {
     ActivityIndicator,
     Alert,
     Platform,
-<<<<<<< HEAD
-    Share
-=======
     PickerIOS,
     ActionSheetIOS,
     Share,
     TouchableWithoutFeedback,
+    KeyboardAvoidingView,
     AsyncStorage
->>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -41,6 +37,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
 import {List, ListItem} from "react-native-elements";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {Ionicons} from '@expo/vector-icons';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 
@@ -50,15 +47,9 @@ export default class Group extends Component {
         groupPhoto: null
     };
 
-<<<<<<< HEAD
-  setModalVisible(visible) {
-  this.setState({modalVisible: visible});
-  }
-=======
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
     }
->>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -79,6 +70,8 @@ export default class Group extends Component {
         this._pickImage = this._pickImage.bind(this);
         this.getUserList = this.getUserList.bind(this);
         this._shareTextWithTitle = this._shareTextWithTitle.bind(this);
+        this._showResult = this._showResult.bind(this);
+
         this.state = {
             name: '',
             selectTournament: '',
@@ -95,7 +88,8 @@ export default class Group extends Component {
             modalVisible: false,
             tId: "",
             TName: "Select a tournament",
-            currentGroupToken: ""
+            currentGroupToken: "",
+            currentInvitationName: ""
         };
     }
     componentDidMount() {
@@ -113,7 +107,7 @@ export default class Group extends Component {
     }
 
     getUserList = (cb) => {
-        try {
+        /*try {
             BaseModel.get('users', cb).then((users) => {
                 let userGroupUsers = users.map(function (user) {
                     return {
@@ -129,7 +123,7 @@ export default class Group extends Component {
                          Score: user.value,
                          currentPosition: user.value,
                          playerPhotoUrl: user.value,
-                         } */
+                         }
                         ]
                     }
                         ;
@@ -139,7 +133,7 @@ export default class Group extends Component {
         } catch (e) {
             console.log('error in getUserList: Group.js')
             console.log(e)
-        }
+        }*/
     };
 
     handleRefresh = () => {
@@ -322,64 +316,21 @@ export default class Group extends Component {
                             />
                         </List>
                     </View>
-<<<<<<< HEAD
 
-                    <TouchableWithoutFeedback
-                    onPress={() => this.setModalVisible(true)}
-                    >
-                    <View style={LocalStyles.addNewParticipant}>
-                        <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
-                            Add new participant
-                        </Text>
-                    </View>
-=======
-                    <TouchableWithoutFeedback
+                    <TouchableHighlight
+                    underlayColor= '#dce2e5'
                         onPress={() => this.setModalVisible(true)}
-                    >
-                        <View style={LocalStyles.addNewParticipant}>
+                        style={LocalStyles.addNewParticipant}>
                             <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
                                 Add new participant
                             </Text>
-                        </View>
->>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
-                    </TouchableWithoutFeedback>
+                    </TouchableHighlight>
                     <TouchableHighlight
                         onPress={this._handleNewGroupRegistry}
                         style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                         <Text style={LocalStyles.buttonText}>Create group</Text>
                     </TouchableHighlight>
-<<<<<<< HEAD
-                           <Modal
-                             animationType="slide"
-                             transparent={true}
-                             visible={this.state.modalVisible}
-                             onRequestClose={() => {alert("Modal has been closed.")}}
-                             >
-                             <View style={{
-                                    marginTop: 150,
-                                     justifyContent: 'center',
-                                     alignItems: 'center'}}>
-                               <View style={LocalStyles.modalhead}>
-                               <Text style={LocalStyles.buttonText}>INVITE  TO GROUP</Text>
-                               </View>
-                              <View style={LocalStyles.modalbody}>
-                               <TouchableHighlight
-                                   onPress={this._shareTextWithTitle}
-                                   style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
-                                   <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
-                               </TouchableHighlight>
-                              </View>
-                               <View style={LocalStyles.modalfooter}>
-                               <TouchableHighlight onPress={() => {
-                                 this.setModalVisible(!this.state.modalVisible)
-                               }}>
-                                 <Text>Hide Modal</Text>
-                                 </TouchableHighlight>
-                                 </View>
-
-                            </View>
-                           </Modal>
-=======
+                    <KeyboardAvoidingView behavior={'position'}>
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -391,7 +342,8 @@ export default class Group extends Component {
                             style={{
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                height:'100%'
+                                height:'100%',
+                              backgroundColor: this.props.transparent ? 'transparent' : 'rgba(0,0,0,0.5)',
                             }}
                             activeOpacity={1}
                             onPressOut={() => {
@@ -399,26 +351,44 @@ export default class Group extends Component {
                             }}
                         >
                             <View style={LocalStyles.modalhead}>
-                                <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
+                            <View style={{
+                              flex: 3,
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}>
+                              <View style={{width: '16%'}} />
+                              <View>
+                              <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
+                              </View>
+                              <TouchableHighlight
+                              activeOpacity= {0.4}
+                              underlayColor= '#768b64'
+                               onPress={() => {this.setModalVisible(!this.state.modalVisible)}}
+                               style={{paddingRight: '3%'}} >
+                              <Ionicons  name="ios-close-circle-outline" size={25} color="white"/>
+                              </TouchableHighlight>
+                            </View>
                             </View>
                             <View style={LocalStyles.modalbody}>
+                            <Text>Friend Name</Text>
+                            <TextInput
+                                underlineColorAndroid='transparent'
+                                style={LocalStyles.inputModal}
+                                onChangeText={(currentInvitationName) => this.setState({currentInvitationName})}
+                                value={this.state.currentInvitationName}
+                            />
                                 <TouchableHighlight
                                     onPress={this._shareTextWithTitle}
                                     style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
                                     <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
                                 </TouchableHighlight>
                             </View>
-                            <View style={LocalStyles.modalfooter}>
-                                <TouchableHighlight onPress={() => {
-                                    this.setModalVisible(!this.state.modalVisible)
-                                }}>
-                                    <Text style={{fontSize: 6}}>Close</Text>
-                                </TouchableHighlight>
-                            </View>
-                        </TouchableOpacity>
-                    </Modal>
 
->>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
+                        </TouchableOpacity>
+
+                    </Modal>
+</KeyboardAvoidingView>
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -432,7 +402,7 @@ export default class Group extends Component {
             const response = await fetch(tournamentsApi)
             const JsonResponse = await response.json()
             this.setState({tournamentData: JsonResponse.tournaments});
-            this.getUserList()
+            //this.getUserList()
             const value = await AsyncStorage.getItem(Constants.USER_PROFILE);
             if (value !== null) {
                 let jsonData = JSON.parse(value)
@@ -529,30 +499,10 @@ export default class Group extends Component {
             this.setState({groupPhoto: result.uri});
         }
     };
-<<<<<<< HEAD
-    _shareTextWithTitle () {
-    Share.share({
-      message: 'Invite you : http://codingmiles.com',
-      title: 'Invite you',
-      url: 'http://codingmiles.com'
-    }, {
-      dialogTitle: 'This is share dialog title',
-      excludedActivityTypes: [
-        'com.apple.UIKit.activity.PostToTwitter',
-        'com.apple.uikit.activity.mail'
-      ],
-      tintColor: 'green'
-    })
-    .then(this._showResult)
-    .catch(err => console.log(err))
-  }
-
-}
-=======
 
     _shareTextWithTitle() {
         Share.share({
-            message: 'Shank Group Invitation : ' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
+            message: 'Shank Group Invitation : ' + 'http://'+ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
             title: 'Shank Group Invitation',
             url: ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken
         }, {
@@ -566,5 +516,18 @@ export default class Group extends Component {
             .then(this._showResult)
             .catch(err => console.log(err))
     }
+
+  _showResult (result) {
+console.log('lokok');
+
+this.setState({
+  data: [...this.state.data, this.state.currentInvitationName]
+})
+
+    //let updateInitation= this.state.data.push({name:this.state.currentInvitationName});
+    console.log(data);
+    //this.setState({data: updateInitation})
+
+
+  }
 }
->>>>>>> a9a6bd7714ba94230066e6eaf3bdd0726b6d6011
