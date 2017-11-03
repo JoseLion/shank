@@ -11,32 +11,20 @@ import {
     TouchableHighlight,
     AsyncStorage,
     TouchableOpacity,
-    ActionSheetIOS,
-    Platform,
-    Picker
+    Platform
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 import {List, ListItem, SearchBar} from "react-native-elements";
 import * as Constants from '../../../core/Constans';
 
-import LoginStatusMessage from './LoginStatusMessage';
-import AuthButton from './AuthButton';
 import BaseModel from '../../../core/BaseModel';
 import Notifier from '../../../core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Entypo, FontAwesome} from '@expo/vector-icons';
-import ModalDropdown from 'react-native-modal-dropdown';
+import ActionSheet from 'react-native-actionsheet'
 
 const isAndroid = Platform.OS == 'android' ? true : false;
-
-ACTION_BUTTONS = [
-    'Profile',
-    'Logout',
-    'Cancel',
-];
-
-const DEMO_OPTIONS_1 = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5', 'option 6', 'option 7', 'option 8', 'option 9'];
 
 export default class MainScreen extends Component {
 
@@ -48,6 +36,9 @@ export default class MainScreen extends Component {
         super(props);
         this._removeStorage = this._removeStorage.bind(this);
         this.collectGroupData = this.collectGroupData.bind(this);
+
+        this.handlePress = this.handlePress.bind(this)
+        this.showActionSheet = this.showActionSheet.bind(this)
         this.state = {
             loading: false,
             data: [],
@@ -57,8 +48,23 @@ export default class MainScreen extends Component {
             refreshing: false,
             auth: null,
             clicked: false,
-            actionSelected: ''
+            actionSelected: '',
+            selectedOption: ''
         };
+    }
+
+    showActionSheet() {
+        this.ActionSheet.show()
+    }
+
+    handlePress(actionIndex) {
+        if (actionIndex) {
+            this._removeStorage().then(() => {
+                console.log('LOGOUT')
+            })
+        } else {
+            this.props.navigation.dispatch({type: 'Profile'})
+        }
     }
 
     setLoading(loading) {
@@ -66,6 +72,7 @@ export default class MainScreen extends Component {
     }
 
     componentDidMount() {
+        this.props.navigation.setParams({actionSheet: this.showActionSheet});
         AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
             this.setState({
                 auth: authToken
@@ -78,16 +85,6 @@ export default class MainScreen extends Component {
             }
         });
     }
-
-    static showAndroidPicker = () => {
-        return (
-            <Picker
-                selectedValue={this.state.actionSelected}
-                onValueChange={(tValue, itemIndex) => this.setState({actionSelected: tValue})}>
-                <Picker.Item color="#rgba(0, 0, 0, .2)" key={0} value={0} label={'Profile'}/>
-                <Picker.Item color="#rgba(0, 0, 0, .2)" key={2} value={1} label={'LogOut'}/>
-            </Picker>)
-    };
 
     async _removeStorage() {
         try {
@@ -112,23 +109,9 @@ export default class MainScreen extends Component {
             paddingHorizontal: '3%'
         },
         headerLeft: null,
-        headerRight: <Entypo name="user" size={25} color="white"
-                             onPress={() => isAndroid ? console.log("asdasds") :
-                                 ActionSheetIOS.showActionSheetWithOptions({
-                                         options: ACTION_BUTTONS,
-                                         cancelButtonIndex: 2,
-                                     },
-                                     (buttonIndex) => {
-                                         if (buttonIndex) {
-
-                                         } else {
-                                           /* AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
-                                                this.setLoading(false);
-                                                navigation.navigate('Profile', {currentUser: JSON.parse(user)})
-                                            });*/
-                                         }
-                                     })
-                             }/>,
+        headerRight: (<Entypo name="user" size={25} color="white"
+                              onPress={() => navigation.state.params.actionSheet()
+                              }/>),
         tabBarIcon: ({focused, tintColor}) => {
             return (
                 <FontAwesome name="group" size={29} color="white"/>
@@ -137,11 +120,9 @@ export default class MainScreen extends Component {
     });
 
     async _myGroupsAsyncRemoteRequest(data) {
-        const {page, seed} = this.state;
+        const {page} = this.state;
         this.setState({refreshing: true});
         await BaseModel.get('myGroups', data).then((group) => {
-            console.log("groupgroupgssroup")
-            console.log(group)
             this.setState({
                 data: page === 1 ? group.results : [...this.state.data, ...group.results],
                 error: group.error || null,
@@ -241,13 +222,21 @@ export default class MainScreen extends Component {
         }
     };
 
-    //PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
+
+//PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
     render() {
         let navigation = this.props.navigation;
         let showPlus = this.state.data.length > 0
         if (this.state.auth) {
             return (
                 <View style={LocalStyles.containerMain}>
+                    <ActionSheet
+                        ref={o => this.ActionSheet = o}
+                        title={'Please select an action to perform'}
+                        options={['Profile', 'Logout', 'Cancel']}
+                        cancelButtonIndex={2}
+                        onPress={this.handlePress}
+                    />
                     <Spinner visible={this.state.loading}/>
                     <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
                                         onPress={this._removeStorage}>
@@ -260,7 +249,6 @@ export default class MainScreen extends Component {
                                 renderItem={({item}) => (
                                     <ListItem
                                         roundAvatar
-                                        /* avatarStyle={LocalStyles.avatarList}*/
                                         avatar={{uri: item.photo.path}}
                                         avatarStyle={LocalStyles.roundAvatar}
                                         avatarContainerStyle={LocalStyles.containerRoundAvatar}
@@ -268,9 +256,6 @@ export default class MainScreen extends Component {
                                         title={`${item.name}`}
                                         titleStyle={LocalStyles.titleMainList}
                                         titleContainerStyle={{marginVertical: '5%', marginHorizontal: '10%'}}
-                                        /*  subtitleNumberOfLines={2}
-                                         subtitle={<Text style={LocalStyles.subTitleMainList}>{item.tournament}{"\n"}
-                                         Score: - Rank: - </Text>}*/
                                         underlayColor={"#b3b3b3"}
                                         containerStyle={[LocalStyles.containerList, {
                                             borderBottomWidth: 0,
@@ -303,6 +288,7 @@ export default class MainScreen extends Component {
                         </View>
                     </View>
                 </View>
+
             )
         } else {
             return (
