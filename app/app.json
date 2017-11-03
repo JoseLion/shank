@@ -1,8 +1,16 @@
 {
   "expo": {
-    "version": "1.0.1",
-    "sdkVersion": "21.0.0",
     "name": "shankNewKey",
-    "orientation": "portrait"
+    "icon": "./path/to/your/app-icon.png",
+    "version": "1.0.1",
+    "slug": "your-app-slug",
+    "sdkVersion": "21.0.0",
+    "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "com.shank.shankapp"
+    },
+    "android": {
+      "package": "com.shank.shankapp"
+    }
   }
 }
