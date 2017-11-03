@@ -91,34 +91,6 @@ export default class PlayerSelection extends Component {
         }
     }
 
-    updatePlayerRankings = async (groupId,userGroupId,playerRankings,navigation,newAddition,currentPosition) => {
-        this.setLoading(true);
-        let existingPlayer = playerRankings.find(o => o.name === newAddition.name && o.lastName === newAddition.lastName);
-        if (existingPlayer){
-            Notifier.message({title: 'RESPONSE', message: "You already have this player on your prediction list."});
-        }else{
-            let newAdditionInPosition = {}
-            newAdditionInPosition[currentPosition -1] = newAddition
-            let updatedPlayerPredictions = Object.assign(playerRankings, newAdditionInPosition)
-            let data = {
-                userGroupId:userGroupId,
-                playerRankings:updatedPlayerPredictions,
-                groupId:groupId,
-            }
-            newAddition.position = currentPosition
-            try {
-                const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data)
-                if (currentGroup) {
-                    navigation.goBack()
-                    navigation.state.params.onNewPlayer({ onNewPlayer: newAddition })
-                }
-            } catch (e) {
-                console.log('error in initialRequest: SingleGroup.js')
-                console.log(e)
-            }
-        }
-    };
-
     updateLocalPlayerList(navigation,item) {
         navigation.state.params.updatePlayerRankingsList(navigation.state.params.currentPosition,item);
         navigation.goBack()

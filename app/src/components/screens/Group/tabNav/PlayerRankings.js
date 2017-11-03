@@ -197,7 +197,7 @@ export default class PlayerRankings extends Component {
                         data={this.props.screenProps.orderedPlayerRankings}
                         order={order}
                         onRowMoved={e => {
-                            /*                                    console.log("SortableListViewSortableListView RANKS")
+                            /*console.log("SortableListViewSortableListView RANKS")
                              console.log(orderedPlayerRankings)
                              this.updatePlayerRankings(navigation.state.params.data.currentGroup._id,groupLoggedUser._id,playerRankings).then(() => {
                              console.log("Updated Player Ranking on swap")
@@ -213,9 +213,10 @@ export default class PlayerRankings extends Component {
                 </View>
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <TouchableOpacity
-                        onPress={() => this.props.screenProps.updatePlayerRankingsListPersist(this.props.screenProps.orderedPlayerRankings.position,this.props.screenProps.groupLoggedUser._id,this.props.screenProps.currentGroup._id)}
+                        onPress={() => this.props.screenProps.updatePlayerRankingsListPersist(this.props.screenProps.orderedPlayerRankings.position, this.props.screenProps.groupLoggedUser._id, this.props.screenProps.currentGroup._id)}
                         style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankButtonPayment]}>
-                        <Text style={LocalStyles.buttonText}>{ this.props.screenProps.movementsDone} movements ({this.state.movementsDone * 0.99})</Text>
+                        <Text style={LocalStyles.buttonText}>{ this.props.screenProps.movementsDone} movements
+                            ({parseInt(this.state.movementsDone) * parseFloat(0.99)})</Text>
                     </TouchableOpacity>
                 </View>
             </View>

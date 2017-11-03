@@ -6,7 +6,7 @@ import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 
 import React, {Component} from 'react';
-import {Text, View, StatusBar, FlatList, Image, TouchableOpacity, AsyncStorage} from 'react-native';
+import {Text, View, StatusBar, FlatList, Image, TouchableOpacity, AsyncStorage, BackHandler, Platform} from 'react-native';
 import {List, ListItem, Header} from "react-native-elements"; // 0.17.0
 import Swiper from 'react-native-swiper';
 import {LinearGradient} from 'expo';
@@ -78,6 +78,7 @@ export default class SingleGroup extends Component {
         super(props);
         this.updatePlayerRankingsList = this.updatePlayerRankingsList.bind(this);
         this.updateUserRankingsListPersist = this.updateUserRankingsListPersist.bind(this);
+        this.backHandler = this.backHandler.bind(this);
         this.state = {
             tournamentRankings: [],
             currentGroup: {},
@@ -91,8 +92,8 @@ export default class SingleGroup extends Component {
             currentUser: {},
             sliderPosition: 0,
             newPlayer: {},
-            orderedPlayerRankings:{},
-            groupLoggedUser:{},
+            orderedPlayerRankings: [],
+            groupLoggedUser: {},
             initialPlayerRankings: [],
             playerRankings: [{none: true, position: 1}, {none: true, position: 2}, {
                 none: true,
@@ -102,6 +103,7 @@ export default class SingleGroup extends Component {
             movementsDone: 0
         };
         this.lastPosition = 1;
+        this.backButtonListener = null;
     }
 
     static navigationOptions = ({navigation}) => ({
@@ -119,18 +121,46 @@ export default class SingleGroup extends Component {
         this.setState({movementsDone: this.state.movementsDone++});
     }
 
-    componentDidMount() {
-        this.setState({initialPlayerRankings: this.state.playerRankings})
-        this.setInitialPlayerRanking(this.props.navigation);
+    arraysEqual(a, b) {
+        if (a === b) return true;
+        if (a == null || b == null) return false;
+        if (a.length != b.length) return false;
+        for (let i = 0; i < a.length; ++i) {
+            if (a[i] !== b[i]) return false;
+        }
+        return true;
     }
 
+    backHandler = () => {
+        if (this.state.movementsDone == 0) {
+            this.goBack();
+            return true;
+        } else {
+            Notifier.message({
+                title: 'RESPONSE',
+                message: "You have made some changes. Are you sure you want to go back."
+            });
+            return false;
+        }
+    };
+
+    componentDidMount() {
+        this.setInitialPlayerRanking(this.props.navigation);
+        if (Platform.OS === 'android') {
+            this.backButtonListener = BackHandler.addEventListener('hardwareBackPress', this.backHandler);
+        }
+    }
+
+    componentWillUnmount() {
+        this.backButtonListener.remove();
+    }
 
     //TODO REFACTOR updatePlayerRankingsList AND DOES SOM LIKE THE setInitialPlayerRanking
     updatePlayerRankingsList(currentPosition, newAddition) {
         let existingPlayer = this.state.playerRankings.find(o => o.name === newAddition.name && o.lastName === newAddition.lastName);
-        if (existingPlayer){
+        if (existingPlayer) {
             Notifier.message({title: 'RESPONSE', message: "You already have this player on your prediction list."});
-        }else{
+        } else {
             let newAdditionInPosition = {};
             newAdditionInPosition[currentPosition - 1] = newAddition;
             let oldReportCopy = Object.assign(this.state.playerRankings, newAdditionInPosition)
@@ -138,7 +168,12 @@ export default class SingleGroup extends Component {
                 obj[item.position] = item;
                 return obj;
             }, {});
-            this.setState({playerRankings: oldReportCopy, orderedPlayerRankings: orderedPlayerRankings})
+            this.setState({
+                playerRankings: oldReportCopy,
+                orderedPlayerRankings: orderedPlayerRankings,
+                movementsDone: this.state.movementsDone + 1,
+                initialPlayerRankings: orderedPlayerRankings,
+            })
         }
     }
 
@@ -160,7 +195,7 @@ export default class SingleGroup extends Component {
         }
     };
 
-    setInitialPlayerRanking(navigation){
+    setInitialPlayerRanking(navigation) {
         let playerRankings = this.state.playerRankings;
         let groupLoggedUser = navigation.state.params.data.currentGroup.users.find(user => user.userId === navigation.state.params.currentUser._id);
         if (groupLoggedUser.playerRanking.length > 0) {
@@ -171,7 +206,11 @@ export default class SingleGroup extends Component {
             return obj;
         }, {});
         let order = Object.keys(orderedPlayerRankings); //Array of keys positions
-        this.setState({groupLoggedUser:groupLoggedUser,playerRankings: playerRankings, orderedPlayerRankings: orderedPlayerRankings})
+        this.setState({
+            groupLoggedUser: groupLoggedUser,
+            playerRankings: playerRankings,
+            orderedPlayerRankings: orderedPlayerRankings
+        })
     }
 
     render() {
