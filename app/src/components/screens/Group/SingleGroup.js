@@ -6,7 +6,18 @@ import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
 
 import React, {Component} from 'react';
-import {Text, View, StatusBar, FlatList, Image, TouchableOpacity, AsyncStorage, BackHandler, Platform} from 'react-native';
+import {
+    Text,
+    View,
+    StatusBar,
+    FlatList,
+    Image,
+    TouchableOpacity,
+    AsyncStorage,
+    BackHandler,
+    Platform,
+    Alert
+} from 'react-native';
 import {List, ListItem, Header} from "react-native-elements"; // 0.17.0
 import Swiper from 'react-native-swiper';
 import {LinearGradient} from 'expo';
@@ -78,7 +89,7 @@ export default class SingleGroup extends Component {
         super(props);
         this.updatePlayerRankingsList = this.updatePlayerRankingsList.bind(this);
         this.updateUserRankingsListPersist = this.updateUserRankingsListPersist.bind(this);
-        this.backHandler = this.backHandler.bind(this);
+        this.goMain = this.goMain.bind(this);
         this.state = {
             tournamentRankings: [],
             currentGroup: {},
@@ -103,7 +114,6 @@ export default class SingleGroup extends Component {
             movementsDone: 0
         };
         this.lastPosition = 1;
-        this.backButtonListener = null;
     }
 
     static navigationOptions = ({navigation}) => ({
@@ -121,38 +131,40 @@ export default class SingleGroup extends Component {
         this.setState({movementsDone: this.state.movementsDone++});
     }
 
-    arraysEqual(a, b) {
-        if (a === b) return true;
-        if (a == null || b == null) return false;
-        if (a.length != b.length) return false;
-        for (let i = 0; i < a.length; ++i) {
-            if (a[i] !== b[i]) return false;
-        }
-        return true;
-    }
-
-    backHandler = () => {
-        if (this.state.movementsDone == 0) {
-            this.goBack();
-            return true;
-        } else {
-            Notifier.message({
-                title: 'RESPONSE',
-                message: "You have made some changes. Are you sure you want to go back."
-            });
-            return false;
-        }
+    goMain = () => {
+        console.log("got here shit")
+        this.props.navigation.dispatch({type: 'Main'})
     };
 
     componentDidMount() {
         this.setInitialPlayerRanking(this.props.navigation);
+        console.log("this.props.navigation")
+        console.log(this.props.navigation)
         if (Platform.OS === 'android') {
-            this.backButtonListener = BackHandler.addEventListener('hardwareBackPress', this.backHandler);
+            BackHandler.addEventListener('hardwareBackPress', function () {
+                if (this.state.movementsDone == 0) {
+                    return false;
+                } else {
+                    Alert.alert(
+                        "RESPONSE",
+                        "You have made some changes. Are you sure you want to go back.",
+                        [
+                            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                            {text: 'OK', onPress: () => this.goMain()},
+                        ]
+                    );
+                    return true;
+                }
+            }.bind(this));
         }
+        /*   if (Platform.OS === 'android') {
+         const { dispatch, navigation, nav } = this.props;
+         BackHandler.addEventListener('hardwareBackPress', this.backHandler(dispatch)).bind(this);
+         }*/
     }
 
     componentWillUnmount() {
-        this.backButtonListener.remove();
+        if (Platform.OS === 'android') BackHandler.removeEventListener('hardwareBackPress')
     }
 
     //TODO REFACTOR updatePlayerRankingsList AND DOES SOM LIKE THE setInitialPlayerRanking

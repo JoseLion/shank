@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "shankNewKey",
-    "icon": "./path/to/your/app-icon.png",
+    "icon": "resources/shankLogo.png",
     "version": "1.0.1",
     "slug": "your-app-slug",
     "sdkVersion": "21.0.0",
