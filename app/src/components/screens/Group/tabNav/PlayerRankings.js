@@ -23,7 +23,7 @@ class RowComponent extends React.Component {
         newPlayer.onNewPlayer.position = this.state.playerSelectionPosition
         obj[this.state.playerSelectionPosition - 1] = newPlayer.onNewPlayer
         let oldReportCopy = Object.assign(this.props.playerRankings, obj)
-        console.log("oldReportCopyoldReportCopyoldReportCopyoldReportCopy")
+        console.log("oldReportCopyoldReportCopyoldReportCopyoldReposasdasdsrssstCdasdopy")
         console.log(oldReportCopy)
         this.setState({newPlayer, playerRankings: oldReportCopy})
     };
@@ -184,7 +184,7 @@ export default class PlayerRankings extends Component {
 
     render() {
         let navigation = this.props.navigation;
-        let order = Object.keys(this.props.screenProps.orderedPlayerRankings)
+        let order = Object.keys(this.props.screenProps.orderedPlayerRankings);
         return (
             <View style={[LocalStyles.slideBorderStyle]}>
                 <View style={[LocalStyles.GroupList, LocalStyles.listContainer, {
@@ -216,7 +216,7 @@ export default class PlayerRankings extends Component {
                         onPress={() => this.props.screenProps.updatePlayerRankingsListPersist(this.props.screenProps.orderedPlayerRankings.position, this.props.screenProps.groupLoggedUser._id, this.props.screenProps.currentGroup._id)}
                         style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankButtonPayment]}>
                         <Text style={LocalStyles.buttonText}>{ this.props.screenProps.movementsDone} movements
-                            ({parseInt(this.state.movementsDone) * parseFloat(0.99)})</Text>
+                            {' ' + this.props.screenProps.movementsDone * 0.99} $</Text>
                     </TouchableOpacity>
                 </View>
             </View>

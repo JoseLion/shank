@@ -111,7 +111,7 @@ export default class SingleGroup extends Component {
                 position: 3
             }, {none: true, position: 4}, {none: true, position: 5}],
             playerSelectionPosition: 0,
-            movementsDone: 0
+            movementsDone: 0.0
         };
         this.lastPosition = 1;
     }

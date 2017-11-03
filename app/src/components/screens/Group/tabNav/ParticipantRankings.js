@@ -42,7 +42,6 @@ export default class ParticipantRankings extends Component {
 
     }
 
-
     renderSeparator = () => {
         return (
             <View style={MainStyles.listRenderSeparator}/>
