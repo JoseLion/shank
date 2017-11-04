@@ -67,6 +67,8 @@ const ImageHeader = navigation => (
                     <TouchableOpacity
                         activeOpacity={0.4}
                         onPress={() => {
+                            console.log("navigation.state.params.movementsDone")
+                            console.log(navigation.state.params.movementsDone)
                             if (navigation.state.params.movementsDone == 0) {
                                 navigation.goBack(null)
                             } else {
@@ -83,6 +85,8 @@ const ImageHeader = navigation => (
                         <View style={LocalStyles.touchableUserIcon}>
                             <Entypo
                                 onPress={() => {
+                                    console.log("navigation.state.params.movementsDone")
+                                    console.log(navigation.state.params.movementsDone)
                                     if (navigation.state.params.movementsDone == 0) {
                                         navigation.goBack(null)
                                     } else {
@@ -121,6 +125,8 @@ export default class SingleGroup extends Component {
         this.updatePlayerRankingsList = this.updatePlayerRankingsList.bind(this);
         this.updateUserRankingsListPersist = this.updateUserRankingsListPersist.bind(this);
         this.goMain = this.goMain.bind(this);
+        this.setOrderPlayer = this.setOrderPlayer.bind(this);
+        this.setOrderedList = this.setOrderedList.bind(this);
         this.state = {
             tournamentRankings: [],
             currentGroup: {},
@@ -163,6 +169,14 @@ export default class SingleGroup extends Component {
         this.setState({movementsDone: this.state.movementsDone++});
     }
 
+    setOrderPlayer(order) {
+        this.setState({order: order});
+    }
+
+    setOrderedList(newList) {
+        this.setState({orderedPlayerRankings: newList});
+    }
+
     goMain = () => {
         console.log("got here shit")
         this.props.navigation.dispatch({type: 'Main'})
@@ -189,6 +203,7 @@ export default class SingleGroup extends Component {
                             {text: 'OK', onPress: () => this.goMain()},
                         ]
                     );
+                    return true;
                 }
             }.bind(this));
         }
@@ -208,18 +223,22 @@ export default class SingleGroup extends Component {
         if (existingPlayer) {
             Notifier.message({title: 'RESPONSE', message: "You already have this player on your prediction list."});
         } else {
-            let newAdditionInPosition = {};
-            newAdditionInPosition[currentPosition - 1] = newAddition;
-            let oldReportCopy = Object.assign(this.state.playerRankings, newAdditionInPosition)
-            let orderedPlayerRankings = this.state.playerRankings.reduce(function (obj, item) {
+            let obj = {};
+            newAddition.position = currentPosition;
+            obj[currentPosition - 1] = newAddition;
+            let clonePlayerRankings = this.state.playerRankings.slice()
+            let oldReportCopy = Object.assign(clonePlayerRankings, obj)
+            let orderedPlayerRankings = clonePlayerRankings.reduce(function (obj, item) {
                 obj[item.position] = item;
                 return obj;
             }, {});
+            let order = Object.keys(orderedPlayerRankings); //Array of keys positions
             this.setState({
                 playerRankings: oldReportCopy,
                 orderedPlayerRankings: orderedPlayerRankings,
                 movementsDone: this.state.movementsDone + 1,
                 initialPlayerRankings: orderedPlayerRankings,
+                order:order
             })
         }
     }
@@ -243,7 +262,7 @@ export default class SingleGroup extends Component {
     };
 
     setInitialPlayerRanking(navigation) {
-        let playerRankings = this.state.playerRankings;
+        let playerRankings = this.state.playerRankings.slice();
         let groupLoggedUser = navigation.state.params.data.currentGroup.users.find(user => user.userId === navigation.state.params.currentUser._id);
         if (groupLoggedUser.playerRanking.length > 0) {
             playerRankings = groupLoggedUser.playerRanking
@@ -253,10 +272,12 @@ export default class SingleGroup extends Component {
             return obj;
         }, {});
         let order = Object.keys(orderedPlayerRankings); //Array of keys positions
+
         this.setState({
             groupLoggedUser: groupLoggedUser,
             playerRankings: playerRankings,
-            orderedPlayerRankings: orderedPlayerRankings
+            orderedPlayerRankings: orderedPlayerRankings,
+            order: order,
         })
     }
 
@@ -315,7 +336,10 @@ export default class SingleGroup extends Component {
                     updatePlayerRankingsListPersist: this.updateUserRankingsListPersist,
                     movementsDoneFunc: this.setStateMovements,
                     movementsDone: this.state.movementsDone,
-                    navi: navigation
+                    navi: navigation,
+                    order: this.state.order,
+                    orderFunc: this.setOrderPlayer,
+                    orderedListFunc: this.setOrderedList,
                 }}/>
             </View>);
     }

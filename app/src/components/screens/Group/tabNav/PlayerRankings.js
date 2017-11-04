@@ -7,7 +7,7 @@ import LocalStyles from '../styles/local';
 import MainStyles from '../../../../styles/main';
 import {Text, View, TouchableOpacity} from 'react-native';
 import {List, ListItem} from "react-native-elements"; // 0.17.0
-import {FontAwesome,Entypo} from '@expo/vector-icons'; // 5.2.0
+import {FontAwesome, Entypo} from '@expo/vector-icons'; // 5.2.0
 import SortableListView from 'react-native-sortable-listview'
 
 
@@ -19,12 +19,15 @@ class RowComponent extends React.Component {
     }
 
     onNewPlayer = newPlayer => {
-        let obj = {}
-        newPlayer.onNewPlayer.position = this.state.playerSelectionPosition
-        obj[this.state.playerSelectionPosition - 1] = newPlayer.onNewPlayer
-        let oldReportCopy = Object.assign(this.props.playerRankings, obj)
-        console.log("oldReportCopyoldReportCopyoldReportCopyoldReposasdasdsrssstCdasdopy")
-        console.log(oldReportCopy)
+        let obj = {};
+        newPlayer.onNewPlayer.position = this.state.playerSelectionPosition;
+        obj[this.state.playerSelectionPosition - 1] = newPlayer.onNewPlayer;
+        console.log("obj")
+        console.log(obj)
+        let copyState = this.props.playerRankings.slice()
+        let oldReportCopy = Object.assign(copyState, obj);
+/*        console.log(oldReportCopy)
+        console.log("oldReportCopy")*/
         this.setState({newPlayer, playerRankings: oldReportCopy})
     };
 
@@ -116,6 +119,7 @@ export default class PlayerRankings extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            order:[],
             loading: false,
             tPLayers: this.props.tPlayers,
             data: {
@@ -184,7 +188,6 @@ export default class PlayerRankings extends Component {
 
     render() {
         let navigation = this.props.navigation;
-        let order = Object.keys(this.props.screenProps.orderedPlayerRankings);
         return (
             <View style={[LocalStyles.slideBorderStyle]}>
                 <View style={[LocalStyles.GroupList, LocalStyles.listContainer, {
@@ -195,14 +198,24 @@ export default class PlayerRankings extends Component {
                 }]}>
                     <SortableListView
                         data={this.props.screenProps.orderedPlayerRankings}
-                        order={order}
+                        order={this.props.screenProps.order}
                         onRowMoved={e => {
-                            /*console.log("SortableListViewSortableListView RANKS")
-                             console.log(orderedPlayerRankings)
-                             this.updatePlayerRankings(navigation.state.params.data.currentGroup._id,groupLoggedUser._id,playerRankings).then(() => {
-                             console.log("Updated Player Ranking on swap")
-                             })*/
-                            order.splice(e.to, 0, order.splice(e.from, 1)[0])
+                            let sortableList = [];
+                            //ORDER LIST
+                            let dataCopy = this.props.screenProps.order.slice();
+                            let dataOrderedListCopy = this.props.screenProps.orderedPlayerRankings;
+                            dataCopy.splice(e.to, 0, dataCopy.splice(e.from, 1)[0])
+
+                            //ORDERED LIST
+                            for (let player in dataOrderedListCopy) {
+                                sortableList.push([player, dataOrderedListCopy[player]]);
+                            }
+                            sortableList.sort(function(a, b) {
+                                return a[1] - b[1];
+                            });
+                            this.props.screenProps.orderFunc(dataCopy);
+                            this.props.screenProps.orderedListFunc(dataOrderedListCopy);
+                            this.forceUpdate()
                         }}
                         renderRow={row => <RowComponent data={row} navigation={this.props.navigation}
                                                         navi={this.props.screenProps.navi}

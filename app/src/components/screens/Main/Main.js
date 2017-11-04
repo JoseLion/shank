@@ -243,7 +243,7 @@ export default class MainScreen extends Component {
                         cancelButtonIndex={2}
                         onPress={this.handlePress}
                     />
-                    <Spinner visible={this.state.loading}/>
+                    <Spinner visible={this.state.loading} animation="fade"/>
                     <View style={{flex: 2, width: '100%', height: '92%'}}>
                         <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                             <FlatList

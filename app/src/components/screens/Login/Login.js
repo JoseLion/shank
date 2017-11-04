@@ -56,7 +56,7 @@ export default class LoginScreen extends Component {
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
                                      style={{backgroundColor: '#F5FCFF'}}>
                 <View style={[MainStyles.container,{marginVertical:'35%'}]} behavior="padding">
-                    <Spinner visible={this.state.loading}/>
+                    <Spinner visible={this.state.loading} animation="slide"/>
                     <Text style={MainStyles.greenMedShankFont}>
                         WELCOME BACK
                     </Text>

@@ -226,7 +226,7 @@ export default class Group extends Component {
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
                                      style={{backgroundColor: '#F5FCFF'}}>
                 <View style={[MainStyles.container]} behavior="padding">
-                    <Spinner visible={this.state.loading}/>
+                    <Spinner visible={this.state.loading} animation="slide"/>
                     <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]}
                                       onPress={() => {
                                           Alert.alert(

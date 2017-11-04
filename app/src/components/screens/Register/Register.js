@@ -186,7 +186,7 @@ export default class Register extends Component {
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5} style={{backgroundColor: '#F5FCFF'}}>
                 <View style={[MainStyles.container]} behavior="padding">
-                    <Spinner visible={this.state.loading}/>
+                    <Spinner visible={this.state.loading} animation="slide"/>
                     <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
                         WELCOME
                     </Text>

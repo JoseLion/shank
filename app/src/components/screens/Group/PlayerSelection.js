@@ -93,7 +93,7 @@ export default class PlayerSelection extends Component {
 
     updateLocalPlayerList(navigation,item) {
         navigation.state.params.updatePlayerRankingsList(navigation.state.params.currentPosition,item);
-        navigation.goBack()
+        navigation.goBack(null)
     }
 
     renderRow = (item, sectionId, index) =>{
@@ -143,20 +143,6 @@ export default class PlayerSelection extends Component {
 
     render() {
         let navigation = this.props.navigation;
-        console.log("navigation.state.params.datanavigation.state.params.data")
-        // console.log(navigation.state.params.tPlayers)
-        /*        let tournamentItems = this.state.tPLayers.map((s, i) => {
-         return <Text>{s.first_name} {s.last_name}</Text>
-         });*/
-        {/* <AlphabetListView
-         data={this.state.data}
-         cell={Cell}
-         cellHeight={30}
-         sectionListItem={SectionItem}
-         sectionHeader={SectionHeader}
-         sectionHeaderHeight={22.5}
-         />*/
-        }
         return (
             <AtoZListView
                 data={this.state.data}     // required array|object
