@@ -127,6 +127,7 @@ export default class SingleGroup extends Component {
         this.goMain = this.goMain.bind(this);
         this.setOrderPlayer = this.setOrderPlayer.bind(this);
         this.setOrderedList = this.setOrderedList.bind(this);
+        this.setStateMovements = this.setStateMovements.bind(this);
         this.state = {
             tournamentRankings: [],
             currentGroup: {},
@@ -166,7 +167,9 @@ export default class SingleGroup extends Component {
     }
 
     setStateMovements() {
-        this.setState({movementsDone: this.state.movementsDone++});
+        let increment = this.state.movementsDone + 1;
+        this.setState({movementsDone: increment});
+        this.props.navigation.setParams({movementsDone: increment});
     }
 
     setOrderPlayer(order) {
@@ -233,13 +236,15 @@ export default class SingleGroup extends Component {
                 return obj;
             }, {});
             let order = Object.keys(orderedPlayerRankings); //Array of keys positions
+            let increment = this.state.movementsDone + 1
             this.setState({
                 playerRankings: oldReportCopy,
                 orderedPlayerRankings: orderedPlayerRankings,
-                movementsDone: this.state.movementsDone + 1,
+                movementsDone: increment,
                 initialPlayerRankings: orderedPlayerRankings,
                 order:order
             })
+            this.props.navigation.setParams({movementsDone: increment});
         }
     }
 

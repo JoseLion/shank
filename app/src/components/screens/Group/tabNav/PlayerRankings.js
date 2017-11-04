@@ -26,8 +26,8 @@ class RowComponent extends React.Component {
         console.log(obj)
         let copyState = this.props.playerRankings.slice()
         let oldReportCopy = Object.assign(copyState, obj);
-/*        console.log(oldReportCopy)
-        console.log("oldReportCopy")*/
+        /*        console.log(oldReportCopy)
+         console.log("oldReportCopy")*/
         this.setState({newPlayer, playerRankings: oldReportCopy})
     };
 
@@ -119,7 +119,7 @@ export default class PlayerRankings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            order:[],
+            order: [],
             loading: false,
             tPLayers: this.props.tPlayers,
             data: {
@@ -210,11 +210,12 @@ export default class PlayerRankings extends Component {
                             for (let player in dataOrderedListCopy) {
                                 sortableList.push([player, dataOrderedListCopy[player]]);
                             }
-                            sortableList.sort(function(a, b) {
+                            sortableList.sort(function (a, b) {
                                 return a[1] - b[1];
                             });
                             this.props.screenProps.orderFunc(dataCopy);
                             this.props.screenProps.orderedListFunc(dataOrderedListCopy);
+                            this.props.screenProps.movementsDoneFunc();
                             this.forceUpdate()
                         }}
                         renderRow={row => <RowComponent data={row} navigation={this.props.navigation}
