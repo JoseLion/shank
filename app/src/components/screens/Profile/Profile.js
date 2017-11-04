@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, TouchableOpacity, Image, TextInput,TouchableHighlight, Alert} from 'react-native';
+import {Text, View, TouchableOpacity, Image, TextInput, TouchableHighlight, Alert} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 
@@ -24,14 +24,17 @@ export default class ProfileScreen extends Component {
     static navigationOptions = {
         title: 'User Profile',
         headerTintColor: 'white',
-        headerTitleStyle: {alignSelf: 'center', color:'#fff'},
+        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E'
         },
     };
 
     componentDidMount() {
-        this.setState({email:this.props.navigation.state.params.currentUser.email , name: this.props.navigation.state.params.currentUser.name})
+        this.setState({
+            email: this.props.navigation.state.params.currentUser.email,
+            name: this.props.navigation.state.params.currentUser.name
+        })
     }
 
     constructor(props) {
@@ -108,62 +111,62 @@ export default class ProfileScreen extends Component {
     }
 
     async _handleNewUserRegistry(userId) {
-                if (!this.state.name) {
-                    Notifier.message({title: 'User Update', message: 'username cant be empty'});
-                    return;
-                }
+        if (!this.state.name) {
+            Notifier.message({title: 'User Update', message: 'username cant be empty'});
+            return;
+        }
 
-                if (!this.state.email) {
-                    Notifier.message({title: 'User Update', message: 'email cant be empty'});
-                    return;
-                }
-        
-                if (!this.state.userImage) {
-                    Notifier.message({title: 'User Update', message: 'Please select a profile photo (tap on the empty image)'});
-                    return;
-                }
-        
-                this.setLoading(true);
-                // ImagePicker saves the taken photo to disk and returns a local URI to it
-                let localUri = this.state.userImage;
-                let filename = localUri.split('/').pop();
-        
-                // Infer the type of the image
-                let match = /\.(\w+)$/.exec(filename);
-                let type = match ? `image/${match[1]}` : `image`;
-        
-                let data = {
-                    name: this.state.name,
-                    photo: {path: localUri, name: filename, type: type},
-                };
-        
-                BaseModel.update('users/'+userId, data).then((response) => {
-                    this.setLoading(false);
-                    this.props.navigation.dispatch({type: 'Main'})
-                })
-                    .catch((error) => {
-                        this.setLoading(false);
-                        Notifier.message({title: 'ERROR', message: error});
-                    });
-            }
-        
-            _pickImage = async () => {
-                let result = await ImagePicker.launchImageLibraryAsync({
-                    allowsEditing: true,
-                    aspect: [4, 3],
-                });
-                if (!result.cancelled) {
-                    this.setState({userImage: result.uri});
-                }
-            };
-        
-            _takePicture = async () => {
-                let result = await ImagePicker.launchCameraAsync({
-                    allowsEditing: true,
-                    aspect: [4, 3],
-                });
-                if (!result.cancelled) {
-                    this.setState({userImage: result.uri});
-                }
-            };
+        if (!this.state.email) {
+            Notifier.message({title: 'User Update', message: 'email cant be empty'});
+            return;
+        }
+
+        if (!this.state.userImage) {
+            Notifier.message({title: 'User Update', message: 'Please select a profile photo (tap on the empty image)'});
+            return;
+        }
+
+        this.setLoading(true);
+        // ImagePicker saves the taken photo to disk and returns a local URI to it
+        let localUri = this.state.userImage;
+        let filename = localUri.split('/').pop();
+
+        // Infer the type of the image
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+
+        let data = {
+            name: this.state.name,
+            photo: {path: localUri, name: filename, type: type},
+        };
+
+        BaseModel.update('users/' + userId, data).then((response) => {
+            this.setLoading(false);
+            this.props.navigation.dispatch({type: 'Main'})
+        })
+            .catch((error) => {
+                this.setLoading(false);
+                Notifier.message({title: 'ERROR', message: error});
+            });
+    }
+
+    _pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+        });
+        if (!result.cancelled) {
+            this.setState({userImage: result.uri});
+        }
+    };
+
+    _takePicture = async () => {
+        let result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+        });
+        if (!result.cancelled) {
+            this.setState({userImage: result.uri});
+        }
+    };
 }

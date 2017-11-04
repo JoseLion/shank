@@ -37,7 +37,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
 import {List, ListItem} from "react-native-elements";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Ionicons} from '@expo/vector-icons';
+import {Ionicons,Entypo} from '@expo/vector-icons';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 
@@ -55,14 +55,16 @@ export default class Group extends Component {
         navigation: PropTypes.object.isRequired,
     };
 
-    static navigationOptions = {
+
+    static navigationOptions = ({navigation}) => ({
         title: 'Create Group',
+        headerLeft: ( <Entypo name={'chevron-left'} size={29} color="white" onPress={ () => { navigation.dispatch({type: 'Main'})}} /> ),
         headerTintColor: 'white',
         headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E'
         },
-    };
+    });
 
     constructor(props) {
         super(props);
@@ -317,15 +319,14 @@ export default class Group extends Component {
                             />
                         </List>
                     </View>
-
-                    <TouchableHighlight
-                        underlayColor='#dce2e5'
-                        onPress={() => this.setModalVisible(true)}
-                        style={LocalStyles.addNewParticipant}>
-                        <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
-                            Add new participant
-                        </Text>
-                    </TouchableHighlight>
+                    <TouchableOpacity
+                        onPress={() => this.setModalVisible(true)}>
+                        <View style={LocalStyles.addNewParticipantOverlay}>
+                            <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
+                                Add new participant
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                     <TouchableHighlight
                         onPress={this._handleNewGroupRegistry}
                         style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>

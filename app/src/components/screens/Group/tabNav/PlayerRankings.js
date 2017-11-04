@@ -7,7 +7,7 @@ import LocalStyles from '../styles/local';
 import MainStyles from '../../../../styles/main';
 import {Text, View, TouchableOpacity} from 'react-native';
 import {List, ListItem} from "react-native-elements"; // 0.17.0
-import {FontAwesome} from '@expo/vector-icons'; // 5.2.0
+import {FontAwesome,Entypo} from '@expo/vector-icons'; // 5.2.0
 import SortableListView from 'react-native-sortable-listview'
 
 

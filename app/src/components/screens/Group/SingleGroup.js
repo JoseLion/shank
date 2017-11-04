@@ -10,22 +10,16 @@ import {
     Text,
     View,
     StatusBar,
-    FlatList,
     Image,
     TouchableOpacity,
-    AsyncStorage,
     BackHandler,
     Platform,
     Alert
 } from 'react-native';
-import {List, ListItem, Header} from "react-native-elements"; // 0.17.0
-import Swiper from 'react-native-swiper';
-import {LinearGradient} from 'expo';
+import {Header} from "react-native-elements"; // 0.17.0
 import BaseModel from '../../../core/BaseModel';
 
-import {FontAwesome, Entypo} from '@expo/vector-icons'; // 5.2.0
-import * as Constants from '../../../core/Constans';
-import Spinner from 'react-native-loading-spinner-overlay';
+import {Entypo} from '@expo/vector-icons'; // 5.2.0
 import {TabNavigator} from 'react-navigation';
 import Notifier from '../../../core/Notifier';
 
@@ -58,6 +52,7 @@ const InnerSingleGroupTabNav = TabNavigator({
     }
 });
 
+//TODO REFACTOR DUPLICATED FUNCTION
 const ImageHeader = navigation => (
     <View style={{backgroundColor: '#eee', height: '16%'}}>
         <Image
@@ -68,12 +63,48 @@ const ImageHeader = navigation => (
         </Image>
         <Header onPress={() => console.log('hueheuhSSeuSSeu')} {...navigation}
                 style={[{position: 'absolute', backgroundColor: 'transparent', height: '100%'}]}
-                leftComponent={<Entypo
-                    onPress={() => {
-                        navigation.goBack(null)
-                    }}
-                    style={{backgroundColor: 'transparent', height: '100%', left: '4%', paddingVertical: '100%'}}
-                    name="chevron-left" size={33} color="white"/>}
+                leftComponent={
+                    <TouchableOpacity
+                        activeOpacity={0.4}
+                        onPress={() => {
+                            if (navigation.state.params.movementsDone == 0) {
+                                navigation.goBack(null)
+                            } else {
+                                Alert.alert(
+                                    "RESPONSE",
+                                    "You have made some changes. Are you sure you want to go back.",
+                                    [
+                                        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                                        {text: 'OK', onPress: () => navigation.goBack(null)},
+                                    ]
+                                );
+                            }
+                        }}>
+                        <View style={LocalStyles.touchableUserIcon}>
+                            <Entypo
+                                onPress={() => {
+                                    if (navigation.state.params.movementsDone == 0) {
+                                        navigation.goBack(null)
+                                    } else {
+                                        Alert.alert(
+                                            "RESPONSE",
+                                            "You have made some changes. Are you sure you want to go back.",
+                                            [
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => console.log('Cancel Pressed'),
+                                                    style: 'cancel'
+                                                },
+                                                {text: 'OK', onPress: () => navigation.goBack(null)},
+                                            ]
+                                        );
+                                    }
+                                }}
+                                style={{marginVertical: '140%'}}
+                                name="chevron-left" size={33} color="white"/>
+                        </View>
+                    </TouchableOpacity>
+                }
         />
     </View>
     /*leftComponent={{icon: 'chevron-left', color: '#fff', onPress: () => navigation.goBack(null)}}*/
@@ -111,9 +142,10 @@ export default class SingleGroup extends Component {
                 position: 3
             }, {none: true, position: 4}, {none: true, position: 5}],
             playerSelectionPosition: 0,
-            movementsDone: 0.0
+            movementsDone: 0
         };
         this.lastPosition = 1;
+        this.backHandler = null
     }
 
     static navigationOptions = ({navigation}) => ({
@@ -134,14 +166,14 @@ export default class SingleGroup extends Component {
     goMain = () => {
         console.log("got here shit")
         this.props.navigation.dispatch({type: 'Main'})
+        return true;
     };
 
     componentDidMount() {
+        this.props.navigation.setParams({movementsDone: this.state.movementsDone});
         this.setInitialPlayerRanking(this.props.navigation);
-        console.log("this.props.navigation")
-        console.log(this.props.navigation)
         if (Platform.OS === 'android') {
-            BackHandler.addEventListener('hardwareBackPress', function () {
+            this.backHandler = BackHandler.addEventListener('hardwareBackPress', function () {
                 if (this.state.movementsDone == 0) {
                     return false;
                 } else {
@@ -149,11 +181,14 @@ export default class SingleGroup extends Component {
                         "RESPONSE",
                         "You have made some changes. Are you sure you want to go back.",
                         [
-                            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                            {
+                                text: 'Cancel', onPress: () => {
+                                return false
+                            }, style: 'cancel'
+                            },
                             {text: 'OK', onPress: () => this.goMain()},
                         ]
                     );
-                    return true;
                 }
             }.bind(this));
         }
@@ -164,7 +199,7 @@ export default class SingleGroup extends Component {
     }
 
     componentWillUnmount() {
-        if (Platform.OS === 'android') BackHandler.removeEventListener('hardwareBackPress')
+        if (Platform.OS === 'android') this.backHandler.remove()
     }
 
     //TODO REFACTOR updatePlayerRankingsList AND DOES SOM LIKE THE setInitialPlayerRanking

@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-    Button,
-    StyleSheet,
     Text,
     View,
-    Image,
     FlatList,
     ActivityIndicator,
     TouchableHighlight,
@@ -114,10 +111,10 @@ export default class MainScreen extends Component {
         headerRight: (
             <TouchableOpacity
                 activeOpacity={0.2}
-                onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Login'})}>
+                onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}>
                 <View style={LocalStyles.touchableUserIcon}>
                     <Entypo name="user" size={25} color="white"
-                            onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Login'})}/>
+                            onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}/>
                 </View>
             </TouchableOpacity>
         ),

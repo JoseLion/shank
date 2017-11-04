@@ -69,6 +69,17 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
         //marginLeft:'-50%'
     },
+    touchableUserIcon: {
+        alignItems: 'center',
+        height: '100%',
+        backgroundColor:'#rgba(0, 0, 0, .05)',
+        padding: Style.ICON_PADDING,
+    },
+    addNewParticipantOverlay: {
+        alignItems: 'center',
+        backgroundColor:'#rgba(0, 0, 0, .05)',
+        padding: Style.ICON_PADDING,
+    },
     dropdown_2_dropdown: {
         width: 150,
         height: 300,
