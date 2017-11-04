@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, Text, View, TouchableOpacity, Image, TextInput,TouchableHighlight} from 'react-native';
+import {Text, View, TouchableOpacity, Image, TextInput,TouchableHighlight, Alert} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
 
 import BaseModel from '../../../core/BaseModel';
-import NoAuthModel from '../../../core/NoAuthModel';
-import * as Constants from '../../../core/Constans';
+import Notifier from '../../../core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 
 export default class ProfileScreen extends Component {
+
+    state = {
+        userImage: null
+    };
 
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -27,18 +30,24 @@ export default class ProfileScreen extends Component {
         },
     };
 
+    componentDidMount() {
+        this.setState({email:this.props.navigation.state.params.currentUser.email , name: this.props.navigation.state.params.currentUser.name})
+    }
+
     constructor(props) {
         super(props);
         this.state = {
             email: '',
             name: '',
-            userImage: '',
-            currentUser: {}
         }
     }
 
     render() {
         let navigation = this.props.navigation;
+        let {userImage} = this.state;
+        let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
+        console.log("navigation.state.params.currentUser")
+        console.log(navigation.state.params)
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
                                      style={{backgroundColor: '#F5FCFF'}}>
@@ -66,15 +75,21 @@ export default class ProfileScreen extends Component {
                         </Image>
                         }
                         <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
-                            Add a photo
+                            Add or Update your photo
                         </Text>
                     </TouchableOpacity>
+                    <Text style={[MainStyles.greenMedShankFont, MainStyles.inputTopSeparation]}>
+                        Your name:
+                    </Text>
                     <TextInput
                         underlineColorAndroid='transparent'
-                        style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
+                        style={[LocalStyles.createTInput]}
                         onChangeText={(name) => this.setState({name})}
                         value={this.state.name}
                     />
+                    <Text style={[MainStyles.greenMedShankFont]}>
+                        Your email:
+                    </Text>
                     <TextInput
                         underlineColorAndroid='transparent'
                         editable={false}
@@ -83,7 +98,7 @@ export default class ProfileScreen extends Component {
                         value={this.state.email}
                     />
                     <TouchableHighlight
-                        onPress={this._handleNewUserRegistry(navigation.state.params.data.currentUser._id)}
+                        onPress={() => this._handleNewUserRegistry(navigation.state.params.currentUser._id)}
                         style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                         <Text style={LocalStyles.buttonText}>Update Profile</Text>
                     </TouchableHighlight>
@@ -93,13 +108,11 @@ export default class ProfileScreen extends Component {
     }
 
     async _handleNewUserRegistry(userId) {
-        
                 if (!this.state.name) {
                     Notifier.message({title: 'User Update', message: 'username cant be empty'});
                     return;
                 }
-    
-        
+
                 if (!this.state.email) {
                     Notifier.message({title: 'User Update', message: 'email cant be empty'});
                     return;

@@ -56,7 +56,11 @@ export default class MainScreen extends Component {
 
     handlePress(actionIndex) {
         if (actionIndex == 0) {
-            this.props.navigation.dispatch({type: 'Profile'})
+            this.setLoading(true);
+            AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
+                this.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)})
+                this.setLoading(false);
+            });
         }
         if (actionIndex == 1) {
             this._removeStorage().then(() => {
@@ -113,7 +117,7 @@ export default class MainScreen extends Component {
                 onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Login'})}>
                 <View style={LocalStyles.touchableUserIcon}>
                     <Entypo name="user" size={25} color="white"
-                            onPress={() => console.log("gl")}/>
+                            onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Login'})}/>
                 </View>
             </TouchableOpacity>
         ),
@@ -218,8 +222,8 @@ export default class MainScreen extends Component {
                 data.currentGroup = currentGroup
             }
             AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
-                this.setLoading(false);
                 navigation.navigate('SingleGroup', {data: data, currentUser: JSON.parse(user)})
+                this.setLoading(false);
             });
         } catch (e) {
             console.log('error in initialRequest: SingleGroup.js')
