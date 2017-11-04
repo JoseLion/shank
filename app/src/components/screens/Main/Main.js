@@ -56,12 +56,12 @@ export default class MainScreen extends Component {
 
     handlePress(actionIndex) {
         if (actionIndex == 0) {
+            this.props.navigation.dispatch({type: 'Profile'})
+        }
+        if (actionIndex == 1) {
             this._removeStorage().then(() => {
                 console.log('LOGOUT')
             })
-        }
-        if (actionIndex == 2) {
-            this.props.navigation.dispatch({type: 'Profile'})
         }
     }
 
@@ -71,15 +71,16 @@ export default class MainScreen extends Component {
 
     componentDidMount() {
         AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
-            this.props.navigation.setParams({actionSheet: this.showActionSheet, auth :authToken, nav: this.props.navigation});
+            this.props.navigation.setParams({
+                actionSheet: this.showActionSheet,
+                auth: authToken,
+                nav: this.props.navigation
+            });
             this.setState({
                 auth: authToken
             });
             if (authToken) {
-                this._myGroupsAsyncRemoteRequest().then((group) => {
-                    console.log('group')
-                    console.log(group)
-                });
+                this._myGroupsAsyncRemoteRequest().then((group) => {});
             }
         });
     }
@@ -103,13 +104,19 @@ export default class MainScreen extends Component {
         showIcon: true,
         headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
-            backgroundColor: '#556E3E',
-            paddingHorizontal: '3%'
+            backgroundColor: '#556E3E'
         },
         headerLeft: null,
-        headerRight: (<Entypo name="user" size={25} color="white"
-                              onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Login'})
-                              }/>),
+        headerRight: (
+            <TouchableOpacity
+                activeOpacity={0.2}
+                onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Login'})}>
+                <View style={LocalStyles.touchableUserIcon}>
+                    <Entypo name="user" size={25} color="white"
+                            onPress={() => console.log("gl")}/>
+                </View>
+            </TouchableOpacity>
+        ),
         tabBarIcon: ({focused, tintColor}) => {
             return (
                 <FontAwesome name="group" size={29} color="white"/>
@@ -287,23 +294,26 @@ export default class MainScreen extends Component {
         } else {
             return (
                 <View style={MainStyles.mainContainer}>
-                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
-                                        onPress={() => navigation.dispatch({type: 'Register'})}>
-                        <Text>+</Text>
-                    </TouchableHighlight>
-                    <View style={{
-                        flex: 2,
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                    }}>
-                        <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
-                            <Text style={MainStyles.groupsNone}>
-                                Tap on the "+" button to create {"\n"} or join a betting group
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Text/>
+                    <TouchableOpacity
+                        style={{backgroundColor: '#F5FCFF', height: '100%', width: '100%'}}
+                        activeOpacity={0.2}
+                        onPress={() => navigation.dispatch({type: 'Register'})}>
+                        <View style={{
+                            flex: 2,
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                        }}>
+                            <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
+                                <Text style={MainStyles.groupsNone}>
+                                    Tap here to create or
+                                </Text>
+                                <Text style={MainStyles.groupsNone}>
+                                    join a betting group
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             )
         }
