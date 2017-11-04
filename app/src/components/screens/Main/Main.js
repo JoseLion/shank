@@ -46,10 +46,7 @@ export default class MainScreen extends Component {
             seed: 1,
             error: null,
             refreshing: false,
-            auth: null,
-            clicked: false,
-            actionSelected: '',
-            selectedOption: ''
+            auth: null
         };
     }
 
@@ -58,11 +55,12 @@ export default class MainScreen extends Component {
     }
 
     handlePress(actionIndex) {
-        if (actionIndex) {
+        if (actionIndex == 0) {
             this._removeStorage().then(() => {
                 console.log('LOGOUT')
             })
-        } else {
+        }
+        if (actionIndex == 2) {
             this.props.navigation.dispatch({type: 'Profile'})
         }
     }
@@ -72,11 +70,11 @@ export default class MainScreen extends Component {
     }
 
     componentDidMount() {
-        this.props.navigation.setParams({actionSheet: this.showActionSheet});
         AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
+            this.props.navigation.setParams({actionSheet: this.showActionSheet, auth :authToken, nav: this.props.navigation});
             this.setState({
                 auth: authToken
-            })
+            });
             if (authToken) {
                 this._myGroupsAsyncRemoteRequest().then((group) => {
                     console.log('group')
@@ -110,7 +108,7 @@ export default class MainScreen extends Component {
         },
         headerLeft: null,
         headerRight: (<Entypo name="user" size={25} color="white"
-                              onPress={() => navigation.state.params.actionSheet()
+                              onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Login'})
                               }/>),
         tabBarIcon: ({focused, tintColor}) => {
             return (
@@ -238,10 +236,6 @@ export default class MainScreen extends Component {
                         onPress={this.handlePress}
                     />
                     <Spinner visible={this.state.loading}/>
-                    <TouchableHighlight style={LocalStyles.buttonStart} underlayColor="gray"
-                                        onPress={this._removeStorage}>
-                        <Text>LOGOUT</Text>
-                    </TouchableHighlight>
                     <View style={{flex: 2, width: '100%', height: '92%'}}>
                         <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                             <FlatList

@@ -54,8 +54,8 @@ export default class LoginScreen extends Component {
         let navigation = this.props.navigation;
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
-                                     style={{backgroundColor: '#F5FCFF', marginVertical:'2%'}}>
-                <View style={MainStyles.container} behavior="padding">
+                                     style={{backgroundColor: '#F5FCFF'}}>
+                <View style={[MainStyles.container,{marginVertical:'35%'}]} behavior="padding">
                     <Spinner visible={this.state.loading}/>
                     <Text style={MainStyles.greenMedShankFont}>
                         WELCOME BACK
@@ -81,7 +81,7 @@ export default class LoginScreen extends Component {
                         style={MainStyles.loginInput}
                         onChangeText={(password) => this.setState({password})}
                         value={this.state.password}
-                        placeholder={'password'}
+                        placeholder={'Password'}
                         onSubmitEditing={(event) => {
                             this._onLoginPressed()
                         }}

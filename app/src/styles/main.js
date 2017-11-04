@@ -82,7 +82,7 @@ const MainStyles = StyleSheet.create({
         color: '#000',
     },
     medShankBlackFont: {
-        fontSize: Style.FONT_14,
+        fontSize: Style.FONT_16,
         color: '#000',
     },
     mediumShankGreenFont: {
