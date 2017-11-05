@@ -258,7 +258,7 @@ export default class SingleGroup extends Component {
         try {
             const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data);
             if (currentGroup) {
-                console.log("UPDATED SUCESSFULY")
+                Notifier.message({title: 'RESPONSE', message: "Your list has been updated successfully"});
             }
         } catch (e) {
             console.log('error in initialRequest: SingleGroup.js')

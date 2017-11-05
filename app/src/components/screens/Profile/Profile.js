@@ -42,7 +42,12 @@ export default class ProfileScreen extends Component {
         this.state = {
             email: '',
             name: '',
+            loading: false
         }
+    }
+
+    setLoading(loading) {
+        this.setState({loading: loading});
     }
 
     render() {
@@ -101,7 +106,7 @@ export default class ProfileScreen extends Component {
                         value={this.state.email}
                     />
                     <TouchableHighlight
-                        onPress={() => this._handleNewUserRegistry(navigation.state.params.currentUser._id)}
+                        onPress={() => this._handleNewUserRegistry(navigation.state.params.currentUser._id).then(() => console.log("some"))}
                         style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
                         <Text style={LocalStyles.buttonText}>Update Profile</Text>
                     </TouchableHighlight>
@@ -135,12 +140,15 @@ export default class ProfileScreen extends Component {
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
 
-        let data = {
+/*        let data = {
             name: this.state.name,
-            photo: {path: localUri, name: filename, type: type},
-        };
+            photo: {path: localUri, name: filename, type: type, uri: localUri},
+        };*/
 
-        BaseModel.update('users/' + userId, data).then((response) => {
+        let data = new FormData();
+        data.append('picture', {uri: localUri, name: filename, type: type});
+
+        BaseModel.createPhoto('updateUser', data).then((response) => {
             this.setLoading(false);
             this.props.navigation.dispatch({type: 'Main'})
         })

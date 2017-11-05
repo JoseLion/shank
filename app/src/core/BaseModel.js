@@ -79,6 +79,40 @@ let BaseModel = {
         }
     },
 
+    async createPhoto(resource, params) {
+        let token = await AsyncStorage.getItem(AuthToken);
+        if (!token) {
+            throw notLogged;
+        }
+        let options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: params,
+        }
+
+        const response = await fetch(ApiHost + resource, options).catch(
+            error => {
+                throw requestServerError;
+            }
+        );
+
+        const json = await response.json().catch(
+            error => {
+                throw parsingResponseError;
+            }
+        );
+
+        if (json.error !== '') {
+            throw json.error;
+        }
+        else {
+            return json.response;
+        }
+    },
+
     async create(resource, params) {
 
         let token = await AsyncStorage.getItem(AuthToken);

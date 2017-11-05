@@ -7,16 +7,16 @@ let authHelper = require('../helpers/auth.helper');
 let passport = require('passport');
 let BettingGroup = mongoose.model('BettingGroup');
 
-multer.diskStorage({
+let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        let path = `../../uploads/admin_users/${req.body.user}`;
-        fs.mkdirsSync(path);
-        cb(null, path);
+        cb(null, 'public/uploads/admin_users/')
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname);
+        cb(null, file.fieldname + '-' + Date.now())
     }
 });
+
+let upload = multer({ storage: storage })
 
 let auth = require('../../config/auth');
 let guard = require('../../config/guard')();
@@ -50,11 +50,32 @@ let prepareRouter = function (app) {
                 .select('_id name surname email hash salt enabled type bettingGroups')
                 .exec(function (err, user) {
                     if (err) {
-                        res.ok({}, 'Al seleccionar usuario.');
+                        res.ok({}, 'Al seleccionar usuarioss.');
                         return;
                     }
                     res.ok(user);
                 });
+        })
+        .post('/updateUser', function (req, res) {
+            let data = req.body;
+            upload.single('picture')(req, res, function (err) {
+                if (err) {
+                    // An error occurred when uploading
+                    console.log(err)
+                    return
+                }
+/*                console.log("data")
+                console.log(data)
+                let new_user = {
+                    name:data.name,
+                    photo: {
+                        name: {type: String},
+                        path: {type: String}
+                    },
+                };*/
+                res.ok({});
+                // Everything went fine
+            })
         })
         .post('/register', function (req, res) {
             let data = req.body;
