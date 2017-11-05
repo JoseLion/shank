@@ -128,6 +128,7 @@ export default class SingleGroup extends Component {
         this.setOrderPlayer = this.setOrderPlayer.bind(this);
         this.setOrderedList = this.setOrderedList.bind(this);
         this.setStateMovements = this.setStateMovements.bind(this);
+        this.setPlayerRankings = this.setPlayerRankings.bind(this);
         this.state = {
             tournamentRankings: [],
             currentGroup: {},
@@ -180,6 +181,10 @@ export default class SingleGroup extends Component {
         this.setState({orderedPlayerRankings: newList});
     }
 
+    setPlayerRankings(newList) {
+        this.setState({playerRankings: newList});
+    }
+
     goMain = () => {
         console.log("got here shit")
         this.props.navigation.dispatch({type: 'Main'})
@@ -187,6 +192,7 @@ export default class SingleGroup extends Component {
     };
 
     componentDidMount() {
+        console.log('componentDidMountcomponentDidMountFUCK THIS SHIT')
         this.props.navigation.setParams({movementsDone: this.state.movementsDone});
         this.setInitialPlayerRanking(this.props.navigation);
         if (Platform.OS === 'android') {
@@ -278,7 +284,6 @@ export default class SingleGroup extends Component {
             return obj;
         }, {});
         let order = Object.keys(orderedPlayerRankings); //Array of keys positions
-
         this.setState({
             groupLoggedUser: groupLoggedUser,
             playerRankings: playerRankings,
@@ -335,7 +340,7 @@ export default class SingleGroup extends Component {
                 <InnerSingleGroupTabNav screenProps={{
                     currentGroup: navigation.state.params.data.currentGroup,
                     groupUsers: navigation.state.params.data.currentGroup.users,
-                    orderedPlayerRankings: this.state.orderedPlayerRankings,
+                    orderedPlayerRankings: JSON.parse(JSON.stringify(this.state.orderedPlayerRankings)),
                     playerRankings: this.state.playerRankings,
                     groupLoggedUser: this.state.groupLoggedUser,
                     updatePlayerRankingsList: this.updatePlayerRankingsList,
@@ -346,6 +351,7 @@ export default class SingleGroup extends Component {
                     order: this.state.order,
                     orderFunc: this.setOrderPlayer,
                     orderedListFunc: this.setOrderedList,
+                    setPlayerRankings: this.setPlayerRankings,
                 }}/>
             </View>);
     }

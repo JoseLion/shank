@@ -210,13 +210,19 @@ export default class PlayerRankings extends Component {
                             let sortableList = [];
                             //ORDER LIST
                             let dataCopy = this.props.screenProps.order.slice();
+                            let playerRankings = this.props.screenProps.playerRankings.slice();
                             let dataOrderedListCopy = this.props.screenProps.orderedPlayerRankings;
                             dataCopy.splice(e.to, 0, dataCopy.splice(e.from, 1)[0])
+                            playerRankings.splice(e.to, 0, playerRankings.splice(e.from, 1)[0])
 
                             //TODO: UNCOMEMNET this one
                            // this.swap(dataOrderedListCopy, e.to+1, dataOrderedListCopy, e.from+1);
-                            console.log("dataOrderedListCopy")
-                            console.log(dataOrderedListCopy)
+                            console.log("playerRankings")
+                            console.log(playerRankings)
+
+                            playerRankings.forEach(function(element,index) {
+                                element.position = index+1
+                            });
 
                             //ORDERED LIST
                             //swap positions on rowMoved for display on list and ordered purposes
@@ -232,6 +238,7 @@ export default class PlayerRankings extends Component {
                                 return a[1] - b[1];
                             });
 
+                            this.props.screenProps.setPlayerRankings(playerRankings)
                             this.props.screenProps.orderFunc(dataCopy);
                             this.props.screenProps.orderedListFunc(dataOrderedListCopy);
                             this.props.screenProps.movementsDoneFunc();
