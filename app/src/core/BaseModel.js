@@ -81,36 +81,29 @@ let BaseModel = {
 
     async createPhoto(resource, params) {
         let token = await AsyncStorage.getItem(AuthToken);
+
         if (!token) {
             throw notLogged;
         }
+
         let options = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + token,
             },
-            body: params,
+            body: params
         }
 
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
-
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
-        if (json.error !== '') {
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
+        await fetch(ApiHost + resource, options)
+            .then((responseData) => {
+                // Log the response form the server
+                // Here we get what we sent to Postman back
+                console.log(responseData);
+            })
+            .catch(err => {
+                console.log(err);
+            })
     },
 
     async create(resource, params) {

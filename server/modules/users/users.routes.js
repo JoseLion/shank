@@ -7,19 +7,19 @@ let authHelper = require('../helpers/auth.helper');
 let passport = require('passport');
 let BettingGroup = mongoose.model('BettingGroup');
 
+let auth = require('../../config/auth');
+let guard = require('../../config/guard')();
+
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/admin_users/')
+        let path = `public/uploads/admin_users/151515`;
+        fs.mkdirsSync(path);
+        cb(null, path);
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now())
     }
 });
-
-let upload = multer({ storage: storage })
-
-let auth = require('../../config/auth');
-let guard = require('../../config/guard')();
 
 let prepareRouter = function (app) {
 
@@ -58,11 +58,15 @@ let prepareRouter = function (app) {
         })
         .post('/updateUser', function (req, res) {
             let data = req.body;
+            console.log('req')
+            console.log(data)
+
+            let upload = multer({ storage: storage })
             upload.single('picture')(req, res, function (err) {
                 if (err) {
                     // An error occurred when uploading
                     console.log(err)
-                    return
+                    res.ok({}, err.toString());
                 }
 /*                console.log("data")
                 console.log(data)

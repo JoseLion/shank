@@ -153,7 +153,7 @@ export default class MainScreen extends Component {
             },
             () => {
                 this._myGroupsAsyncRemoteRequest().then((res) => {
-                    console.log(res)
+                    console.log("fuck=")
                 });
             }
         );

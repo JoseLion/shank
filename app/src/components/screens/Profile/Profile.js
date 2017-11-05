@@ -33,12 +33,14 @@ export default class ProfileScreen extends Component {
     componentDidMount() {
         this.setState({
             email: this.props.navigation.state.params.currentUser.email,
+            id: this.props.navigation.state.params.currentUser.id,
             name: this.props.navigation.state.params.currentUser.name
         })
     }
 
     constructor(props) {
         super(props);
+        this._handleNewUserRegistry = this._handleNewUserRegistry.bind(this);
         this.state = {
             email: '',
             name: '',
@@ -147,6 +149,7 @@ export default class ProfileScreen extends Component {
 
         let data = new FormData();
         data.append('picture', {uri: localUri, name: filename, type: type});
+        data.append('userId', {userId: this.state.id});
 
         BaseModel.createPhoto('updateUser', data).then((response) => {
             this.setLoading(false);
