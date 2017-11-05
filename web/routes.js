@@ -2,8 +2,7 @@ let clientCalls = require('./src/services/clientCalls');
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
-const Host = 'http://192.168.1.3:3000/';
-const ApiHost = Host + 'api/';
+let constants = require('./src/services/utils/constants');
 
 let internetError = 'No internet connection available.';
 let requestServerError = 'We couldn\'t connect to the server. Please try later';
@@ -67,7 +66,7 @@ function initialize(app) {
             form.tag = data.tag
         }
         request.post({
-            url: ApiHost + 'login', form: form, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
+            url: constants.ApiHost + 'login', form: form, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
         }, function (err, httpResponse, body) {
             if (err) {
                 throw requestServerError;
@@ -102,7 +101,7 @@ function initialize(app) {
             form.tag = data.tag
         }
         request.post({
-            url: ApiHost + 'register', form: form, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
+            url: constants.ApiHost + 'register', form: form, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
         }, function (err, httpResponse, body) {
             if (err) {
                 throw requestServerError;

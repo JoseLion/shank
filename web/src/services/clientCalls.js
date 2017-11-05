@@ -3,9 +3,6 @@
  */
 'use strict';
 
-const Host = 'http://192.168.1.3:3000/';
-const ApiHost = Host + 'api/';
-
 let internetError = 'No internet connection available.';
 let requestServerError = 'We couldn\'t connect to the server. Please try later';
 let parsingResponseError = 'Error getting server response.';
@@ -14,6 +11,8 @@ require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
 var request = require('request');
+
+let constants = require('./utils/constants');
 
 let clientCalls = {
 
@@ -27,7 +26,7 @@ let clientCalls = {
             }
         };
 
-        const response = fetch(ApiHost + resource, options).catch(
+        const response = fetch(constants.ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
             }
@@ -50,7 +49,7 @@ let clientCalls = {
     create(resource, params) {
         const data = JSON.stringify(params);
 
-        request.post({url:ApiHost + resource, form: params,  headers: {  'Accept': 'application/json', 'Content-Type': 'application/json'}}, function(err,httpResponse,body){ 
+        request.post({url:constants.ApiHost + resource, form: params,  headers: {  'Accept': 'application/json', 'Content-Type': 'application/json'}}, function(err,httpResponse,body){
             if (err){
                 throw requestServerError;
             }
@@ -74,7 +73,7 @@ let clientCalls = {
             body: data
         }
 
-        const response =  fetch(ApiHost + resource, options).catch(
+        const response =  fetch(constants.ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
             }
@@ -104,7 +103,7 @@ let clientCalls = {
             }
         }
 
-        const response =  fetch(ApiHost + resource, options).catch(
+        const response =  fetch(constants.ApiHost + resource, options).catch(
             error => {
                 throw requestServerError;
             }
