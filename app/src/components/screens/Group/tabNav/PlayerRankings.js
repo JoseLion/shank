@@ -186,6 +186,13 @@ export default class PlayerRankings extends Component {
 
     }
 
+
+    swap(sourceObj, sourceKey, targetObj, targetKey) {
+        let temp = sourceObj[sourceKey];
+        sourceObj[sourceKey] = targetObj[targetKey];
+        targetObj[targetKey] = temp;
+    }
+
     render() {
         let navigation = this.props.navigation;
         return (
@@ -206,19 +213,33 @@ export default class PlayerRankings extends Component {
                             let dataOrderedListCopy = this.props.screenProps.orderedPlayerRankings;
                             dataCopy.splice(e.to, 0, dataCopy.splice(e.from, 1)[0])
 
+                            //TODO: UNCOMEMNET this one
+                           // this.swap(dataOrderedListCopy, e.to+1, dataOrderedListCopy, e.from+1);
+                            console.log("dataOrderedListCopy")
+                            console.log(dataOrderedListCopy)
+
                             //ORDERED LIST
+                            //swap positions on rowMoved for display on list and ordered purposes
                             for (let player in dataOrderedListCopy) {
+                                //TODO: UNCOMEMNET this one
+                               // dataOrderedListCopy[player].position = player
                                 sortableList.push([player, dataOrderedListCopy[player]]);
                             }
+                            console.log("dataOrderedListCopydataOrderedsssListCopy")
+                            console.log(dataOrderedListCopy)
+
                             sortableList.sort(function (a, b) {
                                 return a[1] - b[1];
                             });
+
                             this.props.screenProps.orderFunc(dataCopy);
                             this.props.screenProps.orderedListFunc(dataOrderedListCopy);
                             this.props.screenProps.movementsDoneFunc();
                             this.forceUpdate()
                         }}
-                        renderRow={row => <RowComponent data={row} navigation={this.props.navigation}
+                        renderRow={(row, sectionID, rowID) => <RowComponent data={row} navigation={this.props.navigation}
+                                                        sectionID={sectionID}
+                                                        rowID={rowID}
                                                         navi={this.props.screenProps.navi}
                                                         currentGroup={this.props.screenProps.currentGroup}
                                                         playerRankings={this.props.screenProps.playerRankings}
@@ -237,3 +258,4 @@ export default class PlayerRankings extends Component {
         )
     }
 }
+
