@@ -159,7 +159,7 @@ export default class ProfileScreen extends Component {
         data.append('userId', {userId: this.state.id});
 
         BaseModel.createPhoto('updateUser', data).then((response) => {
-            BaseModel.update('users/' + userId).then((response) => {
+            BaseModel.update('users/' + this.state.id, {name: this.state.name}).then((response) => {
                 this.setLoading(false);
                 this.props.navigation.dispatch({type: 'Main'})
             })
