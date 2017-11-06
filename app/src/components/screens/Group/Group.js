@@ -454,13 +454,13 @@ export default class Group extends Component {
             return;
         }
 
-        if (this.state.data.length == 0) {
+/*        if (this.state.data.length == 0) {
             Notifier.message({
                 title: 'NEW GROUP',
                 message: 'You havent invited anyone yet. Invite at least one person please.'
             });
             return;
-        }
+        }*/
 
         this.setLoading(true);
         // ImagePicker saves the taken photo to disk and returns a local URI to it

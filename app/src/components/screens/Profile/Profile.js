@@ -31,11 +31,18 @@ export default class ProfileScreen extends Component {
     };
 
     componentDidMount() {
-        this.setState({
-            email: this.props.navigation.state.params.currentUser.email,
-            id: this.props.navigation.state.params.currentUser.id,
-            name: this.props.navigation.state.params.currentUser.name
+        this.setLoading(false);
+        BaseModel.get('users/' + this.props.navigation.state.params.currentUser._id).then((response) => {
+            this.setState({
+                email: response.email,
+                id: response._id,
+                name: response.name
+            })
         })
+            .catch((error) => {
+                this.setLoading(false);
+                Notifier.message({title: 'ERROR', message: error});
+            });
     }
 
     constructor(props) {
@@ -142,18 +149,20 @@ export default class ProfileScreen extends Component {
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
 
-/*        let data = {
-            name: this.state.name,
-            photo: {path: localUri, name: filename, type: type, uri: localUri},
-        };*/
+        /*        let data = {
+         name: this.state.name,
+         photo: {path: localUri, name: filename, type: type, uri: localUri},
+         };*/
 
         let data = new FormData();
         data.append('picture', {uri: localUri, name: filename, type: type});
         data.append('userId', {userId: this.state.id});
 
         BaseModel.createPhoto('updateUser', data).then((response) => {
-            this.setLoading(false);
-            this.props.navigation.dispatch({type: 'Main'})
+            BaseModel.update('users/' + userId).then((response) => {
+                this.setLoading(false);
+                this.props.navigation.dispatch({type: 'Main'})
+            })
         })
             .catch((error) => {
                 this.setLoading(false);
