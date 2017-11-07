@@ -37,8 +37,6 @@ module.exports = function () {
                             name: user.name,
                             attachments: user.attachments
                         };
-                        console.log("*********************************************************data.tagdata.tagdata.tagdata.tag*********************************************************")
-                        console.log(data.tag)
                         if (data.tag) {
                             console.log("name: user.name, exportsexports")
                             console.log(user)
@@ -63,6 +61,18 @@ module.exports = function () {
                                     }
                                     console.log("datadatadata findOneAndUpdate")
                                     console.log(data)
+
+                                    let updateUserGroup = {
+                                        $push: {bettingGroups: data._id}
+                                    };
+                                    User.findByIdAndUpdate(new_user._id, updateUserGroup, function (err, data) {
+                                        if (err) {
+                                            console.log("Data not updated")
+                                        }
+                                        else {
+                                            console.log("User updated")
+                                        }
+                                    });
                                 });
                         }
                         res.ok({user: new_user, token: token, response: ''});

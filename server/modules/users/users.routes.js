@@ -61,22 +61,22 @@ let prepareRouter = function (app) {
             console.log('req')
             console.log(data)
 
-            let upload = multer({ storage: storage })
+            let upload = multer({storage: storage})
             upload.single('picture')(req, res, function (err) {
                 if (err) {
                     // An error occurred when uploading
                     console.log(err)
                     res.ok({}, err.toString());
                 }
-/*                console.log("data")
-                console.log(data)
-                let new_user = {
-                    name:data.name,
-                    photo: {
-                        name: {type: String},
-                        path: {type: String}
-                    },
-                };*/
+                /*                console.log("data")
+                 console.log(data)
+                 let new_user = {
+                 name:data.name,
+                 photo: {
+                 name: {type: String},
+                 path: {type: String}
+                 },
+                 };*/
                 res.ok({});
                 // Everything went fine
             })
@@ -92,6 +92,47 @@ let prepareRouter = function (app) {
                     }
                     if (user) {
                         if (data.fbId) {
+                            passport.authenticate('local', function (err, user, info) {
+                                if (err) {
+                                    res.ok({internal_error: true}, 'Al iniciar sesión.');
+                                    return;
+                                }
+                                let token;
+                                if (user) {
+                                    if (user.type == 1 && user.enabled) {
+                                        token = user.generateJwt([]);
+
+                                        let new_user = {
+                                            _id: user._id,
+                                            email: user.email,
+                                            cell_phone: user.cell_phone,
+                                            surname: user.surname,
+                                            name: user.name,
+                                            attachments: user.attachments
+                                        };
+
+                                        res.ok({user: new_user, token: token, response: ''});
+                                    }
+                                    else {
+                                        res.ok({user: null, token: null, response: 'User not enabled'});
+                                    }
+                                }
+                                else {
+                                    res.ok({user: null, token: null, response: 'User not found'});
+                                }
+                            })(req, res);
+                        }
+                        else {
+                            res.ok({}, 'user already registered.');
+                        }
+                    } else {
+                        let userModel = new User(req.body);
+                        userModel.setPassword(data.password);
+                        userModel.save(function (err) {
+                            if (err) {
+                                res.ok({err}, 'error on: saving user registration.');
+                                return;
+                            }
                             passport.authenticate('local', function (err, user, info) {
                                 if (err) {
                                     res.ok({internal_error: true}, 'Al iniciar sesión.');
@@ -133,48 +174,19 @@ let prepareRouter = function (app) {
                                                     }
                                                     console.log("datadatadata findOneAndUpdate")
                                                     console.log(data)
+                                                    let updateUserGroup = {
+                                                        $push: {bettingGroups: data._id}
+                                                    };
+                                                    User.findByIdAndUpdate(new_user._id, updateUserGroup, function (err, data) {
+                                                        if (err) {
+                                                            console.log("Data not updated")
+                                                        }
+                                                        else {
+                                                            console.log("User updated")
+                                                        }
+                                                    });
                                                 });
                                         }
-                                        res.ok({user: new_user, token: token, response: ''});
-                                    }
-                                    else {
-                                        res.ok({user: null, token: null, response: 'User not enabled'});
-                                    }
-                                }
-                                else {
-                                    res.ok({user: null, token: null, response: 'User not found'});
-                                }
-                            })(req, res);
-                        }
-                        else {
-                            res.ok({}, 'user already registered.');
-                        }
-                    } else {
-                        let userModel = new User(req.body);
-                        userModel.setPassword(data.password);
-                        userModel.save(function (err) {
-                            if (err) {
-                                res.ok({err}, 'error on: saving user registration.');
-                                return;
-                            }
-                            passport.authenticate('local', function (err, user, info) {
-                                if (err) {
-                                    res.ok({internal_error: true}, 'Al iniciar sesión.');
-                                    return;
-                                }
-                                let token;
-                                if (user) {
-                                    if (user.type == 1 && user.enabled) {
-                                        token = user.generateJwt([]);
-
-                                        let new_user = {
-                                            _id: user._id,
-                                            email: user.email,
-                                            cell_phone: user.cell_phone,
-                                            surname: user.surname,
-                                            name: user.name,
-                                            attachments: user.attachments
-                                        };
                                         res.ok({user: new_user, token: token, response: ''});
                                     }
                                     else {

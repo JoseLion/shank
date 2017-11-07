@@ -56,6 +56,10 @@ function initialize(app) {
         res.render('login.html');
     });
 
+    app.get('/allGroups', function (req, res) {
+        res.render('login.html');
+    });
+
     app.post('/login', function (req, res) {
         let data = req.body;
         let form = {
