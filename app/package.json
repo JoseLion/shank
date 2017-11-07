@@ -22,7 +22,6 @@
   "dependencies": {
     "@expo/react-native-action-sheet": "^1.0.1",
     "@expo/vector-icons": "^5.2.0",
-    "crypto": "^1.0.1",
     "expo": "^21.0.2",
     "native-base": "^2.3.2",
     "react": "16.0.0-alpha.12",

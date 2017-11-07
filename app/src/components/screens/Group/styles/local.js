@@ -133,7 +133,7 @@ const LocalStyles = StyleSheet.create({
         borderColor: '#A39534',
     },
     tournamentPicker: {
-        height: '7%',
+        height: '8%',
         width:'80%',
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',

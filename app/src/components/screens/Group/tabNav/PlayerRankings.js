@@ -258,7 +258,7 @@ export default class PlayerRankings extends Component {
                         onPress={() => this.props.screenProps.updatePlayerRankingsListPersist(this.props.screenProps.orderedPlayerRankings.position, this.props.screenProps.groupLoggedUser._id, this.props.screenProps.currentGroup._id)}
                         style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankButtonPayment]}>
                         <Text style={LocalStyles.buttonText}>{ this.props.screenProps.movementsDone} movements
-                            {' ' + this.props.screenProps.movementsDone * 0.99} $</Text>
+                            {' ' + (this.props.screenProps.movementsDone * 0.99).toFixed(2)} $</Text>
                     </TouchableOpacity>
                 </View>
             </View>

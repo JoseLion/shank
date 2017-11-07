@@ -305,7 +305,7 @@ export default class MainScreen extends Component {
                             flexDirection: 'column',
                             justifyContent: 'center',
                         }}>
-                            <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
+                            <TouchableOpacity onPress={() => navigation.dispatch({type: 'Register'})}>
                                 <Text style={MainStyles.groupsNone}>
                                     Tap here to create or
                                 </Text>
