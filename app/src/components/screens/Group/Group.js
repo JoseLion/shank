@@ -269,7 +269,7 @@ export default class Group extends Component {
                                 style={LocalStyles.androidTournamentInternal}
                                 selectedValue={this.state.selectTournament}
                                 onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                                <Picker.Item color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
+                                <Picker.Item style={LocalStyles.androidPickerItem} color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
                                 {tournamentItems}
                             </Picker>
                         </View>

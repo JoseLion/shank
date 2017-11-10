@@ -140,13 +140,17 @@ const LocalStyles = StyleSheet.create({
         borderRadius: 0,
         borderBottomWidth: 0
     },
+    androidPickerItem: {
+        fontSize: Style.FONT_16,
+        color: '#rgba(0, 0, 0, .2)',
+    },
     androidTournamentInternal: {
-        padding:'3%',
+        padding:'4%',
     },
     tournamentPicker: {
         height: '9%',
         width:'80%',
-        padding:'2%',
+        padding:Style.SMALL_PADDING,
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',
         borderRadius: 0,
@@ -169,13 +173,13 @@ const LocalStyles = StyleSheet.create({
         textAlign:'left',
     },
     createTInput :{
-        height: '7%',
+        height: '11%',
         width:'80%',
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',
         borderRadius: 0,
-        padding: 8,
-        fontSize: Style.FONT_13,
+        padding: Style.SMALL_PADDING,
+        fontSize: Style.FONT_15,
         borderBottomWidth: 0,
         color: '#333'
     },
@@ -184,13 +188,13 @@ const LocalStyles = StyleSheet.create({
         padding: 8,
     },
     richCreateTInput :{
-        height: '13%',
+        height: '14%',
         width:'80%',
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',
         borderRadius: 0,
-        padding: 5,
-        fontSize: 18,
+        padding: Style.SMALL_PADDING,
+        fontSize: Style.FONT_15,
         color: '#333'
     },
     buttonText: {

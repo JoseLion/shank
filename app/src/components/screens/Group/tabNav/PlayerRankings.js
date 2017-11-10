@@ -60,22 +60,6 @@ class RowComponent extends React.Component {
                             }}
                             name="pencil" size={29} color="green"/>
                     }}
-                    /*   rightIcon={<TouchableOpacity style={{
-                     justifyContent: 'center',
-                     borderWidth: 1,
-                     borderColor: 'black',
-                     marginLeft: '2%',
-                     paddingHorizontal: '3%'
-                     }} onPress={() => {
-                     this.setState({playerSelectionPosition: this.props.data.position});
-                     this.props.navigation.navigate('PlayerSelection', {
-                     tPlayers: this.props.playerRankings,
-                     userGroupId: this.props.groupLoggedUser._id,
-                     groupId: this.props.navigation.state.params.data.currentGroup._id,
-                     currentPosition: this.props.data.position,
-                     onNewPlayer: this.onNewPlayer
-                     })
-                     }}><Text>REPLACE</Text></TouchableOpacity>}*/
                     key={this.props.data.position}
                     leftIcon={<Text
                         style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>}
@@ -121,7 +105,7 @@ export default class PlayerRankings extends Component {
         this.state = {
             order: [],
             loading: false,
-            tPLayers: this.props.tPlayers,
+            tPLayers: [],
             data: {
                 "A": [{
                     "name": "Anh Tuan",

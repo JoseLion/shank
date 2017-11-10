@@ -81,7 +81,11 @@ export default class MainScreen extends Component {
                 auth: authToken
             });
             if (authToken) {
-                this._myGroupsAsyncRemoteRequest().then((group) => {
+                AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
+                    this.setState({currentUser: user})
+                    this._myGroupsAsyncRemoteRequest().then((group) => {
+                        console.log("_myGroupsAsyncRemoteRequest")
+                    });
                 });
             }
         });
@@ -139,15 +143,15 @@ export default class MainScreen extends Component {
         })
             .catch((error) => {
                 this.setLoading(false);
-                if (error == 401){
+                if (error == 401) {
                     try {
-                        AsyncStorage.removeItem(Constants.AUTH_TOKEN).then(() =>{
+                        AsyncStorage.removeItem(Constants.AUTH_TOKEN).then(() => {
                             this.props.navigation.dispatch({type: 'Splash'})
                         });
                     } catch (error) {
                         console.log('error on  :Token removed from disk.');
                     }
-                }else{
+                } else {
                     Notifier.message({title: 'ERROR', message: error});
                 }
             })
@@ -207,7 +211,8 @@ export default class MainScreen extends Component {
         );
     };
 
-    collectGroupData = async (tour, year, tId, groupId, navigation, cb) => {
+
+    async collectGroupData(tour, year, tId, groupId, nav) {
         this.setLoading(true);
         let tournamentsSummaryApi = `http://api.sportradar.us/golf-t2/summary/${tour}/${year}/tournaments/${tId}/summary.json?api_key=${Constants.API_KEY_SPORT_RADAR}`;
         let data = {}
@@ -223,22 +228,23 @@ export default class MainScreen extends Component {
                 data.tStartingDate = JsonResponse.start_date
                 data.tEndDate = JsonResponse.end_date
             }
-            const currentGroup = await BaseModel.get(`groups/${groupId}`, cb)
-            if (currentGroup) {
+
+            BaseModel.get('groups/' + groupId).then((currentGroup) => {
                 data.currentGroup = currentGroup
-            }
-            AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
-                navigation.navigate('SingleGroup', {data: data, currentUser: JSON.parse(user)})
                 this.setLoading(false);
-            });
+                nav.navigate('SingleGroup', {data: data, currentUser: JSON.parse(this.state.currentUser)})
+            })
+                .catch((error) => {
+                    this.setLoading(false);
+                    Notifier.message({title: 'ERROR', message: error});
+                });
         } catch (e) {
             console.log('error in initialRequest: SingleGroup.js')
             console.log(e)
         }
     };
 
-
-//PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
+    //PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
     render() {
         let navigation = this.props.navigation;
         let showPlus = this.state.data.length > 0

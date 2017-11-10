@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 
 import LocalStyles from '../styles/local';
 import MainStyles from '../../../../styles/main';
-import {Text, View, FlatList} from 'react-native';
+import {Text, View, FlatList,Platform} from 'react-native';
 import {List, ListItem} from "react-native-elements"; // 0.17.0
 
 export default class ParticipantRankings extends Component {
@@ -50,11 +50,15 @@ export default class ParticipantRankings extends Component {
 
     render() {
         let navigation = this.props.navigation;
+        let data = [];
+        if (Platform.OS === 'android') {
+          data =  this.props.screenProps.groupUsers
+        }
         return (
             <View style={LocalStyles.slideBorderStyle}>
                 <List containerStyle={LocalStyles.listContainer}>
                     <FlatList
-                        data={this.props.screenProps.groupUsers}
+                        data={data}
                         renderItem={({item}) => (
                             <ListItem
                                 key={item.userId}
