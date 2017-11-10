@@ -184,8 +184,8 @@ const LocalStyles = StyleSheet.create({
         color: '#333'
     },
     innerInput:{
-        color: '#333',
-        padding: 8,
+        color: '#rgba(0, 0, 0, .2)',
+        fontSize: Style.FONT_15,
     },
     richCreateTInput :{
         height: '14%',
