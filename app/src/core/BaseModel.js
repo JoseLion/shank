@@ -71,6 +71,9 @@ let BaseModel = {
             }
         );
 
+        if(response.status == 401){
+            throw 401
+        }
         if (json.error !== '') {
             throw json.error;
         }

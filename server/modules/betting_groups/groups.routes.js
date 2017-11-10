@@ -44,20 +44,24 @@ let prepareRouter = function (app) {
                         res.ok({}, err);
                         return;
                     }
-                    BettingGroup.find({'_id': {$in: user.bettingGroups}}, function (err, groupArray) {
-                        if (err) {
-                            console.log(err);
-                            res.ok({}, 'error finding groups, try later');
-                        } else {
-                            console.log(groupArray);
-                            res.ok({results: groupArray, err: null});
-                        }
-                    });
+                    if (user) {
+                        BettingGroup.find({'_id': {$in: user.bettingGroups}}, function (err, groupArray) {
+                            if (err) {
+                                console.log(err);
+                                res.ok({}, 'error finding groups, try later');
+                            } else {
+                                console.log(groupArray);
+                                res.ok({results: groupArray, err: null});
+                            }
+                        });
+                    }else{
+                        res.status(401).send({ error: "old token, logging out" });
+                    }
                 });
         })
         .get('/findGroupByHash', function (req, res) {
             let data = req.body;
-            if(!data.groupToken){
+            if (!data.groupToken) {
                 return;
             }
             BettingGroup
@@ -68,12 +72,12 @@ let prepareRouter = function (app) {
                         res.ok({}, 'Al seleccionar grupos.');
                         return;
                     }
-                    if(user){
+                    if (user) {
                         res.ok(user);
-                    }else{
-                        res.ok({},'Group doesnt exist');
+                    } else {
+                        res.ok({}, 'Group doesnt exist');
                     }
-            });
+                });
         })
         .get('/allGroups', function (req, res) {
             BettingGroup
@@ -175,7 +179,6 @@ let prepareRouter = function (app) {
              */
             console.log("groupModelgroupModel")
             console.log(data)
-
 
 
             var form = new formidable.IncomingForm();

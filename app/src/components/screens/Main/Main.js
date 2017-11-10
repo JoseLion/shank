@@ -81,7 +81,8 @@ export default class MainScreen extends Component {
                 auth: authToken
             });
             if (authToken) {
-                this._myGroupsAsyncRemoteRequest().then((group) => {});
+                this._myGroupsAsyncRemoteRequest().then((group) => {
+                });
             }
         });
     }
@@ -138,10 +139,18 @@ export default class MainScreen extends Component {
         })
             .catch((error) => {
                 this.setLoading(false);
-                setTimeout(() => {
+                if (error == 401){
+                    try {
+                        AsyncStorage.removeItem(Constants.AUTH_TOKEN).then(() =>{
+                            this.props.navigation.dispatch({type: 'Splash'})
+                        });
+                    } catch (error) {
+                        console.log('error on  :Token removed from disk.');
+                    }
+                }else{
                     Notifier.message({title: 'ERROR', message: error});
-                }, Constants.TIME_OUT_NOTIFIER);
-            });
+                }
+            })
     }
 
     handleRefresh = () => {

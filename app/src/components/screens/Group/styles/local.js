@@ -132,9 +132,21 @@ const LocalStyles = StyleSheet.create({
         borderRadius: Style.iconMD / 2,
         borderColor: '#A39534',
     },
-    tournamentPicker: {
-        height: '8%',
+    androidTournamentPicker: {
+        height: '10%',
         width:'80%',
+        borderWidth: 2,
+        borderColor: '#rgba(0, 0, 0, .2)',
+        borderRadius: 0,
+        borderBottomWidth: 0
+    },
+    androidTournamentInternal: {
+        padding:'3%',
+    },
+    tournamentPicker: {
+        height: '9%',
+        width:'80%',
+        padding:'2%',
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',
         borderRadius: 0,
@@ -162,14 +174,14 @@ const LocalStyles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',
         borderRadius: 0,
-        padding: 5,
-        fontSize: 18,
+        padding: 8,
+        fontSize: Style.FONT_13,
         borderBottomWidth: 0,
         color: '#333'
     },
     innerInput:{
         color: '#333',
-        padding: 5,
+        padding: 8,
     },
     richCreateTInput :{
         height: '13%',
