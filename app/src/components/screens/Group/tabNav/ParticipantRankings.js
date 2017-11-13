@@ -8,6 +8,7 @@ import MainStyles from '../../../../styles/main';
 import {Text, View, FlatList,Platform} from 'react-native';
 import {List, ListItem} from "react-native-elements"; // 0.17.0
 
+
 export default class ParticipantRankings extends Component {
     // Define your own renderRow
     constructor(props) {

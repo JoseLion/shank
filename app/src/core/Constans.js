@@ -13,7 +13,9 @@ export const APP_FB_ID = '135776033719994'; //chris enviroment 135776033719994
 export const APIKEYNEWS = '992cdafbd3be4e3892828a84328873a6';
 /*export const API_KEY_SPORT_RADAR = 'vs9dk4wn7egcvbjta4ysnjkf'; //CADUCADA*/
 /*export const API_KEY_SPORT_RADAR = 'vs9dk4wn7egcvbjta4ysnjkf'; CADUCADAagain*/
-export const API_KEY_SPORT_RADAR = 'vs9dk4wn7egcvbjta4ysnjkf';
+/*export const API_KEY_SPORT_RADAR = 'put7549btxtzk6hbcbrmfnjh'; new*/
+/*export const API_KEY_SPORT_RADAR = 'rtqrpe23fn6pe9dhtm4shcc5'; new*/
+export const API_KEY_SPORT_RADAR = 'rtqrpe23fn6pe9dhtm4shcc5';
 /*export const API_KEY_SPORT_RADAR = 'qt7fggrmjfknbte34f2zj83m';*/
 export const SPORT_RADAR_GET_TOURNAMENTS = 'http://api.sportradar.us/golf-t2/schedule/${tour}/${year}/tournaments/schedule.json?api_key=${apiKey}';
 export const DismissKeyboardHOC = (Comp) => {
