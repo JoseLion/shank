@@ -16,6 +16,7 @@ export const APIKEYNEWS = '992cdafbd3be4e3892828a84328873a6';
 /*export const API_KEY_SPORT_RADAR = 'put7549btxtzk6hbcbrmfnjh'; new*/
 /*export const API_KEY_SPORT_RADAR = 'rtqrpe23fn6pe9dhtm4shcc5'; new*/
 export const API_KEY_SPORT_RADAR = 'rtqrpe23fn6pe9dhtm4shcc5';
+export const LINKING_URI = 'exp://192.168.1.3:19000/';
 /*export const API_KEY_SPORT_RADAR = 'qt7fggrmjfknbte34f2zj83m';*/
 export const SPORT_RADAR_GET_TOURNAMENTS = 'http://api.sportradar.us/golf-t2/schedule/${tour}/${year}/tournaments/schedule.json?api_key=${apiKey}';
 export const DismissKeyboardHOC = (Comp) => {

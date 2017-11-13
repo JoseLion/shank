@@ -13,7 +13,8 @@ import {
     TouchableOpacity,
     Alert,
     findNodeHandle,
-    Keyboard
+    Keyboard,
+    Linking
 } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
@@ -22,6 +23,7 @@ import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import qs from 'qs';
 import {Facebook} from 'expo';
 
 
@@ -55,7 +57,25 @@ export default class Register extends Component {
             password: '',
             repeatedPassword: '',
             loading: false,
+            redirectData:null
         };
+    }
+
+    _handleRedirects = (event) => {
+        let query = event.url.replace(Constants.LINKING_URI+'+', '');
+        let data;
+        if (query) {
+            data = qs.parse(query);
+        } else {
+            data = null;
+        }
+        console.log("_handleRedirects from addEventListener")
+        console.log(data)
+        this.setState({ redirectData: data });
+    }
+
+    componentDidMount(){
+        Linking.addEventListener('url', this._handleRedirects)
     }
 
     setLoading(loading) {
@@ -63,8 +83,11 @@ export default class Register extends Component {
     }
 
     async _registerUserAsync(data) {
+        if (this.state.redirectData) {
+            data.tag = this.state.redirectData['tag']
+        }
         await NoAuthModel.create('register', data).then((response) => {
-            console.log('response from uxsss')
+            console.log('response from uxsssssdsds')
             console.log(response)
             AsyncStorage.setItem(Constants.AUTH_TOKEN, response.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(response.user), () => {

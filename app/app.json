@@ -6,6 +6,7 @@
     "slug": "your-app-slug",
     "sdkVersion": "21.0.0",
     "orientation": "portrait",
+    "scheme": "shankapp",
     "ios": {
       "bundleIdentifier": "com.shank.shankapp"
     },

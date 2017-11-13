@@ -36,6 +36,9 @@
                 <center><li class="tab"><a href="#login" class="button track-button brand negative">Log In</a></li></center>
             </ul>
             <br>
+            <br>
+            <a id="app-redirection" href="">Open my project LOCALCALO</a>
+            <br>
             <div  class="tab-content">
                 <div id="signup">
                     <h1>Sign Up for Free</h1>
@@ -152,8 +155,11 @@
     }
 
     let tag = getParameterByName('tag');
+    let linkingUri = getParameterByName('linkingUri');
     $('#tag').val(tag);
     $('#tagReg').val(tag);
+    $('#app-redirection').attr("href", linkingUri+'+tag='+tag)
+
 
 </script>
 

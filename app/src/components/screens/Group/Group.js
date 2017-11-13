@@ -515,9 +515,9 @@ export default class Group extends Component {
 
     _shareTextWithTitle() {
         Share.share({
-            message: 'Shank Group Invitation : ' + 'http://' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken,
+            message: 'Shank Group Invitation : ' + 'http://' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken + '&linkingUri=' + Constants.LINKING_URI,
             title: 'Shank Group Invitation',
-            url: 'http://' +ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken
+            url: 'http://' +ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken  + '&linkingUri=' + Constants.LINKING_URI
         }, {
             dialogTitle: 'Shank Group Invitation',
             excludedActivityTypes: [
