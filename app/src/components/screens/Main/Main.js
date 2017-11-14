@@ -43,7 +43,7 @@ export default class MainScreen extends Component {
             seed: 1,
             error: null,
             refreshing: false,
-            auth: null
+            auth: null,
         };
     }
 
@@ -248,6 +248,12 @@ export default class MainScreen extends Component {
     render() {
         let navigation = this.props.navigation;
         let showPlus = this.state.data.length > 0
+        let outUrl = ""
+        if(navigation.state.params){
+            if(navigation.state.params.url){
+                outUrl = navigation.state.params.url
+            }
+        }
         if (this.state.auth) {
             return (
                 <View style={LocalStyles.containerMain}>
@@ -313,14 +319,14 @@ export default class MainScreen extends Component {
                     <TouchableOpacity
                         style={{backgroundColor: '#F5FCFF', height: '100%', width: '100%'}}
                         activeOpacity={0.2}
-                        onPress={() => navigation.dispatch({type: 'Register'})}>
+                        onPress={() => navigation.navigate('Register', {url:outUrl})}>
                         <View style={{
                             flex: 2,
                             alignItems: 'center',
                             flexDirection: 'column',
                             justifyContent: 'center',
                         }}>
-                            <TouchableOpacity onPress={() => navigation.dispatch({type: 'Register'})}>
+                            <TouchableOpacity onPress={() =>  navigation.navigate('Register', {url:outUrl})}>
                                 <Text style={MainStyles.groupsNone}>
                                     Tap here to create or
                                 </Text>

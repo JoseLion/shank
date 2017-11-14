@@ -15,9 +15,9 @@
 
 //const ClienHost = '34.197.96.93:8000/';
 
-const Host = 'http://192.168.1.3:3000/';
+const Host = 'http://34.197.96.93/';
 const ApiHost = Host + 'api/';
-const ClienHost = '192.168.1.3:8000/';
+const ClienHost = '34.197.96.93:8000/';
 
 const AuthToken = 'shank-auth-token';
 const ApiKey = 'MTU2NDJkYzcxZjkwNTk4NjdlNjVlYWRjZTI5Zjdl';

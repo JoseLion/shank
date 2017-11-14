@@ -297,19 +297,21 @@ export default class SingleGroup extends Component {
         this.setState({loading: loading});
     }
 
-    setStateMovements (newOrder,dataOrderedListCopy) {
-        let noMatch = 0
-        newOrder.forEach(function (value) {
-            if(new String(dataOrderedListCopy[value].position).valueOf() !== new String(value).valueOf()){
-                noMatch++
+    setStateMovements(newOrder, dataOrderedListCopy) {
+        if (this.state.playersAdded.length >= 5) {
+            let noMatch = 0
+            newOrder.forEach(function (value) {
+                if (new String(dataOrderedListCopy[value].position).valueOf() !== new String(value).valueOf()) {
+                    noMatch++
+                }
+            });
+            if (noMatch > 0) {
+                this.setState({movementsDone: noMatch / 2})
+                this.props.navigation.setParams({movementsDone: noMatch / 2})
+            } else {
+                this.setState({movementsDone: 0})
+                this.props.navigation.setParams({movementsDone: 0})
             }
-        });
-        if (noMatch > 0) {
-            this.setState({movementsDone: noMatch / 2})
-            this.props.navigation.setParams({movementsDone: noMatch / 2})
-        } else {
-            this.setState({movementsDone: 0})
-            this.props.navigation.setParams({movementsDone: 0})
         }
     }
 
@@ -523,9 +525,9 @@ export default class SingleGroup extends Component {
                     <ScrollableTabView
                         style={{backgroundColor: '#fff'}}
                         initialPage={0}
-                        renderTabBar={() => <ScrollableTabBar underlineStyle={{backgroundColor: '#556E3E'}}
+                        renderTabBar={() => <ScrollableTabBar  tabBarTextStyle={{textAlign: 'center'}} underlineStyle={{backgroundColor: '#556E3E'}}
                                                               activeTextColor='#3b4d2b' inactiveTextColor='#556E3E'/>}>
-                        <View tabLabel='Participant Rankings' style={[{
+                        <View tabLabel='Participants' style={[{
                             backgroundColor: '#556E3E',
                             paddingHorizontal: '3%'
                         }, LocalStyles.slideBorderStyle]}>
@@ -554,7 +556,7 @@ export default class SingleGroup extends Component {
                             </List>
                         </View>
 
-                        <View tabLabel='Player Rankings' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
+                        <View tabLabel='Rankings' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
                             <SortableListView
                                 style={{flex: 1}}
                                 data={JSON.parse(JSON.stringify(this.state.orderedPlayerRankings))}
@@ -588,7 +590,7 @@ export default class SingleGroup extends Component {
                                     this.setPlayerRankings(playerRankings)
                                     this.setOrderPlayer(dataCopy);
                                     this.setOrderedList(dataOrderedListCopy);
-                                    this.setStateMovements(dataCopy,dataOrderedListCopy);
+                                    this.setStateMovements(dataCopy, dataOrderedListCopy);
                                     this.forceUpdate()
                                 }}
                                 renderRow={(row, sectionID, rowID) => <RowComponent data={row}
@@ -606,13 +608,14 @@ export default class SingleGroup extends Component {
                                 style={[{
                                     position: 'absolute',
                                     bottom: '3%',
-                                    left: '35%'
+                                    left: '29%'
                                 }, MainStyles.goldenShankButtonPayment]}>
-                                <Text style={LocalStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * 0.99).toFixed(2)} $</Text>
+                                <Text style={LocalStyles.buttonText}>{ this.state.movementsDone}
+                                    movements {(this.state.movementsDone * 0.99).toFixed(2)} $</Text>
                             </TouchableOpacity>
                         </View>
 
-                        <View tabLabel='Tournament Rankings' style={[LocalStyles.slideBorderStyle, {
+                        <View tabLabel='Players' style={[LocalStyles.slideBorderStyle, {
                             paddingHorizontal: '3%'
                         }]}>
                             <List containerStyle={LocalStyles.listContainer}>

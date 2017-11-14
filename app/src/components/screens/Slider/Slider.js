@@ -75,7 +75,7 @@ export default class SliderScreen extends Component {
                         </Image>
                     </Image>
                     <TouchableOpacity style={LocalStyles.buttonStart}
-                                        onPress={() => this.props.navigation.dispatch({type: 'Main'})}>
+                                        onPress={() => this.props.navigation.navigate('Main', {url: this.props.navigation.state.params.url}) }>
                         <Text style={LocalStyles.text}>Let's get start</Text>
                     </TouchableOpacity>
                 </View>

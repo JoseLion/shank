@@ -16,8 +16,8 @@ define("ApiHost", "http://192.168.1.3:3000/" + "api/");*/
 /*define("Host", "http://34.197.96.93/");
 define("ApiHost", "http://34.197.96.93/" + "api/");*/
 
-define("Host", "http://192.168.1.3:3000/");
-define("ApiHost", "http://192.168.1.3:3000/" + "api/");
+define("Host", "http://34.197.96.93/");
+define("ApiHost", "http://34.197.96.93/" + "api/");
 define("internetError", 'No internet connection available.');
 define("requestServerError", 'We couldn\'t connect to the server. Please try later');
 define("parsingResponseError", 'Error getting server response.');

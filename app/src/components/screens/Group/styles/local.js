@@ -79,6 +79,7 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor:'#rgba(0, 0, 0, .05)',
         padding: Style.ICON_PADDING,
+        margin: Style.ICON_PADDING,
     },
     dropdown_2_dropdown: {
         width: 150,

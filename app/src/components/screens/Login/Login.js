@@ -52,6 +52,12 @@ export default class LoginScreen extends Component {
 
     render() {
         let navigation = this.props.navigation;
+        let outerUrl = ""
+        if(navigation.state.params){
+            if(navigation.state.params.url){
+                outerUrl = navigation.state.params.url
+            }
+        }
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
                                      style={{backgroundColor: '#F5FCFF'}}>
@@ -83,11 +89,11 @@ export default class LoginScreen extends Component {
                         value={this.state.password}
                         placeholder={'Password'}
                         onSubmitEditing={(event) => {
-                            this._onLoginPressed()
+                            this._onLoginPressed(outerUrl)
                         }}
                     />
                     <TouchableHighlight
-                        onPress={this._onLoginPressed}
+                        onPress={() => this._onLoginPressed(outerUrl)}
                         style={MainStyles.goldenShankButton}>
                         <Text style={LocalStyles.buttonText}>Log in</Text>
                     </TouchableHighlight>
@@ -100,7 +106,7 @@ export default class LoginScreen extends Component {
         );
     }
 
-    _onLoginPressed() {
+    _onLoginPressed(outerUrl) {
         //dismissKeyboard();/
 
         if (!this.state.email) {
@@ -117,7 +123,7 @@ export default class LoginScreen extends Component {
             email: email,
             password: this.state.password,
         };
-        this._onLoginPressedAsync(data).then((login) => {
+        this._onLoginPressedAsync(data,outerUrl).then((login) => {
             console.log(":::login data:::")
             console.log(data)
             console.log(login)
@@ -125,7 +131,13 @@ export default class LoginScreen extends Component {
         })
     }
 
-    async _onLoginPressedAsync(data) {
+    async _onLoginPressedAsync(data,outerUrl) {
+        if (this.props.url) {
+            data.tag = this.props.url['tag']
+        }
+        if (outerUrl) {
+            data.tag = outerUrl['tag']
+        }
         await NoAuthModel.create('login', data).then((login) => {
             AsyncStorage.setItem(Constants.AUTH_TOKEN, login.token, () => {
                 AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(login.user), () => {

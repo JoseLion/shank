@@ -50,6 +50,7 @@ export default class Register extends Component {
         this._handleNewRegistry = this._handleNewRegistry.bind(this);
         this._registerByFacebook = this._registerByFacebook.bind(this);
         this._scrollToInput = this._scrollToInput.bind(this);
+        this._registerUserAsync = this._registerUserAsync.bind(this);
 
         this.state = {
             name: '',
@@ -82,10 +83,19 @@ export default class Register extends Component {
         this.setState({loading: loading});
     }
 
-    async _registerUserAsync(data) {
+    async _registerUserAsync(data,url) {
         if (this.state.redirectData) {
             data.tag = this.state.redirectData['tag']
         }
+        console.log("this p[rops")
+        console.log(this.props)
+        console.log("register this.props.navigation")
+        console.log(this.props.navigation)
+
+        if (url) {
+            data.tag = url['tag']
+        }
+
         await NoAuthModel.create('register', data).then((response) => {
             console.log('response from uxsssssdsds')
             console.log(response)
@@ -105,7 +115,7 @@ export default class Register extends Component {
         this.refs.scroll.scrollToFocusedInput(reactNode)
     }
 
-    _handleNewRegistry() {
+    _handleNewRegistry(url) {
 
         if (!this.state.name) {
             Notifier.message({title: 'Register', message: 'Please enter your Name.'});
@@ -134,7 +144,7 @@ export default class Register extends Component {
             password: this.state.password,
         };
 
-        this._registerUserAsync(data).then((response) => {
+        this._registerUserAsync(data,url).then((response) => {
             this.setLoading(false);
             this.props.navigation.dispatch({type: 'Main'});
         })
@@ -206,6 +216,12 @@ export default class Register extends Component {
 
     render() {
         let navigation = this.props.navigation;
+        let outerUrl = ""
+        if(navigation.state.params){
+            if(navigation.state.params.url){
+                outerUrl = navigation.state.params.url
+            }
+        }
         return (
             <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5} style={{backgroundColor: '#F5FCFF'}}>
                 <View style={[MainStyles.container]} behavior="padding">
@@ -279,7 +295,7 @@ export default class Register extends Component {
                         placeholder={'Repeat your password'}
                     />
                     <TouchableOpacity
-                        onPress={() => this._handleNewRegistry()}
+                        onPress={() => this._handleNewRegistry(outerUrl)}
                         style={MainStyles.goldenShankButton}>
                         <Text style={LocalStyles.buttonText}>Register</Text>
                     </TouchableOpacity>
@@ -288,7 +304,7 @@ export default class Register extends Component {
                         style={MainStyles.fbButton}>
                         <Text style={LocalStyles.buttonText}>Continue with Facebook</Text>
                     </TouchableHighlight>
-                    <TouchableOpacity onPress={() => navigation.dispatch({type: 'Login'})}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Login', {url:outerUrl})}>
                         <Text
                             style={[MainStyles.centerText, MainStyles.medShankBlackFont, MainStyles.inputTopSeparation]}>
                             I already have an account

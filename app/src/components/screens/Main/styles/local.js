@@ -39,7 +39,7 @@ const LocalStyles = StyleSheet.create({
         height: Style.INPUT_INSIDE_BUBBLE,
     },
     titleMainList: {
-        fontSize: Style.FONT_LARGE,
+        fontSize: Style.FONT_XLARGE,
         color: "#556E3E",
     },
     subTitleMainList: {

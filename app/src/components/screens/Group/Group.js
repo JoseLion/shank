@@ -269,7 +269,7 @@ export default class Group extends Component {
                                 style={LocalStyles.androidTournamentInternal}
                                 selectedValue={this.state.selectTournament}
                                 onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                                <Picker.Item style={LocalStyles.androidPickerItem} color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
+                                <Picker.Item style={LocalStyles.androidPickerItem} itemStyle={LocalStyles.androidPickerItem} color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
                                 {tournamentItems}
                             </Picker>
                         </View>
@@ -543,8 +543,7 @@ export default class Group extends Component {
                 console.log(this.state.currentInvitationName)
                 let updatedInvitations = this.state.data.slice();
                 updatedInvitations.push({name:this.state.currentInvitationName});
-                this.setState({data:updatedInvitations})
-                this.setState({result: 'shared'});
+                this.setState({data:updatedInvitations, result: 'shared', currentInvitationName: ''});
             }
         } else if (result.action === Share.dismissedAction) {
             console.log('dismissed')
@@ -552,3 +551,4 @@ export default class Group extends Component {
         }
     }
 }
+

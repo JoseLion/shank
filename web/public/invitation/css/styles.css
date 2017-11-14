@@ -1,3 +1,19 @@
+
+.button-shank {
+    width: auto;
+    height: auto;
+    margin: 0.8rem 0.8rem 0.8rem 0;
+    padding: 1rem 1.5rem;
+    position: relative;
+    display: inline-block;
+    color: #fff !important;
+    font-weight: normal;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.6s;
+    background-color: #A39534 !important;
+}
+
 @font-face {
     font-family: 'supercell-magicregular';
     src: url('webfonts/supercell-magic.eot');

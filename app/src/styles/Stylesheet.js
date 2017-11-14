@@ -68,6 +68,7 @@ const Style = {
     FONT_MEDIUM: normalize(17),
     FONT_LARGE: normalize(20),
     FONT_XLARGE: normalize(24),
+    FONT_XXLLARGE: normalize(80),
 
     // FONT
     FONT_SIZE: em(1),
@@ -127,6 +128,7 @@ const Style = {
     iconXXXLG: em(15),
     iconXXLG: em(12),
     iconXLG: em(9),
+    iconSLG: em(8),
     iconLG: em(7),
     iconMD: em(4),
     iconSM: em(2),
