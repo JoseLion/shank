@@ -51,6 +51,7 @@ const Style = {
     UNIT: em(1),
     PADDING: em(1.25),
     SMALL_PADDING: em(0.8),
+    XS_SMALL_PADDING: em(0.3),
     ICON_PADDING: em(0.5),
     ICON_XSS_PADDING: em(0.6),
 

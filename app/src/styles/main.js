@@ -117,10 +117,10 @@ const MainStyles = StyleSheet.create({
     },
     goldenShankButtonPayment: {
         alignItems: 'center',
-        paddingBottom: Style.SMALL_PADDING,
-        paddingTop: Style.SMALL_PADDING,
-        width: '60%',
-        marginVertical: '4%',
+        paddingBottom: Style.XS_SMALL_PADDING,
+        paddingTop: Style.XS_SMALL_PADDING,
+        width: '55%',
+        marginVertical: '3%',
         backgroundColor: '#A39534',
         borderRadius: 10
     },

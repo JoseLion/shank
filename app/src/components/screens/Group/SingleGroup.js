@@ -58,7 +58,7 @@ class RowComponent extends React.Component {
                     onPress={this.addPlayer}
                     style={{
                         flex: 1,
-                        padding: 25,
+                        padding: 20,
                         backgroundColor: '#ffffff',
                         borderBottomWidth: 1.5,
                         borderColor: '#c3c3c3',
@@ -77,9 +77,9 @@ class RowComponent extends React.Component {
                             style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}
                         </Text>
                         <Image style={ {
-                            height: 40,
-                            borderRadius: 20,
-                            width: 40,
+                            height: 30,
+                            width: 30,
+                            borderRadius: 15,
                         }} source={{uri: this.props.data.urlPhoto}}/>
                         <Text
                             numberOfLines={2}
@@ -552,7 +552,7 @@ export default class SingleGroup extends Component {
 
                         <View tabLabel='Rankings' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
                             <SortableListView
-                                style={{flex: 1}}
+                                style={{flex: 1, marginBottom: '20%'}}
                                 data={JSON.parse(JSON.stringify(this.state.orderedPlayerRankings))}
                                 order={this.state.order}
                                 onMoveStart={() => {
