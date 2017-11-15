@@ -36,17 +36,7 @@ class RowComponent extends React.Component {
 
     constructor(props) {
         super(props);
-        this.onNewPlayer = this.onNewPlayer.bind(this);
     }
-
-    onNewPlayer = newPlayer => {
-        let obj = {};
-        newPlayer.onNewPlayer.position = this.state.playerSelectionPosition;
-        obj[this.state.playerSelectionPosition - 1] = newPlayer.onNewPlayer;
-        let copyState = this.props.playerRankings.slice()
-        let oldReportCopy = Object.assign(copyState, obj);
-        this.setState({newPlayer, playerRankings: oldReportCopy})
-    };
 
     addPlayer = () => {
         this.setState({playerSelectionPosition: this.props.data.position});
@@ -55,7 +45,6 @@ class RowComponent extends React.Component {
             userGroupId: this.props.groupLoggedUser._id,
             groupId: this.props.currentGroup._id,
             currentPosition: this.props.data.position,
-            onNewPlayer: this.onNewPlayer,
             updatePlayerRankingsList: this.props.updatePlayerRankingsList,
         })
     };
@@ -108,8 +97,8 @@ class RowComponent extends React.Component {
         } else {
             return (
                 <TouchableHighlight
-                    underlayColor="#c3c3c3"
                     {...this.props.sortHandlers}
+                    underlayColor="#c3c3c3"
                     style={{
                         flex: 1,
                         padding: 25,
@@ -283,7 +272,7 @@ export default class SingleGroup extends Component {
             movementsDone: 0
         };
         this.lastPosition = 1;
-        this.backHandler = null
+        this.backHandler = null;
     }
 
     static navigationOptions = ({navigation}) => ({
@@ -484,6 +473,7 @@ export default class SingleGroup extends Component {
             let daysLeft = Math.abs(notAbsoluteDiff);
             diffDays = Math.ceil(daysLeft / (1000 * 3600 * 24));
         }
+        let lockScrollTabView = false;
         return (
             <View style={MainStyles.stretchContainer}>
                 <StatusBar hidden={true}/>
@@ -525,8 +515,12 @@ export default class SingleGroup extends Component {
                     <ScrollableTabView
                         style={{backgroundColor: '#fff'}}
                         initialPage={0}
-                        renderTabBar={() => <ScrollableTabBar  tabBarTextStyle={{textAlign: 'center'}} underlineStyle={{backgroundColor: '#556E3E'}}
-                                                              activeTextColor='#3b4d2b' inactiveTextColor='#556E3E'/>}>
+                        locked={false}
+                        renderTabBar={() =>
+                            <ScrollableTabBar tabBarTextStyle={{textAlign: 'center'}}
+                                              underlineStyle={{backgroundColor: '#556E3E'}}
+                                              activeTextColor='#3b4d2b' inactiveTextColor='#556E3E'/>}
+                    >
                         <View tabLabel='Participants' style={[{
                             backgroundColor: '#556E3E',
                             paddingHorizontal: '3%'
@@ -561,37 +555,32 @@ export default class SingleGroup extends Component {
                                 style={{flex: 1}}
                                 data={JSON.parse(JSON.stringify(this.state.orderedPlayerRankings))}
                                 order={this.state.order}
+                                onMoveStart={() => {
+                                    console.log("onMoveStart")
+                                    lockScrollTabView = true;
+                                }}
+                                onMoveEnd={() => {
+                                    console.log("onMoveEnd")
+                                    lockScrollTabView = false;
+                                }}
+                                onMoveCancel ={() => {
+                                    console.log("move canceled")
+                                }}
                                 onRowMoved={e => {
-                                    let sortableList = [];
-                                    //ORDER LIST
                                     let dataCopy = this.state.order.slice();
                                     let playerRankings = this.state.playerRankings.slice();
                                     let dataOrderedListCopy = this.state.orderedPlayerRankings;
                                     dataCopy.splice(e.to, 0, dataCopy.splice(e.from, 1)[0])
                                     playerRankings.splice(e.to, 0, playerRankings.splice(e.from, 1)[0])
 
-                                    //TODO: UNCOMEMNET this one
-                                    // this.swap(dataOrderedListCopy, e.to+1, dataOrderedListCopy, e.from+1);
                                     playerRankings.forEach(function (element, index) {
                                         element.position = index + 1
                                     });
-
-                                    //ORDERED LIST
-                                    //swap positions on rowMoved for display on list and ordered purposes
-                                    for (let player in dataOrderedListCopy) {
-                                        //TODO: UNCOMEMNET this one
-                                        // dataOrderedListCopy[player].position = player
-                                        sortableList.push([player, dataOrderedListCopy[player]]);
-                                    }
-                                    sortableList.sort(function (a, b) {
-                                        return a[1] - b[1];
-                                    });
-
                                     this.setPlayerRankings(playerRankings)
                                     this.setOrderPlayer(dataCopy);
                                     this.setOrderedList(dataOrderedListCopy);
                                     this.setStateMovements(dataCopy, dataOrderedListCopy);
-                                    this.forceUpdate()
+                                    //this.forceUpdate()
                                 }}
                                 renderRow={(row, sectionID, rowID) => <RowComponent data={row}
                                                                                     navigation={navigation}
@@ -610,8 +599,7 @@ export default class SingleGroup extends Component {
                                     bottom: '3%',
                                     left: '29%'
                                 }, MainStyles.goldenShankButtonPayment]}>
-                                <Text style={LocalStyles.buttonText}>{ this.state.movementsDone}
-                                    movements {(this.state.movementsDone * 0.99).toFixed(2)} $</Text>
+                                <Text style={LocalStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * 0.99).toFixed(2)} $</Text>
                             </TouchableOpacity>
                         </View>
 

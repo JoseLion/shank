@@ -71,7 +71,7 @@ const LocalStyles = StyleSheet.create({
     },
     touchableUserIcon: {
         alignItems: 'center',
-        height: '100%',
+        height: '115%',
         backgroundColor:'#rgba(0, 0, 0, .05)',
         padding: Style.ICON_PADDING,
     },
@@ -95,8 +95,6 @@ const LocalStyles = StyleSheet.create({
     },
     GroupList: {
         flex: 1,
-        width: '100%',
-        height: '100%'
     },
     positionParticipants: {
         marginRight: '2%',

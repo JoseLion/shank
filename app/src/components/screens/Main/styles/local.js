@@ -23,7 +23,6 @@ const LocalStyles = StyleSheet.create({
     touchableUserIcon: {
         alignItems: 'center',
         height: '100%',
-        backgroundColor: '#4c6337',
         padding: Style.ICON_PADDING,
     },
     containerRoundAvatar: {

@@ -114,14 +114,15 @@ export default class MainScreen extends Component {
         },
         headerLeft: null,
         headerRight: (
-            <TouchableOpacity
-                activeOpacity={0.2}
+            <TouchableHighlight
+                underlayColor="#4c6337"
                 onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}>
-                <View style={LocalStyles.touchableUserIcon}>
-                    <Entypo name="user" size={25} color="white"
+                <View style={LocalStyles.touchableUserIcon}  >
+
+                    <Entypo name="user" size={26} color="white"
                             onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}/>
                 </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
         ),
         tabBarIcon: ({focused, tintColor}) => {
             return (

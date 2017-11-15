@@ -52,6 +52,7 @@ const Style = {
     PADDING: em(1.25),
     SMALL_PADDING: em(0.8),
     ICON_PADDING: em(0.5),
+    ICON_XSS_PADDING: em(0.6),
 
     // CARD
     CARD_WIDTH: x - em(1.25) * 2,

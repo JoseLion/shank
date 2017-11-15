@@ -120,7 +120,7 @@ const MainStyles = StyleSheet.create({
         paddingBottom: Style.SMALL_PADDING,
         paddingTop: Style.SMALL_PADDING,
         width: '60%',
-        marginTop: '4%',
+        marginVertical: '4%',
         backgroundColor: '#A39534',
         borderRadius: 10
     },
