@@ -1,17 +1,17 @@
 {
   "expo": {
-    "name": "shankNewKeyNew",
-    "icon": "resources/shankLogo.png",
+    "name": "Shank",
+    "icon": "resources/shank.png",
     "version": "1.0.1",
-    "slug": "your-app-slug",
+    "slug": "Shank",
     "sdkVersion": "21.0.0",
     "orientation": "portrait",
-    "scheme": "shankapp",
+    "scheme": "Shank",
     "ios": {
-      "bundleIdentifier": "com.shank.shankapp"
+      "bundleIdentifier": "com.levelap.shank"
     },
     "android": {
-      "package": "com.shank.shankapp"
+      "package": "com.levelap.shank"
     }
   }
 }
