@@ -1,5 +1,4 @@
 module.exports = function (message, code, extraData) {
-    // Set status code
     this.status(code || 500);
     if (extraData instanceof Error) {
         extraData = extraData.toString();

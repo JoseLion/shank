@@ -1,5 +1,4 @@
 module.exports = function (message, code, fields, extraData) {
-    // Set status code
     this.status(400);
     this.send({
         error: {

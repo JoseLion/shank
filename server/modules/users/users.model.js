@@ -12,7 +12,7 @@ let UserSchema = new mongoose.Schema({
         required: true,
         index: true,
     },
-    cell_phone: String,
+    cellPhone: String,
     photo: {
         name: {type: String},
         path: {type: String}

@@ -1,7 +1,6 @@
 "use strict";
 
 module.exports = function (message, extraData) {
-    // Set status code
     this.status(422);
     this.send({
         error: {

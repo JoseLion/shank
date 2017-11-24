@@ -11,12 +11,7 @@ mongoose.Promise = global.Promise;
 let passport = require('passport');
 let customResponses = require('express-custom-response');
 
-
-const databaseUri = 'mongodb://192.168.99.100:27017/shank'; //docker macOs enviroment
-//const databaseUri = 'mongodb://db/shank';
-//const databaseUri = 'mongodb://docker.com:27017/shank';
-//const databaseUri = 'mongodb://192.168.99.100:27017/shank';
-
+const databaseUri = 'mongodb://shank.levelaptesting.com:27017/shank'; //docker macOs enviroment
 
 mongoose.connect(databaseUri, {databaseUri: true})
     .then(() => console.log(`Database connected at ${databaseUri}`))
@@ -26,22 +21,15 @@ customResponses(path.join(__dirname, '/modules/responses'));
 
 let app = express();
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
-//Por defecto es jade
-//app.set('view engine', 'jade');
-
-//Para que renderice html
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
-// uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-//access images from client and app uploads/
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Enable CORS (Cross Origin Request Sharing)
@@ -75,13 +63,8 @@ app.use(function (req, res, next) {
 
 // error handlers
 
-// development error handler
-// will print stacktrace
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
-
-        // Catch unauthorised errors JWT
-        //console.log(err, '********************');
 
         if (err.code === 'invalid_token') {
             return res.unauthorized(err.status);

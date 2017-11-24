@@ -3,7 +3,7 @@ let User = mongoose.model('User');
 
 let multer = require('multer');
 let fs = require('fs-extra');
-let authHelper = require('../helpers/auth.helper');
+//let authHelper = require('../auth/auth.helper');
 let passport = require('passport');
 let BettingGroup = mongoose.model('BettingGroup');
 
@@ -105,7 +105,7 @@ let prepareRouter = function (app) {
                                         let new_user = {
                                             _id: user._id,
                                             email: user.email,
-                                            cell_phone: user.cell_phone,
+                                            cellPhone: user.cellPhone,
                                             surname: user.surname,
                                             name: user.name,
                                             attachments: user.attachments
@@ -146,7 +146,7 @@ let prepareRouter = function (app) {
                                         let new_user = {
                                             _id: user._id,
                                             email: user.email,
-                                            cell_phone: user.cell_phone,
+                                            cellPhone: user.cellPhone,
                                             surname: user.surname,
                                             name: user.name,
                                             attachments: user.attachments
