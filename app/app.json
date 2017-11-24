@@ -8,7 +8,8 @@
     "orientation": "portrait",
     "scheme": "Shank",
     "ios": {
-      "bundleIdentifier": "com.levelap.shank"
+      "bundleIdentifier": "com.levelap.shank",
+      "buildNumber" : "1.0.2"
     },
     "android": {
       "package": "com.levelap.shank"
