@@ -13,10 +13,6 @@ let authHelper = require('./auth.helper');
 module.exports = function () {
 
     router.post('/loginAdmin', function (req, res) {
-        let data = req.body;
-
-        let auth = authHelper.login;
-        console.log(auth);
         passport.authenticate('local', function (err, user, info) {
             if (err) {
                 res.ok({internal_error: true}, 'Al iniciar sesión.');
@@ -55,7 +51,7 @@ module.exports = function () {
                         attachments: user.attachments
                     };
                     if (data.tag) {
-                        console.log('USER: 'user);
+                        console.log('USER: ', user);
                         let newGroupUser = {
                             userId: user._id,
                             score: 0,
