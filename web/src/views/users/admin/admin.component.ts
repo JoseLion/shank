@@ -1,7 +1,15 @@
 import { Component } from '@angular/core';
+import { AdminService } from './admin.service';
 
 @Component({
     selector: 'admin',
-    templateUrl: 'admin.template.html'
+    templateUrl: 'admin.template.html',
+    providers: [ AdminService ]
 })
-export class AdminViewComponent {}
+export class AdminViewComponent {
+
+    constructor(private adminService : AdminService) {
+        //console.log(adminService.getUsers())
+    }
+
+}

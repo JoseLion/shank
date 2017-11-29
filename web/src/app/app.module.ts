@@ -1,45 +1,36 @@
-import {NgModule} from '@angular/core'
-import {RouterModule} from "@angular/router";
-import {AppComponent} from "./app";
-import {BrowserModule} from "@angular/platform-browser";
-import {HttpModule} from "@angular/http";
-import {ROUTES} from "./app.routes";
-import {LocationStrategy, HashLocationStrategy} from '@angular/common';
+import { NgModule } from '@angular/core';
+import { RouterModule } from "@angular/router";
+import { AppComponent } from './app.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from "@angular/http";
+import { ROUTES } from "./app.routes";
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { EmitterService } from '../emitter.service';
 
 // App views
-import {LoginViewModule} from '../views/login/login.module';
-import {AdminViewModule} from '../views/users/admin/admin.module';
-import {PublicViewModule} from '../views/users/public/public.module';
-import {SettingsViewModule} from '../views/settings/settings.module';
-
-// App modules/components
-import {NavigationModule} from "../views/common/navigation/navigation.module";
-import {FooterModule} from "../views/common/footer/footer.module";
-import {TopnavbarModule} from "../views/common/topnavbar/topnavbar.module";
+import { MainViewModule } from '../views/main.module';
+import { LoginViewModule } from '../views/login/login.module';
 
 @NgModule({
-    declarations: [AppComponent],
-    imports     : [
-
+    declarations: [
+        AppComponent
+    ],
+    imports: [
         // Angular modules
         BrowserModule,
         HttpModule,
 
         // Views
+        MainViewModule,
         LoginViewModule,
-        AdminViewModule,
-        PublicViewModule,
-        SettingsViewModule,
-
-        // Modules
-        NavigationModule,
-        FooterModule,
-        TopnavbarModule,
-
         RouterModule.forRoot(ROUTES)
     ],
-    providers   : [{provide: LocationStrategy, useClass: HashLocationStrategy}],
-    bootstrap   : [AppComponent]
+    providers: [
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        EmitterService
+    ],
+    bootstrap: [
+        AppComponent
+    ]
 })
-
-export class AppModule {}
+export class AppModule { }

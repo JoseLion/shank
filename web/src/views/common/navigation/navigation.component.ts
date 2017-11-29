@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 
 declare var jQuery:any;
 
@@ -7,7 +7,6 @@ declare var jQuery:any;
     selector: 'navigation',
     templateUrl: 'navigation.template.html'
 })
-
 export class NavigationComponent {
 
     constructor(private router: Router) {}

@@ -6,7 +6,6 @@
  * smoothlyMenu() - add smooth fade in/out on navigation show/ide
  *
 */
-
 declare var jQuery:any;
 
 export function correctHeight() {
