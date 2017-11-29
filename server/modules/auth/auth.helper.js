@@ -5,6 +5,7 @@ let User = mongoose.model('User');
 
 module.exports = {
     login: function (req, res) {
+        console.log('LOOOOGIN: ');
         passport.authenticate('local', function (err, user, info) {
             if (err) {
                 res.ok({internal_error: true}, 'Al iniciar sesión.');

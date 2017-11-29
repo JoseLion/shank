@@ -13,15 +13,18 @@ let authHelper = require('./auth.helper');
 module.exports = function () {
 
     router.post('/loginAdmin', function (req, res) {
+        console.log('ENTRA A LOGIN ADMIN')
         passport.authenticate('local', function (err, user, info) {
             if (err) {
                 res.ok({internal_error: true}, 'Al iniciar sesión.');
                 return;
             }
+            console.log('GENERACION DE TOQUEN Y VERIFICACION DE USUARIO', user);
             let token;
             if (user) {
                 if (user.type === 0 && user.enabled) {
                     token = user.generateJwt([]);
+                    console.log('TODO BIEN: ', token);
                     res.ok({user: user, token: token, response: ''});
                 } else {
                     res.ok({}, 'user not enabled.');
@@ -32,6 +35,7 @@ module.exports = function () {
         })(req, res);
     })
     .post('/login', function (req, res) {
+        console.log('login normal');
         let data = req.body;
         passport.authenticate('local', function (err, user, info) {
             if (err) {
