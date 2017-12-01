@@ -4,15 +4,12 @@ let jwt = require('jsonwebtoken');
 let configJWT = require('../../config/jwt');
 
 let UserSchema = new mongoose.Schema({
+
+    creationDate: {type: Date, default: Date.now()},
+    updateDate: {type: Date},
+
     name: String,
-    surname: String,
-    email: {
-        type: String,
-        unique: true,
-        required: true,
-        index: true,
-    },
-    cellPhone: String,
+    lastName: String,
     photo: {
         name: {type: String},
         path: {type: String}
@@ -21,6 +18,15 @@ let UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Profile'
     },
+
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+        index: true,
+    },
+    surname: String,
+    cellPhone: String,
     bettingGroups: [{type: String}],
     gender: String,
     birthDate: Date,
@@ -33,7 +39,9 @@ let UserSchema = new mongoose.Schema({
     security_code: Number,
     enabled: {type: Boolean, default: true},
     created_at: {type: Date, default: Date.now()},
-    updated_at: {type: Date, default: Date.now()},
+    updated_at: {type: Date},
+
+
 });
 
 UserSchema.methods.setPassword = function (password) {

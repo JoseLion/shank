@@ -27,6 +27,26 @@ let prepareRouter = function (app) {
     let router = require('../core/routes.js')(User, path);
 
     router
+    .post('/findUsers', function(req, res) {
+        console.log('REQUEST: ', req.body, 'PAYLOAD: ', req.payload);
+        // TODO: if is not logged
+        // res.ok({}, 'Usuario no autorizado.')
+        User.find({type: req.body.type})
+        .select('_id name lastName email created_at updated_at enabled')
+        .exec(function(err, users) {
+            res.ok(users);
+        });
+    })
+
+
+
+
+
+
+
+
+
+
         .get('/profile', auth, function (req, res) {
             if (!req.payload._id) {
                 res.ok({}, 'Usuario no autorizado.');
