@@ -1,22 +1,22 @@
 import { Component } from '@angular/core';
-import { consts } from '../../core/consts';
-import { Rest } from '../../core/rest';
+import { consts } from '../core/consts';
+import { Rest } from '../core/rest';
 
 @Component({
-    selector: 'public',
-    templateUrl: 'public.template.html'
+    selector: 'profile',
+    templateUrl: 'profile.template.html'
 })
-export class PublicViewComponent {
+export class ProfileViewComponent {
 
-    private _users: any[] = [];
+    private _profiles: any[];
     private _isLoading: boolean = true;
 
     constructor(private rest : Rest) {
-        this.rest.post(consts.host.users, {type: 1})
+        this.rest.post('findProfiles', {})
         .subscribe(
             response => {
                 let res = response.json().response;
-                this.users = res;
+                this.profiles = res;
             },
             error => {
                 console.log('ERROR CONSUMO SERVICIO: ',  error.text());
@@ -29,8 +29,8 @@ export class PublicViewComponent {
 
     /* GETTERS AND SETTERS */
 
-    set users(_users:any[]) { this._users = _users; }
-    get users() { return this._users; }
+    set profiles(_profiles:any[]) { this._profiles = _profiles; }
+    get profiles() { return this._profiles; }
 
     set isLoading(_isLoading:boolean) { this._isLoading = _isLoading; }
     get isLoading() { return this._isLoading; }

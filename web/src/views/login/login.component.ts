@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component  } from '@angular/core';
 import { Router } from '@angular/router';
-import { Http } from '@angular/http';
-import { contentHeaders } from '../contentHeaders';
-import { consts } from '../consts';
+import { Rest } from '../core/rest';
+
+declare var jQuery:any;
 
 @Component({
     selector: 'login',
@@ -10,22 +10,25 @@ import { consts } from '../consts';
 })
 export class LoginViewComponent {
 
-    constructor(public router: Router, public http: Http) {
+    constructor(public router: Router, public rest: Rest) {
+        jQuery('body').addClass('gray-bg')
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
     }
 
     login(event, email, password) {
         event.preventDefault();
-        let body = JSON.stringify({ email, password });
-        console.log(body)
-        this.http.post(consts.baseUrl + 'loginAdmin', body, { headers: contentHeaders })
+        this.rest.auth(JSON.stringify({ email, password }))
         .subscribe(
             response => {
-                console.log('RESPUESTA: ', response);
-                localStorage.setItem('id_token', response.json().id_token);
-                this.router.navigate(['user/admin']);
+                jQuery('body').removeClass('gray-bg')
+                let res = response.json().response;
+                localStorage.setItem('token', res.token);
+                localStorage.setItem('user', JSON.stringify(res.user));
+                this.router.navigate(['./shank/users/admin']);
             },
             error => {
-                console.log(error.text());
+                console.log('ERROR CONSUMO SERVICIO: ',  error.text());
             }
         );
     }

@@ -7,10 +7,10 @@
             <li>
                 <div class="dropdown profile-element" dropdown>
                     <a class="dropdown-toggle" dropdownToggle>
-                        <strong class="font-bold"><span class="caret"></span> Example user</strong>
+                        <strong class="font-bold"><span class="caret"></span> {{user.name}}</strong>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs" *dropdownMenu>
-                        <li><a [routerLink]="['../login']"><i class="fa fa-sign-out"></i> Log out</a></li>
+                        <li><a (click)="logout()"><i class="fa fa-sign-out"></i> Log out</a></li>
                     </ul>
                 </div>
             </li>

@@ -1,0 +1,37 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-center m-t-lg">
+                <h1 class="text-left">
+                    Profiles
+                </h1>
+            </div>
+            <div class="m-t-lg">
+                <p-dataTable [value]="profiles" [loading]="isLoading" [rows]="20" [paginator]="true">
+                    <p-column field="name" header="Nombre" styleClass="col-md-5 text-left"></p-column>
+                    <p-column field="status" header="Estado" styleClass="col-md-2 text-left">
+                        <ng-template let-col let-profile="rowData" pTemplate="body">
+                            <span>{{profile.status ? 'Activo' : 'Inactivo'}}</span>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="creationDate" header="Fecha de Creación" styleClass="col-md-2">
+                        <ng-template let-col let-profile="rowData" pTemplate="body">
+                            <span>{{profile.creationDate | date:'dd-MM-yyyy'}}</span>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="updateDate" header="Fecha de Actualización" styleClass="col-md-2">
+                        <ng-template let-col let-profile="rowData" pTemplate="body">
+                            <span>{{profile.updateDate | date:'dd-MM-yyyy'}}</span>
+                        </ng-template>
+                    </p-column>
+                    <p-column header="Acciones" styleClass="col-md-1 text-right">
+                        <ng-template let-col let-profile="rowData" pTemplate="body">
+                            <button pButton type="button" icon="fa-trash" class="ui-button-icon" [ngClass]="{'ui-button-danger': profile.status, 'ui-button-success': !profile.status}" pTooltip="{{!profile.status ? 'Activar' : 'Desactivar'}} perfil" tooltipPosition="top"></button>
+                            <button pButton type="button" icon="fa-pencil" class="ui-button-warning ui-button-icon" pTooltip="Editar perfil" tooltipPosition="top"></button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+    </div>
+</div>

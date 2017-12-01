@@ -7,6 +7,7 @@ import { ROUTES } from "../app/app.routes";
 import {AdminViewModule} from './users/admin/admin.module';
 import {PublicViewModule} from './users/public/public.module';
 import {SettingsViewModule} from './settings/settings.module';
+import {ProfileViewModule} from './profiles/profile.module';
 
 // App modules/components
 import {NavigationModule} from "./common/navigation/navigation.module";
@@ -22,6 +23,7 @@ import {TopnavbarModule} from "./common/topnavbar/topnavbar.module";
         AdminViewModule,
         PublicViewModule,
         SettingsViewModule,
+        ProfileViewModule,
 
         // Modules
         NavigationModule,
