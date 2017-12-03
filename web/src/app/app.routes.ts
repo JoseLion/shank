@@ -1,10 +1,9 @@
-import {Routes} from "@angular/router";
-import {MainViewComponent} from '../views/main.component';
-import {LoginViewComponent} from '../views/login/login.component';
-import {AdminViewComponent} from '../views/users/admin/admin.component';
-import {PublicViewComponent} from '../views/users/public/public.component';
-import {SettingsViewComponent} from '../views/settings/settings.component';
-import {ProfileViewComponent} from '../views/profiles/profile.component';
+import { Routes } from "@angular/router";
+import { MainViewComponent } from '../views/main.component';
+import { LoginViewComponent } from '../views/login/login.component';
+import { UserViewComponent } from '../views/users/user.component';
+import { ProfileViewComponent } from '../views/profiles/profile.component';
+import { SettingsViewComponent } from '../views/settings/settings.component';
 
 export const ROUTES:Routes = [
     // Main redirect
@@ -15,10 +14,9 @@ export const ROUTES:Routes = [
         path: 'shank',
         component: MainViewComponent,
         children: [
-            {path: 'users/admin', component: AdminViewComponent},
-            {path: 'users/public', component: PublicViewComponent},
-            {path: 'settings', component: SettingsViewComponent},
-            {path: 'profiles', component: ProfileViewComponent},
+            {path: 'usersProfiles/users/:profile', component: UserViewComponent},
+            {path: 'usersProfiles/profiles', component: ProfileViewComponent},
+            {path: 'settings', component: SettingsViewComponent}
         ]
     },
     {path: 'login', component: LoginViewComponent }

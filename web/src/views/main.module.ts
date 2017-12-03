@@ -4,15 +4,14 @@ import { MainViewComponent } from "./main.component";
 import { ROUTES } from "../app/app.routes";
 
 // App views
-import {AdminViewModule} from './users/admin/admin.module';
-import {PublicViewModule} from './users/public/public.module';
-import {SettingsViewModule} from './settings/settings.module';
-import {ProfileViewModule} from './profiles/profile.module';
+import { UserViewModule } from './users/user.module';
+import { ProfileViewModule } from './profiles/profile.module';
+import { SettingsViewModule } from './settings/settings.module';
 
 // App modules/components
-import {NavigationModule} from "./common/navigation/navigation.module";
-import {FooterModule} from "./common/footer/footer.module";
-import {TopnavbarModule} from "./common/topnavbar/topnavbar.module";
+import { NavigationModule } from "./common/navigation/navigation.module";
+import { FooterModule } from "./common/footer/footer.module";
+import { TopnavbarModule } from "./common/topnavbar/topnavbar.module";
 
 @NgModule({
     declarations: [
@@ -20,8 +19,7 @@ import {TopnavbarModule} from "./common/topnavbar/topnavbar.module";
     ],
     imports: [
         // Views
-        AdminViewModule,
-        PublicViewModule,
+        UserViewModule,
         SettingsViewModule,
         ProfileViewModule,
 

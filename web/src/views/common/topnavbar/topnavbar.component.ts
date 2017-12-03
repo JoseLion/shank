@@ -13,7 +13,6 @@ export class TopnavbarComponent {
 
     constructor(public router: Router) {
         this.user = JSON.parse(localStorage.getItem('user'));
-        console.log(this.user)
     }
 
     toggleNavigation(): void {

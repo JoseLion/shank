@@ -25,7 +25,7 @@ export class LoginViewComponent {
                 let res = response.json().response;
                 localStorage.setItem('token', res.token);
                 localStorage.setItem('user', JSON.stringify(res.user));
-                this.router.navigate(['./shank/users/admin']);
+                this.router.navigate(['./shank/users', 'admin']);
             },
             error => {
                 console.log('ERROR CONSUMO SERVICIO: ',  error.text());
