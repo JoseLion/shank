@@ -3,45 +3,47 @@ let crypto = require('crypto');
 let jwt = require('jsonwebtoken');
 let configJWT = require('../../config/jwt');
 
+let UserModel = mongoose.model('Profile');
+
 let UserSchema = new mongoose.Schema({
-
-    creationDate: {type: Date, default: Date.now()},
-    updateDate: {type: Date},
-
-    name: String,
-    lastName: String,
+    _id: Number,
+    creationDate: { type: Date, default: Date.now() },
+    updateDate: Date,
+    status: { type: Boolean, default: true },
     photo: {
         name: {type: String},
         path: {type: String}
     },
-    profile: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Profile'
-    },
-
+    name: String,
+    birthDate: Date,
+    gender: String,
+    country: String,
+    city: String,
     email: {
         type: String,
         unique: true,
         required: true,
-        index: true,
+        index: true
     },
+
+    profile: {
+        type: Number,
+        ref: 'Profile',
+        default: 2
+    },
+
+    fb: String,
+    hash: String,
+    salt: String,
+    securityCode: Number,
+
     surname: String,
     cellPhone: String,
     bettingGroups: [{type: String}],
-    gender: String,
-    birthDate: Date,
-    city: String,
     address: String,
-    fb: String,
     type: {type: Number, default: 1},
-    hash: String,
-    salt: String,
     security_code: Number,
-    enabled: {type: Boolean, default: true},
-    created_at: {type: Date, default: Date.now()},
-    updated_at: {type: Date},
-
-
+    enabled: {type: Boolean, default: true}
 });
 
 UserSchema.methods.setPassword = function (password) {

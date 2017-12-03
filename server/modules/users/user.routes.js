@@ -27,16 +27,38 @@ let prepareRouter = function (app) {
     let router = require('../core/routes.js')(User, path);
 
     router
-    .post('/findUsers', function(req, res) {
-        console.log('REQUEST: ', req.body, 'PAYLOAD: ', req.payload);
-        // TODO: if is not logged
-        // res.ok({}, 'Usuario no autorizado.')
-        User.find({type: req.body.type})
-        .select('_id name lastName email created_at updated_at enabled')
-        .exec(function(err, users) {
-            res.ok(users);
-        });
-    })
+        .post('/setUpAdminUser', function(req, res) {
+            User.findOne({email: req.body.email, profile: 1})
+                .exec(function(err, user) {
+                    if(err) {
+                        res.serverError();
+                        return;
+                    } else if(user.hash != null && user.salt != null) {
+                        res.forbidden()
+                        return;
+                    }
+                    let userModel = new User(user);
+                    userModel.setPassword('1234');
+                    userModel.save(function(err) {
+                        if(err) {
+                            res.serverError();
+                            return
+                        }
+                        res.ok(userModel)
+                    })
+                })
+        })
+        .post('/findUsers', function(req, res) {
+            console.log('REQUEST: ', req.body, 'PAYLOAD: ', req.payload);
+            // TODO: if is not logged
+            // res.ok({}, 'Usuario no autorizado.')
+            User.find(req.body)
+                .populate('profile')
+                .exec(function(err, users) {
+                    res.ok(users);
+                });
+        })
+
 
 
 

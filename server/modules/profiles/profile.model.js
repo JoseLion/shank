@@ -11,7 +11,7 @@ let ProfileSchema = new mongoose.Schema({
 
 ProfileSchema.pre('save', function(next) {
     let self = this;
-    Counter.getNextSequence('profileId', function(err, counter) {
+    Counter.getNextSequence('profiles', function(err, counter) {
         if(err) {
             self._id = -1;
             next(err)
