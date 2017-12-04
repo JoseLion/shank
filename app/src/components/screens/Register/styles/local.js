@@ -1,7 +1,7 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
 
 const LocalStyles = StyleSheet.create({
@@ -12,7 +12,7 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: '#1D222D',
     },
     buttonText: {
-        color: '#fff',
+        color: '#FFFFFF',
         fontSize: 16
     }
 });

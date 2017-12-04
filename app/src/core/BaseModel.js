@@ -42,6 +42,37 @@ function request(method, resource, params) {
 
 let BaseModel = {
 
+    async post(resource, params) {
+        let token = await AsyncStorage.getItem(AuthToken);
+        if (!token) throw notLogged;
+
+        const data = JSON.stringify(params);
+        let options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: data
+        }
+
+        const response = await fetch(ApiHost + resource, options).catch(
+            error => {
+                throw requestServerError;
+            }
+        );
+
+        const json = await response.json().catch(
+            error => {
+                throw parsingResponseError;
+            }
+        );
+
+        if (json.error !== '') throw json.error;
+        else return json.response;
+    },
+
     async get(resource) {
 
         let token = await AsyncStorage.getItem(Constants.AUTH_TOKEN);

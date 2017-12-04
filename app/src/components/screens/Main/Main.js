@@ -1,36 +1,48 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {
-    Text,
-    View,
-    FlatList,
-    ActivityIndicator,
-    TouchableHighlight,
-    AsyncStorage,
-    TouchableOpacity,
-    Platform
-} from 'react-native';
+import { Text, View, FlatList, ActivityIndicator, TouchableHighlight, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
-import {List, ListItem, SearchBar} from "react-native-elements";
+import { List, ListItem, SearchBar } from "react-native-elements";
 import * as Constants from '../../../core/Constans';
 
 import BaseModel from '../../../core/BaseModel';
 import Notifier from '../../../core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Entypo, FontAwesome} from '@expo/vector-icons';
+import { Entypo, FontAwesome } from '@expo/vector-icons';
 import ActionSheet from 'react-native-actionsheet'
 
 const isAndroid = Platform.OS == 'android' ? true : false;
+let MessageBarAlert = require('react-native-message-bar').MessageBar;
+let MessageBarManager = require('react-native-message-bar').MessageBarManager;
 
 export default class MainScreen extends Component {
 
-    static propTypes = {
-        navigation: PropTypes.object.isRequired,
-    };
+    static propTypes = { navigation: PropTypes.object.isRequired };
+    static navigationOptions = ({navigation}) => ({
+        title: 'BETTING GROUPS',
+        showIcon: true,
+        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
+        headerStyle: { backgroundColor: '#556E3E' },
+        headerLeft: null,
+        headerRight: (
+            <TouchableHighlight underlayColor="#4c6337" onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}>
+                <View style={LocalStyles.touchableUserIcon}>
+                    <Entypo name="user" size={26} color="white" onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}/>
+                </View>
+            </TouchableHighlight>
+        ),
+        tabBarIcon: ({focused, tintColor}) => {
+            return (
+                <FontAwesome name="group" size={29} color="white"/>
+            )
+        }
+    });
 
     constructor(props) {
         super(props);
+        console.log(':::IT\'S ON BEATTING GROUPS:::');
+
         this._removeStorage = this._removeStorage.bind(this);
         this.collectGroupData = this.collectGroupData.bind(this);
 
@@ -45,6 +57,30 @@ export default class MainScreen extends Component {
             refreshing: false,
             auth: null,
         };
+    }
+    componentDidMount() {
+        AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
+            this.props.navigation.setParams({
+                actionSheet: this.showActionSheet,
+                auth: authToken,
+                nav: this.props.navigation
+            });
+            this.setState({
+                auth: authToken
+            });
+            if (authToken) {
+                AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
+                    this.setState({currentUser: user})
+                    this._myGroupsAsyncRemoteRequest().then((group) => {
+                        console.log("_myGroupsAsyncRemoteRequest")
+                    });
+                });
+            }
+        });
+        MessageBarManager.registerMessageBar(this.refs.validationInput);
+    }
+    componentWillUnmount() {
+        MessageBarManager.unregisterMessageBar();
     }
 
     showActionSheet() {
@@ -70,30 +106,12 @@ export default class MainScreen extends Component {
         this.setState({loading: loading});
     }
 
-    componentDidMount() {
-        AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
-            this.props.navigation.setParams({
-                actionSheet: this.showActionSheet,
-                auth: authToken,
-                nav: this.props.navigation
-            });
-            this.setState({
-                auth: authToken
-            });
-            if (authToken) {
-                AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
-                    this.setState({currentUser: user})
-                    this._myGroupsAsyncRemoteRequest().then((group) => {
-                        console.log("_myGroupsAsyncRemoteRequest")
-                    });
-                });
-            }
-        });
-    }
+
 
     async _removeStorage() {
         try {
             let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
+            console.log('CHECK IF TOKEN != NULL GO TO SPLASH: ', !token);
             if (!token) {
                 this.props.navigation.dispatch({type: 'Splash'})
             } else {
@@ -105,31 +123,7 @@ export default class MainScreen extends Component {
         }
     }
 
-    static navigationOptions = ({navigation}) => ({
-        title: 'BETTING GROUPS',
-        showIcon: true,
-        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
-        headerStyle: {
-            backgroundColor: '#556E3E'
-        },
-        headerLeft: null,
-        headerRight: (
-            <TouchableHighlight
-                underlayColor="#4c6337"
-                onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}>
-                <View style={LocalStyles.touchableUserIcon}  >
 
-                    <Entypo name="user" size={26} color="white"
-                            onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}/>
-                </View>
-            </TouchableHighlight>
-        ),
-        tabBarIcon: ({focused, tintColor}) => {
-            return (
-                <FontAwesome name="group" size={29} color="white"/>
-            )
-        },
-    });
 
     async _myGroupsAsyncRemoteRequest(data) {
         const {page} = this.state;
@@ -230,12 +224,12 @@ export default class MainScreen extends Component {
                 data.tEndDate = JsonResponse.end_date
             }
 
-            BaseModel.get('groups/' + groupId).then((currentGroup) => {
-                data.currentGroup = currentGroup
-                this.setLoading(false);
-                nav.navigate('SingleGroup', {data: data, currentUser: JSON.parse(this.state.currentUser)})
-            })
-                .catch((error) => {
+            BaseModel.post('groupInformation', {_id: groupId})
+                .then(group => {
+                    this.setLoading(false);
+                    data.currentGroup = group
+                    nav.navigate('SingleGroup', {data: data, currentUser: JSON.parse(this.state.currentUser)})
+                }).catch((error) => {
                     this.setLoading(false);
                     Notifier.message({title: 'ERROR', message: error});
                 });
@@ -263,8 +257,7 @@ export default class MainScreen extends Component {
                         title={'Please select an action to perform'}
                         options={['Profile', 'Logout', 'Cancel']}
                         cancelButtonIndex={2}
-                        onPress={this.handlePress}
-                    />
+                        onPress={this.handlePress} />
                     <Spinner visible={this.state.loading} animation="fade"/>
                     <View style={{flex: 2, width: '100%', height: '92%'}}>
                         <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>

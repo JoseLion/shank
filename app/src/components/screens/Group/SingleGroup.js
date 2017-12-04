@@ -1,36 +1,19 @@
-/**
- * Created by MnMistake on 10/4/2017.
- */
 import PropTypes from 'prop-types';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
-
 import React, {Component} from 'react';
-import {
-    Text,
-    View,
-    StatusBar,
-    Image,
-    TouchableOpacity,
-    BackHandler,
-    Platform,
-    Alert,
-    FlatList,
-    TouchableHighlight,
-    ScrollView
-} from 'react-native';
-import {Header} from "react-native-elements"; // 0.17.0
-import {List, ListItem} from "react-native-elements"; // 0.17.0
+import { Text, View, StatusBar, Image, TouchableOpacity, BackHandler, Platform, Alert, FlatList, TouchableHighlight, ScrollView } from 'react-native';
+import { Header } from "react-native-elements"; // 0.17.0
+import { List, ListItem } from "react-native-elements"; // 0.17.0
 import BaseModel from '../../../core/BaseModel';
-
-import {Entypo, FontAwesome} from '@expo/vector-icons'; // 5.2.0
-import {TabNavigator} from 'react-navigation';
+import { Entypo, FontAwesome } from '@expo/vector-icons'; // 5.2.0
+import { TabNavigator } from 'react-navigation';
 import Notifier from '../../../core/Notifier';
-
 import ParticipantRankings from './tabNav/ParticipantRankings';
 import PlayerRankings from './tabNav/PlayerRankings';
 import TournamentRankings from './tabNav/TournamentRankings';
 import SortableListView from 'react-native-sortable-listview'
+import ScrollableTabView, {ScrollableTabBar,} from 'react-native-scrollable-tab-view';
 
 class RowComponent extends React.Component {
 
@@ -143,8 +126,6 @@ const InnerSingleGroupTabNav = TabNavigator({
     }
 });
 
-import ScrollableTabView, {ScrollableTabBar,} from 'react-native-scrollable-tab-view';
-
 //TODO REFACTOR DUPLICATED FUNCTION
 const ImageHeader = navigation => (
     <View style={{backgroundColor: '#eee', height: '16%'}}>
@@ -248,6 +229,9 @@ export default class SingleGroup extends Component {
         this.setOrderedList = this.setOrderedList.bind(this);
         this.setStateMovements = this.setStateMovements.bind(this);
         this.setPlayerRankings = this.setPlayerRankings.bind(this);
+
+        this.lastPosition = 1;
+        this.backHandler = null;
         this.state = {
             tournamentRankings: [],
             currentGroup: {},
@@ -269,10 +253,9 @@ export default class SingleGroup extends Component {
                 position: 3
             }, {none: true, position: 4}, {none: true, position: 5}],
             playerSelectionPosition: 0,
-            movementsDone: 0
+            movementsDone: 0,
+            pricePerMovement: 0
         };
-        this.lastPosition = 1;
-        this.backHandler = null;
     }
 
     static navigationOptions = ({navigation}) => ({
@@ -361,6 +344,7 @@ export default class SingleGroup extends Component {
          const { dispatch, navigation, nav } = this.props;
          BackHandler.addEventListener('hardwareBackPress', this.backHandler(dispatch)).bind(this);
          }*/
+         this._getPricePerMovement();
     }
 
     isPlayerObjectEqual(obj, compareObject) {
@@ -455,6 +439,16 @@ export default class SingleGroup extends Component {
             initialPlayerRankings: orderedPlayerRankings,
             order: order,
             playersAdded: playersAdded
+        })
+    }
+
+    _getPricePerMovement = async() => {
+        await BaseModel.get('appSettings/findByCode/PPM').then((setting) => {
+            this.state.pricePerMovement = JSON.parse(setting.value);
+        })
+        .catch((error) => {
+            this.setLoading(false);
+            console.log('ERROR: ', error);
         })
     }
 
@@ -599,7 +593,7 @@ export default class SingleGroup extends Component {
                                     bottom: '3%',
                                     left: '29%'
                                 }, MainStyles.goldenShankButtonPayment]}>
-                                <Text style={LocalStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * 0.99).toFixed(2)} $</Text>
+                                <Text style={LocalStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * this.state.pricePerMovement).toFixed(2)} $</Text>
                             </TouchableOpacity>
                         </View>
 

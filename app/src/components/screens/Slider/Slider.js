@@ -17,8 +17,8 @@ export default class SliderScreen extends Component {
     };
 
     constructor(props) {
+        console.log(':::IT\'S ON SLIDER:::');
         super(props);
-
     }
 
     render() {
@@ -34,9 +34,14 @@ export default class SliderScreen extends Component {
                         <Text style={LocalStyles.titleTxtSlideOne}>SHANK</Text>
                         <Text style={LocalStyles.medTxtSlideOne}>INVITE YOUR FRIENDS</Text>
                         <View style={LocalStyles.positionTextSlideOne}>
-                            <Text style={LocalStyles.botTxtSlideOne}>ADD THEM{"\n"}ON YOUR{"\n"}BETTING GROUP{"\n"}OR
-                                JOIN{"\n"}AN
-                                EXISTING {"\n"}ONE</Text>
+                            <Text style={LocalStyles.botTxtSlideOne}>
+                                ADD THEM{"\n"}
+                                ON YOUR{"\n"}
+                                BETTING GROUP{"\n"}
+                                OR JOIN{"\n"}
+                                AN EXISTING{"\n"}
+                                ONE
+                            </Text>
                         </View>
                         <Image style={LocalStyles.shankLogoSlideOne}
                                source={logoRegular}>
@@ -44,13 +49,20 @@ export default class SliderScreen extends Component {
                     </Image>
                 </View>
                 <View style={LocalStyles.slide}>
-                    <Image style={LocalStyles.coverImage}
-                           source={ImgSlideTwo}>
+                    <Image style={LocalStyles.coverImage} source={ImgSlideTwo}>
                         <Text style={LocalStyles.titleTxtSlideTwo}>SHANK</Text>
-                        <Text style={LocalStyles.medTxtSlideTwo}>BET ON YOUR{"\n"}FAVORITE PLAYERS</Text>
+                        <Text style={LocalStyles.medTxtSlideTwo}>
+                            BET ON YOUR{"\n"}
+                            FAVORITE PLAYERS
+                        </Text>
                         <View style={LocalStyles.positionTextSlideTwo}>
-                            <Text style={LocalStyles.botTxtSlideTwo}>RAISE{"\n"}YOUR STAKES{"\n"}FOR
-                                A{"\n"}BIGGER{"\n"}PRIZE</Text>
+                            <Text style={LocalStyles.botTxtSlideTwo}>
+                                RAISE{"\n"}
+                                YOUR STAKES{"\n"}
+                                FOR A{"\n"}
+                                BIGGER{"\n"}
+                                PRIZE
+                            </Text>
                         </View>
                         <Image style={LocalStyles.shankLogoSlideTwo}
                                source={logoRegular}>
@@ -58,14 +70,16 @@ export default class SliderScreen extends Component {
                     </Image>
                 </View>
                 <View style={LocalStyles.slide}>
-                    <Image style={LocalStyles.coverImage}
-                           source={ImgSlideThree}>
+                    <Image style={LocalStyles.coverImage} source={ImgSlideThree}>
                         <Text style={LocalStyles.titleTxtSlideThree}>SHANK</Text>
                         <Text style={LocalStyles.medTxtSlideThree}>GET YOUR REWARD</Text>
                         <View style={LocalStyles.positionTextSlideThree}>
-                            <Text style={LocalStyles.botTxtSlideThree}>PROFIT FROM{"\n"}THE
-                                OUTCOME {"\n"}
-                                AND BET{"\n"}AGAIN</Text>
+                            <Text style={LocalStyles.botTxtSlideThree}>
+                                PROFIT FROM{"\n"}
+                                THE OUTCOME {"\n"}
+                                AND BET{"\n"}
+                                AGAIN
+                            </Text>
                         </View>
                         <Image style={LocalStyles.shankLogoTopSlideThree}
                                source={logoRegular}>
@@ -74,8 +88,7 @@ export default class SliderScreen extends Component {
                                source={logoRegular}>
                         </Image>
                     </Image>
-                    <TouchableOpacity style={LocalStyles.buttonStart}
-                                        onPress={() => this.props.navigation.navigate('Main', {url: this.props.navigation.state.params.url}) }>
+                    <TouchableOpacity style={LocalStyles.buttonStart} onPress={ () => this.props.navigation.navigate('Register', {url: this.props.navigation.state.params.url}) }>
                         <Text style={LocalStyles.text}>Let's get start</Text>
                     </TouchableOpacity>
                 </View>
