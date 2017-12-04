@@ -1,9 +1,8 @@
 let mongoose = require('mongoose');
+let Counter = mongoose.model('Counter');
 let crypto = require('crypto');
 let jwt = require('jsonwebtoken');
 let configJWT = require('../../config/jwt');
-
-let UserModel = mongoose.model('Profile');
 
 let UserSchema = new mongoose.Schema({
     _id: Number,
@@ -44,6 +43,19 @@ let UserSchema = new mongoose.Schema({
     type: {type: Number, default: 1},
     security_code: Number,
     enabled: {type: Boolean, default: true}
+});
+
+UserSchema.pre('save', function(next) {
+    let self = this;
+    Counter.getNextSequence('users', function(err, counter) {
+        if(err) {
+            self._id = -1;
+            next(err)
+        } else {
+            self._id = counter.seq
+            next();
+        }
+    });
 });
 
 UserSchema.methods.setPassword = function (password) {

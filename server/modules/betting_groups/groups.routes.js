@@ -1,7 +1,3 @@
-/**
- * Created by MnMistake on 9/26/2017.
- */
-
 let mongoose = require('mongoose');
 let BettingGroup = mongoose.model('BettingGroup');
 let User = mongoose.model('User');
@@ -22,15 +18,56 @@ let bettingGroupPhoto = multer.diskStorage({
     }
 });
 
+let path = '/groups';
+let router = require('../core/routes.js')(BettingGroup, path);
+
 let auth = require('../../config/auth');
 /*let guard = require('../../config/guard')();*/
 
 let prepareRouter = function (app) {
 
-    let path = '/groups';
-    let router = require('../core/routes.js')(BettingGroup, path);
+    // let path = '/groups';
+    // let router = require('../core/routes.js')(BettingGroup, path);
 
     router
+        .post('/createGroup', auth, function (req, res) {
+            if(!req.payload._id) { res.forbidden(); return; }
+
+            let data = req.body;
+            let groupModel = new BettingGroup(data);
+            let form = new formidable.IncomingForm();
+            form.parse(req, function (err, fields, files) {
+                if(err) res.serverError();
+                let oldpath = files.photo.path;
+                let newpath = `../../public/uploads/betting_groups/${files.photo.name}`;
+                fs.rename(oldpath, newpath, function (err) {
+                    if(err) {
+                        res.serverError();
+                        return;
+                    }
+                });
+            });
+            groupModel.save(function (err) {
+                if (err) {
+                    res.ok({err}, 'GROUP ERROR ONM SAVE.');
+                    return;
+                }
+                let updateUserGroup = { $push: {bettingGroups: groupModel._id} };
+                User.findByIdAndUpdate(req.payload._id, updateUserGroup, {new: true}, function (err, data) {
+                    if (err) res.ok({}, 'Data not updated');
+                    else res.ok(data);
+                });
+            });
+        })
+        .post('/groupInformation', auth, function(req, res) {
+            if(!req.payload._id) { res.forbidden(); return; }
+            BettingGroup.findOne(req.body)
+                .exec(function(err, bettingGroup) {
+                    res.ok(bettingGroup);
+                    return;
+                });
+        })
+
         .get('/myGroups', auth, function (req, res) {
             if (!req.payload._id) {
                 res.ok({}, 'Usuario no autorizado.');
@@ -161,60 +198,7 @@ let prepareRouter = function (app) {
              });
              });*/
         })
-        .post('/createGroup', auth, function (req, res) {
-            if (!req.payload._id) {
-                res.ok({}, 'Usuario no autorizado.');
-                return;
-            }
-            let data = req.body;
-
-            let groupModel = new BettingGroup(data);
-            /*
-             let upload = multer({
-             storage: bettingGroupPhoto
-             }).single(groupModel.photo);
-             upload(req, res, function(err) {
-             res.end('GroupFile is uploaded')
-             });
-             */
-            console.log("groupModelgroupModel")
-            console.log(data)
-
-
-            var form = new formidable.IncomingForm();
-            form.parse(req, function (err, fields, files) {
-                console.log(err)
-                if (err) res.ok({}, 'error!');
-                let oldpath = files.photo.path;
-                let newpath = `../../public/uploads/betting_groups/${files.photo.name}`;
-                fs.rename(oldpath, newpath, function (err) {
-                    console.log(err)
-                    if (err) {
-                        res.ok({}, 'error!');
-                        return;
-                    }
-                });
-            });
-
-            groupModel.save(function (err) {
-                if (err) {
-                    console.log(err)
-                    res.ok({err}, 'GROUP ERROR ONM SAVE.');
-                    return;
-                }
-                let updateUserGroup = {
-                    $push: {bettingGroups: groupModel._id}
-                };
-                User.findByIdAndUpdate(req.payload._id, updateUserGroup, function (err, data) {
-                    if (err) {
-                        res.ok({}, 'Data not updated');
-                    }
-                    else {
-                        res.ok(data);
-                    }
-                });
-            });
-        });
+        ;
     return router;
 };
 
