@@ -1,11 +1,66 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-12">
+        <form class="col-lg-12" role="form" name="appSettings" (submit)="saveSettings()" novalidate>
             <div class="m-t-lg">
                 <h1>
                     Application Settings
                 </h1>
             </div>
-        </div>
+            <div class="col-md-12 form-group">
+                <div class="col-md-3"></div>
+                <span class="col-md-6 ui-float-label text-bigger">
+                    <label for="ppm" class="col-md-6">{{settings.ppm.name}}</label>
+                    <div class="col-md-6">
+                        <input id="ppm" name="ppm" type="number" pInputText [(ngModel)]="settings.ppm.value" />
+                    </div>
+                </span>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="col-md-12 form-group">
+                <div class="col-md-6 text-medium">
+                    <span class="col-md-12 ui-float-label  form-group">
+                        <label for="pfp" class="col-md-6">{{settings.pfp.name}}</label>
+                        <div class="col-md-6">
+                            <input id="pfp" name="pfp" type="number" pInputText [(ngModel)]="settings.pfp.value" />
+                        </div>
+                    </span>
+                    <span class="col-md-12 ui-float-label  form-group">
+                        <label for="psp" class="col-md-6">{{settings.psp.name}}</label>
+                        <div class="col-md-6">
+                            <input id="psp" name="psp" type="number" pInputText [(ngModel)]="settings.psp.value" />
+                        </div>
+                    </span>
+                    <span class="col-md-12 ui-float-label  form-group">
+                        <label for="ptp" class="col-md-6">{{settings.ptp.name}}</label>
+                        <div class="col-md-6">
+                            <input id="ptp" name="ptp" type="number" pInputText [(ngModel)]="settings.ptp.value" />
+                        </div>
+                    </span>
+                </div>
+                <div class="col-md-6 text-medium">
+                    <span class="col-md-12 ui-float-label  form-group">
+                        <label for="pfd" class="col-md-6">{{settings.pfd.name}}</label>
+                        <div class="col-md-6">
+                            <input id="pfd" name="pfd" type="number" pInputText [(ngModel)]="settings.pfd.value" />
+                        </div>
+                    </span>
+                    <span class="col-md-12 ui-float-label  form-group">
+                        <label for="psd" class="col-md-6">{{settings.psd.name}}</label>
+                        <div class="col-md-6">
+                            <input id="psd" name="psd" type="number" pInputText [(ngModel)]="settings.psd.value" />
+                        </div>
+                    </span>
+                    <span class="col-md-12 ui-float-label  form-group">
+                        <label for="ptd" class="col-md-6">{{settings.ptd.name}}</label>
+                        <div class="col-md-6">
+                            <input id="ptd" name="ptd" type="number" pInputText [(ngModel)]="settings.ptd.value" />
+                        </div>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-12 form-group text-right">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
     </div>
 </div>

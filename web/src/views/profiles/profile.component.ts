@@ -33,6 +33,6 @@ export class ProfileViewComponent {
     get profiles() { return this._profiles; }
 
     set isLoading(_isLoading:boolean) { this._isLoading = _isLoading; }
-    get isLoading() { return this._isLoading; }
+    get isLoading():boolean { return this._isLoading; }
 
 }

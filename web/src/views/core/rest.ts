@@ -10,9 +10,10 @@ export class Rest {
     jwt: string;
     decodedJwt: string;
     baseUrl: string = consts.host.baseUrl;
+    token: string;
 
     constructor(public http: Http, public authHttp: AuthHttp, public jwtHelper: JwtHelper) {
-        // this.jwt = localStorage.getItem('token');
+        this.jwt = localStorage.getItem('token');
         // if(this.jwt != null) {
         //     this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
         // }
@@ -25,21 +26,12 @@ export class Rest {
     get(url: string, params?: any) {
         let finalUrl = this.baseUrl.concat(url);
         if(params != null) {
-            console.log(params)
             for(let param in params) {
                 finalUrl = finalUrl.concat('/').concat(params[param]);
-                console.log(param);
             }
-            // forEach(params, param => {
-            //     console.log(param);
-            // })
         }
-
-        this.jwt = localStorage.getItem('token');
-        if(this.jwt != null) {
-            this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
-        }
-        console.log(finalUrl);
+        if(this.jwt != null) { this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt); }
+        contentHeaders.append('Authorization', `Bearer ${this.token}`);
         return this.authHttp.get(finalUrl, {headers: contentHeaders});
     }
 
@@ -49,6 +41,7 @@ export class Rest {
         if(this.jwt != null) {
             this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
         }
+        contentHeaders.append('Authorization', `Bearer ${this.token}`);
         return this.authHttp.post(finalUrl, body, {headers: contentHeaders});
     }
 
