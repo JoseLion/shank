@@ -1,66 +1,83 @@
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <form class="col-lg-12" role="form" name="appSettings" (submit)="saveSettings()" novalidate>
-            <div class="m-t-lg">
-                <h1>
-                    Application Settings
-                </h1>
+    <form class="col-md-12" role="form" name="appSettings" (submit)="saveSettings()" novalidate>
+
+        <div class="col-md-12 header-top">
+            <div class="col-md-6 header-title">
+                <h1>Application Settings</h1>
             </div>
+            <div class="col-md-6 text-right">
+                <button type="submit" class="btn btn-primary btn-w-m">Save</button>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="col-md-12 body-container">
             <div class="col-md-12 form-group">
-                <div class="col-md-3"></div>
-                <span class="col-md-6 ui-float-label text-bigger">
+                <div class="col-md-1"></div>
+                <span class="col-md-8 text-bigger text-right">
                     <label for="ppm" class="col-md-6">{{settings.ppm.name}}</label>
-                    <div class="col-md-6">
-                        <input id="ppm" name="ppm" type="number" pInputText [(ngModel)]="settings.ppm.value" />
+                    <div class="col-md-3 cash-input">
+                        <input id="ppm" name="ppm" type="number" pInputText [(ngModel)]="settings.ppm.value" class="text-right"/>
                     </div>
+                    <span class="col-md-3 text-left"></span>
                 </span>
                 <div class="col-md-3"></div>
+                <div class="clearfix"></div>
             </div>
             <div class="col-md-12 form-group">
-                <div class="col-md-6 text-medium">
-                    <span class="col-md-12 ui-float-label  form-group">
+                <div class="col-md-1"></div>
+                <div class="col-md-5 text-medium">
+                    <span class="col-md-12 form-group">
                         <label for="pfp" class="col-md-6">{{settings.pfp.name}}</label>
-                        <div class="col-md-6">
-                            <input id="pfp" name="pfp" type="number" pInputText [(ngModel)]="settings.pfp.value" />
+                        <div class="col-md-4 points-input">
+                            <input id="pfp" name="pfp" type="number" pInputText [(ngModel)]="settings.pfp.value" class="text-right" />
                         </div>
+                        <div class="col-md-2"></div>
                     </span>
-                    <span class="col-md-12 ui-float-label  form-group">
+                    <span class="col-md-12 form-group">
                         <label for="psp" class="col-md-6">{{settings.psp.name}}</label>
-                        <div class="col-md-6">
-                            <input id="psp" name="psp" type="number" pInputText [(ngModel)]="settings.psp.value" />
+                        <div class="col-md-4 points-input">
+                            <input id="psp" name="psp" type="number" pInputText [(ngModel)]="settings.psp.value" class="text-right" />
                         </div>
+                        <div class="col-md-2"></div>
                     </span>
-                    <span class="col-md-12 ui-float-label  form-group">
+                    <span class="col-md-12 form-group">
                         <label for="ptp" class="col-md-6">{{settings.ptp.name}}</label>
-                        <div class="col-md-6">
-                            <input id="ptp" name="ptp" type="number" pInputText [(ngModel)]="settings.ptp.value" />
+                        <div class="col-md-4 points-input">
+                            <input id="ptp" name="ptp" type="number" pInputText [(ngModel)]="settings.ptp.value" class="text-right" />
                         </div>
+                        <div class="col-md-2"></div>
                     </span>
                 </div>
-                <div class="col-md-6 text-medium">
-                    <span class="col-md-12 ui-float-label  form-group">
-                        <label for="pfd" class="col-md-6">{{settings.pfd.name}}</label>
-                        <div class="col-md-6">
-                            <input id="pfd" name="pfd" type="number" pInputText [(ngModel)]="settings.pfd.value" />
+                <div class="col-md-5 text-medium">
+                    <span class="col-md-12 form-group">
+                        <label for="pfd" class="col-md-3">{{settings.pfd.name}}</label>
+                        <div class="col-md-4 percent-input">
+                            <input id="pfd" name="pfd" type="number" pInputText [(ngModel)]="settings.pfd.value" class="text-right" />
                         </div>
+                        <div class="col-md-5"></div>
                     </span>
-                    <span class="col-md-12 ui-float-label  form-group">
-                        <label for="psd" class="col-md-6">{{settings.psd.name}}</label>
-                        <div class="col-md-6">
-                            <input id="psd" name="psd" type="number" pInputText [(ngModel)]="settings.psd.value" />
+                    <span class="col-md-12 form-group">
+                        <label for="psd" class="col-md-3">{{settings.psd.name}}</label>
+                        <div class="col-md-4 percent-input">
+                            <input id="psd" name="psd" type="number" pInputText [(ngModel)]="settings.psd.value" class="text-right" />
                         </div>
+                        <div class="col-md-5"></div>
                     </span>
-                    <span class="col-md-12 ui-float-label  form-group">
-                        <label for="ptd" class="col-md-6">{{settings.ptd.name}}</label>
-                        <div class="col-md-6">
-                            <input id="ptd" name="ptd" type="number" pInputText [(ngModel)]="settings.ptd.value" />
+                    <span class="col-md-12 form-group">
+                        <label for="ptd" class="col-md-3">{{settings.ptd.name}}</label>
+                        <div class="col-md-4 percent-input">
+                            <input id="ptd" name="ptd" type="number" pInputText [(ngModel)]="settings.ptd.value" class="text-right" />
                         </div>
+                        <div class="col-md-5"></div>
                     </span>
                 </div>
+                <div class="col-md-1"></div>
             </div>
-            <div class="col-md-12 form-group text-right">
-                <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-        </form>
-    </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="clearfix"></div>
+
+    </form>
 </div>

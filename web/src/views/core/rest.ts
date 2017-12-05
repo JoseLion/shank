@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import { Router } from '@angular/router';
 import { AuthHttp, JwtHelper } from 'angular2-jwt';
 import { consts } from './consts';
 import { contentHeaders } from './contentHeaders';
@@ -10,13 +11,18 @@ export class Rest {
     jwt: string;
     decodedJwt: string;
     baseUrl: string = consts.host.baseUrl;
-    token: string;
 
-    constructor(public http: Http, public authHttp: AuthHttp, public jwtHelper: JwtHelper) {
+    constructor(public http: Http, public authHttp: AuthHttp, public jwtHelper: JwtHelper, private router: Router) {
         this.jwt = localStorage.getItem('token');
-        // if(this.jwt != null) {
-        //     this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
-        // }
+    }
+
+    checkJWT() {
+        if(!this.jwt) {
+            this.router.navigate(['/login']);
+            return false;
+        }
+        this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
+        return true;
     }
 
     auth(body: any) {
@@ -30,19 +36,18 @@ export class Rest {
                 finalUrl = finalUrl.concat('/').concat(params[param]);
             }
         }
-        if(this.jwt != null) { this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt); }
-        contentHeaders.append('Authorization', `Bearer ${this.token}`);
-        return this.authHttp.get(finalUrl, {headers: contentHeaders});
+        if(this.checkJWT()) {
+            contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
+            return this.authHttp.get(finalUrl, {headers: contentHeaders});
+        }
     }
 
     post(url: string, body: any) {
         let finalUrl = this.baseUrl.concat(url);
-        this.jwt = localStorage.getItem('token');
-        if(this.jwt != null) {
-            this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
+        if(this.checkJWT()) {
+            contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
+            return this.authHttp.post(finalUrl, body, {headers: contentHeaders});
         }
-        contentHeaders.append('Authorization', `Bearer ${this.token}`);
-        return this.authHttp.post(finalUrl, body, {headers: contentHeaders});
     }
 
 }

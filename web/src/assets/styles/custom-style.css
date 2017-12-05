@@ -6,5 +6,21 @@
 #login{padding-top:5em;}
 .page-title{text-transform:capitalize;}
 
+.header-top,.body-container{background:#FFFFFF;padding-bottom:1.5em;padding-top:1.5em;margin-bottom:2em;}
+
+.header-top .header-title h1{margin:unset;}
+
 .text-bigger{font-size:2em;}
 .text-medium{font-size:1.5em;}
+
+.form-group input{width:100%;}
+.form-group label{margin-top:5px;}
+.form-group label::after{content:":";}
+
+.form-group .cash-input::before{content:"\f155";font-family:FontAwesome;position:absolute;left:1em;top:0.2em;}
+.form-group .cash-input input{padding-left:1em;}
+
+.form-group .points-input::before{content:"\f05d";font-family:FontAwesome;position:absolute;left:1em;top:0.2em;}
+.form-group .points-input input{padding-left:1.2em;}
+
+.form-group .percent-input::after{content:"\f295";font-family:FontAwesome;position:absolute;right:-0.3em;top:0.2em;}

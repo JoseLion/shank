@@ -7,7 +7,7 @@ import { SettingsViewComponent } from '../views/settings/settings.component';
 
 export const ROUTES:Routes = [
     // Main redirect
-    {path: '', redirectTo: 'shank', pathMatch: 'full'},
+    {path: '', redirectTo: 'login', pathMatch: 'full'},
 
     // App views
     {
