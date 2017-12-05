@@ -4,12 +4,11 @@ let path = require('path');
 let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
-
 let mongoose = require('mongoose');
-
-mongoose.Promise = global.Promise;
 let passport = require('passport');
 let customResponses = require('express-custom-response');
+let cors = require('cors');
+mongoose.Promise = global.Promise;
 
 const databaseUri = 'mongodb://shank.levelaptesting.com:27017/shank'; //docker macOs enviroment
 
@@ -20,6 +19,8 @@ mongoose.connect(databaseUri, {databaseUri: true})
 customResponses(path.join(__dirname, '/modules/responses'));
 
 let app = express();
+
+app.use(cors());
 
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
@@ -37,7 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, content-type, Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
 
