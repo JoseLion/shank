@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { consts } from '../core/consts';
-import { Rest } from '../core/rest';
+import { consts } from 'views/core/consts';
+import { Rest } from 'views/core/rest';
 
 @Component({
     selector: 'user',
-    templateUrl: 'user.template.html'
+    templateUrl: './templates/users.html'
 })
 export class UserViewComponent {
 

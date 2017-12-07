@@ -9,6 +9,8 @@ import { AuthHttp, AuthConfig, JwtHelper } from 'angular2-jwt';
 import { EmitterService } from '../views/core/emitter.service';
 import { Rest } from '../views/core/rest';
 import { AuthGuard } from '../views/core/AuthGuard';
+import { SweetAlert } from 'views/core/SweetAlert';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 // App views
 import { MainViewModule } from '../views/main.module';
@@ -34,7 +36,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
         RouterModule.forRoot(ROUTES)
     ],
     providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         EmitterService,
         Rest,
         AuthGuard,
@@ -43,7 +45,9 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
             useFactory: authHttpServiceFactory,
             deps: [ Http, RequestOptions ]
         },
-        JwtHelper
+        JwtHelper,
+        SweetAlert,
+        MessageService
     ],
     bootstrap: [
         AppComponent

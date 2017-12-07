@@ -1,6 +1,8 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <form class="col-md-12" role="form" name="appSettings" (submit)="saveSettings()" novalidate>
 
+        <p-growl></p-growl>
+
         <div class="col-md-12 header-top">
             <div class="col-md-6 header-title">
                 <h1>Application Settings</h1>
@@ -29,24 +31,24 @@
                 <div class="col-md-5 text-medium">
                     <span class="col-md-12 form-group">
                         <label for="pfp" class="col-md-6">{{settings.pfp.name}}</label>
-                        <div class="col-md-4 points-input">
+                        <div class="col-md-5 points-input">
                             <input id="pfp" name="pfp" type="number" pInputText [(ngModel)]="settings.pfp.value" class="text-right" />
                         </div>
-                        <div class="col-md-2"></div>
+                        <div class="col-md-1"></div>
                     </span>
                     <span class="col-md-12 form-group">
                         <label for="psp" class="col-md-6">{{settings.psp.name}}</label>
-                        <div class="col-md-4 points-input">
+                        <div class="col-md-5 points-input">
                             <input id="psp" name="psp" type="number" pInputText [(ngModel)]="settings.psp.value" class="text-right" />
                         </div>
-                        <div class="col-md-2"></div>
+                        <div class="col-md-1"></div>
                     </span>
                     <span class="col-md-12 form-group">
                         <label for="ptp" class="col-md-6">{{settings.ptp.name}}</label>
-                        <div class="col-md-4 points-input">
+                        <div class="col-md-5 points-input">
                             <input id="ptp" name="ptp" type="number" pInputText [(ngModel)]="settings.ptp.value" class="text-right" />
                         </div>
-                        <div class="col-md-2"></div>
+                        <div class="col-md-1"></div>
                     </span>
                 </div>
                 <div class="col-md-5 text-medium">
@@ -76,8 +78,9 @@
             </div>
             <div class="clearfix"></div>
         </div>
-
         <div class="clearfix"></div>
 
     </form>
+    <div class="clearfix"></div>
+    
 </div>

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { consts } from '../core/consts';
 import { Rest } from '../core/rest';
+import { SweetAlert } from 'views/core/SweetAlert';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
     selector: 'settings',
@@ -18,7 +20,7 @@ export class SettingsViewComponent {
         ptd: { code: 'PTD', name: 'Day 3', value : 0, type: 'number' }
     };
 
-    constructor(private rest : Rest) {
+    constructor(private rest : Rest, private sweetAlert : SweetAlert, private messageService : MessageService) {
         for(let setting in this.settings) {
             this.rest.get('appSettings/findByCode', {code: this.settings[setting].code})
                 .subscribe(
@@ -34,18 +36,20 @@ export class SettingsViewComponent {
     }
 
     saveSettings = function() {
-        console.log('ejecutar guardar todooooo')
-        this.rest.post('appSettings/masiveCreateUpdate', this.settings)
+        let _ = this;
+        SweetAlert.save(function() {
+            _.rest.post('appSettings/masiveCreateUpdate', _.settings)
             .subscribe(
                 response => {
                     let res = response.json().response;
-                    console.log(res)
-                    //if(res._id) this.settings[setting] = response.json().response;
+                    SweetAlert.successNotif('Data saved!', _.messageService);
+                    SweetAlert.close();
                 },
                 error => {
-                    console.log('ERROR CONSUMO SERVICIO: ',  error.text());
+                    SweetAlert.close();
                 }
             );
+        });
     };
 
     /* GETTERS AND SETTERS */

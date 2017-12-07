@@ -20,11 +20,10 @@ export class LoginViewComponent {
         this.rest.auth(JSON.stringify({ email, password }))
         .subscribe(
             response => {
-                jQuery('body').removeClass('gray-bg')
                 let res = response.json().response;
                 localStorage.setItem('token', res.token);
                 localStorage.setItem('user', JSON.stringify(res.user));
-                this.router.navigate(['/shank/usersProfiles/users/', 'admin']);
+                this.router.navigate(['/shank/reports/dashboard']);
             },
             error => {
                 console.log('ERROR CONSUMO SERVICIO: ',  error.text());

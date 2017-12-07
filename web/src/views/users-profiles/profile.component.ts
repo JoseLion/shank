@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { consts } from '../core/consts';
-import { Rest } from '../core/rest';
+import { consts } from 'views/core/consts';
+import { Rest } from 'views/core/rest';
 
 @Component({
     selector: 'profile',
-    templateUrl: 'profile.template.html'
+    templateUrl: './templates/profiles.html'
 })
 export class ProfileViewComponent {
 

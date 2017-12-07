@@ -18,7 +18,7 @@ export class Rest {
 
     checkJWT() {
         if(!this.jwt) {
-            this.router.navigate(['/login']);
+            //this.router.navigate(['/login']);
             return false;
         }
         this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
@@ -36,18 +36,14 @@ export class Rest {
                 finalUrl = finalUrl.concat('/').concat(params[param]);
             }
         }
-        if(this.checkJWT()) {
-            contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
-            return this.authHttp.get(finalUrl, {headers: contentHeaders});
-        }
+        contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
+        return this.authHttp.get(finalUrl, {headers: contentHeaders});
     }
 
     post(url: string, body: any) {
         let finalUrl = this.baseUrl.concat(url);
-        if(this.checkJWT()) {
-            contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
-            return this.authHttp.post(finalUrl, body, {headers: contentHeaders});
-        }
+        contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
+        return this.authHttp.post(finalUrl, body, {headers: contentHeaders});
     }
 
 }

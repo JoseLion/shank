@@ -1,8 +1,9 @@
 import { Routes } from "@angular/router";
 import { MainViewComponent } from '../views/main.component';
 import { LoginViewComponent } from '../views/login/login.component';
-import { UserViewComponent } from '../views/users/user.component';
-import { ProfileViewComponent } from '../views/profiles/profile.component';
+import { DashboardComponent } from 'views/reports/dashboard/dashboard.component';
+import { UserViewComponent } from 'views/users-profiles/user.component';
+import { ProfileViewComponent } from 'views/users-profiles/profile.component';
 import { SettingsViewComponent } from '../views/settings/settings.component';
 
 export const ROUTES:Routes = [
@@ -14,9 +15,10 @@ export const ROUTES:Routes = [
         path: 'shank',
         component: MainViewComponent,
         children: [
-            {path: 'usersProfiles/users/:profile', component: UserViewComponent},
-            {path: 'usersProfiles/profiles', component: ProfileViewComponent},
-            {path: 'settings', component: SettingsViewComponent}
+            { path: 'reports/dashboard', component: DashboardComponent },
+            { path: 'usersProfiles/users/:profile', component: UserViewComponent },
+            { path: 'usersProfiles/profiles', component: ProfileViewComponent },
+            { path: 'settings', component: SettingsViewComponent }
         ]
     },
     {path: 'login', component: LoginViewComponent }

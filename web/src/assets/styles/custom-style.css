@@ -5,10 +5,12 @@
 .profile-element{padding:20px 10px;display:block!important;}
 #login{padding-top:5em;}
 .page-title{text-transform:capitalize;}
+.navbar-static-top{z-index:unset;}
 
 .header-top,.body-container{background:#FFFFFF;padding-bottom:1.5em;padding-top:1.5em;margin-bottom:2em;}
-
 .header-top .header-title h1{margin:unset;}
+
+button{position:relative;}
 
 .text-bigger{font-size:2em;}
 .text-medium{font-size:1.5em;}
@@ -24,3 +26,6 @@
 .form-group .points-input input{padding-left:1.2em;}
 
 .form-group .percent-input::after{content:"\f295";font-family:FontAwesome;position:absolute;right:-0.3em;top:0.2em;}
+
+p-progressspinner{position:absolute;top:0;left:0;right:0;bottom:0;height:100%;}
+p-progressspinner .ui-progress-spinner{width:100%;height:100%;}

@@ -7,6 +7,9 @@
             <li [ngClass]="{active: activeRoute('reports')}">
                 <a><i class="fa fa-file-text-o"></i> <span class="nav-label">Reports</span></a>
                 <ul class="nav metismenu">
+                    <li [ngClass]="{active: activeRoute('reports/dashboard')}">
+                        <a [routerLink]="['./reports/dashboard']"><i class="fa fa-bookmark-o"></i> <span class="nav-label">Dashboard</span></a>
+                    </li>
                     <li [ngClass]="{active: activeRoute('reports/referred')}">
                         <a><i class="fa fa-"></i> <span class="nav-label">Referred</span></a>
                     </li>

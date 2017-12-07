@@ -1,34 +1,75 @@
+// Angular modules:
 import { NgModule } from '@angular/core';
+import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
-import { MainViewComponent } from "./main.component";
-import { ROUTES } from "../app/app.routes";
+import { FormsModule } from '@angular/forms';
 
-// App views
-import { UserViewModule } from './users/user.module';
-import { ProfileViewModule } from './profiles/profile.module';
-import { SettingsViewModule } from './settings/settings.module';
+// Core modules:
+import {
+    InputTextModule,
+    ProgressSpinnerModule,
+    GrowlModule,
+    DataTableModule,
+    SharedModule,
+    ButtonModule,
+    TooltipModule
+} from 'primeng/primeng';
 
-// App modules/components
-import { NavigationModule } from "./common/navigation/navigation.module";
-import { FooterModule } from "./common/footer/footer.module";
-import { TopnavbarModule } from "./common/topnavbar/topnavbar.module";
+import { ROUTES } from "app/app.routes";
+
+// App modules:
+import { ReportsModule } from './reports/reports.module';
+// import { UserViewModule } from './users/user.module';
+// import { ProfileViewModule } from './profiles/profile.module';
+
+// App core components:
+// import { TopnavbarModule } from "views/common/topnavbar/topnavbar.module";
+
+// App components:
+import { NavigationComponent } from "views/common/navigation";
+import { FooterComponent } from "views/common/footer";
+import { TopnavbarComponent } from "views/common/topnavbar";
+
+import { MainViewComponent } from "views/main.component";
+import { UserViewComponent } from "views/users-profiles/user.component";
+import { ProfileViewComponent } from "views/users-profiles/profile.component";
+import { SettingsViewComponent } from "views/settings/settings.component";
 
 @NgModule({
     declarations: [
-        MainViewComponent
+        FooterComponent,
+        NavigationComponent,
+        TopnavbarComponent,
+
+        MainViewComponent,
+        UserViewComponent,
+        ProfileViewComponent,
+        SettingsViewComponent
     ],
     imports: [
-        // Views
-        UserViewModule,
-        SettingsViewModule,
-        ProfileViewModule,
+        // Core:
+        BrowserModule,
+        RouterModule.forRoot(ROUTES),
+        FormsModule,
+
+        // PrimeNG
+        InputTextModule,
+        ProgressSpinnerModule,
+        GrowlModule,
+        DataTableModule,
+        SharedModule,
+        ButtonModule,
+        TooltipModule,
+
+        // Modules:
+        ReportsModule,
+
+        // UserViewModule,
+        // SettingsViewModule,
+        //ProfileViewModule,
 
         // Modules
-        NavigationModule,
-        FooterModule,
-        TopnavbarModule,
 
-        RouterModule.forRoot(ROUTES)
     ]
 })
 export class MainViewModule { }

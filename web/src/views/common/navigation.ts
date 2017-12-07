@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
 declare var jQuery:any;
 
 @Component({
     selector: 'navigation',
-    templateUrl: 'navigation.template.html'
+    templateUrl: './template/navigation.html'
 })
 export class NavigationComponent {
 
