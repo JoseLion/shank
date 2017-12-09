@@ -10,6 +10,8 @@ let BettingGroup = mongoose.model('BettingGroup');
 
 let authHelper = require('./auth.helper');
 
+let constants = require('../../config/constants');
+
 module.exports = function () {
 
     router
@@ -25,10 +27,10 @@ module.exports = function () {
                         token = user.generateJwt([]);
                         res.ok({user: user, token: token, response: ''});
                     } else {
-                        res.ok({}, 'user not enabled.');
+                        res.ok({}, constants.user.disabled);
                     }
                 } else {
-                    res.ok({}, 'user not found.');
+                    res.ok({}, constants.user.notFound);
                 }
             })(req, res);
         })
@@ -44,10 +46,10 @@ module.exports = function () {
                         token = user.generateJwt([]);
                         res.ok({user: user, token: token, response: ''});
                     } else {
-                        res.ok({}, 'user not enabled.');
+                        res.ok({}, constants.user.disabled);
                     }
                 } else {
-                    res.ok({}, 'user not found.');
+                    res.ok({}, constants.user.notFound);
                 }
             })(req, res);
         })
