@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { AsyncStorage, Text, View, TextInput, TouchableHighlight, TouchableOpacity, Alert, findNodeHandle, Keyboard, Linking } from 'react-native';
+import { AsyncStorage, Text, View, TextInput, TouchableHighlight, TouchableOpacity, findNodeHandle, Keyboard, Linking } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
-import Notifier from '../../../core/Notifier';
 import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
+import * as BarMessages from '../../../core/BarMessages';
+import DropdownAlert from 'react-native-dropdownalert';
+
 import Spinner from 'react-native-loading-spinner-overlay';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import qs from 'qs';
 import { Facebook } from 'expo';
 
 const DismissKeyboardView = Constants.DismissKeyboardHOC(View)
-let MessageBarAlert = require('react-native-message-bar').MessageBar;
-let MessageBarManager = require('react-native-message-bar').MessageBarManager;
 
 export default class Register extends Component {
 
@@ -45,22 +45,9 @@ export default class Register extends Component {
     }
     componentDidMount(){
         Linking.addEventListener('url', this._handleRedirects)
-        MessageBarManager.registerMessageBar(this.refs.validationInput);
-    }
-    componentWillUnmount() {
-        MessageBarManager.unregisterMessageBar();
     }
 
     setLoading(loading) { this.setState({loading: loading}); }
-
-    showMessage(type, message) {
-        MessageBarManager.showAlert({
-            message: message,
-            alertType: type,
-            position: 'bottom',
-            animationType: 'SlideFromBottom'
-        });
-    }
 
     _handleRedirects = (event) => {
         let query = event.url.replace(Constants.LINKING_URI+'+', ''),
@@ -73,32 +60,31 @@ export default class Register extends Component {
     _handleNewRegistry = function(url) {
 
         if (!this.state.name) {
-            this.showMessage('error', 'Please enter your Name.')
+            BarMessages.showError('Please enter your Name.', this.validationMessage);
             return;
         }
 
         if (!this.state.email) {
-            this.showMessage('error', 'Please enter your Email.')
+            BarMessages.showError('Please enter your Email.', this.validationMessage);
             return;
         }
 
         if (!this.state.password) {
-            this.showMessage('error', 'Please enter your password.')
+            BarMessages.showError('Please enter your password.', this.validationMessage);
             return;
         }
 
         if (this.state.password != this.state.repeatedPassword) {
-            this.showMessage('error', 'Passwords must match.')
+            BarMessages.showError('Passwords must match.', this.validationMessage);
             return;
         }
-        this.setLoading(true);
 
+        this.setLoading(true);
         let data = {
             name: this.state.name,
             email: this.state.email.toLowerCase(),
             password: this.state.password,
         };
-
         this._registerUserAsync(data, url);
     };
 
@@ -113,17 +99,14 @@ export default class Register extends Component {
                 this.props.navigation.dispatch({type: 'Main'});
             }).catch((error) => {
                 this.setLoading(false);
-                this.showMessage('error', error);
+                BarMessages.showError(error, this.validationMessage);
             });
     };
 
     _registerByFacebook = async () => {
         this.setLoading(true);
         try {
-            const {type, token} = await Facebook.logInWithReadPermissionsAsync(
-                Constants.APP_FB_ID,
-                {permissions: ['public_profile', 'email', 'user_friends']}
-            );
+            const {type, token} = await Facebook.logInWithReadPermissionsAsync(Constants.APP_FB_ID, { permissions: ['public_profile', 'email', 'user_friends'] });
 
             switch (type) {
                 case 'success': {
@@ -144,26 +127,29 @@ export default class Register extends Component {
                         this._registerUserAsync(data).then((response) => {
                             this.setLoading(false);
                             this.props.navigation.dispatch({type: 'Main'});
-                        })
+                        }).catch((error) => {
+                            this.setLoading(false);
+                            BarMessages.showError(error, this.validationMessage);
+                        });
                     } else {
                         this.setLoading(false);
-                        Alert.alert('Cancelled!', 'Facebook account does not have an associated email!');
+                        BarMessages.showError('Facebook account does not have an associated email!', this.validationMessage);
                     }
                     break;
                 }
                 case 'cancel': {
                     this.setLoading(false);
-                    Alert.alert('Cancelled!', 'FB Register was cancelled!');
+                    BarMessages.showError('Facebook register was cancelled!', this.validationMessage);
                     break;
                 }
                 default: {
                     this.setLoading(false);
-                    Alert.alert('Oops!', 'Register failed!');
+                    BarMessages.showError('Register failed!', this.validationMessage);
                 }
             }
         } catch (e) {
             this.setLoading(false);
-            Alert.alert('Oops!', 'Register failed!');
+            BarMessages.showError('Register failed!', this.validationMessage);
         }
     };
 
@@ -241,10 +227,9 @@ export default class Register extends Component {
                                 I already have an account
                             </Text>
                         </TouchableOpacity>
-
                     </View>
                 </KeyboardAwareScrollView>
-                <MessageBarAlert ref="validationInput" />
+                <DropdownAlert ref={ref => this.validationMessage = ref} />
             </View>
         );
     }

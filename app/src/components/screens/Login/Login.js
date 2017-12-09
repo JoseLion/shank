@@ -3,15 +3,13 @@ import PropTypes from 'prop-types';
 import { Button, StyleSheet, Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, Keyboard } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
-import Notifier from '../../../core/Notifier';
 import NoAuthModel from '../../../core/NoAuthModel';
 import * as Constants from '../../../core/Constans';
+import * as BarMessages from '../../../core/BarMessages';
+import DropdownAlert from 'react-native-dropdownalert';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Facebook } from 'expo';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
-let MessageBarAlert = require('react-native-message-bar').MessageBar;
-let MessageBarManager = require('react-native-message-bar').MessageBarManager;
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class LoginScreen extends Component {
 
@@ -36,34 +34,19 @@ export default class LoginScreen extends Component {
             loading: false
         };
     }
-    componentDidMount(){
-        MessageBarManager.registerMessageBar(this.refs.validationInput);
-    }
-    componentWillUnmount() {
-        MessageBarManager.unregisterMessageBar();
-    }
 
     setLoading(loading) { this.setState({loading: loading}); }
-
-    showMessage(type, message) {
-        MessageBarManager.showAlert({
-            message: message,
-            alertType: type,
-            position: 'bottom',
-            animationType: 'SlideFromBottom'
-        });
-    }
 
     _scrollToInput = function(reactNode) { this.refs.scroll.scrollToFocusedInput(reactNode); }
     _onLoginPressed = function(url) {
 
         if(!this.state.email) {
-            this.showMessage('error', 'Please enter your Email.')
+            BarMessages.showError('Please enter your Email.', this.validationMessage);
             return;
         }
 
         if(!this.state.password) {
-            this.showMessage('error', 'Please enter your Password.')
+            BarMessages.showError('Please enter your Password.', this.validationMessage);
             return;
         }
         this.setLoading(true);
@@ -86,7 +69,7 @@ export default class LoginScreen extends Component {
                 this.props.navigation.dispatch({type: 'Main'});
             }).catch((error) => {
                 this.setLoading(false);
-                this.showMessage('error', error);
+                BarMessages.showError(error, this.validationMessage);
             });
     }
 
@@ -137,7 +120,7 @@ export default class LoginScreen extends Component {
 
                     </View>
                 </KeyboardAwareScrollView>
-                <MessageBarAlert ref="validationInput" />
+                <DropdownAlert ref={ref => this.validationMessage = ref} />
             </View>
         );
     }
