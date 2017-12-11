@@ -1,52 +1,55 @@
+// React components:
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, FlatList, ActivityIndicator, TouchableHighlight, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { List, ListItem, SearchBar } from 'react-native-elements';
+import ActionSheet from 'react-native-actionsheet';
+import DropdownAlert from 'react-native-dropdownalert';
+
+// Third party components:
+import { FontAwesome } from '@expo/vector-icons';
+
+// Shank components:
+import BaseModel from '../../../core/BaseModel';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
-import { List, ListItem, SearchBar } from "react-native-elements";
-import * as Constants from '../../../core/Constans';
+import * as Constants from '../../../core/Constants';
+import * as BarMessages from '../../../core/BarMessages';
 
-import BaseModel from '../../../core/BaseModel';
-import Notifier from '../../../core/Notifier';
-import Spinner from 'react-native-loading-spinner-overlay';
-import { Entypo, FontAwesome } from '@expo/vector-icons';
-import ActionSheet from 'react-native-actionsheet'
-
-const isAndroid = Platform.OS == 'android' ? true : false;
-let MessageBarAlert = require('react-native-message-bar').MessageBar;
-let MessageBarManager = require('react-native-message-bar').MessageBarManager;
-
+const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
 export default class MainScreen extends Component {
 
     static propTypes = { navigation: PropTypes.object.isRequired };
     static navigationOptions = ({navigation}) => ({
-        title: 'BETTING GROUPS',
+        title: 'GROUPS',
         showIcon: true,
-        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
-        headerStyle: { backgroundColor: '#556E3E' },
-        headerLeft: null,
-        headerRight: (
-            <TouchableHighlight underlayColor="#4c6337" onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}>
-                <View style={LocalStyles.touchableUserIcon}>
-                    <Entypo name="user" size={26} color="white" onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}/>
-                </View>
+        headerTintColor: Constants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerLeft: (
+            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Group'})}>
+                <FontAwesome name="plus" style={MainStyles.headerIconButton} />
             </TouchableHighlight>
         ),
-        tabBarIcon: ({focused, tintColor}) => {
-            return (
-                <FontAwesome name="group" size={29} color="white"/>
-            )
-        }
+        headerRight: (
+            <TouchableHighlight onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}>
+                <FontAwesome name="user-o" style={MainStyles.headerIconButton} />
+            </TouchableHighlight>
+        ),
+        tabBarIcon: (
+            <FontAwesome name="group" style={MainStyles.headerIconButton} />
+        )
     });
 
     constructor(props) {
         super(props);
-        console.log(':::IT\'S ON BEATTING GROUPS:::');
+        console.log(':::IT\'S ON MAIN GROUPS:::');
 
         this._removeStorage = this._removeStorage.bind(this);
         this.collectGroupData = this.collectGroupData.bind(this);
 
-        this.handlePress = this.handlePress.bind(this)
+        this.handlePress = this.handlePress.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this)
         this.state = {
             loading: false,
@@ -71,16 +74,10 @@ export default class MainScreen extends Component {
             if (authToken) {
                 AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
                     this.setState({currentUser: user})
-                    this._myGroupsAsyncRemoteRequest().then((group) => {
-                        console.log("_myGroupsAsyncRemoteRequest")
-                    });
+                    this._myGroupsAsyncRemoteRequest();
                 });
             }
         });
-        MessageBarManager.registerMessageBar(this.refs.validationInput);
-    }
-    componentWillUnmount() {
-        MessageBarManager.unregisterMessageBar();
     }
 
     showActionSheet() {
@@ -88,17 +85,19 @@ export default class MainScreen extends Component {
     }
 
     handlePress(actionIndex) {
-        if (actionIndex == 0) {
-            this.setLoading(true);
-            AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
-                this.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)})
+        switch (actionIndex) {
+            case 0:
+                this.setLoading(true);
+                AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
+                    this.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)})
+                    this.setLoading(false);
+                });
+                break;
+            case 4:
                 this.setLoading(false);
-            });
-        }
-        if (actionIndex == 1) {
-            this._removeStorage().then(() => {
-                console.log('LOGOUT')
-            })
+                this._removeStorage();
+                break;
+
         }
     }
 
@@ -111,13 +110,7 @@ export default class MainScreen extends Component {
     async _removeStorage() {
         try {
             let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
-            console.log('CHECK IF TOKEN != NULL GO TO SPLASH: ', !token);
-            if (!token) {
-                this.props.navigation.dispatch({type: 'Splash'})
-            } else {
-                this.props.navigation.dispatch({type: 'Main'})
-            }
-            console.log('Token removed from.');
+            this.props.navigation.dispatch({type: 'Main'})
         } catch (error) {
             console.log('error on  :Token removed from disk.');
         }
@@ -147,7 +140,7 @@ export default class MainScreen extends Component {
                         console.log('error on  :Token removed from disk.');
                     }
                 } else {
-                    Notifier.message({title: 'ERROR', message: error});
+                    BarMessages.showError(error, this.validationMessage);
                 }
             })
     }
@@ -160,9 +153,7 @@ export default class MainScreen extends Component {
                 refreshing: true
             },
             () => {
-                this._myGroupsAsyncRemoteRequest().then((res) => {
-                    console.log("fuck=")
-                });
+                this._myGroupsAsyncRemoteRequest();
             }
         );
     };
@@ -231,7 +222,7 @@ export default class MainScreen extends Component {
                     nav.navigate('SingleGroup', {data: data, currentUser: JSON.parse(this.state.currentUser)})
                 }).catch((error) => {
                     this.setLoading(false);
-                    Notifier.message({title: 'ERROR', message: error});
+                    BarMessages.showError(error, this.validationMessage);
                 });
         } catch (e) {
             console.log('error in initialRequest: SingleGroup.js')
@@ -251,14 +242,19 @@ export default class MainScreen extends Component {
         }
         if (this.state.auth) {
             return (
-                <View style={LocalStyles.containerMain}>
+                <View style={MainStyles.container}>
+                    <Spinner visible={this.state.loading} animation="fade"/>
                     <ActionSheet
                         ref={o => this.ActionSheet = o}
-                        title={'Please select an action to perform'}
-                        options={['Profile', 'Logout', 'Cancel']}
-                        cancelButtonIndex={2}
+                        options={[
+                            'Edit Profile',
+                            'Privacy Policy',
+                            'Terms of Service',
+                            'Rules',
+                            <Text style={{color: Constants.ERROR_COLOR}}>Log Out</Text>,
+                            'Cancel']}
+                        cancelButtonIndex={5}
                         onPress={this.handlePress} />
-                    <Spinner visible={this.state.loading} animation="fade"/>
                     <View style={{flex: 2, width: '100%', height: '92%'}}>
                         <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                             <FlatList
@@ -290,20 +286,8 @@ export default class MainScreen extends Component {
                                 onEndReachedThreshold={1}
                             />
                         </List>
-                        <View style={{
-                            flex: 3,
-                            alignItems: 'center',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                        }}>
-                            <TouchableHighlight
-                                style={[{position: 'absolute', bottom: '4%'}, MainStyles.goldenShankAddGroupButton]}
-                                underlayColor="gray"
-                                onPress={() => navigation.dispatch({type: 'Group'})}>
-                                <Text style={{color: 'white'}}>ADD GROUP</Text>
-                            </TouchableHighlight>
-                        </View>
                     </View>
+                    <DropdownAlert ref={ref => this.validationMessage = ref} />
                 </View>
 
             )
@@ -330,6 +314,7 @@ export default class MainScreen extends Component {
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
+                    <DropdownAlert ref={ref => this.validationMessage = ref} />
                 </View>
             )
         }

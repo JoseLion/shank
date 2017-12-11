@@ -1,19 +1,27 @@
 import { Dimensions, Platform, StyleSheet } from 'react-native';
+import Style from '../../../../styles/Stylesheet';
 
-const isAndroid = Platform.OS == 'android' ? true : false;
-const { width, height } = Dimensions.get('window');
-const containerWidth = width > 500 ? 500 : width;
+import * as Constants from '../../../../core/Constants';
 
 const LocalStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#1D222D',
+    contentColor: {
+        color: Constants.PRIMARY_COLOR
     },
-    buttonText: {
-        color: '#FFFFFF',
-        fontSize: 16
+    subtitlePage: {
+        fontSize: Style.EM(1.5),
+        marginTop: Style.EM(2.5),
+        marginBottom: Style.EM(0.5)
+    },
+    descriptionPage: {
+        fontSize: Style.EM(1),
+        marginTop: Style.EM(0.5),
+        marginBottom: Style.EM(1.5)
+    },
+    formContainer: {
+        width: '80%'
+    },
+    buttonLinkText: {
+        color: Constants.TERTIARY_COLOR_ALT,
     }
 });
 

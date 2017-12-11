@@ -1,16 +1,12 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
+import Style from '../../../../styles/Stylesheet';
 
-const isAndroid = Platform.OS == 'android' ? true : false;
-const {width, height} = Dimensions.get('window');
-const containerWidth = width > 500 ? 500 : width;
+import * as Constants from '../../../../core/Constants';
 
 const LocalStyles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#1D222D',
-    },
+        backgroundColor: Constants.PRIMARY_COLOR
+    }
 });
 
 export default LocalStyles;

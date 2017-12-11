@@ -43,6 +43,9 @@ function normalize(size) {
 // Then we set our styles with the help of the em() function
 const Style = {
 
+    // EM FUNCTION
+    EM: function(value) {return em(value); },
+
     // GENERAL
     DEVICE_WIDTH: x,
     DEVICE_HEIGHT: y,

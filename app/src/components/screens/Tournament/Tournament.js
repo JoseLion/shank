@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {ActivityIndicator, ListView, Text, View, Image, Dimensions, ScrollView,Linking} from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
-import * as Constants from '../../../core/Constans';
+import * as Constants from '../../../core/Constants';
 import ProgressBar from '../../../global/ProgressBar';
 import {FontAwesome,Ionicons} from '@expo/vector-icons';
 import {Container, Content, Card, CardItem, Left, Right, Body, Thumbnail, Spinner, Icon, CardImage} from 'native-base';
@@ -12,12 +12,11 @@ const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
 export default class TournamentsScreen extends Component {
     static navigationOptions = {
         title: 'TOURNAMENTS',
-        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
-        headerStyle: {
-            backgroundColor: '#556E3E'
-        },
-        headerLeft: null,
         showIcon: true,
+        headerTintColor: Constants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerLeft: null,
         tabBarIcon: () => {
             return (
                 <Ionicons name="md-trophy" size={29} color="white"/>

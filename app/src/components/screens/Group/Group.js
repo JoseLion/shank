@@ -1,69 +1,44 @@
-/**
- * Created by MnMistake on 9/24/2017.
- */
-
+// React components:
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { List, ListItem } from 'react-native-elements';
+import ActionSheet from 'react-native-actionsheet'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import DropdownAlert from 'react-native-dropdownalert';
 
-import {
-    Modal,
-    Text,
-    View,
-    TextInput,
-    TouchableHighlight,
-    Image,
-    FlatList,
-    TouchableOpacity,
-    Picker,
-    ActivityIndicator,
-    Alert,
-    Platform,
-    PickerIOS,
-    ActionSheetIOS,
-    Share,
-    TouchableWithoutFeedback,
-    KeyboardAvoidingView,
-    AsyncStorage
-} from 'react-native';
+// Third party components:
+import { FontAwesome, Ionicons, Entypo } from '@expo/vector-icons';
+import { ImagePicker } from 'expo';
+
+// Shank components:
+import BaseModel from '../../../core/BaseModel';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local'
+import { ClienHost } from '../../../config/variables';
+import * as Constants from '../../../core/Constants';
+import * as BarMessages from '../../../core/BarMessages';
 import Notifier from '../../../core/Notifier';
-import BaseModel from '../../../core/BaseModel';
-import NoAuthModel from '../../../core/NoAuthModel';
-
-import {ClienHost} from '../../../config/variables';
-import * as Constants from '../../../core/Constans';
-import Spinner from 'react-native-loading-spinner-overlay';
-import {ImagePicker} from 'expo';
-import {List, ListItem} from "react-native-elements";
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Ionicons,Entypo} from '@expo/vector-icons';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
-
+const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
 export default class Group extends Component {
 
-    state = {
-        groupPhoto: null
-    };
-
-    setModalVisible(visible) {
-        this.setState({modalVisible: visible});
-    }
-
-    static propTypes = {
-        navigation: PropTypes.object.isRequired,
-    };
-
-
+    static propTypes = { navigation: PropTypes.object.isRequired };
     static navigationOptions = ({navigation}) => ({
-        title: 'Create Group',
-        headerLeft: ( <Entypo name={'chevron-left'} size={29} color="white" onPress={ () => { navigation.dispatch({type: 'Main'})}} /> ),
-        headerTintColor: 'white',
-        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
-        headerStyle: {
-            backgroundColor: '#556E3E'
-        },
+        title: 'CREATE GROUP',
+        headerTintColor: Constants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerLeft: (
+            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
+                <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
+            </TouchableHighlight>
+        ),
+        headerRight: (
+            <View></View>
+        )
     });
 
     constructor(props) {
@@ -73,6 +48,8 @@ export default class Group extends Component {
         this.getUserList = this.getUserList.bind(this);
         this._shareTextWithTitle = this._shareTextWithTitle.bind(this);
         this._showResult = this._showResult.bind(this);
+        this.handlePress = this.handlePress.bind(this);
+        this.showActionSheet = this.showActionSheet.bind(this);
 
         this.state = {
             name: '',
@@ -87,26 +64,28 @@ export default class Group extends Component {
             tournamentData: [],
             assignUsers: [],
             modalVisible: false,
-            tId: "",
-            TName: "Select a tournament",
-            currentGroupToken: "",
-            currentInvitationName: ""
+            tId: '',
+            TName: 'Select a tournament',
+            currentGroupToken: '',
+            currentInvitationName: '',
+            groupPhoto: null
         };
     }
 
+    showActionSheet = function() { this.ActionSheet.show(); }
+
     componentDidMount() {
-        //this.makeRemoteRequest();
         this.setLoading(true);
         this._generateGroupToken(20)
-        this.initialRequest('pga', '2018').then((data) => {
-            console.log('pgapga 2018SS20ss18sss')
-            console.log(data)
+        this.initialRequest('pga', '2018');
+        this.props.navigation.setParams({
+            actionSheet: this.showActionSheet
         });
     }
 
-    setLoading(loading) {
-        this.setState({loading: loading});
-    }
+    setModalVisible(visible) { this.setState({modalVisible: visible}); }
+
+    setLoading(loading) { this.setState({loading: loading}); }
 
     getUserList = (cb) => {
         try {
@@ -168,9 +147,9 @@ export default class Group extends Component {
             <View
                 style={{
                     height: 1,
-                    width: "86%",
-                    backgroundColor: "#CED0CE",
-                    marginLeft: "14%"
+                    width: '86%',
+                    backgroundColor: '#CED0CE',
+                    marginLeft: '14%'
                 }}
             />
         );
@@ -204,199 +183,15 @@ export default class Group extends Component {
         );
     };
 
-    render() {
-        let {groupPhoto} = this.state;
-        let navigation = this.props.navigation;
-        let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
-        let tournamentName = []
-        let tournamentKeys = []
-
-        let tournamentItems = this.state.tournamentData.map((s, i) => {
-            tournamentName[i] = s.name
-            tournamentKeys[i] = s.id
-            return <Picker.Item key={i} value={s.id} label={s.name}/>
-        });
-
-        tournamentName.push('Cancel');
-        tournamentKeys.push('none');
-        /*  let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
-         return <PickerIOS.Item key={i} value={s.id} label={s.name}/>
-         });*/
-        return (
-            <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={5}
-                                     style={{backgroundColor: '#F5FCFF'}}>
-                <View style={[MainStyles.container]} behavior="padding">
-                    <Spinner visible={this.state.loading} animation="slide"/>
-                    <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]}
-                                      onPress={() => {
-                                          Alert.alert(
-                                              'RESPONSE',
-                                              'Choose how to get your picture',
-                                              [
-                                                  {text: 'Open your gallery', onPress: () => this._pickImage()},
-                                                  {text: 'Take a picture', onPress: () => this._takePicture()},
-                                              ],
-                                              {cancelable: true}
-                                          )
-                                      }
-                                      }>
-                        {groupPhoto &&
-                        <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/>
-                        }
-                        {!groupPhoto &&
-                        <Image style={LocalStyles.groupImage}
-                               source={addPhoto}>
-                        </Image>
-                        }
-                        <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
-                            Add a photo
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TextInput
-                        underlineColorAndroid='transparent'
-                        style={[LocalStyles.createTInput, MainStyles.inputTopSeparation]}
-                        onChangeText={(name) => this.setState({name})}
-                        value={this.state.name}
-                        placeholder={'Group name'}
-                    />
-                    {/*https://github.com/alinz/react-native-dropdown*/}
-
-                    {isAndroid
-                        ?
-                        <View style={LocalStyles.androidTournamentPicker}>
-                            <Picker
-                                style={LocalStyles.androidTournamentInternal}
-                                selectedValue={this.state.selectTournament}
-                                onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                                <Picker.Item style={LocalStyles.androidPickerItem} itemStyle={LocalStyles.androidPickerItem} color="#rgba(0, 0, 0, .2)" value='' label='Select a tournament...'/>
-                                {tournamentItems}
-                            </Picker>
-                        </View>
-                        :
-                        <TouchableOpacity style={[LocalStyles.tournamentPicker]} onPress={() => {
-                            ActionSheetIOS.showActionSheetWithOptions({
-                                    options: tournamentName,
-                                    cancelButtonIndex: tournamentName.length - 1,
-                                },
-                                (buttonIndex) => {
-                                    if (tournamentKeys[buttonIndex] != 'none') {
-                                        this.setState({
-                                            selectTournament: tournamentKeys[buttonIndex],
-                                            TName: tournamentName[buttonIndex]
-                                        })
-                                    }
-                                })
-                        }}>
-                            <Text style={LocalStyles.innerInput}>
-                                {this.state.TName}
-                            </Text>
-                        </TouchableOpacity>
-                    }
-
-                    <TextInput
-                        underlineColorAndroid='transparent'
-                        placeholder={'Prize'}
-                        style={[LocalStyles.richCreateTInput, {paddingBottom: 5}]}
-                        onChangeText={(prize) => this.setState({prize: prize})}
-                        value={this.state.prize}
-                    />
-                    <View style={LocalStyles.List}>
-                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0,}}>
-                            <FlatList
-                                data={this.state.data}
-                                renderItem={({item}) => (
-                                    <ListItem
-                                        roundAvatar
-                                        title={`${item.name}`}
-                                        containerStyle={{borderBottomWidth: 0}}
-                                    />
-                                )}
-                                keyExtractor={item => item.name}
-                                ItemSeparatorComponent={this.renderSeparator}
-                                onRefresh={this.handleRefresh}
-                                refreshing={this.state.refreshing}
-                                onEndReachedThreshold={1}
-                            />
-                        </List>
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => this.setModalVisible(true)}>
-                        <View style={LocalStyles.addNewParticipantOverlay}>
-                            <Text style={[LocalStyles.centerText, MainStyles.shankGray]}>
-                                Add new participant
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableHighlight
-                        onPress={this._handleNewGroupRegistry}
-                        style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
-                        <Text style={LocalStyles.buttonText}>Create group</Text>
-                    </TouchableHighlight>
-                    <KeyboardAvoidingView behavior={'position'}>
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={this.state.modalVisible}
-                            onRequestClose={() => {
-                                this.setModalVisible(!this.state.modalVisible)
-                            }}>
-                            <TouchableOpacity
-                                style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    height: '100%',
-                                    backgroundColor: this.props.transparent ? 'transparent' : 'rgba(0,0,0,0.5)',
-                                }}
-                                activeOpacity={1}
-                                onPressOut={() => {
-                                    this.setModalVisible(false)
-                                }}
-                            >
-                                <View style={LocalStyles.modalhead}>
-                                    <View style={{
-                                        flex: 3,
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}>
-                                        <View style={{width: '16%'}}/>
-                                        <View>
-                                            <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
-                                        </View>
-                                        <TouchableHighlight
-                                            activeOpacity={0.4}
-                                            underlayColor='#768b64'
-                                            onPress={() => {
-                                                this.setModalVisible(!this.state.modalVisible)
-                                            }}
-                                            style={{paddingRight: '3%'}}>
-                                            <Ionicons name="ios-close-circle-outline" size={25} color="white"/>
-                                        </TouchableHighlight>
-                                    </View>
-                                </View>
-                                <View style={LocalStyles.modalbody}>
-                                    <Text>Friend Name</Text>
-                                    <TextInput
-                                        underlineColorAndroid='transparent'
-                                        style={LocalStyles.inputModal}
-                                        onChangeText={(currentInvitationName) => this.setState({currentInvitationName})}
-                                        value={this.state.currentInvitationName}
-                                    />
-                                    <TouchableHighlight
-                                        onPress={this._shareTextWithTitle}
-                                        style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
-                                        <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
-                                    </TouchableHighlight>
-                                </View>
-
-                            </TouchableOpacity>
-
-                        </Modal>
-                    </KeyboardAvoidingView>
-                </View>
-            </KeyboardAwareScrollView>
-        );
+    handlePress(actionIndex) {
+        switch (actionIndex) {
+            case 0:
+                this._pickImage();
+                break;
+            case 1:
+                this._takePicture()
+                break;
+        }
     }
 
     //GET TOURNAMENTS AND FRIENDS
@@ -550,5 +345,169 @@ export default class Group extends Component {
             this.setState({result: 'dismissed'});
         }
     }
-}
 
+    render() {
+        let { groupPhoto } = this.state;
+        let navigation = this.props.navigation;
+        let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
+        let tournamentName = []
+        let tournamentKeys = []
+
+        let tournamentItems = this.state.tournamentData.map((s, i) => {
+            tournamentName[i] = s.name
+            tournamentKeys[i] = s.id
+            return <Picker.Item key={i} value={s.id} label={s.name}/>
+        });
+
+        tournamentName.push('Cancel');
+        tournamentKeys.push('none');
+        /*  let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
+         return <PickerIOS.Item key={i} value={s.id} label={s.name}/>
+         });*/
+        return (
+            <View style={{flex: 1}}>
+                <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={MainStyles.background}>
+                    <View style={[MainStyles.container]} behavior="padding">
+                        <Spinner visible={this.state.loading} animation="slide"/>
+                        <ActionSheet
+                            ref={o => this.ActionSheet = o}
+                            options={[
+                                'Open your gallery',
+                                'Take a picture',
+                                'Cancel']}
+                            cancelButtonIndex={2}
+                            onPress={this.handlePress} />
+
+                        <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
+                            { groupPhoto && <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/> }
+                            {!groupPhoto && <Image style={LocalStyles.groupImage} source={addPhoto}></Image>
+                            }
+                            <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
+                                Add photo
+                            </Text>
+                        </TouchableOpacity>
+
+                        <View style={[LocalStyles.formContainer]}>
+                            <TextInput
+                                returnKeyType={"next"}
+                                underlineColorAndroid='transparent'
+                                style={[MainStyles.formInput, MainStyles.noMargin]}
+                                onChangeText={(name) => this.setState({name})}
+                                value={this.state.name}
+                                placeholder={'Group name'} />
+                        </View>
+
+                        {isAndroid
+                            ?
+                                <View style={[LocalStyles.androidTournamentPicker]}>
+                                    <Picker
+                                        style={LocalStyles.androidTournamentInternal}
+                                        selectedValue={this.state.selectTournament}
+                                        onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+                                        <Picker.Item style={LocalStyles.androidPickerItem} itemStyle={LocalStyles.androidPickerItem} color="#rgba(0, 0, 0, .2)" value='' label='Pick a tournament'/>
+                                        {tournamentItems}
+                                    </Picker>
+                                </View>
+                            :
+                                <TouchableOpacity style={[LocalStyles.tournamentPicker]} onPress={() => {
+                                    ActionSheetIOS.showActionSheetWithOptions({
+                                            options: tournamentName,
+                                            cancelButtonIndex: tournamentName.length - 1,
+                                        },
+                                        (buttonIndex) => {
+                                            if (tournamentKeys[buttonIndex] != 'none') {
+                                                this.setState({
+                                                    selectTournament: tournamentKeys[buttonIndex],
+                                                    TName: tournamentName[buttonIndex]
+                                                })
+                                            }
+                                        })
+                                }}>
+                                    <Text style={LocalStyles.innerInput}>{this.state.TName}</Text>
+                                </TouchableOpacity>
+                        }
+
+                        <TextInput
+                            underlineColorAndroid='transparent'
+                            placeholder={'Bet'}
+                            style={[LocalStyles.richCreateTInput, {paddingBottom: 5}]}
+                            onChangeText={(prize) => this.setState({prize: prize})}
+                            value={this.state.prize}
+                            multiline={true}
+                            numberOfLines={3} />
+
+                        <TouchableHighlight
+                            onPress={this._handleNewGroupRegistry}
+                            style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
+                            <Text style={LocalStyles.buttonText}>Create group</Text>
+                        </TouchableHighlight>
+
+                        <KeyboardAvoidingView behavior={'position'}>
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={this.state.modalVisible}
+                                onRequestClose={() => {
+                                    this.setModalVisible(!this.state.modalVisible)
+                                }}>
+                                <TouchableOpacity
+                                    style={{
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        height: '100%',
+                                        backgroundColor: this.props.transparent ? 'transparent' : 'rgba(0,0,0,0.5)',
+                                    }}
+                                    activeOpacity={1}
+                                    onPressOut={() => {
+                                        this.setModalVisible(false)
+                                    }}
+                                >
+                                    <View style={LocalStyles.modalhead}>
+                                        <View style={{
+                                            flex: 3,
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                        }}>
+                                            <View style={{width: '16%'}}/>
+                                            <View>
+                                                <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
+                                            </View>
+                                            <TouchableHighlight
+                                                activeOpacity={0.4}
+                                                underlayColor='#768b64'
+                                                onPress={() => {
+                                                    this.setModalVisible(!this.state.modalVisible)
+                                                }}
+                                                style={{paddingRight: '3%'}}>
+                                                <Ionicons name="ios-close-circle-outline" size={25} color="white"/>
+                                            </TouchableHighlight>
+                                        </View>
+                                    </View>
+                                    <View style={LocalStyles.modalbody}>
+                                        <Text>Friend Name</Text>
+                                        <TextInput
+                                            underlineColorAndroid='transparent'
+                                            style={LocalStyles.inputModal}
+                                            onChangeText={(currentInvitationName) => this.setState({currentInvitationName})}
+                                            value={this.state.currentInvitationName}
+                                        />
+                                        <TouchableHighlight
+                                            onPress={this._shareTextWithTitle}
+                                            style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
+                                            <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
+                                        </TouchableHighlight>
+                                    </View>
+
+                                </TouchableOpacity>
+
+                            </Modal>
+                        </KeyboardAvoidingView>
+                    </View>
+                </KeyboardAwareScrollView>
+                <DropdownAlert ref={ref => this.validationMessage = ref} />
+            </View>
+        );
+    }
+
+}

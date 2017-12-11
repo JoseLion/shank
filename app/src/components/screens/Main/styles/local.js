@@ -6,6 +6,22 @@ const containerWidth = width > 500 ? 500 : width;
 import Style from '../../../../styles/Stylesheet';
 
 const LocalStyles = StyleSheet.create({
+    headerButton: {
+        paddingLeft: Style.EM(0.5),
+        paddingRight: Style.EM(0.5)
+    },
+
+
+
+
+
+
+
+
+
+
+
+
     containerMain: {
         backgroundColor: '#fff',
         flex: 1

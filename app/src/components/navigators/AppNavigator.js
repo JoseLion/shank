@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions} from 'react-navigation';
-import {Entypo, FontAwesome} from '@expo/vector-icons';
-import {
-    BackHandler,
-} from 'react-native';
+import { connect } from 'react-redux';
+import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
+import { Entypo, FontAwesome } from '@expo/vector-icons';
+import { BackHandler } from 'react-native';
+
+import * as Constants from '../../core/Constants';
 
 import Splash from '../screens/Splash/Splash'
 import Slider from '../screens/Slider/Slider';
@@ -19,21 +19,19 @@ import SingleGroup from '../screens/Group/SingleGroup';
 import PlayerSelection from '../screens/Group/PlayerSelection';
 
 export const TabNav = TabNavigator({
-    Groups: { screen: Main, },
-    News: { screen: Tournament, },
+    Groups: { screen: Main },
+    News: { screen: Tournament },
 }, {
     tabBarPosition: 'bottom',
     tabBarOptions: {
-        activeTintColor: '#fff',
         style: {
-            backgroundColor: "#556E3E",
+            backgroundColor: Constants.PRIMARY_COLOR
+        },
+        labelStyle: {
+            fontWeight: 'bold'
         }
-    },
-    labelStyle: {
-        fontWeight: 'bold',
     }
-}
-);
+});
 
 export const AppNavigator = StackNavigator({
     Splash: { screen: Splash },

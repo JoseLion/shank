@@ -2,15 +2,13 @@ import {combineReducers} from 'redux';
 import {NavigationActions} from 'react-navigation';
 import {AppNavigator} from '../navigators/AppNavigator';
 import {AsyncStorage} from 'react-native';
-import * as Constants from '../../core/Constans';
+import * as Constants from '../../core/Constants';
 
 
 const firstAction = AppNavigator.router.getActionForPathAndParams('Splash');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);
 const secondAction = AppNavigator.router.getActionForPathAndParams('Slider');
-const initialNavState = AppNavigator.router.getStateForAction(
-    firstAction,
-);
+const initialNavState = AppNavigator.router.getStateForAction(firstAction);
 
 function nav(state = initialNavState, action) {
     let nextState;

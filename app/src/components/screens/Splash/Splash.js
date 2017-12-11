@@ -3,20 +3,14 @@ import PropTypes from 'prop-types';
 import { View, Image, StatusBar, AsyncStorage, Linking } from 'react-native';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
-import * as Constants from '../../../core/Constans';
+import * as Constants from '../../../core/Constants';
 
 import qs from 'qs';
-
-const logoTrans = require('../../../../resources/shankLogo/IOS/trans/shankLogoTrans.png');
-const logoRegular = require('../../../../resources/shankLogo/IOS/regular/shankLogo.png');
 
 export default class SplashScreen extends Component {
     url = "";
 
-    static propTypes = {
-        navigation: PropTypes.object.isRequired,
-    };
-
+    static propTypes = { navigation: PropTypes.object.isRequired };
     static navigationOptions = {
         title: 'Splash',
         header: null
@@ -27,14 +21,14 @@ export default class SplashScreen extends Component {
         console.log(':::IT\'S ON SPLASH:::')
         this.state = {
             changeImages: true,
-            changeBackground: true,
+            changeBackground: true
         };
 
         setTimeout(() => {
             this.setState(previousState => {
                 return {
                     changeImages: !previousState.changeImages,
-                    changeBackground: !previousState.changeBackground,
+                    changeBackground: !previousState.changeBackground
                 };
             });
         }, 1000);
@@ -55,18 +49,13 @@ export default class SplashScreen extends Component {
     }
 
     componentDidMount() {
-        // let promise = await Linking.getInitialURL
         Linking.getInitialURL()
-            .then(url => {
-                console.log('Inside of the function is: ' + url);
-                this.url = url
-            })
+            .then(url => { this.url = url })
             .catch(err => console.error('An error occurred', err));
 
         this.timeoutHandle = setTimeout(() => {
             AsyncStorage.getItem(Constants.AUTH_TOKEN)
                 .then(authToken => {
-                    console.log('AUTH_TOKEN: ', authToken);
                     if (authToken) {
                         this.props.navigation.navigate('Main', {url: this._handleRedirects(this.url), auth: true})
                     } else {
@@ -81,11 +70,9 @@ export default class SplashScreen extends Component {
     };
 
     render() {
-        // let imgSource = this.state.changeImages ? logoRegular : logoTrans;
-        let imgSource = this.state.changeImages ? logoRegular : logoRegular;
-        let backgroundColor = this.state.changeBackground ? '#1D222D' : '#3C4635';
+        let imgSource = require('../../../../resources/shank_completo.png');
         return (
-            <View style={[LocalStyles.container, {backgroundColor: backgroundColor}]}>
+            <View style={[MainStyles.container, LocalStyles.container]}>
                 <StatusBar hidden={true}/>
                 <Image source={imgSource} style={MainStyles.iconXLG}/>
             </View>

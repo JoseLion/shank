@@ -6,6 +6,9 @@ const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
 
 const LocalStyles = StyleSheet.create({
+    formContainer: {
+        width: '80%'
+    },
     //Modal
     modalhead:{
         backgroundColor: '#556E3E',

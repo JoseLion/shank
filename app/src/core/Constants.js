@@ -1,6 +1,14 @@
 import React from 'react';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
+export const BACKGROUND_COLOR = '#F5FCFF';
+export const PRIMARY_COLOR = '#252D3B';
+export const TERTIARY_COLOR = '#FFFFFF';
+export const TERTIARY_COLOR_ALT = '#rgba(0, 0, 0, .2)';
+
+export const SUCCESS_COLOR = '#00B16A';
+export const ERROR_COLOR = '#ED2C3E';
+
 export const AUTH_TOKEN = "shank-auth-token";
 export const USER_PROFILE = 'shank-profile';
 export const TIME_OUT_NOTIFIER = 10000;

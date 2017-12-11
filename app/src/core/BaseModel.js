@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import * as ApiUtils from './ApiUtils';
-import * as Constants from './Constans';
+import * as Constants from './Constants';
 import {Host, ApiHost, AuthToken, ApiKey, version} from '../config/variables';
 
 let internetError = 'No fue posible acceder al internet de su teléfono.';
