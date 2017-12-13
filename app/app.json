@@ -9,7 +9,7 @@
     "scheme": "Shank",
     "ios": {
       "bundleIdentifier": "com.levelap.shank",
-      "buildNumber" : "1.0.5"
+      "buildNumber" : "1.0.7"
     },
     "android": {
       "package": "com.levelap.shank"

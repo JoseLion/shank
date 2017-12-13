@@ -1,19 +1,26 @@
-import PropTypes from 'prop-types';
-import MainStyles from '../../../styles/main';
-import LocalStyles from './styles/local';
+// React components:
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { Text, View, StatusBar, Image, TouchableOpacity, BackHandler, Platform, Alert, FlatList, TouchableHighlight, ScrollView } from 'react-native';
 import { Header } from "react-native-elements"; // 0.17.0
 import { List, ListItem } from "react-native-elements"; // 0.17.0
-import BaseModel from '../../../core/BaseModel';
-import { Entypo, FontAwesome } from '@expo/vector-icons'; // 5.2.0
 import { TabNavigator } from 'react-navigation';
-import Notifier from '../../../core/Notifier';
+import SortableListView from 'react-native-sortable-listview'
+import ScrollableTabView, {ScrollableTabBar,} from 'react-native-scrollable-tab-view';
+
+// Third party components:
+import { Entypo, FontAwesome } from '@expo/vector-icons'; // 5.2.0
+
+// Shank components:
+import BaseModel from '../../../core/BaseModel';
+import MainStyles from '../../../styles/main';
+import LocalStyles from './styles/local';
+import * as Constants from '../../../core/Constants';
+import * as BarMessages from '../../../core/BarMessages';
 import ParticipantRankings from './tabNav/ParticipantRankings';
 import PlayerRankings from './tabNav/PlayerRankings';
 import TournamentRankings from './tabNav/TournamentRankings';
-import SortableListView from 'react-native-sortable-listview'
-import ScrollableTabView, {ScrollableTabBar,} from 'react-native-scrollable-tab-view';
+import Notifier from '../../../core/Notifier';
 
 class RowComponent extends React.Component {
 
@@ -101,124 +108,23 @@ class RowComponent extends React.Component {
     }
 }
 
-const InnerSingleGroupTabNav = TabNavigator({
-    Participants: {
-        screen: ParticipantRankings,
-    },
-    Rankings: {
-        screen: PlayerRankings,
-    },
-    TRankings: {
-        screen: TournamentRankings,
-    },
-}, {
-    tabBarPosition: 'top',
-    animationEnabled: true,
-    tabBarOptions: {
-        activeTintColor: '#556E3E',
-        inactiveTintColor: '#556E3E',
-        style: {
-            backgroundColor: "#fff",
-        }
-    },
-    labelStyle: {
-        fontWeight: 'black',
-    }
-});
-
-//TODO REFACTOR DUPLICATED FUNCTION
-const ImageHeader = navigation => (
-    <View style={{backgroundColor: '#eee', height: '16%'}}>
-        <Image
-            style={[MainStyles.imageOpacity, LocalStyles.absoluteFill]}
-            source={{uri: 'http://cdn.snappages.com/txd52k/assets/731979_1517216_1464724369.png'}}>
-            <Text style={LocalStyles.singleGroupTitle}>{navigation.state.params.data.currentGroup.name}</Text>
-            <Text style={LocalStyles.singleGroupTitleBold}>{navigation.state.params.data.tName}</Text>
-        </Image>
-        <Header onPress={() => console.log('huehueheu')} {...navigation}
-                style={[{position: 'absolute', backgroundColor: 'transparent', height: '100%'}]}
-                leftComponent={
-                    <TouchableOpacity
-                        activeOpacity={0.4}
-                        onPress={() => {
-                            if (navigation.state.params.playersAdded.length >= 5) {
-                                if (navigation.state.params.movementsDone == 0) {
-                                    navigation.goBack(null)
-                                } else {
-                                    Alert.alert(
-                                        "RESPONSE",
-                                        "You have made some changes. Are you sure you want to go back.",
-                                        [
-                                            {
-                                                text: 'Cancel',
-                                                onPress: () => console.log('Cancel Pressed'),
-                                                style: 'cancel'
-                                            },
-                                            {text: 'OK', onPress: () => navigation.goBack(null)},
-                                        ]
-                                    );
-                                }
-                            } else {
-                                Alert.alert(
-                                    "RESPONSE",
-                                    "You have to add at least 5 players to continue. Are you sure you want to go back?",
-                                    [
-                                        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                                        {text: 'OK', onPress: () => navigation.goBack(null)},
-                                    ]
-                                );
-                            }
-                        }}>
-                        <View style={LocalStyles.touchableUserIcon}>
-                            <Entypo
-                                onPress={() => {
-                                    if (navigation.state.params.playersAdded.length >= 5) {
-                                        if (navigation.state.params.movementsDone == 0) {
-                                            navigation.goBack(null)
-                                        } else {
-                                            Alert.alert(
-                                                "RESPONSE",
-                                                "You have made some changes. Are you sure you want to go back.",
-                                                [
-                                                    {
-                                                        text: 'Cancel',
-                                                        onPress: () => console.log('Cancel Pressed'),
-                                                        style: 'cancel'
-                                                    },
-                                                    {text: 'OK', onPress: () => navigation.goBack(null)},
-                                                ]
-                                            );
-                                        }
-                                    } else {
-                                        Alert.alert(
-                                            "RESPONSE",
-                                            "You have to add at least 5 players to continue. Are you sure you want to go back?",
-                                            [
-                                                {
-                                                    text: 'Cancel',
-                                                    onPress: () => console.log('Cancel Pressed'),
-                                                    style: 'cancel'
-                                                },
-                                                {text: 'OK', onPress: () => navigation.goBack(null)},
-                                            ]
-                                        );
-                                    }
-                                }}
-                                style={{marginVertical: '140%'}}
-                                name="chevron-left" size={33} color="white"/>
-                        </View>
-                    </TouchableOpacity>
-                }
-        />
-    </View>
-    /*leftComponent={{icon: 'chevron-left', color: '#fff', onPress: () => navigation.goBack(null)}}*/
-);
-
 export default class SingleGroup extends Component {
 
-    static propTypes = {
-        navigation: PropTypes.object.isRequired,
-    };
+    static propTypes = { navigation: PropTypes.object.isRequired };
+    static navigationOptions = ({navigation}) => ({
+        title: 'Group',
+        headerTintColor: Constants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerLeft: (
+            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
+                <FontAwesome name="chevron-left" style={MainStyles.headerIconButton} />
+            </TouchableHighlight>
+        ),
+        headerRight: (
+            <View></View>
+        )
+    });
 
     constructor(props) {
         super(props);
@@ -248,22 +154,18 @@ export default class SingleGroup extends Component {
             orderedPlayerRankings: [],
             groupLoggedUser: {},
             initialPlayerRankings: {},
-            playerRankings: [{none: true, position: 1}, {none: true, position: 2}, {
-                none: true,
-                position: 3
-            }, {none: true, position: 4}, {none: true, position: 5}],
+            playerRankings: [
+                {none: true, position: 1},
+                {none: true, position: 2},
+                {none: true, position: 3},
+                {none: true, position: 4},
+                {none: true, position: 5}
+            ],
             playerSelectionPosition: 0,
             movementsDone: 0,
             pricePerMovement: 0
         };
     }
-
-    static navigationOptions = ({navigation}) => ({
-        title: 'The Masters',
-        headerTintColor: 'white',
-        headerTitleStyle: {alignSelf: 'center', color: '#fff'},
-        header: (<ImageHeader {...navigation}/>),
-    });
 
     setLoading(loading) {
         this.setState({loading: loading});
@@ -473,6 +375,14 @@ export default class SingleGroup extends Component {
                 <StatusBar hidden={true}/>
                 <View style={LocalStyles.singleGroupBoxes}>
                     <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrize]}>
+                        {navigation.state.params.data.currentGroup.name}
+                    </Text>
+                    <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrizeDescription]}>
+                        {navigation.state.params.data.tournamentName}
+                    </Text>
+                </View>
+                <View style={LocalStyles.singleGroupBoxes}>
+                    <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrize]}>
                         PRIZE
                     </Text>
                     <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrizeDescription]}>
@@ -485,7 +395,7 @@ export default class SingleGroup extends Component {
                             {this.state.groupLoggedUser.score}
                         </Text>
                         <Text style={LocalStyles.singleGroupScoreTabDescription}>
-                            Score
+                            Points
                         </Text>
                     </View>
                     <View style={MainStyles.centeredObject}>
@@ -511,11 +421,9 @@ export default class SingleGroup extends Component {
                         initialPage={0}
                         locked={false}
                         renderTabBar={() =>
-                            <ScrollableTabBar tabBarTextStyle={{textAlign: 'center'}}
-                                              underlineStyle={{backgroundColor: '#556E3E'}}
-                                              activeTextColor='#3b4d2b' inactiveTextColor='#556E3E'/>}
-                    >
-                        <View tabLabel='Participants' style={[{
+                            <ScrollableTabBar tabBarTextStyle={{textAlign: 'center'}} underlineStyle={{backgroundColor: '#556E3E'}} activeTextColor='#3b4d2b' inactiveTextColor='#556E3E'/>
+                    }>
+                        <View tabLabel='Leaderboard' style={[{
                             backgroundColor: '#556E3E',
                             paddingHorizontal: '3%'
                         }, LocalStyles.slideBorderStyle]}>
@@ -544,7 +452,7 @@ export default class SingleGroup extends Component {
                             </List>
                         </View>
 
-                        <View tabLabel='Rankings' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
+                        <View tabLabel='Roaster' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
                             <SortableListView
                                 style={{flex: 1, marginBottom: '20%'}}
                                 data={JSON.parse(JSON.stringify(this.state.orderedPlayerRankings))}
@@ -595,81 +503,6 @@ export default class SingleGroup extends Component {
                                 }, MainStyles.goldenShankButtonPayment]}>
                                 <Text style={LocalStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * this.state.pricePerMovement).toFixed(2)} $</Text>
                             </TouchableOpacity>
-                        </View>
-
-                        <View tabLabel='Players' style={[LocalStyles.slideBorderStyle, {
-                            paddingHorizontal: '3%'
-                        }]}>
-                            <List containerStyle={LocalStyles.listContainer}>
-                                <FlatList
-                                    data={[{
-                                        name: 'Si Woo Kim',
-                                        tr: '1',
-                                        score: '150',
-                                        position: 1,
-                                        photo: {path: 'http://www.golfchannel.com/sites/golfchannel.prod.acquia-sites.com/files/styles/blog_header_image_304x176/public/9/C/C/%7B9CC84FBA-BEE3-482B-9EA7-16CB3EF643AF%7Dkim_si_woo_q-school12_final_day_610.jpg?itok=DCgt_CPy'}
-                                    }, {
-                                        name: 'William Wheeler',
-                                        tr: '2',
-                                        score: '260',
-                                        position: 2,
-                                        photo: {path: 'http://media.golfdigest.com/photos/592442b5c45e221ebef6e668/master/w_768/satoshi-kodaira-sony-open-2017.jpg'}
-                                    }, {
-                                        name: 'Issac Hines',
-                                        tr: '3',
-                                        score: '510',
-                                        position: 3,
-                                        photo: {path: 'https://static1.squarespace.com/static/58abbdb120099e0b12538e67/t/5923a3a1c534a5397b32c34b/1495507887454/Richie3.jpg?format=300w'}
-                                    }, {
-                                        name: 'Jared Williams',
-                                        tr: '4',
-                                        score: '185',
-                                        position: 4,
-                                        photo: {path: 'http://s3.amazonaws.com/golfcanada/app/uploads/golfcanada/production/2017/06/09093500/17.06.09-Ryan-Williams-370x213.jpg'}
-                                    }, {
-                                        name: 'Keegan Taylor',
-                                        tr: '5',
-                                        score: '225',
-                                        position: 5,
-                                        photo: {path: 'http://media.gettyimages.com/photos/may-2000-kevin-keegan-the-england-manager-plays-out-of-a-bunker-on-picture-id1030959'}
-                                    }, {
-                                        name: 'Boo Weekly',
-                                        tr: '6',
-                                        score: '350',
-                                        position: 6,
-                                        photo: {path: 'https://progolfnow.com/wp-content/blogs.dir/120/files/2014/12/boo-weekley-golf-u.s.-open-first-round.jpg'}
-                                    }, {
-                                        name: 'Bernard Ford',
-                                        tr: '7',
-                                        score: '100',
-                                        position: 7,
-                                        photo: {path: 'http://ichef.bbci.co.uk/onesport/cps/480/mcs/media/images/71780000/jpg/_71780044_gallacherpa.jpg'}
-                                    }, {
-                                        name: 'Shawn Harper',
-                                        tr: '8',
-                                        score: '110',
-                                        position: 8,
-                                        photo: {path: 'http://media.jrn.com/images/photo-0627bc6sacc_6137489_ver1.0_640_480.jpg'}
-                                    }]}
-                                    renderItem={({item}) => (
-                                        <ListItem
-                                            roundAvatar
-                                            titleNumberOfLines={2}
-                                            titleContainerStyle={{marginLeft: '3%'}}
-                                            title={`${item.name}`}
-                                            titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                            subtitle={`${'   TR: ' + item.tr + '   SCORE: ' + item.score}`}
-                                            avatar={{uri: item.photo.path}}
-                                            containerStyle={{borderBottomWidth: 0}}
-                                            hideChevron
-                                            leftIcon={<Text
-                                                style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{item.position}</Text>}
-                                        />
-                                    )}
-                                    keyExtractor={item => item.name}
-                                    ItemSeparatorComponent={this.renderSeparator}
-                                />
-                            </List>
                         </View>
                     </ScrollableTabView>
                 )}

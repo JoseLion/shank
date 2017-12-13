@@ -1,7 +1,7 @@
 // React components:
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage } from 'react-native';
+import { Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { List, ListItem } from 'react-native-elements';
 import ActionSheet from 'react-native-actionsheet'
@@ -19,7 +19,6 @@ import LocalStyles from './styles/local'
 import { ClienHost } from '../../../config/variables';
 import * as Constants from '../../../core/Constants';
 import * as BarMessages from '../../../core/BarMessages';
-import Notifier from '../../../core/Notifier';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
@@ -45,7 +44,6 @@ export default class Group extends Component {
         super(props);
         this._handleNewGroupRegistry = this._handleNewGroupRegistry.bind(this);
         this._pickImage = this._pickImage.bind(this);
-        this.getUserList = this.getUserList.bind(this);
         this._shareTextWithTitle = this._shareTextWithTitle.bind(this);
         this._showResult = this._showResult.bind(this);
         this.handlePress = this.handlePress.bind(this);
@@ -63,7 +61,6 @@ export default class Group extends Component {
             refreshing: false,
             tournamentData: [],
             assignUsers: [],
-            modalVisible: false,
             tId: '',
             TName: 'Select a tournament',
             currentGroupToken: '',
@@ -83,77 +80,19 @@ export default class Group extends Component {
         });
     }
 
-    setModalVisible(visible) { this.setState({modalVisible: visible}); }
-
     setLoading(loading) { this.setState({loading: loading}); }
 
-    getUserList = (cb) => {
-        try {
-            /* BaseModel.get('users', cb).then((users) => {
-             let userGroupUsers = users.map(function (user) {
-             return {
-             userId: user._id,
-             name: user.name,
-             score: 0,
-             currentRanking: 0,
-             currentDailyMovements: 0,
-             dailyMovementsDone: false,
-             playerRanking: [/!*{
-             playerId: user.value,
-             TR: user.value,
-             Score: user.value,
-             currentPosition: user.value,
-             playerPhotoUrl: user.value,
-             } *!/
-             ]
-             }
-             ;
-             });
-             this.setState({data: users});
-             });*/
-
-        } catch (e) {
-            console.log('error in getUserList: Group.js')
-            console.log(e)
-        }
-    };
-
-    handleRefresh = () => {
-        this.setState(
-            {
-                page: 1,
-                seed: this.state.seed + 1,
-                refreshing: true
-            },
-            () => {
-                this.getUserList();
-            }
-        );
-    };
-
-    handleLoadMore = () => {
-        this.setState(
-            {
-                page: this.state.page + 1
-            },
-            () => {
-                this.getUserList();
-            }
-        );
-    };
-
-    renderSeparator = () => {
-        return (
-            <View
-                style={{
-                    height: 1,
-                    width: '86%',
-                    backgroundColor: '#CED0CE',
-                    marginLeft: '14%'
-                }}
-            />
-        );
-    };
+    // renderSeparator = () => {
+    //     return (
+    //         <View
+    //             style={{
+    //                 height: 1,
+    //                 width: '86%',
+    //                 backgroundColor: '#CED0CE',
+    //                 marginLeft: '14%'
+    //             }} />
+    //     );
+    // };
 
 
     _tournamentSelect(t) {
@@ -167,21 +106,19 @@ export default class Group extends Component {
      return <SearchBar placeholder="Type Here..." lightTheme round/>;
      };*/
 
-    renderFooter = () => {
-        if (!this.state.loading) return null;
-
-        return (
-            <View
-                style={{
-                    paddingVertical: 20,
-                    borderTopWidth: 1,
-                    borderColor: "#CED0CE"
-                }}
-            >
-                <ActivityIndicator animating size="large"/>
-            </View>
-        );
-    };
+    // renderFooter = () => {
+    //     if (!this.state.loading) return null;
+    //
+    //     return (
+    //         <View style={{
+    //                 paddingVertical: 20,
+    //                 borderTopWidth: 1,
+    //                 borderColor: '#CED0CE'
+    //             }}>
+    //             <ActivityIndicator animating size='large' />
+    //         </View>
+    //     );
+    // };
 
     handlePress(actionIndex) {
         switch (actionIndex) {
@@ -194,15 +131,12 @@ export default class Group extends Component {
         }
     }
 
-    //GET TOURNAMENTS AND FRIENDS
-
     initialRequest = async (tour, year) => {
         let tournamentsApi = `http://api.sportradar.us/golf-t2/schedule/${tour}/${year}/tournaments/schedule.json?api_key=${Constants.API_KEY_SPORT_RADAR}`;
         try {
             const response = await fetch(tournamentsApi)
             const JsonResponse = await response.json()
             this.setState({tournamentData: JsonResponse.tournaments});
-            //this.getUserList()
             const value = await AsyncStorage.getItem(Constants.USER_PROFILE);
             if (value !== null) {
                 let jsonData = JSON.parse(value)
@@ -221,7 +155,6 @@ export default class Group extends Component {
             console.log(e)
         }
         this.setLoading(false);
-        // this.setState({tournamentData: response});
     };
 
     _generateGroupToken(length) {
@@ -230,62 +163,46 @@ export default class Group extends Component {
 
     async _handleNewGroupRegistry() {
 
+        console.log('INFORMATION: ', this.state.selectTournament);
+
         if (!this.state.name) {
-            Notifier.message({title: 'NEW GROUP', message: 'Please enter a name for the group'});
+            BarMessages.showError('Please enter a name for the group.', this.validationMessage);
             return;
         }
 
         if (!this.state.selectTournament) {
-            Notifier.message({title: 'NEW GROUP', message: 'Please select a tournament'});
+            BarMessages.showError('Please select a tournament.', this.validationMessage);
             return;
         }
 
         if (!this.state.prize) {
-            Notifier.message({title: 'NEW GROUP', message: 'Please enter a prize'});
+            BarMessages.showError('Please enter a bet.', this.validationMessage);
             return;
         }
-
-        if (!this.state.groupPhoto) {
-            Notifier.message({title: 'NEW GROUP', message: 'Please select a group photo (tap on the empty image)'});
-            return;
-        }
-
-/*        if (this.state.data.length == 0) {
-            Notifier.message({
-                title: 'NEW GROUP',
-                message: 'You havent invited anyone yet. Invite at least one person please.'
-            });
-            return;
-        }*/
 
         this.setLoading(true);
-        // ImagePicker saves the taken photo to disk and returns a local URI to it
-        let localUri = this.state.groupPhoto;
-        let filename = localUri.split('/').pop();
-
-        // Infer the type of the image
-        let match = /\.(\w+)$/.exec(filename);
-        let type = match ? `image/${match[1]}` : `image`;
-
         let data = {
             name: this.state.name,
             tournament: this.state.selectTournament,
             prize: this.state.prize,
-            photo: {path: localUri, name: filename, type: type},
             users: this.state.assignUsers,
             groupToken: this.state.currentGroupToken,
         };
+        if (this.state.groupPhoto) {
+            let localUri = this.state.groupPhoto;
+            let filename = localUri.split('/').pop();
+            let match = /\.(\w+)$/.exec(filename);
+            let type = match ? `image/${match[1]}` : `image`;
+            data.photo = {path: localUri, name: filename, type: type};
+        }
 
         BaseModel.create('createGroup', data).then((response) => {
             this.setLoading(false);
             this.props.navigation.dispatch({type: 'Main'})
-        })
-            .catch((error) => {
-                this.setLoading(false);
-                setTimeout(() => {
-                    Notifier.message({title: 'ERROR', message: error});
-                }, Constants.TIME_OUT_NOTIFIER);
-            });
+        }).catch((error) => {
+            this.setLoading(false);
+            BarMessages.showError(error, this.validationMessage);
+        });
     }
 
     _pickImage = async () => {
@@ -320,28 +237,19 @@ export default class Group extends Component {
                 'com.apple.uikit.activity.mail'
             ],
             tintColor: 'green'
-        })
-            .then(/* this.setState({
-                data: [...this.state.data, 'asdasdasd']
-            })*/ this._showResult)
-            .catch(err => console.log(err))
+        }).then(this._showResult).catch(err => console.log(err))
     }
 
     _showResult(result) {
         if (result.action === Share.sharedAction) {
             if (result.activityType) {
-                console.log('shared with an activityType: ' + result.activityType)
                 this.setState({result: 'shared with an activityType: ' + result.activityType});
             } else {
-                console.log('shared')
-                console.log('this.state.currentInvitationName')
-                console.log(this.state.currentInvitationName)
                 let updatedInvitations = this.state.data.slice();
                 updatedInvitations.push({name:this.state.currentInvitationName});
                 this.setState({data:updatedInvitations, result: 'shared', currentInvitationName: ''});
             }
         } else if (result.action === Share.dismissedAction) {
-            console.log('dismissed')
             this.setState({result: 'dismissed'});
         }
     }
@@ -356,14 +264,11 @@ export default class Group extends Component {
         let tournamentItems = this.state.tournamentData.map((s, i) => {
             tournamentName[i] = s.name
             tournamentKeys[i] = s.id
-            return <Picker.Item key={i} value={s.id} label={s.name}/>
+            return <Picker.Item style={[MainStyles.formPickerText]} key={i} value={s.id} label={s.name} />
         });
-
         tournamentName.push('Cancel');
         tournamentKeys.push('none');
-        /*  let tournamentItemsIos = this.state.tournamentData.map((s, i) => {
-         return <PickerIOS.Item key={i} value={s.id} label={s.name}/>
-         });*/
+
         return (
             <View style={{flex: 1}}>
                 <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={MainStyles.background}>
@@ -378,16 +283,16 @@ export default class Group extends Component {
                             cancelButtonIndex={2}
                             onPress={this.handlePress} />
 
-                        <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
-                            { groupPhoto && <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/> }
-                            {!groupPhoto && <Image style={LocalStyles.groupImage} source={addPhoto}></Image>
-                            }
-                            <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
-                                Add photo
-                            </Text>
-                        </TouchableOpacity>
-
                         <View style={[LocalStyles.formContainer]}>
+
+                            <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
+                                { groupPhoto && <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/> }
+                                {!groupPhoto && <Image style={LocalStyles.groupImage} source={addPhoto}></Image> }
+                                <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
+                                    Add photo
+                                </Text>
+                            </TouchableOpacity>
+
                             <TextInput
                                 returnKeyType={"next"}
                                 underlineColorAndroid='transparent'
@@ -395,114 +300,49 @@ export default class Group extends Component {
                                 onChangeText={(name) => this.setState({name})}
                                 value={this.state.name}
                                 placeholder={'Group name'} />
+
+                            { isAndroid
+                                ?
+                                    <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+                                        <Picker style={MainStyles.noMargin} selectedValue={this.state.selectTournament} onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+                                            <Picker.Item style={[MainStyles.formPickerText]} color="#rgba(0, 0, 0, .2)" value='' label='Pick a tournament' />
+                                            {tournamentItems}
+                                        </Picker>
+                                    </View>
+                                :
+                                    <TouchableOpacity style={[MainStyles.formPicker, MainStyles.noMargin]} onPress={() => {
+                                        ActionSheetIOS.showActionSheetWithOptions({
+                                                options: tournamentName,
+                                                cancelButtonIndex: tournamentName.length - 1,
+                                            },
+                                            (buttonIndex) => {
+                                                if (tournamentKeys[buttonIndex] != 'none') {
+                                                    this.setState({
+                                                        selectTournament: tournamentKeys[buttonIndex],
+                                                        TName: tournamentName[buttonIndex]
+                                                    })
+                                                }
+                                            })
+                                    }}>
+                                        <Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.TName}</Text>
+                                    </TouchableOpacity>
+                            }
+
+                            <TextInput
+                                returnKeyType={"next"}
+                                underlineColorAndroid='transparent'
+                                style={[MainStyles.formInput, MainStyles.noMargin]}
+                                onChangeText={(prize) => this.setState({prize})}
+                                value={this.state.prize}
+                                multiline={true}
+                                numberOfLines={3}
+                                placeholder={'Bet'} />
+
+                            <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this._handleNewGroupRegistry}>
+                                <Text style={MainStyles.buttonText}>Create a Group</Text>
+                            </TouchableOpacity>
+
                         </View>
-
-                        {isAndroid
-                            ?
-                                <View style={[LocalStyles.androidTournamentPicker]}>
-                                    <Picker
-                                        style={LocalStyles.androidTournamentInternal}
-                                        selectedValue={this.state.selectTournament}
-                                        onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                                        <Picker.Item style={LocalStyles.androidPickerItem} itemStyle={LocalStyles.androidPickerItem} color="#rgba(0, 0, 0, .2)" value='' label='Pick a tournament'/>
-                                        {tournamentItems}
-                                    </Picker>
-                                </View>
-                            :
-                                <TouchableOpacity style={[LocalStyles.tournamentPicker]} onPress={() => {
-                                    ActionSheetIOS.showActionSheetWithOptions({
-                                            options: tournamentName,
-                                            cancelButtonIndex: tournamentName.length - 1,
-                                        },
-                                        (buttonIndex) => {
-                                            if (tournamentKeys[buttonIndex] != 'none') {
-                                                this.setState({
-                                                    selectTournament: tournamentKeys[buttonIndex],
-                                                    TName: tournamentName[buttonIndex]
-                                                })
-                                            }
-                                        })
-                                }}>
-                                    <Text style={LocalStyles.innerInput}>{this.state.TName}</Text>
-                                </TouchableOpacity>
-                        }
-
-                        <TextInput
-                            underlineColorAndroid='transparent'
-                            placeholder={'Bet'}
-                            style={[LocalStyles.richCreateTInput, {paddingBottom: 5}]}
-                            onChangeText={(prize) => this.setState({prize: prize})}
-                            value={this.state.prize}
-                            multiline={true}
-                            numberOfLines={3} />
-
-                        <TouchableHighlight
-                            onPress={this._handleNewGroupRegistry}
-                            style={[MainStyles.goldenShankButton, {marginBottom: '10%'}]}>
-                            <Text style={LocalStyles.buttonText}>Create group</Text>
-                        </TouchableHighlight>
-
-                        <KeyboardAvoidingView behavior={'position'}>
-                            <Modal
-                                animationType="slide"
-                                transparent={true}
-                                visible={this.state.modalVisible}
-                                onRequestClose={() => {
-                                    this.setModalVisible(!this.state.modalVisible)
-                                }}>
-                                <TouchableOpacity
-                                    style={{
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        height: '100%',
-                                        backgroundColor: this.props.transparent ? 'transparent' : 'rgba(0,0,0,0.5)',
-                                    }}
-                                    activeOpacity={1}
-                                    onPressOut={() => {
-                                        this.setModalVisible(false)
-                                    }}
-                                >
-                                    <View style={LocalStyles.modalhead}>
-                                        <View style={{
-                                            flex: 3,
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                        }}>
-                                            <View style={{width: '16%'}}/>
-                                            <View>
-                                                <Text style={LocalStyles.buttonText}>INVITE TO GROUP</Text>
-                                            </View>
-                                            <TouchableHighlight
-                                                activeOpacity={0.4}
-                                                underlayColor='#768b64'
-                                                onPress={() => {
-                                                    this.setModalVisible(!this.state.modalVisible)
-                                                }}
-                                                style={{paddingRight: '3%'}}>
-                                                <Ionicons name="ios-close-circle-outline" size={25} color="white"/>
-                                            </TouchableHighlight>
-                                        </View>
-                                    </View>
-                                    <View style={LocalStyles.modalbody}>
-                                        <Text>Friend Name</Text>
-                                        <TextInput
-                                            underlineColorAndroid='transparent'
-                                            style={LocalStyles.inputModal}
-                                            onChangeText={(currentInvitationName) => this.setState({currentInvitationName})}
-                                            value={this.state.currentInvitationName}
-                                        />
-                                        <TouchableHighlight
-                                            onPress={this._shareTextWithTitle}
-                                            style={[LocalStyles.goldenShankButton, {marginBottom: '10%'}]}>
-                                            <Text style={LocalStyles.buttonText}>SEND INVITE</Text>
-                                        </TouchableHighlight>
-                                    </View>
-
-                                </TouchableOpacity>
-
-                            </Modal>
-                        </KeyboardAvoidingView>
                     </View>
                 </KeyboardAwareScrollView>
                 <DropdownAlert ref={ref => this.validationMessage = ref} />

@@ -9,6 +9,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 // Third party components:
 import qs from 'qs';
 import { Facebook } from 'expo';
+import { FontAwesome } from '@expo/vector-icons';
 
 // Shank components:
 import NoAuthModel from '../../../core/NoAuthModel';
@@ -21,13 +22,18 @@ const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
 export default class Register extends Component {
 
     static propTypes = { navigation: PropTypes.object.isRequired };
-    static navigationOptions = {
+    static navigationOptions = ({navigation}) => ({
         title: 'SIGN UP',
         headerTintColor: Constants.TERTIARY_COLOR,
         headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerLeft: (
+            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
+                <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
+            </TouchableHighlight>
+        ),
         headerRight: (<View></View>)
-    };
+    });
 
     constructor(props) {
         super(props);

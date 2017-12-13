@@ -63,6 +63,10 @@ const MainStyles = StyleSheet.create({
         paddingTop: Style.EM(0.75),
         width:'100%'
     },
+    formPickerText: {
+        fontSize: Style.EM(1),
+        color: Constants.PRIMARY_COLOR
+    },
     button: {
         alignItems: 'center',
         borderRadius: 10,
@@ -84,7 +88,8 @@ const MainStyles = StyleSheet.create({
     },
     buttonLinkText: {
         color: Constants.PRIMARY_COLOR,
-        fontSize: Style.EM(1)
+        fontSize: Style.EM(1),
+        marginTop: Style.EM(0.5)
     },
     success: {
         backgroundColor: Constants.SUCCESS_COLOR
@@ -111,7 +116,16 @@ const MainStyles = StyleSheet.create({
         paddingRight: Style.EM(0.5)
     },
     noMargin: {
-        margin: 0
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 0
+    },
+    noPadding: {
+        paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingTop: 0
     },
 
 

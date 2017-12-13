@@ -5,6 +5,7 @@ import { Text, View, FlatList, ActivityIndicator, TouchableHighlight, AsyncStora
 import Spinner from 'react-native-loading-spinner-overlay';
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import ActionSheet from 'react-native-actionsheet';
+import { ActionSheetProvider, connectActionSheet } from '@expo/react-native-action-sheet';
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Third party components:
@@ -18,6 +19,7 @@ import * as Constants from '../../../core/Constants';
 import * as BarMessages from '../../../core/BarMessages';
 
 const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
+@connectActionSheet
 export default class MainScreen extends Component {
 
     static propTypes = { navigation: PropTypes.object.isRequired };
@@ -28,12 +30,12 @@ export default class MainScreen extends Component {
         headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: (
-            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Group'})}>
+            <TouchableHighlight onPress={() => (navigation.state.params.auth) ? navigation.dispatch({type: 'Group'}) : navigation.dispatch({type: 'Register'})}>
                 <FontAwesome name="plus" style={MainStyles.headerIconButton} />
             </TouchableHighlight>
         ),
         headerRight: (
-            <TouchableHighlight onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.state.params.nav.dispatch({type: 'Register'})}>
+            <TouchableHighlight onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.dispatch({type: 'Register'})}>
                 <FontAwesome name="user-o" style={MainStyles.headerIconButton} />
             </TouchableHighlight>
         ),
@@ -50,7 +52,7 @@ export default class MainScreen extends Component {
         this.collectGroupData = this.collectGroupData.bind(this);
 
         this.handlePress = this.handlePress.bind(this);
-        this.showActionSheet = this.showActionSheet.bind(this)
+        this.showActionSheet = this.showActionSheet.bind(this);
         this.state = {
             loading: false,
             data: [],
@@ -81,7 +83,20 @@ export default class MainScreen extends Component {
     }
 
     showActionSheet() {
-        this.ActionSheet.show()
+        if(Platform.OS === 'android') {
+            this.ActionSheet.show();
+        } else {
+            let options = [ 'Edit Profile', 'Privacy Policy', 'Terms of Service', 'Rules', 'Log Out', 'Cancel' ];
+            let cancelButtonIndex = 5;
+            this.props.showActionSheetWithOptions(
+                {
+                    options: [ 'Edit Profile', 'Privacy Policy', 'Terms of Service', 'Rules', 'Log Out', 'Cancel' ],
+                    cancelButtonIndex: 5,
+                    destructiveButtonIndex: 4
+                },
+                buttonIndex => this.handlePress(buttonIndex)
+            );
+        }
     }
 
     handlePress(actionIndex) {
@@ -105,8 +120,6 @@ export default class MainScreen extends Component {
         this.setState({loading: loading});
     }
 
-
-
     async _removeStorage() {
         try {
             let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
@@ -115,8 +128,6 @@ export default class MainScreen extends Component {
             console.log('error on  :Token removed from disk.');
         }
     }
-
-
 
     async _myGroupsAsyncRemoteRequest(data) {
         const {page} = this.state;
@@ -128,21 +139,20 @@ export default class MainScreen extends Component {
                 loading: false,
                 refreshing: false
             });
-        })
-            .catch((error) => {
-                this.setLoading(false);
-                if (error == 401) {
-                    try {
-                        AsyncStorage.removeItem(Constants.AUTH_TOKEN).then(() => {
-                            this.props.navigation.dispatch({type: 'Splash'})
-                        });
-                    } catch (error) {
-                        console.log('error on  :Token removed from disk.');
-                    }
-                } else {
-                    BarMessages.showError(error, this.validationMessage);
+        }).catch((error) => {
+            this.setLoading(false);
+            if (error == 401) {
+                try {
+                    AsyncStorage.removeItem(Constants.AUTH_TOKEN).then(() => {
+                        this.props.navigation.dispatch({type: 'Splash'})
+                    });
+                } catch (error) {
+                    console.log('error on  :Token removed from disk.');
                 }
-            })
+            } else {
+                BarMessages.showError(error, this.validationMessage);
+            }
+        });
     }
 
     handleRefresh = () => {
@@ -262,7 +272,6 @@ export default class MainScreen extends Component {
                                 renderItem={({item}) => (
                                     <ListItem
                                         roundAvatar
-                                        avatar={{uri: item.photo.path}}
                                         avatarStyle={LocalStyles.roundAvatar}
                                         avatarContainerStyle={LocalStyles.containerRoundAvatar}
                                         avatarOverlayContainerStyle={LocalStyles.overlayRoundAvatar}
@@ -306,10 +315,10 @@ export default class MainScreen extends Component {
                         }}>
                             <TouchableOpacity onPress={() =>  navigation.navigate('Register', {url:outUrl})}>
                                 <Text style={MainStyles.groupsNone}>
-                                    Tap here to create or
+                                    Tap the {"\"+\""} button to create
                                 </Text>
                                 <Text style={MainStyles.groupsNone}>
-                                    join a betting group
+                                    or join a group
                                 </Text>
                             </TouchableOpacity>
                         </View>

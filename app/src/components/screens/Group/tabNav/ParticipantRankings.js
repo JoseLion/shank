@@ -27,7 +27,7 @@ export default class ParticipantRankings extends Component {
     }
 
     static navigationOptions = ({navigation}) => ({
-        title: 'Participant Rankings',
+        title: 'Leaderboard',
         headerTitleStyle: {alignSelf: 'center', color: '#fff'},
         headerStyle: {
             backgroundColor: '#556E3E',

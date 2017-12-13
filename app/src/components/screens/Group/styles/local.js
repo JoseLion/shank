@@ -9,6 +9,16 @@ const LocalStyles = StyleSheet.create({
     formContainer: {
         width: '80%'
     },
+    pickerHeight: {
+        height: Style.EM(2.5),
+        paddingLeft: Style.EM(0.75)
+    },
+    addPhotoLogo: {
+        alignItems: 'center',
+        marginBottom: Style.EM(1.5),
+        marginTop: Style.EM(2.5)
+    },
+
     //Modal
     modalhead:{
         backgroundColor: '#556E3E',
@@ -123,10 +133,6 @@ const LocalStyles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         backgroundColor: '#F5FCFF',
-    },
-    addPhotoLogo: {
-        marginTop: '3%',
-        alignItems: 'center',
     },
     groupImage:{
         width:  Style.iconMD,
