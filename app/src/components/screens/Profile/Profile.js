@@ -62,7 +62,7 @@ export default class ProfileScreen extends Component {
     render() {
         let navigation = this.props.navigation;
         let {userImage} = this.state;
-        let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
+        let addPhoto = require('../../../../resources/add_edit_photo.png');
         console.log("navigation.state.params.currentUser")
         console.log(navigation.state.params)
         return (

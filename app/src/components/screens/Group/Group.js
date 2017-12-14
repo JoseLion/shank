@@ -257,7 +257,7 @@ export default class Group extends Component {
     render() {
         let { groupPhoto } = this.state;
         let navigation = this.props.navigation;
-        let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
+        let addPhoto = require('../../../../resources/add_edit_photo.png');
         let tournamentName = []
         let tournamentKeys = []
 
