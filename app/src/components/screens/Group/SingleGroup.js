@@ -1,12 +1,13 @@
 // React components:
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, StatusBar, Image, TouchableOpacity, BackHandler, Platform, Alert, FlatList, TouchableHighlight, ScrollView } from 'react-native';
+import { Text, View, StatusBar, Image, TouchableOpacity, BackHandler, Platform, Alert, FlatList, TouchableHighlight, ScrollView, Share, Dimensions } from 'react-native';
 import { Header } from "react-native-elements"; // 0.17.0
 import { List, ListItem } from "react-native-elements"; // 0.17.0
 import { TabNavigator } from 'react-navigation';
 import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView, {ScrollableTabBar,} from 'react-native-scrollable-tab-view';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 // Third party components:
 import { Entypo, FontAwesome } from '@expo/vector-icons'; // 5.2.0
@@ -15,6 +16,7 @@ import { Entypo, FontAwesome } from '@expo/vector-icons'; // 5.2.0
 import BaseModel from '../../../core/BaseModel';
 import MainStyles from '../../../styles/main';
 import LocalStyles from './styles/local';
+import { ClienHost } from '../../../config/variables';
 import * as Constants from '../../../core/Constants';
 import * as BarMessages from '../../../core/BarMessages';
 import ParticipantRankings from './tabNav/ParticipantRankings';
@@ -135,6 +137,7 @@ export default class SingleGroup extends Component {
         this.setOrderedList = this.setOrderedList.bind(this);
         this.setStateMovements = this.setStateMovements.bind(this);
         this.setPlayerRankings = this.setPlayerRankings.bind(this);
+        this._shareTextWithTitle = this._shareTextWithTitle.bind(this);
 
         this.lastPosition = 1;
         this.backHandler = null;
@@ -360,152 +363,166 @@ export default class SingleGroup extends Component {
         );
     };
 
+    _shareTextWithTitle() {
+        Share.share({
+            message: 'Shank Group Invitation : ' + 'http://' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken + '&linkingUri=' + Constants.LINKING_URI,
+            title: 'Shank Group Invitation',
+            url: 'http://' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken  + '&linkingUri=' + Constants.LINKING_URI
+        }, {
+            dialogTitle: 'Shank Group Invitation',
+            excludedActivityTypes: [
+                'com.apple.UIKit.activity.PostToTwitter',
+                'com.apple.uikit.activity.mail'
+            ],
+            tintColor: 'green'
+        }).then(this._showResult).catch(err => console.log(err))
+    }
 
     render() {
         let navigation = this.props.navigation;
         let notAbsoluteDiff = new Date(navigation.state.params.data.tStartingDate) - this.state.currentDate.getTime();
+        let addPhoto = require('../../../../resources/add_edit_photo.png');
         let diffDays = 0;
         if (notAbsoluteDiff > 0) {
             let daysLeft = Math.abs(notAbsoluteDiff);
             diffDays = Math.ceil(daysLeft / (1000 * 3600 * 24));
         }
         let lockScrollTabView = false;
+        //navigation.state.params.data.currentGroup.name
+        //navigation.state.params.data.tournamentName
+
+        let totalWidth = Dimensions.get('window').width;
+
         return (
-            <View style={MainStyles.stretchContainer}>
+            <View style={[MainStyles.container]}>
                 <StatusBar hidden={true}/>
-                <View style={LocalStyles.singleGroupBoxes}>
-                    <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrize]}>
-                        {navigation.state.params.data.currentGroup.name}
-                    </Text>
-                    <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrizeDescription]}>
-                        {navigation.state.params.data.tournamentName}
-                    </Text>
-                </View>
-                <View style={LocalStyles.singleGroupBoxes}>
-                    <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrize]}>
-                        PRIZE
-                    </Text>
-                    <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupPrizeDescription]}>
-                        {navigation.state.params.data.currentGroup.prize}
-                    </Text>
-                </View>
-                <View style={[LocalStyles.innerScoreGroupBox, LocalStyles.singleGroupBoxes]}>
-                    <View style={MainStyles.centeredObject}>
-                        <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                            {this.state.groupLoggedUser.score}
-                        </Text>
-                        <Text style={LocalStyles.singleGroupScoreTabDescription}>
-                            Points
-                        </Text>
+                <View style={[LocalStyles.groupInformation]}>
+                    <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
+                        <Image style={[LocalStyles.groupImage, {width:50,height:50}]} source={addPhoto}></Image>
                     </View>
-                    <View style={MainStyles.centeredObject}>
-                        <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                            {this.state.groupLoggedUser.currentRanking + '/' + navigation.state.params.data.currentGroup.users.length}
-                        </Text>
-                        <Text style={LocalStyles.singleGroupScoreTabDescription}>
-                            Ranking
-                        </Text>
+                    <View style={[LocalStyles.viewContent, {flex:3,flexDirection:'column'}]}>
+                        <View><Text style={[LocalStyles.titleText]}>{navigation.state.params.data.currentGroup.name}</Text></View>
+                        <View><Text style={[LocalStyles.subtitleText]}>{navigation.state.params.data.tournamentName}</Text></View>
                     </View>
-                    <View style={[MainStyles.centeredObject]}>
-                        <Text style={[MainStyles.shankGreen, LocalStyles.singleGroupScoreTab]}>
-                            {diffDays}
-                        </Text>
-                        <Text style={LocalStyles.singleGroupScoreTabDescription}>
-                            Days Left
-                        </Text>
+                    <View style={[LocalStyles.viewContent, {flex:2,flexDirection:'column'}]}>
+                        <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this._shareTextWithTitle}>
+                            <Text style={MainStyles.buttonText}>Invite</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
-                {(
-                    <ScrollableTabView
-                        style={{backgroundColor: '#fff'}}
-                        initialPage={0}
-                        locked={false}
-                        renderTabBar={() =>
-                            <ScrollableTabBar tabBarTextStyle={{textAlign: 'center'}} underlineStyle={{backgroundColor: '#556E3E'}} activeTextColor='#3b4d2b' inactiveTextColor='#556E3E'/>
-                    }>
-                        <View tabLabel='Leaderboard' style={[{
-                            backgroundColor: '#556E3E',
-                            paddingHorizontal: '3%'
-                        }, LocalStyles.slideBorderStyle]}>
-                            <List containerStyle={LocalStyles.listContainer}>
-                                <FlatList
-                                    data={navigation.state.params.data.currentGroup.users}
-                                    renderItem={({item}) => (
-                                        <ListItem
-                                            key={item.userId}
-                                            titleContainerStyle={{marginLeft: '6%'}}
-                                            title={`${item.name}`}
-                                            hideChevron
-                                            titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                            rightTitle={`${'Score: ' + item.score}`}
-                                            rightTitleStyle={LocalStyles.participantsScore}
-                                            containerStyle={{borderBottomWidth: 0}}
-                                            /*   rightIcon={<Image style={{marginHorizontal: '2%'}}
-                                             source={whistleIcon}/>}*/
-                                            leftIcon={<Text
-                                                style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
-                                        />
-                                    )}
-                                    keyExtractor={item => item.name}
-                                    ItemSeparatorComponent={this.renderSeparator}
-                                />
-                            </List>
-                        </View>
+                <View style={[LocalStyles.groupInformation]}>
+                    <View style={[LocalStyles.viewContent, {flexDirection:'column'}]}>
+                        <View><Text style={[LocalStyles.subtitleText]}>PRIZE</Text></View>
+                        <View><Text style={[LocalStyles.normalText]}>{navigation.state.params.data.currentGroup.prize}</Text></View>
+                    </View>
+                </View>
+                <View style={[LocalStyles.groupInformation]}>
+                    <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
+                        <View><Text style={[LocalStyles.titleText]}>{this.state.groupLoggedUser.score}</Text></View>
+                        <View><Text style={[LocalStyles.infoText]}>Points</Text></View>
+                    </View>
+                    <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
+                        <View><Text style={[LocalStyles.titleText]}>{this.state.groupLoggedUser.currentRanking + '/' + navigation.state.params.data.currentGroup.users.length}</Text></View>
+                        <View><Text style={[LocalStyles.infoText]}>Ranking</Text></View>
+                    </View>
+                    <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
+                        <View><Text style={[LocalStyles.titleText]}>{diffDays}</Text></View>
+                        <View><Text style={[LocalStyles.infoText]}>Days Left</Text></View>
+                    </View>
+                </View>
+                <View style={[LocalStyles.groupInformation, LocalStyles.tabsInformation]}>
+                    {(
+                        <ScrollableTabView
+                            style={{backgroundColor: '#fff'}}
+                            initialPage={0}
+                            locked={false}
+                            renderTabBar={() =>
+                                <ScrollableTabBar tabBarTextStyle={{textAlign: 'center'}} activeBackgroundColor='#E4E4E4' activeTextColor='#3b4d2b' inactiveTextColor='#556E3E'/>
+                        }>
+                            <View tabLabel='Leaderboard' style={[{
+                                paddingHorizontal: '3%'
+                            }, LocalStyles.slideBorderStyle]}>
+                                <List containerStyle={LocalStyles.listContainer}>
+                                    <FlatList
+                                        data={navigation.state.params.data.currentGroup.users}
+                                        renderItem={({item}) => (
+                                            <ListItem
+                                                key={item.userId}
+                                                titleContainerStyle={{marginLeft: '6%'}}
+                                                title={`${item.name}`}
+                                                hideChevron
+                                                titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
+                                                rightTitle={`${'Score: ' + item.score}`}
+                                                rightTitleStyle={LocalStyles.participantsScore}
+                                                containerStyle={{borderBottomWidth: 0}}
+                                                /*   rightIcon={<Image style={{marginHorizontal: '2%'}}
+                                                 source={whistleIcon}/>}*/
+                                                leftIcon={<Text
+                                                    style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
+                                            />
+                                        )}
+                                        keyExtractor={item => item.name}
+                                        ItemSeparatorComponent={this.renderSeparator}
+                                    />
+                                </List>
+                            </View>
 
-                        <View tabLabel='Roaster' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
-                            <SortableListView
-                                style={{flex: 1, marginBottom: '20%'}}
-                                data={JSON.parse(JSON.stringify(this.state.orderedPlayerRankings))}
-                                order={this.state.order}
-                                onMoveStart={() => {
-                                    console.log("onMoveStart")
-                                    lockScrollTabView = true;
-                                }}
-                                onMoveEnd={() => {
-                                    console.log("onMoveEnd")
-                                    lockScrollTabView = false;
-                                }}
-                                onMoveCancel ={() => {
-                                    console.log("move canceled")
-                                }}
-                                onRowMoved={e => {
-                                    let dataCopy = this.state.order.slice();
-                                    let playerRankings = this.state.playerRankings.slice();
-                                    let dataOrderedListCopy = this.state.orderedPlayerRankings;
-                                    dataCopy.splice(e.to, 0, dataCopy.splice(e.from, 1)[0])
-                                    playerRankings.splice(e.to, 0, playerRankings.splice(e.from, 1)[0])
+                            <View tabLabel='Roaster' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
+                                <SortableListView
+                                    style={{flex: 1, marginBottom: '20%'}}
+                                    data={JSON.parse(JSON.stringify(this.state.orderedPlayerRankings))}
+                                    order={this.state.order}
+                                    onMoveStart={() => {
+                                        console.log("onMoveStart")
+                                        lockScrollTabView = true;
+                                    }}
+                                    onMoveEnd={() => {
+                                        console.log("onMoveEnd")
+                                        lockScrollTabView = false;
+                                    }}
+                                    onMoveCancel ={() => {
+                                        console.log("move canceled")
+                                    }}
+                                    onRowMoved={e => {
+                                        let dataCopy = this.state.order.slice();
+                                        let playerRankings = this.state.playerRankings.slice();
+                                        let dataOrderedListCopy = this.state.orderedPlayerRankings;
+                                        dataCopy.splice(e.to, 0, dataCopy.splice(e.from, 1)[0])
+                                        playerRankings.splice(e.to, 0, playerRankings.splice(e.from, 1)[0])
 
-                                    playerRankings.forEach(function (element, index) {
-                                        element.position = index + 1
-                                    });
-                                    this.setPlayerRankings(playerRankings)
-                                    this.setOrderPlayer(dataCopy);
-                                    this.setOrderedList(dataOrderedListCopy);
-                                    this.setStateMovements(dataCopy, dataOrderedListCopy);
-                                    //this.forceUpdate()
-                                }}
-                                renderRow={(row, sectionID, rowID) => <RowComponent data={row}
-                                                                                    navigation={navigation}
-                                                                                    sectionID={sectionID}
-                                                                                    rowID={rowID}
-                                                                                    navi={navigation}
-                                                                                    currentGroup={navigation.state.params.data.currentGroup}
-                                                                                    playerRankings={this.state.playerRankings}
-                                                                                    groupLoggedUser={this.state.groupLoggedUser}
-                                                                                    updatePlayerRankingsList={ this.updatePlayerRankingsList}/>}/>
+                                        playerRankings.forEach(function (element, index) {
+                                            element.position = index + 1
+                                        });
+                                        this.setPlayerRankings(playerRankings)
+                                        this.setOrderPlayer(dataCopy);
+                                        this.setOrderedList(dataOrderedListCopy);
+                                        this.setStateMovements(dataCopy, dataOrderedListCopy);
+                                        //this.forceUpdate()
+                                    }}
+                                    renderRow={(row, sectionID, rowID) => <RowComponent data={row}
+                                                                                        navigation={navigation}
+                                                                                        sectionID={sectionID}
+                                                                                        rowID={rowID}
+                                                                                        navi={navigation}
+                                                                                        currentGroup={navigation.state.params.data.currentGroup}
+                                                                                        playerRankings={this.state.playerRankings}
+                                                                                        groupLoggedUser={this.state.groupLoggedUser}
+                                                                                        updatePlayerRankingsList={ this.updatePlayerRankingsList}/>}/>
 
-                            <TouchableOpacity
-                                onPress={() => this.updateUserRankingsListPersist(JSON.parse(JSON.stringify(this.state.orderedPlayerRankings)).position, this.state.groupLoggedUser._id, navigation.state.params.data.currentGroup._id)}
-                                style={[{
-                                    position: 'absolute',
-                                    bottom: '3%',
-                                    left: '29%'
-                                }, MainStyles.goldenShankButtonPayment]}>
-                                <Text style={LocalStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * this.state.pricePerMovement).toFixed(2)} $</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </ScrollableTabView>
-                )}
+                                <TouchableOpacity
+                                    onPress={() => this.updateUserRankingsListPersist(JSON.parse(JSON.stringify(this.state.orderedPlayerRankings)).position, this.state.groupLoggedUser._id, navigation.state.params.data.currentGroup._id)}
+                                    style={[{
+                                        position: 'absolute',
+                                        bottom: '3%',
+                                        left: '10%',
+                                        width: '80%'
+                                    }, MainStyles.button, MainStyles.success]}>
+                                    <Text style={MainStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * this.state.pricePerMovement).toFixed(2)} $</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollableTabView>
+                    )}
+                </View>
             </View>);
     }
 }

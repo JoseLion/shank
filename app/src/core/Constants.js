@@ -1,7 +1,8 @@
 import React from 'react';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
-export const BACKGROUND_COLOR = '#F5FCFF';
+// export const BACKGROUND_COLOR = '#F5FCFF';
+export const BACKGROUND_COLOR = '#FFFFFF';
 export const PRIMARY_COLOR = '#252D3B';
 export const TERTIARY_COLOR = '#FFFFFF';
 export const TERTIARY_COLOR_ALT = '#rgba(0, 0, 0, .2)';

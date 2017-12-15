@@ -1,5 +1,8 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 import Style from '../../../../styles/Stylesheet';
+
+import * as Constants from '../../../../core/Constants';
+
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 const {width, height} = Dimensions.get('window');
@@ -17,6 +20,65 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: Style.EM(1.5),
         marginTop: Style.EM(2.5)
+    },
+    groupInformation: {
+        flex: 1,
+        flexDirection: 'row'
+    },
+    tabsInformation: {
+        flex: 6
+    },
+    viewContent: {
+        flex: 1,
+        paddingBottom: Style.EM(0.75),
+        paddingLeft: Style.EM(1),
+        paddingRight: Style.EM(1),
+        paddingTop: Style.EM(0.75)
+    },
+    titleText: {
+        fontSize: Style.EM(1.5),
+        fontWeight: '700',
+        color: Constants.PRIMARY_COLOR
+    },
+    subtitleText: {
+        fontSize: Style.EM(1),
+        fontWeight: '700',
+        color: Constants.PRIMARY_COLOR
+    },
+    normalText: {
+        fontSize: Style.EM(0.75),
+        color: Constants.PRIMARY_COLOR
+    },
+    infoText: {
+        fontSize: Style.EM(0.75),
+        color: Constants.TERTIARY_COLOR_ALT
+    },
+
+    table: {
+        backgroundColor: Constants.BACKGROUND_COLOR
+    },
+    tableCols: {
+        backgroundColor: Constants.BACKGROUND_COLOR,
+        height: Style.EM(2.5)
+    },
+    tableContent: {
+        paddingBottom: Style.EM(0.75),
+        paddingLeft: Style.EM(1),
+        paddingRight: Style.EM(1),
+        paddingTop: Style.EM(0.75)
+    },
+    selectedCheck: {
+        backgroundColor: Constants.TERTIARY_COLOR,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: Constants.SUCCESS_COLOR,
+        paddingLeft: Style.EM(1),
+        paddingRight: Style.EM(1),
+        color: Constants.SUCCESS_COLOR
+    },
+    checkIsSelected: {
+        backgroundColor: Constants.SUCCESS_COLOR,
+        color: Constants.TERTIARY_COLOR
     },
 
     //Modal

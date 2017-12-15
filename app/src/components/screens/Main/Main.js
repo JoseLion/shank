@@ -1,12 +1,13 @@
 // React components:
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, FlatList, ActivityIndicator, TouchableHighlight, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
+import { Text, View, FlatList, ActivityIndicator, TouchableHighlight, AsyncStorage, TouchableOpacity, Platform, Image } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import ActionSheet from 'react-native-actionsheet';
 import { ActionSheetProvider, connectActionSheet } from '@expo/react-native-action-sheet';
 import DropdownAlert from 'react-native-dropdownalert';
+import Swipeable from 'react-native-swipeable';
 
 // Third party components:
 import { FontAwesome } from '@expo/vector-icons';
@@ -35,7 +36,7 @@ export default class MainScreen extends Component {
             </TouchableHighlight>
         ),
         headerRight: (
-            <TouchableHighlight onPress={() => (navigation.state.params.auth) ? navigation.state.params.actionSheet() : navigation.dispatch({type: 'Register'})}>
+            <TouchableHighlight onPress={() => (navigation.state.params.auth) ? navigation.dispatch({type: 'Settings'}) : navigation.dispatch({type: 'Register'})}>
                 <FontAwesome name="user-o" style={MainStyles.headerIconButton} />
             </TouchableHighlight>
         ),
@@ -243,7 +244,8 @@ export default class MainScreen extends Component {
     //PORBLEM IN MAIN.JS WHEN MONGO CLEAN OUT AND USER STILL WITH TOKEN LOCAL ERR ON GROUP LISTING
     render() {
         let navigation = this.props.navigation;
-        let showPlus = this.state.data.length > 0
+        let showPlus = this.state.data.length > 0;
+        let addPhoto = require('../../../../resources/add_edit_photo.png');
         let outUrl = ""
         if(navigation.state.params){
             if(navigation.state.params.url){
@@ -270,21 +272,40 @@ export default class MainScreen extends Component {
                             <FlatList
                                 data={this.state.data}
                                 renderItem={({item}) => (
-                                    <ListItem
-                                        roundAvatar
-                                        avatarStyle={LocalStyles.roundAvatar}
-                                        avatarContainerStyle={LocalStyles.containerRoundAvatar}
-                                        avatarOverlayContainerStyle={LocalStyles.overlayRoundAvatar}
-                                        title={`${item.name}`}
-                                        titleStyle={LocalStyles.titleMainList}
-                                        titleContainerStyle={{marginVertical: '5%', marginHorizontal: '10%'}}
-                                        underlayColor={"#b3b3b3"}
-                                        containerStyle={[LocalStyles.containerList, {
-                                            borderBottomWidth: 0,
-                                            marginHorizontal: '9%'
-                                        }]}
-                                        onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
-                                    />
+                                    <Swipeable leftButtons={[
+                                        (
+                                            <TouchableHighlight style={[MainStyles.button, MainStyles.error]}><Text style={[MainStyles.buttonText]}>Leave</Text></TouchableHighlight>
+                                        )
+                                    ]}>
+                                        <TouchableHighlight
+                                            underlayColor="#c3c3c3"
+                                            onPress={() => this.collectGroupData('pga', '2018', item.tournament, item._id, navigation)}
+                                            style={{
+                                                flex: 1,
+                                                padding: 20,
+                                                backgroundColor: '#ffffff',
+                                                borderBottomWidth: 1.5,
+                                                borderColor: Constants.TERTIARY_COLOR_ALT,
+                                                alignItems: 'center',
+                                                flexDirection: 'row',
+                                                justifyContent: 'center',
+                                            }}>
+                                            <View style={{
+                                                flex: 1,
+                                                alignItems: 'center',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                            }}>
+                                                <Image style={{height:50,width:50}} source={addPhoto}></Image>
+                                                <Text numberOfLines={3} style={[LocalStyles.titleText]}>{item.name}{"\n"}
+                                                    <Text style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>{'TOURNAMENT NAME'}</Text>{"\n"}
+                                                    <Text style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>{'Score: 0     Rank: 1/5'}</Text>
+                                                </Text>
+                                                <Text/>
+                                                <FontAwesome name="chevron-right" size={29} color={Constants.TERTIARY_COLOR_ALT} />
+                                            </View>
+                                        </TouchableHighlight>
+                                    </Swipeable>
                                 )}
                                 keyExtractor={item => item._id}
                                 ItemSeparatorComponent={this.renderSeparator}

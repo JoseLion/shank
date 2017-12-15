@@ -1,5 +1,7 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 
+import * as Constants from '../../../../core/Constants';
+
 const isAndroid = Platform.OS == 'android' ? true : false;
 const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
@@ -10,7 +12,15 @@ const LocalStyles = StyleSheet.create({
         paddingLeft: Style.EM(0.5),
         paddingRight: Style.EM(0.5)
     },
-
+    titleText: {
+        color: Constants.PRIMARY_COLOR,
+        fontSize: Style.EM(1)
+    },
+    subtitleText: {
+        color: Constants.TERTIARY_COLOR_ALT,
+        fontSize: Style.EM(0.75)
+    },
+    
 
 
 
