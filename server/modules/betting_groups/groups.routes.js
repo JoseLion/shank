@@ -103,7 +103,7 @@ let prepareRouter = function (app) {
             }
             BettingGroup
                 .find({'groupToken': data.groupToken})
-                .select('_id name users tournament city photo prize users')
+                .select('_id name users tournament city photo bet users')
                 .exec(function (err, user) {
                     if (err) {
                         res.ok({}, 'Al seleccionar grupos.');
@@ -119,7 +119,7 @@ let prepareRouter = function (app) {
         .get('/allGroups', function (req, res) {
             BettingGroup
                 .find()
-                .select('_id name users tournament city photo prize users groupToken')
+                .select('_id name users tournament city photo bet users groupToken')
                 .exec(function (err, user) {
                     if (err) {
                         res.ok({}, 'Al seleccionar grupos.');
