@@ -82,43 +82,12 @@ export default class Group extends Component {
 
     setLoading(loading) { this.setState({loading: loading}); }
 
-    // renderSeparator = () => {
-    //     return (
-    //         <View
-    //             style={{
-    //                 height: 1,
-    //                 width: '86%',
-    //                 backgroundColor: '#CED0CE',
-    //                 marginLeft: '14%'
-    //             }} />
-    //     );
-    // };
-
-
     _tournamentSelect(t) {
         this.setState({
             ...this.state,
             selectTournament: t
         });
     }
-
-    /*renderHeader = () => {
-     return <SearchBar placeholder="Type Here..." lightTheme round/>;
-     };*/
-
-    // renderFooter = () => {
-    //     if (!this.state.loading) return null;
-    //
-    //     return (
-    //         <View style={{
-    //                 paddingVertical: 20,
-    //                 borderTopWidth: 1,
-    //                 borderColor: '#CED0CE'
-    //             }}>
-    //             <ActivityIndicator animating size='large' />
-    //         </View>
-    //     );
-    // };
 
     handlePress(actionIndex) {
         switch (actionIndex) {
@@ -257,7 +226,7 @@ export default class Group extends Component {
     render() {
         let { groupPhoto } = this.state;
         let navigation = this.props.navigation;
-        let addPhoto = require('../../../../resources/createGroup/ios/Recurso13.png');
+        let addPhoto = require('../../../../resources/add_edit_photo.png');
         let tournamentName = []
         let tournamentKeys = []
 
@@ -289,7 +258,7 @@ export default class Group extends Component {
                                 { groupPhoto && <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/> }
                                 {!groupPhoto && <Image style={LocalStyles.groupImage} source={addPhoto}></Image> }
                                 <Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>
-                                    Add photo
+                                    { !groupPhoto ? 'Add photo' : 'Change photo' }
                                 </Text>
                             </TouchableOpacity>
 

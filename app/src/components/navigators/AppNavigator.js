@@ -17,6 +17,7 @@ import Tournament from '../screens/Tournament/Tournament';
 import Group from '../screens/Group/Group';
 import SingleGroup from '../screens/Group/SingleGroup';
 import PlayerSelection from '../screens/Group/PlayerSelection';
+import Settings from '../screens/Settings/Settings';
 
 export const TabNav = TabNavigator({
     Groups: { screen: Main },
@@ -43,6 +44,7 @@ export const AppNavigator = StackNavigator({
     Group: { screen: Group },
     SingleGroup: { screen: SingleGroup },
     PlayerSelection: { screen: PlayerSelection },
+    Settings: { screen: Settings },
 });
 
 const AppWithNavigationStateCopy = ({dispatch, nav, auth}) => (

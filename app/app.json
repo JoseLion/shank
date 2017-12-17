@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Shank",
-    "icon": "resources/shank_logo.png",
+    "icon": "resources/shank_logo_bg.png",
     "version": "1.0.1",
     "slug": "Shank",
     "sdkVersion": "21.0.0",
@@ -9,7 +9,7 @@
     "scheme": "Shank",
     "ios": {
       "bundleIdentifier": "com.levelap.shank",
-      "buildNumber" : "1.0.7"
+      "buildNumber" : "1.0.9"
     },
     "android": {
       "package": "com.levelap.shank"
