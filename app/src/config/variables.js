@@ -12,4 +12,6 @@ const AssetsURL = `http://${endPoint}:3000/uploads`;
 const Timeout = 60000;
 const version = '2.9';
 
-export {Host, ApiHost, AuthToken, ApiKey, AssetsURL, Timeout, version, ClienHost};
+const GolfApiHost = 'https://api.fantasydata.net/golf/v2/JSON/';
+
+export {Host, ApiHost, AuthToken, ApiKey, AssetsURL, Timeout, version, ClienHost, GolfApiHost};

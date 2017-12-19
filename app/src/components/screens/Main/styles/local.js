@@ -14,13 +14,25 @@ const LocalStyles = StyleSheet.create({
     },
     titleText: {
         color: Constants.PRIMARY_COLOR,
-        fontSize: Style.EM(1)
+        fontSize: Style.EM(1),
+        fontWeight: '700'
     },
     subtitleText: {
         color: Constants.TERTIARY_COLOR_ALT,
-        fontSize: Style.EM(0.75)
+        fontSize: Style.EM(0.75),
+        fontWeight: '700'
     },
-    
+    trashButton: {
+        width: 75,
+        paddingLeft: 0,
+        paddingRight: 0
+    },
+    noneButtonView: {
+        flex: 2,
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'center'
+    },
 
 
 

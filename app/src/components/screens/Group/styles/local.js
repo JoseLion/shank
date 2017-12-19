@@ -36,12 +36,15 @@ const LocalStyles = StyleSheet.create({
         paddingTop: Style.EM(0.75)
     },
     titleText: {
-        fontSize: Style.EM(1.5),
+        fontSize: Style.EM(1),
         fontWeight: '700',
         color: Constants.PRIMARY_COLOR
     },
+    titleTextNumber: {
+        fontSize: Style.EM(1.5)
+    },
     subtitleText: {
-        fontSize: Style.EM(1),
+        fontSize: Style.EM(0.75),
         fontWeight: '700',
         color: Constants.PRIMARY_COLOR
     },
@@ -53,6 +56,20 @@ const LocalStyles = StyleSheet.create({
         fontSize: Style.EM(0.75),
         color: Constants.TERTIARY_COLOR_ALT
     },
+    trashButton: {
+        alignItems: 'center',
+        height: '80%',
+        justifyContent: 'center',
+        paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingTop: 0,
+        width: 75
+    },
+
+
+
+
 
     table: {
         backgroundColor: Constants.BACKGROUND_COLOR
