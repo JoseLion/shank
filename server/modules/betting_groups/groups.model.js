@@ -1,35 +1,34 @@
 let mongoose = require('mongoose');
 let Counter = mongoose.model('Counter');
-let Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
 
 let BettingGroupSchema = new mongoose.Schema({
     _id: Number,
     creationDate: { type: Date, default: Date.now() },
     updateDate: Date,
     status: { type: Boolean, default: true },
+
     name: String,
     bet: String,
     tournamentId: Number,
     tournamentName: String,
     users: [
         {
-            userId: { type: Number },
+            user: {
+                type: Number,
+                ref: 'User'
+            },
             isWinner: Boolean,
-            name: { type: String },
             score: { type: Number, default: 0 },
-            currentRanking: { type: Number, default: 0 },
-            currentDailyMovements: { type: Number, default: 0 },
-            dailyMovementsDone: { type: Boolean, default: false },
+            ranking: { type: Number, default: 0 },
             playerRanking: [
                 {
+                    position: { type: Number },
                     name: { type: String },
                     lastName: { type: String },
                     urlPhoto: { type: String },
                     playerId: { type: String },
-                    TR: { type: Number },
-                    score: { type: Number },
-                    position: { type: Number }
+                    tournamentPosition: { type: Number },
+                    score: { type: Number }
                 }
             ],
         }
@@ -53,9 +52,5 @@ BettingGroupSchema.pre('save', function(next) {
         }
     });
 });
-
-BettingGroupSchema.methods.setSomething = function (some) {
-    this.surname = some;
-};
 
 mongoose.model('BettingGroup', BettingGroupSchema);
