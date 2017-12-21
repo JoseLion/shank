@@ -23,16 +23,16 @@ import * as BarMessages from '../../../core/BarMessages';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
-export default class Group extends Component {
+export default class EditGroup extends Component {
 
     static propTypes = { navigation: PropTypes.object.isRequired };
     static navigationOptions = ({navigation}) => ({
-        title: 'CREATE GROUP',
+        title: 'EDIT GROUP',
         headerTintColor: Constants.TERTIARY_COLOR,
         headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: (
-            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
+            <TouchableHighlight onPress={() => navigation.dispatch({type: 'SingleGroup'})}>
                 <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
             </TouchableHighlight>
         ),

@@ -17,11 +17,12 @@ export default class TournamentsScreen extends Component {
         headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: null,
-        tabBarIcon: () => {
+        tabBarIcon: ({tintColor}) => {
             return (
-                <Ionicons name="md-trophy" size={29} color="white"/>
+                <Ionicons name="md-trophy" style={[MainStyles.tabBarIcon, {color: tintColor}]} />
             )
         },
+        tabBarLabel: 'Tournaments'
     };
 
     constructor(props) {

@@ -75,6 +75,10 @@ const MainStyles = StyleSheet.create({
         padding: Style.EM(1),
         width: '100%'
     },
+    buttonVerticalPadding: {
+        paddingBottom: Style.EM(0.5),
+        paddingTop: Style.EM(0.5)
+    },
     buttonText: {
         color: Constants.TERTIARY_COLOR,
         fontSize: Style.EM(1)
@@ -109,6 +113,15 @@ const MainStyles = StyleSheet.create({
     tertiary: {
         backgroundColor: Constants.TERTIARY_COLOR
     },
+    tabBarIcon: {
+        color: Constants.TERTIARY_COLOR,
+        fontSize: Style.EM(1)
+    },
+    headerIconButtonContainer: {
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     headerIconButton: {
         color: Constants.TERTIARY_COLOR,
         fontSize: Style.EM(1.5),
@@ -126,6 +139,19 @@ const MainStyles = StyleSheet.create({
         paddingLeft: 0,
         paddingRight: 0,
         paddingTop: 0
+    },
+    withoutGroupsButton: {
+        backgroundColor: Constants.BACKGROUND_COLOR,
+        height: '100%',
+        width: '100%'
+    },
+    withoutGroups: {
+        color: Constants.TERTIARY_COLOR_ALT,
+        fontSize: Style.EM(1)
+    },
+    placeholderText: {
+        color: Constants.TERTIARY_COLOR_ALT,
+        fontSize: Style.EM(0.75)
     },
 
 

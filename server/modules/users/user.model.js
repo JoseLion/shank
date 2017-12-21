@@ -1,19 +1,20 @@
 let mongoose = require('mongoose');
-let Counter = mongoose.model('Counter');
 let crypto = require('crypto');
 let jwt = require('jsonwebtoken');
 let configJWT = require('../../config/jwt');
+let Counter = mongoose.model('Counter');
 
 let UserSchema = new mongoose.Schema({
     _id: Number,
     creationDate: { type: Date, default: Date.now() },
     updateDate: Date,
     status: { type: Boolean, default: true },
+
     photo: {
         name: {type: String},
         path: {type: String}
     },
-    name: String,
+    fullName: String,
     birthDate: Date,
     gender: String,
     country: String,
@@ -24,38 +25,36 @@ let UserSchema = new mongoose.Schema({
         required: true,
         index: true
     },
+    cellPhone: String,
 
     profile: {
         type: Number,
         ref: 'Profile',
         default: 2
     },
+    bettingGroups: [ {type: Number, ref: 'BettingGroup'} ],
 
-    fb: String,
+    facebookId: String,
     hash: String,
-    salt: String,
-    securityCode: Number,
-
-    surname: String,
-    cellPhone: String,
-    bettingGroups: [{type: String}],
-    address: String,
-    type: {type: Number, default: 1},
-    security_code: Number,
-    enabled: {type: Boolean, default: true}
+    salt: String
 });
 
 UserSchema.pre('save', function(next) {
     let self = this;
-    Counter.getNextSequence('users', function(err, counter) {
-        if(err) {
-            self._id = -1;
-            next(err)
-        } else {
-            self._id = counter.seq
-            next();
-        }
-    });
+    if(self._id == null) {
+        Counter.getNextSequence('users', function(err, counter) {
+            if(err) {
+                self._id = -1;
+                next(err)
+            } else {
+                self._id = counter.seq
+                next();
+            }
+        });
+    } else {
+        self.updateDate = new Date();
+        next();
+    }
 });
 
 UserSchema.methods.setPassword = function (password) {
@@ -70,9 +69,7 @@ UserSchema.methods.getNewPassword = function (password) {
 };
 
 UserSchema.methods.validPassword = function (password) {
-    if (!this.salt) {
-        return false;
-    }
+    if (!this.salt) { return false; }
     let hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
     return this.hash === hash;
 };
@@ -84,11 +81,10 @@ UserSchema.methods.generateJwt = function (permissions) {
     return jwt.sign({
         _id: this._id,
         email: this.email,
-        name: this.name,
-        surname: this.surname,
+        fullName: this.fullName,
         exp: parseInt(expiry.getTime() / 1000),
         permissions: permissions
-    }, configJWT.TOKEN_SECRET); // DO NOT KEEP YOUR SECRET IN THE CODE!
+    }, configJWT.TOKEN_SECRET);
 };
 
 mongoose.model('User', UserSchema);

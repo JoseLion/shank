@@ -2,12 +2,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, StatusBar, Image, TouchableOpacity, BackHandler, Platform, Alert, FlatList, TouchableHighlight, ScrollView, Share, Dimensions } from 'react-native';
-import { Header } from "react-native-elements"; // 0.17.0
-import { List, ListItem } from "react-native-elements"; // 0.17.0
+import { Header } from 'react-native-elements'; // 0.17.0
+import { List, ListItem } from 'react-native-elements'; // 0.17.0
 import { TabNavigator } from 'react-navigation';
 import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView, {ScrollableTabBar,} from 'react-native-scrollable-tab-view';
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import Swipeable from 'react-native-swipeable';
 
 // Third party components:
 import { Entypo, FontAwesome } from '@expo/vector-icons'; // 5.2.0
@@ -46,7 +47,7 @@ class RowComponent extends React.Component {
             return (
                 <TouchableHighlight
                     {...this.props.sortHandlers}
-                    underlayColor="#c3c3c3"
+                    underlayColor='#c3c3c3'
                     onPress={this.addPlayer}
                     style={{
                         flex: 1,
@@ -75,14 +76,14 @@ class RowComponent extends React.Component {
                         }} source={{uri: this.props.data.urlPhoto}}/>
                         <Text
                             numberOfLines={2}
-                            style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.name} {this.props.data.lastName} {"\n"}
+                            style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.name} {this.props.data.lastName} {'\n'}
                             <Text
                                 style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{'   TR: ' + '15' + '   SCORE: ' + this.props.data.position}</Text>
                         </Text>
                         <Text/>
                         <FontAwesome
                             onPress={this.addPlayer}
-                            name="pencil" size={29} color="green"/>
+                            name='pencil' size={29} color='green'/>
                     </View>
                 </TouchableHighlight >
             )
@@ -90,7 +91,7 @@ class RowComponent extends React.Component {
             return (
                 <TouchableHighlight
                     {...this.props.sortHandlers}
-                    underlayColor="#c3c3c3"
+                    underlayColor='#c3c3c3'
                     style={{
                         flex: 1,
                         padding: 25,
@@ -119,8 +120,8 @@ export default class SingleGroup extends Component {
         headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: (
-            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
-                <FontAwesome name="chevron-left" style={MainStyles.headerIconButton} />
+            <TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.dispatch({type: 'Main'})}>
+                <Entypo name='chevron-small-left' style={MainStyles.headerIconButton} />
             </TouchableHighlight>
         ),
         headerRight: (
@@ -219,8 +220,8 @@ export default class SingleGroup extends Component {
                         return false;
                     } else {
                         Alert.alert(
-                            "RESPONSE",
-                            "You have made some changes. Are you sure you want to go back.",
+                            'RESPONSE',
+                            'You have made some changes. Are you sure you want to go back.',
                             [
                                 {
                                     text: 'Cancel', onPress: () => {
@@ -234,8 +235,8 @@ export default class SingleGroup extends Component {
                     }
                 } else {
                     Alert.alert(
-                        "RESPONSE",
-                        "You have to add at least 5 players to continue. Are you sure you want to go back?",
+                        'RESPONSE',
+                        'You have to add at least 5 players to continue. Are you sure you want to go back?',
                         [
                             {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
                             {text: 'OK', onPress: () => this.goMain()},
@@ -270,7 +271,7 @@ export default class SingleGroup extends Component {
     updatePlayerRankingsList(currentPosition, newAddition) {
         let existingPlayer = this.state.playerRankings.find(o => o.name === newAddition.name && o.lastName === newAddition.lastName);
         if (existingPlayer) {
-            Notifier.message({title: 'RESPONSE', message: "You already have this player on your prediction list."});
+            Notifier.message({title: 'RESPONSE', message: 'You already have this player on your prediction list.'});
         } else {
             let obj = {};
             newAddition.position = currentPosition;
@@ -312,7 +313,7 @@ export default class SingleGroup extends Component {
             if (currentGroup) {
                 this.setState({movementsDone: 0})
                 this.props.navigation.setParams({movementsDone: 0});
-                Notifier.message({title: 'RESPONSE', message: "Your list has been updated successfully"});
+                Notifier.message({title: 'RESPONSE', message: 'Your list has been updated successfully'});
             }
         } catch (e) {
             console.log('error in initialRequest: SingleGroup.js')
@@ -357,12 +358,6 @@ export default class SingleGroup extends Component {
         })
     }
 
-    renderSeparator = () => {
-        return (
-            <View style={MainStyles.listRenderSeparator}/>
-        );
-    };
-
     _shareTextWithTitle() {
         Share.share({
             message: 'Shank Group Invitation : ' + 'http://' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken + '&linkingUri=' + Constants.LINKING_URI,
@@ -402,67 +397,84 @@ export default class SingleGroup extends Component {
                     </View>
                     <View style={[LocalStyles.viewContent, {flex:3,flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.titleText]}>{navigation.state.params.data.currentGroup.name}</Text></View>
-                        <View><Text style={[LocalStyles.subtitleText]}>{navigation.state.params.data.tournamentName}</Text></View>
+                        <View><Text style={[LocalStyles.subtitleText]}>{navigation.state.params.data.currentGroup.tournamentName}</Text></View>
                     </View>
                     <View style={[LocalStyles.viewContent, {flex:2,flexDirection:'column'}]}>
-                        <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this._shareTextWithTitle}>
+                        <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this._shareTextWithTitle}>
                             <Text style={MainStyles.buttonText}>Invite</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={[LocalStyles.groupInformation]}>
+                <View style={[LocalStyles.groupInformation, {borderBottomWidth: 3, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
                     <View style={[LocalStyles.viewContent, {flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.subtitleText]}>PRIZE</Text></View>
-                        <View><Text style={[LocalStyles.normalText]}>{navigation.state.params.data.currentGroup.prize}</Text></View>
+                        <View><Text style={[LocalStyles.normalText]}>{navigation.state.params.data.currentGroup.bet}</Text></View>
                     </View>
                 </View>
-                <View style={[LocalStyles.groupInformation]}>
+                <View style={[LocalStyles.groupInformation, {borderBottomWidth: 2, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-                        <View><Text style={[LocalStyles.titleText]}>{this.state.groupLoggedUser.score}</Text></View>
+                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.groupLoggedUser.score}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Points</Text></View>
                     </View>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-                        <View><Text style={[LocalStyles.titleText]}>{this.state.groupLoggedUser.currentRanking + '/' + navigation.state.params.data.currentGroup.users.length}</Text></View>
+                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.groupLoggedUser.currentRanking + '/' + navigation.state.params.data.currentGroup.users.length}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Ranking</Text></View>
                     </View>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-                        <View><Text style={[LocalStyles.titleText]}>{diffDays}</Text></View>
+                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{diffDays}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Days Left</Text></View>
                     </View>
                 </View>
                 <View style={[LocalStyles.groupInformation, LocalStyles.tabsInformation]}>
                     {(
                         <ScrollableTabView
-                            style={{backgroundColor: '#fff'}}
                             initialPage={0}
-                            locked={false}
+                            locked={true}
+                            tabBarActiveTextColor={Constants.PRIMARY_COLOR}
+                            tabBarInactiveTextColor={Constants.PRIMARY_COLOR}
                             renderTabBar={() =>
-                                <ScrollableTabBar tabBarTextStyle={{textAlign: 'center'}} activeBackgroundColor='#E4E4E4' activeTextColor='#3b4d2b' inactiveTextColor='#556E3E'/>
+                                <ScrollableTabBar />
                         }>
                             <View tabLabel='Leaderboard' style={[{
-                                paddingHorizontal: '3%'
+                                width: '100%'
                             }, LocalStyles.slideBorderStyle]}>
-                                <List containerStyle={LocalStyles.listContainer}>
+                                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                                     <FlatList
                                         data={navigation.state.params.data.currentGroup.users}
                                         renderItem={({item}) => (
-                                            <ListItem
-                                                key={item.userId}
-                                                titleContainerStyle={{marginLeft: '6%'}}
-                                                title={`${item.name}`}
-                                                hideChevron
-                                                titleStyle={[MainStyles.shankGreen, LocalStyles.titleStyle]}
-                                                rightTitle={`${'Score: ' + item.score}`}
-                                                rightTitleStyle={LocalStyles.participantsScore}
-                                                containerStyle={{borderBottomWidth: 0}}
-                                                /*   rightIcon={<Image style={{marginHorizontal: '2%'}}
-                                                 source={whistleIcon}/>}*/
-                                                leftIcon={<Text
-                                                    style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>1</Text>}
-                                            />
+                                            <Swipeable rightButtons={[
+                                                (
+                                                    <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
+                                                        <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
+                                                    </TouchableHighlight>
+                                                )
+                                            ]}>
+                                                <TouchableHighlight
+                                                    underlayColor='#c3c3c3'
+                                                    style={{
+                                                        flex: 1,
+                                                        padding: 20,
+                                                        backgroundColor: '#ffffff',
+                                                        borderBottomWidth: 1.5,
+                                                        borderColor: Constants.TERTIARY_COLOR_ALT,
+                                                        alignItems: 'center',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                    }}>
+                                                    <View style={{
+                                                        flex: 1,
+                                                        alignItems: 'center',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'space-between',
+                                                    }}>
+                                                        <Text style={[LocalStyles.titleText]}>{item.currentRanking + 1}</Text>
+                                                        <Text style={[LocalStyles.titleText]}>{item.name}</Text>
+                                                        <Text style={[LocalStyles.titleText, {color: Constants.TERTIARY_COLOR_ALT}]}>Pts: {item.score}</Text>
+                                                    </View>
+                                                </TouchableHighlight>
+                                            </Swipeable>
                                         )}
-                                        keyExtractor={item => item.name}
-                                        ItemSeparatorComponent={this.renderSeparator}
+                                        keyExtractor={item => item._id}
                                     />
                                 </List>
                             </View>
@@ -473,15 +485,15 @@ export default class SingleGroup extends Component {
                                     data={JSON.parse(JSON.stringify(this.state.orderedPlayerRankings))}
                                     order={this.state.order}
                                     onMoveStart={() => {
-                                        console.log("onMoveStart")
+                                        console.log('onMoveStart')
                                         lockScrollTabView = true;
                                     }}
                                     onMoveEnd={() => {
-                                        console.log("onMoveEnd")
+                                        console.log('onMoveEnd')
                                         lockScrollTabView = false;
                                     }}
                                     onMoveCancel ={() => {
-                                        console.log("move canceled")
+                                        console.log('move canceled')
                                     }}
                                     onRowMoved={e => {
                                         let dataCopy = this.state.order.slice();

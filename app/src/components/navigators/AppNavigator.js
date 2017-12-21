@@ -15,6 +15,7 @@ import Main from '../screens/Main/Main';
 import Profile from '../screens/Profile/Profile';
 import Tournament from '../screens/Tournament/Tournament';
 import Group from '../screens/Group/Group';
+import EditGroup from '../screens/Group/EditGroup';
 import SingleGroup from '../screens/Group/SingleGroup';
 import PlayerSelection from '../screens/Group/PlayerSelection';
 import Settings from '../screens/Settings/Settings';
@@ -24,9 +25,21 @@ export const TabNav = TabNavigator({
     News: { screen: Tournament },
 }, {
     tabBarPosition: 'bottom',
+    swipeEnabled: false,
     tabBarOptions: {
+        activeTintColor: Constants.TERTIARY_COLOR,
+        activeBackgroundColor: Constants.PRIMARY_COLOR,
+        inactiveTintColor: Constants.PRIMARY_COLOR,
+        inactiveBackgroundColor: Constants.TERTIARY_COLOR_ALT,
+        showIcon: true,
+        showLabel: true,
+        upperCaseLabel: false,
+        indicatorStyle: {
+            backgroundColor: Constants.PRIMARY_COLOR,
+            height: '100%'
+        },
         style: {
-            backgroundColor: Constants.PRIMARY_COLOR
+            backgroundColor: Constants.TERTIARY_COLOR_ALT
         },
         labelStyle: {
             fontWeight: 'bold'
@@ -42,6 +55,7 @@ export const AppNavigator = StackNavigator({
     Main: { screen: TabNav },
     Profile: { screen: Profile },
     Group: { screen: Group },
+    EditGroup: { screen: EditGroup },
     SingleGroup: { screen: SingleGroup },
     PlayerSelection: { screen: PlayerSelection },
     Settings: { screen: Settings },
