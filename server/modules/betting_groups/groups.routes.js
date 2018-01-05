@@ -108,8 +108,9 @@ let prepareRouter = function (app) {
         //     });
         // });
     })
-    .get(`${path}/myList`, auth, function (req, res) {
+    .get(`${path}/myList/:userId`, auth, function (req, res) {
         console.log('PAYLOAD: ', req.payload);
+        console.log('PAYLOAD: ', req.params);
         User.findOne({_id: req.payload._id}).select('_id bettingGroups')
         .populate('bettingGroups')
         .exec(function (err, user) {
