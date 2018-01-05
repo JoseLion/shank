@@ -171,9 +171,23 @@ export default class SingleGroup extends Component {
         };
     }
 
-    setLoading(loading) {
-        this.setState({loading: loading});
-    }
+    initialRequest = async () => {
+        this.setLoading(true);
+        try {
+            // GolfApiModel.get('Tournaments').then(tournaments => {
+            //     this.setState({tournamentData: tournaments});
+            //     this.setLoading(false);
+            // }).catch(error => {
+            //     console.log('ERROR: ', error);
+            //     this.setLoading(false);
+            // });
+            this.setState({assignUsers: groupUser});
+        } catch (error) {
+            console.log('ERROR! ', error);
+        }
+    };
+
+    setLoading(loading) { this.setState({loading: loading}); }
 
     setStateMovements(newOrder, dataOrderedListCopy) {
         if (this.state.playersAdded.length >= 5) {
@@ -251,6 +265,7 @@ export default class SingleGroup extends Component {
          BackHandler.addEventListener('hardwareBackPress', this.backHandler(dispatch)).bind(this);
          }*/
          this._getPricePerMovement();
+         this.initialRequest();
     }
 
     isPlayerObjectEqual(obj, compareObject) {

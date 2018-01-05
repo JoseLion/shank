@@ -7,14 +7,14 @@ import { BackHandler } from 'react-native';
 
 import * as Constants from '../../core/Constants';
 
-import Splash from '../screens/Splash/Splash'
+import Splash from '../screens/Splash/Splash';
 import Slider from '../screens/Slider/Slider';
-import Register from '../screens/Register/Register';
-import Login from '../screens/Login/Login';
+import Login from '../screens/SignIn/Login';
+import Register from '../screens/SignIn/Register';
 import Main from '../screens/Main/Main';
 import Profile from '../screens/Profile/Profile';
 import Tournament from '../screens/Tournament/Tournament';
-import Group from '../screens/Group/Group';
+import AddGroup from '../screens/Group/AddGroup';
 import EditGroup from '../screens/Group/EditGroup';
 import SingleGroup from '../screens/Group/SingleGroup';
 import PlayerSelection from '../screens/Group/PlayerSelection';
@@ -50,11 +50,11 @@ export const TabNav = TabNavigator({
 export const AppNavigator = StackNavigator({
     Splash: { screen: Splash },
     Slider: { screen: Slider },
-    Register: { screen: Register },
     Login: { screen: Login },
+    Register: { screen: Register },
     Main: { screen: TabNav },
     Profile: { screen: Profile },
-    Group: { screen: Group },
+    AddGroup: { screen: AddGroup },
     EditGroup: { screen: EditGroup },
     SingleGroup: { screen: SingleGroup },
     PlayerSelection: { screen: PlayerSelection },
@@ -71,16 +71,17 @@ const mapStateToProps = state => ({
 });
 
 export class AppWithNavigationState extends Component {
-    componentDidMount() { BackHandler.addEventListener('hardwareBackPress', this.onBackPress); }
-    componentWillUnmount() { BackHandler.removeEventListener('hardwareBackPress', this.onBackPress); }
-    onBackPress = () => {
-        const { dispatch, nav } = this.props;
-        if (nav.index === 0) {
-            return false;
-        }
-        dispatch(NavigationActions.back());
-        return true;
-    };
+    // TODO: Set the back button press action ###
+    // componentDidMount() { BackHandler.addEventListener('hardwareBackPress', this.onBackPress); }
+    // componentWillUnmount() { BackHandler.removeEventListener('hardwareBackPress', this.onBackPress); }
+    // onBackPress = () => {
+    //     const { dispatch, nav } = this.props;
+    //     if (nav.index === 0 || nav.routes[nav.index].routeName === 'Main') {
+    //         return false;
+    //     }
+    //     dispatch(NavigationActions.back());
+    //     return true;
+    // };
     render() {
         const { dispatch, nav } = this.props;
         return (

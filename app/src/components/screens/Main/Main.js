@@ -1,7 +1,6 @@
 // React components:
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import { Text, View, FlatList, ActivityIndicator, TouchableHighlight, AsyncStorage, TouchableOpacity, Platform, Image } from 'react-native';
+import React from 'react';
+import { Text, View, FlatList, TouchableHighlight, AsyncStorage, TouchableOpacity, Image } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import ActionSheet from 'react-native-actionsheet';
@@ -9,23 +8,13 @@ import { ActionSheetProvider, connectActionSheet } from '@expo/react-native-acti
 import DropdownAlert from 'react-native-dropdownalert';
 import Swipeable from 'react-native-swipeable';
 
-// Third party components:
-import { FontAwesome, Entypo } from '@expo/vector-icons';
-
 // Shank components:
-import BaseModel from '../../../core/BaseModel';
-import GolfApiModel from '../../../core/GolfApiModel';
-import MainStyles from '../../../styles/main';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo } from '../BaseComponent';
 import LocalStyles from './styles/local';
-import * as Constants from '../../../core/Constants';
-import * as BarMessages from '../../../core/BarMessages';
-
-const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
 
 @connectActionSheet
-export default class MainScreen extends Component {
+export default class MainScreen extends BaseComponent {
 
-    static propTypes = { navigation: PropTypes.object.isRequired };
     static navigationOptions = ({navigation}) => ({
         title: 'GROUPS',
         showIcon: true,
@@ -33,12 +22,12 @@ export default class MainScreen extends Component {
         headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: (
-            <TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => (navigation.state.params.auth) ? navigation.dispatch({type: 'Group'}) : navigation.dispatch({type: 'Register'})}>
+            <TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.state.params.tapCenterButton('AddGroup')}>
                 <Entypo name='plus' style={[MainStyles.headerIconButton]} />
             </TouchableHighlight>
         ),
         headerRight: (
-            <TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => (navigation.state.params.auth) ? navigation.dispatch({type: 'Settings'}) : navigation.dispatch({type: 'Register'})}>
+            <TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.state.params.tapCenterButton('Settings')}>
                 <Entypo name='user' style={[MainStyles.headerIconButton]} />
             </TouchableHighlight>
         ),
@@ -50,7 +39,9 @@ export default class MainScreen extends Component {
 
     constructor(props) {
         super(props);
-        console.log(':::IT\'S ON MAIN SCREEN:::');
+        this.handleRefresh = this.handleRefresh.bind(this);
+        this.tapCenterButton = this.tapCenterButton.bind(this);
+        this._myGroupsAsyncRemoteRequest = this._myGroupsAsyncRemoteRequest.bind(this);
         this._collectGroupData = this._collectGroupData.bind(this);
         this.state = {
             loading: false,
@@ -59,15 +50,14 @@ export default class MainScreen extends Component {
             seed: 1,
             error: null,
             refreshing: false,
-            auth: null,
+            auth: null
         };
     }
     componentDidMount() {
+        this.props.navigation.setParams({
+            tapCenterButton: this.tapCenterButton
+        });
         AsyncStorage.getItem(Constants.AUTH_TOKEN).then(authToken => {
-            this.props.navigation.setParams({
-                auth: authToken,
-                nav: this.props.navigation
-            });
             this.setState({auth: authToken});
             if (authToken) {
                 AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
@@ -82,22 +72,23 @@ export default class MainScreen extends Component {
     setLoading(loading) { this.setState({loading: loading}); }
     handleRefresh = () => {
         this.setState(
-            {
-                page: 1,
-                seed: this.state.seed + 1,
-                refreshing: true
-            },
-            () => {
-                this._myGroupsAsyncRemoteRequest();
-            }
+            { page: 1, seed: this.state.seed + 1, refreshing: true },
+            () => { this._myGroupsAsyncRemoteRequest(); }
         );
     };
+    tapCenterButton(onLogin) {
+        if(this.state.auth) {
+            super.navigateDispatchToScreen(onLogin)
+        } else {
+            super.navigateDispatchToScreen('Login')
+        }
+    }
 
     // Async calls:
     _myGroupsAsyncRemoteRequest = async(data) => {
         const {page} = this.state;
-        this.setState({refreshing: true});
-        await BaseModel.get('myGroups', data).then((group) => {
+        this.setState({refreshing: true, loading: true});
+        await BaseModel.get('myGroups').then((group) => {
             this.setState({
                 data: page === 1 ? group.results : [...this.state.data, ...group.results],
                 error: group.error || null,
@@ -109,7 +100,7 @@ export default class MainScreen extends Component {
             if (error === 401) {
                 try {
                     AsyncStorage.removeItem(Constants.AUTH_TOKEN).then(() => {
-                        this.props.navigation.dispatch({type: 'Splash'})
+                        super.navigateDispatchToScreen('Splash');
                     });
                 } catch (error) {
                     console.log('ERROR ON REMOVING TOKEN: ', error);
@@ -120,19 +111,19 @@ export default class MainScreen extends Component {
             }
         });
     };
-    _collectGroupData = async(tournamentId, groupId, nav) => {
+    _collectGroupData = async(groupId) => {
         this.setLoading(true);
         try {
             let data = {};
-            GolfApiModel.get(`Leaderboard/${tournamentId}`).then(leaderboard => {
-                data.leaderboard = leaderboard
-            }).catch(error => {
-                console.log('ERROR: ', error);
-            });
+            // GolfApiModel.get(`Leaderboard/${tournamentId}`).then(leaderboard => {
+            //     data.leaderboard = leaderboard
+            // }).catch(error => {
+            //     console.log('ERROR: ', error);
+            // });
             BaseModel.post('groupInformation', {_id: groupId}).then(group => {
                 data.currentGroup = group;
                 this.setLoading(false);
-                nav.navigate('SingleGroup', {data: data, currentUser: JSON.parse(this.state.currentUser)})
+                super.navigateToScreen('SingleGroup', {data: data, currentUser: JSON.parse(this.state.currentUser)});
             }).catch((error) => {
                 this.setLoading(false);
             });
@@ -142,14 +133,7 @@ export default class MainScreen extends Component {
     };
 
     render() {
-        let navigation = this.props.navigation;
         let addPhoto = require('../../../../resources/add_edit_photo.png');
-        let outUrl = '';
-        if(navigation.state.params){
-            if(navigation.state.params.url){
-                outUrl = navigation.state.params.url
-            }
-        }
         if (this.state.auth && this.state.data.length > 0) {
             return (
                 <View style={[MainStyles.container]}>
@@ -168,7 +152,7 @@ export default class MainScreen extends Component {
                                     ]}>
                                         <TouchableHighlight
                                             underlayColor='#c3c3c3'
-                                            onPress={() => this._collectGroupData(item.tournamentId, item._id, navigation)}
+                                            onPress={() => this._collectGroupData(item._id)}
                                             style={{
                                                 flex: 1,
                                                 padding: 20,
@@ -206,17 +190,13 @@ export default class MainScreen extends Component {
             );
         } else {
             return (
-                <View style={[MainStyles.mainContainer]}>
+                <View style={[MainStyles.mainContainer, LocalStyles.noneButtonView]}>
                     <Spinner visible={this.state.loading} animation='fade' />
-                    <TouchableOpacity style={[MainStyles.withoutGroupsButton]} activeOpacity={0.2} onPress={() => navigation.navigate('Register', {url:outUrl})}>
-                        <View style={[LocalStyles.noneButtonView]}>
-                            <TouchableOpacity onPress={() => (navigation.state.params.auth) ? navigation.dispatch({type: 'Group'}) : navigation.dispatch({type: 'Register'})}>
-                                <Text style={[MainStyles.withoutGroups]}>
-                                    Tap the {'"+"'} button to create{'\n'}
-                                    or join a group
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                    <TouchableOpacity onPress={() => {this.tapCenterButton('AddGroup')}}>
+                        <Text style={[MainStyles.withoutGroups]}>
+                            Tap the {'"+"'} button to create{'\n'}
+                            or join a group
+                        </Text>
                     </TouchableOpacity>
                     <DropdownAlert ref={ref => this.validationMessage = ref} />
                 </View>
