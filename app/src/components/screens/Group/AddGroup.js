@@ -138,7 +138,7 @@ export default class AddGroup extends BaseComponent {
         }
     };
     onCreateGroupPressedAsync = async(data) => {
-        await BaseModel.post('/groups/createGroup', data)
+        await BaseModel.post('groups/createGroup', data)
             .then((response) => {
                 console.log(response);
                 this.setLoading(false);
