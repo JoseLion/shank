@@ -13,10 +13,8 @@ let BettingGroupSchema = new mongoose.Schema({
     tournamentName: String,
     users: [
         {
-            user: {
-                type: Number,
-                ref: 'User'
-            },
+            _id: { type: Number, ref: 'User' },
+            fullName: String,
             isWinner: Boolean,
             score: { type: Number, default: 0 },
             ranking: { type: Number, default: 0 },

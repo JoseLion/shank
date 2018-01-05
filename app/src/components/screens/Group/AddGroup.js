@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, Share, AsyncStorage } from 'react-native';
+import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -8,9 +8,8 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { ImagePicker } from 'expo';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
 import LocalStyles from './styles/local'
-import { ClienHost } from '../../../config/variables';
 
 export default class AddGroup extends BaseComponent {
 
@@ -21,22 +20,17 @@ export default class AddGroup extends BaseComponent {
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: (
             <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
-                <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
+                <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
             </TouchableHighlight>
         ),
-        headerRight: (
-            <View></View>
-        )
+        headerRight: (<View></View>)
     });
 
     constructor(props) {
         super(props);
-        this._handleNewGroupRegistry = this._handleNewGroupRegistry.bind(this);
-        this._pickImage = this._pickImage.bind(this);
-        this.handlePress = this.handlePress.bind(this);
+        this.onCreateGroupPressed = this.onCreateGroupPressed.bind(this);
+        this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this);
-        this._collectGroupData = this._collectGroupData.bind(this);
-
         this.state = {
             name: '',
             selectTournament: '',
@@ -52,6 +46,17 @@ export default class AddGroup extends BaseComponent {
         };
     }
 
+    componentDidMount() {
+        this.setLoading(true);
+        this.generateGroupToken(20);
+        this.initialRequest('pga', '2018');
+        this.props.navigation.setParams({
+            actionSheet: this.showActionSheet
+        });
+    }
+
+    setLoading(loading) { this.setState({loading: loading}); }
+    generateGroupToken(length) { this.setState({currentGroupToken: Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1)}); }
     showActionSheet() {
         if(isAndroid) {
             this.ActionSheet.show();
@@ -61,74 +66,15 @@ export default class AddGroup extends BaseComponent {
                     options: [ 'Open your gallery', 'Take a picture', 'Cancel' ],
                     cancelButtonIndex: 2
                 },
-                buttonIndex => this.handlePress(buttonIndex)
+                buttonIndex => this.optionSelectedPressed(buttonIndex)
             );
         }
     }
-
-    componentDidMount() {
-        this.setLoading(true);
-        this._generateGroupToken(20)
-        this.initialRequest('pga', '2018');
-        this.props.navigation.setParams({
-            actionSheet: this.showActionSheet
-        });
+    optionSelectedPressed(actionIndex) {
+        this.pictureSelection(actionIndex);
     }
-
-    setLoading(loading) { this.setState({loading: loading}); }
-
-    _tournamentSelect(t) {
-        this.setState({
-            ...this.state,
-            selectTournament: t
-        });
-    }
-
-    handlePress(actionIndex) {
-        switch (actionIndex) {
-            case 0:
-                this._pickImage();
-                break;
-            case 1:
-                this._takePicture()
-                break;
-        }
-    }
-
-    initialRequest = async (tour, year) => {
-        this.setLoading(true);
-        try {
-            GolfApiModel.get('Tournaments').then(tournaments => {
-                this.setState({tournamentData: tournaments});
-                this.setLoading(false);
-            }).catch(error => {
-                console.log('ERROR: ', error);
-                this.setLoading(false);
-            });
-
-            let userInformation = await AsyncStorage.getItem(Constants.USER_PROFILE);
-            userInformation = JSON.parse(userInformation);
-            let groupUser = [
-                {
-                    userId: userInformation._id,
-                    name: userInformation.name,
-                    playerRanking: []
-                }
-            ];
-            this.setState({assignUsers: groupUser});
-        } catch (error) {
-            console.log('ERROR! ', error);
-        }
-    };
-
-    _generateGroupToken(length) {
-        this.setState({currentGroupToken: Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1)});
-    }
-
-    async _handleNewGroupRegistry() {
-
+    onCreateGroupPressed() {
         console.log('PATH: ', this.state.groupPhoto)
-
         if (!this.state.name) {
             BarMessages.showError('Please enter a name for the group.', this.validationMessage);
             return;
@@ -153,7 +99,6 @@ export default class AddGroup extends BaseComponent {
             users: this.state.assignUsers,
             groupToken: this.state.currentGroupToken,
         };
-        console.log(data);
         // if (this.state.groupPhoto) {
         //     let localUri = this.state.groupPhoto;
         //     let filename = localUri.split('/').pop();
@@ -161,48 +106,60 @@ export default class AddGroup extends BaseComponent {
         //     let type = match ? `image/${match[1]}` : `image`;
         //     data.photo = {path: localUri, name: filename, type: type};
         // }
+        console.log(data);
 
-        BaseModel.create('/groups/createGroup', data).then((response) => {
-            this.setLoading(false);
-            this._collectGroupData(response._id);
-        }).catch((error) => {
-            this.setLoading(false);
-            BarMessages.showError(error, this.validationMessage);
-        });
+        this.onCreateGroupPressedAsync(data);
     }
 
-    _collectGroupData = async(groupId) => {
+    // Async methods:
+    initialRequest = async (tour, year) => {
         this.setLoading(true);
         try {
-            let data = {};
-            BaseModel.post('groupInformation', {_id: groupId}).then(group => {
-                data.currentGroup = group;
+            GolfApiModel.get('Tournaments').then((tournaments) => {
+                this.setState({tournamentData: tournaments});
                 this.setLoading(false);
-                nav.navigate('SingleGroup', {data: data, currentUser: JSON.parse(this.state.currentUser)})
-            }).catch((error) => {
+            }).catch(error => {
+                console.log('ERROR! ', error);
                 this.setLoading(false);
             });
+
+            let userInformation = await AsyncStorage.getItem(Constants.USER_PROFILE);
+            userInformation = JSON.parse(userInformation);
+            console.log(userInformation)
+            let groupUser = [
+                {
+                    _id: userInformation._id,
+                    fullName: userInformation.fullName,
+                    playerRanking: []
+                }
+            ];
+            this.setState({assignUsers: groupUser});
         } catch (error) {
-            console.log('ERROR: ', error);
+            console.log('ERROR! ', error);
         }
     };
-
-    _pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
+    onCreateGroupPressedAsync = async(data) => {
+        await BaseModel.post('/groups/createGroup', data)
+            .then((response) => {
+                console.log(data);
+                this.setLoading(false);
+                super.navigateToScreen('SingleGroup', data);
+            }).catch((error) => {
+                this.setLoading(false);
+                BarMessages.showError(error, this.validationMessage);
+            });
+    };
+    pictureSelection = async(option) => {
+        let settings = {
             allowsEditing: true,
             aspect: [4, 4],
-        });
-        if (!result.cancelled) {
-            this.setState({groupPhoto: result.uri});
+        };
+        let result;
+        switch (option) {
+            case 0: result = await ImagePicker.launchImageLibraryAsync(settings); break;
+            case 1: result = await ImagePicker.launchCameraAsync(settings); break;
         }
-    };
-
-    _takePicture = async () => {
-        let result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [4, 3],
-        });
-        if (!result.cancelled) {
+        if (result != null && !result.cancelled) {
             this.setState({groupPhoto: result.uri});
         }
     };
@@ -234,7 +191,7 @@ export default class AddGroup extends BaseComponent {
                                 'Take a picture',
                                 'Cancel']}
                             cancelButtonIndex={2}
-                            onPress={this.handlePress} />
+                            onPress={this.optionSelectedPressed} />
 
                         <View style={[LocalStyles.formContainer]}>
 
@@ -270,10 +227,7 @@ export default class AddGroup extends BaseComponent {
                                             },
                                             (buttonIndex) => {
                                                 if (tournamentKeys[buttonIndex] != 'none') {
-                                                    this.setState({
-                                                        selectTournament: tournamentKeys[buttonIndex],
-                                                        tName: tournamentName[buttonIndex]
-                                                    })
+                                                    this.setState({selectTournament: tournamentKeys[buttonIndex]})
                                                 }
                                             })
                                     }}>
@@ -291,7 +245,7 @@ export default class AddGroup extends BaseComponent {
                                 numberOfLines={3}
                                 placeholder={'Bet'} />
 
-                            <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this._handleNewGroupRegistry}>
+                            <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this.onCreateGroupPressed}>
                                 <Text style={MainStyles.buttonText}>Create a Group</Text>
                             </TouchableOpacity>
 
