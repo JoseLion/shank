@@ -78,9 +78,9 @@ export default class MainScreen extends BaseComponent {
     };
     tapCenterButton(onLogin) {
         if(this.state.auth) {
-            super.navigateDispatchToScreen(onLogin)
+            super.navigateToScreen(onLogin);
         } else {
-            super.navigateDispatchToScreen('Login')
+            super.navigateToScreen('Login');
         }
     }
 
@@ -99,9 +99,7 @@ export default class MainScreen extends BaseComponent {
             this.setLoading(false);
             if (error === 401) {
                 try {
-                    AsyncStorage.removeItem(Constants.AUTH_TOKEN).then(() => {
-                        super.navigateDispatchToScreen('Splash');
-                    });
+                    AsyncStorage.removeItem(Constants.AUTH_TOKEN);
                 } catch (error) {
                     console.log('ERROR ON REMOVING TOKEN: ', error);
                 }

@@ -12,7 +12,7 @@ import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessa
 import LocalStyles from './styles/local'
 import { ClienHost } from '../../../config/variables';
 
-export default class Group extends BaseComponent {
+export default class EditGroup extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
         title: 'EDIT GROUP',
