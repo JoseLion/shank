@@ -88,9 +88,10 @@ export default class MainScreen extends BaseComponent {
     _myGroupsAsyncRemoteRequest = async(data) => {
         const {page} = this.state;
         this.setState({refreshing: true, loading: true});
-        await BaseModel.get('myGroups').then((group) => {
+        await BaseModel.get('groups/myList').then((groups) => {
+            console.log(groups);
             this.setState({
-                data: page === 1 ? group.results : [...this.state.data, ...group.results],
+                data: page === 1 ? groups : [...this.state.data, ...groups],
                 error: group.error || null,
                 loading: false,
                 refreshing: false

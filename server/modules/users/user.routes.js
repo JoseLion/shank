@@ -28,7 +28,7 @@ let prepareRouter = function (app) {
                 res.serverError();
                 return;
             } else if(user.hash != null && user.salt != null) {
-                res.forbidden()
+                res.forbidden();
                 return;
             }
             let userModel = new User(user);
@@ -36,11 +36,11 @@ let prepareRouter = function (app) {
             userModel.save(function(err) {
                 if(err) {
                     res.serverError();
-                    return
+                    return;
                 }
-                res.ok(userModel)
-            })
-        })
+                res.ok(userModel);
+            });
+        });
     })
     .post(`${path}/findUsers`, auth, function(req, res) {
         User.find(req.body)
