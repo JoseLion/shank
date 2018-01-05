@@ -40,15 +40,20 @@ let BettingGroupSchema = new mongoose.Schema({
 
 BettingGroupSchema.pre('save', function(next) {
     let self = this;
-    Counter.getNextSequence('bettingGroups', function(err, counter) {
-        if(err) {
-            self._id = -1;
-            next(err)
-        } else {
-            self._id = counter.seq
-            next();
-        }
-    });
+    if(self._id == null) {
+        Counter.getNextSequence('bettingGroups', function(err, counter) {
+            if(err) {
+                self._id = -1;
+                next(err)
+            } else {
+                self._id = counter.seq
+                next();
+            }
+        });
+    } else {
+        self.updateDate = new Date();
+        next();
+    }
 });
 
 mongoose.model('BettingGroup', BettingGroupSchema);

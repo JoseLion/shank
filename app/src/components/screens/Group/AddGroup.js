@@ -125,7 +125,6 @@ export default class AddGroup extends BaseComponent {
 
             let userInformation = await AsyncStorage.getItem(Constants.USER_PROFILE);
             userInformation = JSON.parse(userInformation);
-            console.log(userInformation)
             let groupUser = [
                 {
                     _id: userInformation._id,
@@ -141,9 +140,9 @@ export default class AddGroup extends BaseComponent {
     onCreateGroupPressedAsync = async(data) => {
         await BaseModel.post('/groups/createGroup', data)
             .then((response) => {
-                console.log(data);
+                console.log(response);
                 this.setLoading(false);
-                super.navigateToScreen('SingleGroup', data);
+                super.navigateToScreen('SingleGroup', response);
             }).catch((error) => {
                 this.setLoading(false);
                 BarMessages.showError(error, this.validationMessage);

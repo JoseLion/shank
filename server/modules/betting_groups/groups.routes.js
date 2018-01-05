@@ -25,8 +25,58 @@ let prepareRouter = function (app) {
 
     router.post(`${path}/createGroup`, auth, function (req, res) {
         let bettingGroupModel = new BettingGroup(req.body);
-        console.log(req.body)
+        bettingGroupModel.save(function(err, bettingGroupFinal) {
+            if(err) { res.serverError(); return; }
+            User.findById(req.payload._id).exec(function (err, user) {
+                if(err) { res.serverError(); return; }
+                let userModel = new User(user);
+                userModel.addGroup(bettingGroupFinal._id);
+                userModel.save(function(err) {
+                    if(err) { res.serverError(); return; }
+                    res.ok(bettingGroupFinal);
+                    return;
+                });
+            });
+        });
+        // let data = req.body;
+        // let groupModel = new BettingGroup(data);
+        // let form = new formidable.IncomingForm();
+        // form.parse(req, function (err, fields, files) {
+        //     if(err) res.serverError();
+        //     let oldpath = files.photo.path;
+        //     let newpath = `../../public/uploads/betting_groups/${files.photo.name}`;
+        //     fs.rename(oldpath, newpath, function (err) {
+        //         if(err) {
+        //             res.serverError();
+        //             return;
+        //         }
+        //     });
+        // });
+        // groupModel.save(function (err) {
+        //     if (err) {
+        //         res.ok({err}, 'GROUP ERROR ONM SAVE.');
+        //         return;
+        //     }
+        //     let updateUserGroup = { $push: {bettingGroups: groupModel._id} };
+        //     User.findByIdAndUpdate(req.payload._id, updateUserGroup, {new: true}, function (err, data) {
+        //         if (err) res.ok({}, 'Data not updated');
+        //         else res.ok(data);
+        //     });
+        // });
+    })
+    .post(`${path}/editGroup`, auth, function (req, res) {
+        BettingGroup.findOne({_id: req.body._id}).exec(function(err, group) {
+            if(err) { res.serverError(); return; }
+            if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
 
+            let bettingGroupModel = new BettingGroup(req.body);
+            bettingGroupModel.save(function(err) {
+                if(err) { res.serverError(); return; }
+                res.ok(bettingGroupModel);
+                return;
+            })
+        })
+        let bettingGroupModel = new BettingGroup(req.body);
         bettingGroupModel.save(function(err, bettingGroupFinal) {
             if(err) { res.serverError(); return; }
             res.ok(bettingGroupFinal);
@@ -58,7 +108,22 @@ let prepareRouter = function (app) {
         //     });
         // });
     })
-
+    .get(`${path}/myList`, auth, function (req, res) {
+        console.log(req.payload._id);
+        User.findById(req.payload._id).select('_id bettingGroups')
+        .populate('bettingGroups')
+        .exec(function (err, user) {
+            if(err) { res.serverError(); return; }
+            console.log(user);
+            if(user) {
+                res.ok(user.bettingGroups);
+                return;
+            } else {
+                res.ok([]);
+                return;
+            }
+        });
+    })
 
 
 

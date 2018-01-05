@@ -87,4 +87,8 @@ UserSchema.methods.generateJwt = function (permissions) {
     }, configJWT.TOKEN_SECRET);
 };
 
+UserSchema.methods.addGroup = function (_id) {
+    this.bettingGroups.push(_id);
+};
+
 mongoose.model('User', UserSchema);
