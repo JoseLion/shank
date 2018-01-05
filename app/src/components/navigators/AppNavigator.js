@@ -58,7 +58,7 @@ export const AppNavigator = StackNavigator({
     EditGroup: { screen: EditGroup },
     SingleGroup: { screen: SingleGroup },
     PlayerSelection: { screen: PlayerSelection },
-    Settings: { screen: Settings },
+    Settings: { screen: Settings }
 });
 
 const AppWithNavigationStateCopy = ({dispatch, nav, auth}) => (
@@ -93,7 +93,7 @@ export class AppWithNavigationState extends Component {
 AppWithNavigationState.propTypes = {
     dispatch: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    nav: PropTypes.object.isRequired,
+    nav: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps)(AppWithNavigationState);
