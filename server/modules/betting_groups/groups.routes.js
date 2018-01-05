@@ -29,7 +29,7 @@ let prepareRouter = function (app) {
 
         bettingGroupModel.save(function(err, bettingGroupFinal) {
             if(err) { res.serverError(); return; }
-            res.ok(userFinal);
+            res.ok(bettingGroupFinal);
             return;
         });
         // let data = req.body;
@@ -63,7 +63,7 @@ let prepareRouter = function (app) {
 
 
 
-    
+
     .post('/groupInformation', auth, function(req, res) {
         if(!req.payload._id) { res.forbidden(); return; }
         BettingGroup.findOne(req.body)
