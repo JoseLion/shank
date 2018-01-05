@@ -72,7 +72,10 @@ let prepareRouter = function (app) {
             if(err) { res.serverError(); return; }
 
             let userModel;
-            if(user) {
+            if(user && user.facebookId) {
+                res.ok({user: user, token: user.generateJwt([])});
+                return;
+            } else if(user && !user.facebookId){
                 user.fullName = req.body.fullName;
                 user.facebookId = req.body.facebookId;
                 user.photo = req.body.photo;
