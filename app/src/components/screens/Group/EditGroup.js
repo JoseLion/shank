@@ -1,38 +1,26 @@
 // React components:
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import { Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage } from 'react-native';
+import React from 'react';
+import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, Share, AsyncStorage } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { List, ListItem } from 'react-native-elements';
 import ActionSheet from 'react-native-actionsheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
-
-// Third party components:
-import { FontAwesome, Ionicons, Entypo } from '@expo/vector-icons';
 import { ImagePicker } from 'expo';
 
 // Shank components:
-import BaseModel from '../../../core/BaseModel';
-import GolfApiModel from '../../../core/GolfApiModel';
-import MainStyles from '../../../styles/main';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
 import LocalStyles from './styles/local'
 import { ClienHost } from '../../../config/variables';
-import * as Constants from '../../../core/Constants';
-import * as BarMessages from '../../../core/BarMessages';
 
-const isAndroid = Platform.OS == 'android' ? true : false;
-const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
-export default class EditGroup extends Component {
+export default class Group extends BaseComponent {
 
-    static propTypes = { navigation: PropTypes.object.isRequired };
     static navigationOptions = ({navigation}) => ({
         title: 'EDIT GROUP',
         headerTintColor: Constants.TERTIARY_COLOR,
         headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: (
-            <TouchableHighlight onPress={() => navigation.dispatch({type: 'SingleGroup'})}>
+            <TouchableHighlight onPress={() => navigation.dispatch()}>
                 <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
             </TouchableHighlight>
         ),
@@ -45,28 +33,21 @@ export default class EditGroup extends Component {
         super(props);
         this._handleNewGroupRegistry = this._handleNewGroupRegistry.bind(this);
         this._pickImage = this._pickImage.bind(this);
-        this._shareTextWithTitle = this._shareTextWithTitle.bind(this);
-        this._showResult = this._showResult.bind(this);
         this.handlePress = this.handlePress.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this);
 
         this.state = {
             name: '',
             selectTournament: '',
-            prize: '',
-            loading: false,
-            data: [],
-            page: 1,
-            seed: 1,
-            error: null,
-            refreshing: false,
-            tournamentData: [],
+            bet: '',
+            groupPhoto: null,
             assignUsers: [],
-            tId: '',
-            TName: 'Select a tournament',
+
+            tournamentData: [],
+            tName: 'Select a tournament',
             currentGroupToken: '',
-            currentInvitationName: '',
-            groupPhoto: null
+
+            loading: false,
         };
     }
 
@@ -86,7 +67,6 @@ export default class EditGroup extends Component {
 
     componentDidMount() {
         this.setLoading(true);
-        this._generateGroupToken(20)
         this.initialRequest('pga', '2018');
         this.props.navigation.setParams({
             actionSheet: this.showActionSheet
@@ -115,82 +95,80 @@ export default class EditGroup extends Component {
 
     initialRequest = async (tour, year) => {
         this.setLoading(true);
-        try {
-            GolfApiModel.get('Tournaments').then(tournaments => {
-                this.setState({tournamentData: tournaments});
-                this.setLoading(false);
-            }).catch(error => {
-                console.log('ERROR: ', error);
-                this.setLoading(false);
-            });
-
-            let userInformation = await AsyncStorage.getItem(Constants.USER_PROFILE);
-            userInformation = JSON.parse(userInformation);
-            let groupUser = [
-                {
-                    userId: userInformation._id,
-                    name: userInformation.name,
-                    playerRanking: []
-                }
-            ];
-            this.setState({assignUsers: groupUser});
-        } catch (error) {
-            console.log('ERROR: ', error);
-        }
+        // try {
+        //     GolfApiModel.get('Tournaments').then(tournaments => {
+        //         this.setState({tournamentData: tournaments});
+        //         this.setLoading(false);
+        //     }).catch(error => {
+        //         console.log('ERROR: ', error);
+        //         this.setLoading(false);
+        //     });
+        //
+        //     let userInformation = await AsyncStorage.getItem(Constants.USER_PROFILE);
+        //     userInformation = JSON.parse(userInformation);
+        //     let groupUser = [
+        //         {
+        //             userId: userInformation._id,
+        //             name: userInformation.name,
+        //             playerRanking: []
+        //         }
+        //     ];
+        //     this.setState({assignUsers: groupUser});
+        // } catch (error) {
+        //     console.log('ERROR! ', error);
+        // }
     };
-
-    _generateGroupToken(length) {
-        this.setState({currentGroupToken: Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1)});
-    }
 
     async _handleNewGroupRegistry() {
 
-        if (!this.state.name) {
-            BarMessages.showError('Please enter a name for the group.', this.validationMessage);
-            return;
-        }
+        // if (!this.state.name) {
+        //     BarMessages.showError('Please enter a name for the group.', this.validationMessage);
+        //     return;
+        // }
+        //
+        // if (!this.state.selectTournament) {
+        //     BarMessages.showError('Please select a tournament.', this.validationMessage);
+        //     return;
+        // }
+        //
+        // if (!this.state.bet) {
+        //     BarMessages.showError('Please enter a bet.', this.validationMessage);
+        //     return;
+        // }
+        //
+        // this.setLoading(true);
+        // let data = {
+        //     name: this.state.name,
+        //     bet: this.state.bet,
+        //     tournamentId: this.state.selectTournament.TournamentID,
+        //     tournamentName: this.state.selectTournament.Name,
+        //     users: this.state.assignUsers,
+        //     groupToken: this.state.currentGroupToken,
+        // };
+        // console.log(data);
+        // if (this.state.groupPhoto) {
+        //     let localUri = this.state.groupPhoto;
+        //     let filename = localUri.split('/').pop();
+        //     let match = /\.(\w+)$/.exec(filename);
+        //     let type = match ? `image/${match[1]}` : `image`;
+        //     data.photo = {path: localUri, name: filename, type: type};
+        // }
 
-        if (!this.state.selectTournament) {
-            BarMessages.showError('Please select a tournament.', this.validationMessage);
-            return;
-        }
-
-        if (!this.state.bet) {
-            BarMessages.showError('Please enter a bet.', this.validationMessage);
-            return;
-        }
-
-        this.setLoading(true);
-        let data = {
-            name: this.state.name,
-            bet: this.state.bet,
-            tournamentId: this.state.selectTournament.TournamentID,
-            tournamentName: this.state.selectTournament.Name,
-            users: this.state.assignUsers,
-            groupToken: this.state.currentGroupToken,
-        };
-        console.log(data);
-        if (this.state.groupPhoto) {
-            let localUri = this.state.groupPhoto;
-            let filename = localUri.split('/').pop();
-            let match = /\.(\w+)$/.exec(filename);
-            let type = match ? `image/${match[1]}` : `image`;
-            data.photo = {path: localUri, name: filename, type: type};
-        }
-
-        BaseModel.create('createGroup', data).then((response) => {
+        // BaseModel.create('/groups/createGroup', data).then((response) => {
             this.setLoading(false);
-            this.props.navigation.dispatch({type: 'Main'})
-        }).catch((error) => {
-            this.setLoading(false);
-            BarMessages.showError(error, this.validationMessage);
-        });
+            // this._collectGroupData(response.tournamentId, response._id, this.props.navigation);
+            super.navigateDispatch()
+
+        // }).catch((error) => {
+        //     this.setLoading(false);
+        //     BarMessages.showError(error, this.validationMessage);
+        // });
     }
 
     _pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [4, 4],
         });
         if (!result.cancelled) {
             this.setState({groupPhoto: result.uri});
@@ -206,35 +184,6 @@ export default class EditGroup extends Component {
             this.setState({groupPhoto: result.uri});
         }
     };
-
-    _shareTextWithTitle() {
-        Share.share({
-            message: 'Shank Group Invitation : ' + 'http://' + ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken + '&linkingUri=' + Constants.LINKING_URI,
-            title: 'Shank Group Invitation',
-            url: 'http://' +ClienHost + 'invite/friend?tag=' + this.state.currentGroupToken  + '&linkingUri=' + Constants.LINKING_URI
-        }, {
-            dialogTitle: 'Shank Group Invitation',
-            excludedActivityTypes: [
-                'com.apple.UIKit.activity.PostToTwitter',
-                'com.apple.uikit.activity.mail'
-            ],
-            tintColor: 'green'
-        }).then(this._showResult).catch(err => console.log(err))
-    }
-
-    _showResult(result) {
-        if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-                this.setState({result: 'shared with an activityType: ' + result.activityType});
-            } else {
-                let updatedInvitations = this.state.data.slice();
-                updatedInvitations.push({name:this.state.currentInvitationName});
-                this.setState({data:updatedInvitations, result: 'shared', currentInvitationName: ''});
-            }
-        } else if (result.action === Share.dismissedAction) {
-            this.setState({result: 'dismissed'});
-        }
-    }
 
     render() {
         let { groupPhoto } = this.state;
@@ -254,8 +203,8 @@ export default class EditGroup extends Component {
         return (
             <View style={{flex: 1}}>
                 <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={MainStyles.background}>
-                    <View style={[MainStyles.container]} behavior="padding">
-                        <Spinner visible={this.state.loading} animation="slide"/>
+                    <View style={[MainStyles.container]} behavior='padding'>
+                        <Spinner visible={this.state.loading} animation='slide'/>
                         <ActionSheet
                             ref={o => this.ActionSheet = o}
                             options={[
@@ -276,7 +225,7 @@ export default class EditGroup extends Component {
                             </TouchableOpacity>
 
                             <TextInput
-                                returnKeyType={"next"}
+                                returnKeyType={'next'}
                                 underlineColorAndroid='transparent'
                                 style={[MainStyles.formInput, MainStyles.noMargin]}
                                 onChangeText={(name) => this.setState({name})}
@@ -301,17 +250,17 @@ export default class EditGroup extends Component {
                                                 if (tournamentKeys[buttonIndex] != 'none') {
                                                     this.setState({
                                                         selectTournament: tournamentKeys[buttonIndex],
-                                                        TName: tournamentName[buttonIndex]
+                                                        tName: tournamentName[buttonIndex]
                                                     })
                                                 }
                                             })
                                     }}>
-                                        <Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.TName}</Text>
+                                        <Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.tName}</Text>
                                     </TouchableOpacity>
                             }
 
                             <TextInput
-                                returnKeyType={"next"}
+                                returnKeyType={'next'}
                                 underlineColorAndroid='transparent'
                                 style={[MainStyles.formInput, MainStyles.noMargin]}
                                 onChangeText={(bet) => this.setState({bet})}

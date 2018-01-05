@@ -1,7 +1,4 @@
-import { Dimensions, Platform, StyleSheet } from 'react-native';
-import Style from '../../../../styles/Stylesheet';
-
-import * as Constants from '../../../../core/Constants';
+import { Dimensions, Platform, StyleSheet, Constants, Style } from '../../BaseComponent';
 
 const LocalStyles = StyleSheet.create({
     contentColor: {
@@ -22,10 +19,6 @@ const LocalStyles = StyleSheet.create({
     },
     buttonLinkText: {
         color: Constants.TERTIARY_COLOR_ALT,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16
     }
 });
 

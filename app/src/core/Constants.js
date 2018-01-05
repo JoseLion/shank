@@ -10,6 +10,7 @@ export const TERTIARY_COLOR_ALT = '#CCCCCC';
 export const SUCCESS_COLOR = '#00B16A';
 export const ERROR_COLOR = '#ED2C3E';
 
+export const FIRST_TIME = 'first-time';
 export const AUTH_TOKEN = "shank-auth-token";
 export const USER_PROFILE = 'shank-profile';
 export const TIME_OUT_NOTIFIER = 10000;

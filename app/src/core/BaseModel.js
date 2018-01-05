@@ -1,10 +1,7 @@
 'use strict';
 
-import React, {Component} from 'react';
-
-import {
-    AsyncStorage,
-} from 'react-native';
+import React from 'react';
+import { AsyncStorage } from 'react-native';
 
 import * as ApiUtils from './ApiUtils';
 import * as Constants from './Constants';
@@ -14,31 +11,6 @@ let internetError = 'No fue posible acceder al internet de su teléfono.';
 let requestServerError = 'No fue posible comunicar con el servidor.';
 let parsingResponseError = 'Error al analizar la respuesta del servidor.';
 let notLogged = 'Not Logged.';
-
-function request(method, resource, params) {
-
-    let path = ApiHost + resource;
-
-    // Serialize and post the data
-    if (!params) {
-        params = {};
-    }
-    const json = JSON.stringify(params);
-
-    return fetch(path, {
-        method: method,
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: json
-    })
-        .then(ApiUtils.CHECK_STATUS)
-        .then(response => {
-            response.json();
-        })
-        .catch(e => e)
-}
 
 let BaseModel = {
 

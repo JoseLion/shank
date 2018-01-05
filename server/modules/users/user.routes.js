@@ -66,6 +66,31 @@ let prepareRouter = function (app) {
             });
         });
     })
+    .post(`${path}/facebookSignin`, function (req, res) {
+        User.findOne({email: req.body.email})
+        .exec(function(err, user) {
+            if(err) { res.serverError(); return; }
+
+            let userModel;
+            if(user && user.facebookId) {
+                res.ok({user: user, token: user.generateJwt([])});
+                return;
+            } else if(user && !user.facebookId){
+                user.fullName = req.body.fullName;
+                user.facebookId = req.body.facebookId;
+                user.photo = req.body.photo;
+                userModel = new User(user);
+            } else {
+                userModel = new User(req.body);
+                userModel.setPassword(req.body.facebookId);
+            }
+            userModel.save(function(err, userFinal) {
+                if(err) { res.serverError(); return; }
+                res.ok({user: userFinal, token: userFinal.generateJwt([])});
+                return;
+            });
+        });
+    })
     .post(`${path}/updateApp`, auth, function (req, res) {
         User.findOne({_id: req.body._id})
         .exec(function(err, user) {
