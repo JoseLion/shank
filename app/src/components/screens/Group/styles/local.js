@@ -67,6 +67,28 @@ const LocalStyles = StyleSheet.create({
         width: 75
     },
 
+    roasterRowHighlight: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 1.5,
+        borderColor: '#EEEEEE',
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    roasterRowView: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    roasterRowPhoto: {
+        height: 30,
+        width: 30,
+        borderRadius: 15
+    },
+
 
 
 

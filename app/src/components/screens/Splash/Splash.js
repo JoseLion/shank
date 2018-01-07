@@ -32,7 +32,7 @@ export default class SplashScreen extends BaseComponent {
 
         this.setState({imageSource: BackgroundSolid});
         Animated.timing(this.state.fadeAnim, { toValue: 1, duration: 2500 }).start(() => {
-            Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 2500 }).start(() => {
+            Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 2000 }).start(() => {
                 this.setState({imageSource: BackgroundTransparent});
                 Animated.timing(this.state.fadeAnim, { toValue: 1, duration: 2500 }).start(() => {
                     Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 2500 }).start(() => {

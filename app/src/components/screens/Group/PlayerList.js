@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 
 import PropTypes from 'prop-types';
 import LocalStyles from './styles/local';
-import MainStyles from '../../../styles/main';
+import MainStyles from '../../../styles/MainStyles';
 import AtoZListView from 'react-native-atoz-listview';
 import {Avatar} from "react-native-elements";
 

@@ -11,7 +11,7 @@ import Splash from '../screens/Splash/Splash';
 import Slider from '../screens/Slider/Slider';
 import Login from '../screens/SignIn/Login';
 import Register from '../screens/SignIn/Register';
-import Main from '../screens/Main/Main';
+import Main from '../screens/Main/MainScreen';
 import Profile from '../screens/Profile/Profile';
 import Tournament from '../screens/Tournament/Tournament';
 import AddGroup from '../screens/Group/AddGroup';

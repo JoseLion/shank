@@ -12,7 +12,7 @@ import { Ionicons, Entypo, FontAwesome } from '@expo/vector-icons'; // 5.2.0
 
 import BaseModel from '../../../core/BaseModel';
 import PlayersList from './PlayerList';
-import MainStyles from '../../../styles/main';
+import MainStyles from '../../../styles/MainStyles';
 import LocalStyles from './styles/local';
 import * as Constants from '../../../core/Constants';
 import * as BarMessages from '../../../core/BarMessages';

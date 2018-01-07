@@ -9,6 +9,7 @@ export const TERTIARY_COLOR_ALT = '#CCCCCC';
 
 export const SUCCESS_COLOR = '#00B16A';
 export const ERROR_COLOR = '#ED2C3E';
+export const HIGHLIGHT_COLOR = '#E4E4E4';
 
 export const FIRST_TIME = 'first-time';
 export const AUTH_TOKEN = "shank-auth-token";

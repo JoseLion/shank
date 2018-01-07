@@ -2,13 +2,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Platform, Dimensions, StyleSheet } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+import DropdownAlert from 'react-native-dropdownalert';
 import { Facebook } from 'expo';
 import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';
 
 import NoAuthModel from '../../core/NoAuthModel';
 import BaseModel from '../../core/BaseModel';
 import GolfApiModel from '../../core/GolfApiModel';
-import MainStyles from '../../styles/main';
+import MainStyles from '../../styles/MainStyles';
 import * as Constants from '../../core/Constants';
 import * as BarMessages from '../../core/BarMessages';
 import Style from '../../styles/Stylesheet';
@@ -54,21 +56,24 @@ class BaseComponent extends Component {
 }
 
 export {
-    Platform,
     Dimensions,
-    StyleSheet,
+    DropdownAlert,
     Facebook,
+    Platform,
+    Spinner,
+    StyleSheet,
 
-    FontAwesome,
     Entypo,
+    FontAwesome,
     Ionicons,
     Style,
 
-    BaseComponent,
-    NoAuthModel,
-    BaseModel,
-    GolfApiModel,
-    MainStyles,
-    Constants,
     BarMessages,
-    isAndroid };
+    BaseComponent,
+    BaseModel,
+    Constants,
+    GolfApiModel,
+    isAndroid,
+    MainStyles,
+    NoAuthModel
+};

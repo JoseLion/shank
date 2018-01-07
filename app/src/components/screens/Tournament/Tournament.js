@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {ActivityIndicator, ListView, Text, View, Image, Dimensions, ScrollView,Linking} from 'react-native';
-import MainStyles from '../../../styles/main';
+import MainStyles from '../../../styles/MainStyles';
 import LocalStyles from './styles/local';
 import * as Constants from '../../../core/Constants';
 import ProgressBar from '../../../global/ProgressBar';

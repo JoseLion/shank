@@ -114,13 +114,8 @@ let prepareRouter = function (app) {
         .populate('bettingGroups')
         .exec(function (err, user) {
             if(err) { res.serverError(); return; }
-            console.log(user);
-            if(user) {
-                res.ok(user.bettingGroups);
-                return;
-            } else {
-                res.ok([]);
-                return;
+            if(user) { res.ok(user.bettingGroups); return;
+            } else { res.ok([]); return;
             }
         });
     })

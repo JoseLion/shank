@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, Image, Button, TouchableHighlight, TouchableOpa
 import Swiper from 'react-native-swiper';
 
 // Shank components:
-import MainStyles from '../../../styles/main';
+import MainStyles from '../../../styles/MainStyles';
 import LocalStyles from './styles/local'
 
 export default class SliderScreen extends Component {
