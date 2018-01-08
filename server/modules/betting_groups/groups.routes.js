@@ -35,49 +35,51 @@ let prepareRouter = function (app) {
         });
     })
     .post(`${path}/create`, auth, multer({storage: photoConfig}).any(), function (req, res) {
-        User.findById(req.payload._id).exec(function (err, user) {
-            if(err) { res.serverError(); return; }
-            console.log(req.body)
-            //let groupInformation = JSON.parse(req.body.groupInformation);
-            let groupInformation = req.body.groupInformation;
-            groupInformation.tournaments = [
-                {
-                    tournamentId: groupInformation.tournamentId,
-                    tournamentName: groupInformation.tournamentName,
-                    users: [
-                        {
-                            _id: user._id,
-                            fullName: user.fullName,
-                            playerRanking: []
-                        }
-                    ]
-                }
-            ];
-            groupInformation.owner = user._id;
-            groupInformation.users = [
-                {
-                    _id: user._id
-                }
-            ];
-            groupInformation.groupToken = Math.round((Math.pow(36, 21) - Math.random() * Math.pow(36, 20))).toString(36).slice(1);
-            if(req.files.length > 0) {
-                groupInformation.photo = {
-                    name: req.files[0].filename,
-                    path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
-                };
-            }
-            let bettingGroupModel = new BettingGroup(groupInformation);
-            bettingGroupModel.save(function(err, bettingGroupFinal) {
+        try{
+            User.findById(req.payload._id).exec(function (err, user) {
                 if(err) { res.serverError(); return; }
-                let userModel = new User(user);
-                userModel.addGroup(bettingGroupFinal._id);
-                userModel.save(function(err) {
+                let groupInformation = JSON.parse(req.body.groupInformation);
+                groupInformation.tournaments = [
+                    {
+                        tournamentId: groupInformation.tournamentId,
+                        tournamentName: groupInformation.tournamentName,
+                        users: [
+                            {
+                                _id: user._id,
+                                fullName: user.fullName,
+                                playerRanking: []
+                            }
+                        ]
+                    }
+                ];
+                groupInformation.owner = user._id;
+                groupInformation.users = [
+                    {
+                        _id: user._id
+                    }
+                ];
+                groupInformation.groupToken = Math.round((Math.pow(36, 21) - Math.random() * Math.pow(36, 20))).toString(36).slice(1);
+                if(req.files.length > 0) {
+                    groupInformation.photo = {
+                        name: req.files[0].filename,
+                        path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
+                    };
+                }
+                let bettingGroupModel = new BettingGroup(groupInformation);
+                bettingGroupModel.save(function(err, bettingGroupFinal) {
                     if(err) { res.serverError(); return; }
-                    res.ok(bettingGroupFinal);
-                    return;
+                    let userModel = new User(user);
+                    userModel.addGroup(bettingGroupFinal._id);
+                    userModel.save(function(err) {
+                        if(err) { res.serverError(); return; }
+                        res.ok(bettingGroupFinal);
+                        return;
+                    });
                 });
             });
-        });
+        } catch(ex) {
+            if(err) { res.serverError(); return; }
+        }
     })
     .post(`${path}/edit`, auth, multer({storage: photoConfig}).any(), function (req, res) {
         let groupInformation = JSON.parse(req.body.groupInformation);
