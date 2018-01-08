@@ -155,7 +155,7 @@ let prepareRouter = function (app) {
     .get(`${path}/group/:groupId`, auth, function(req, res) {
         try {
             BettingGroup.findById(req.params.groupId)
-            .populate('users', '_id', 'fullName', 'photo')
+            .populate('users', '_id fullName photo')
             .exec(function (err, group) {
                 group.tournaments.forEach(function(tournament) {
                     if(group.activeTournaments <= 3) {
