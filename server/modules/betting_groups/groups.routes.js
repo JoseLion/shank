@@ -155,9 +155,8 @@ let prepareRouter = function (app) {
     .get(`${path}/group/:groupId`, auth, function(req, res) {
         try {
             BettingGroup.findById(req.params.groupId)
-            populate('users')
+            .populate('users')
             .exec(function (err, group) {
-                console.log(group);
                 group.tournaments.forEach(function(tournament) {
                     if(group.activeTournaments <= 3) {
                         group.isOwner = (group.owner == req.payload._id);
