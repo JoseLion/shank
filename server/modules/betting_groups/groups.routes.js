@@ -37,7 +37,9 @@ let prepareRouter = function (app) {
     .post(`${path}/create`, auth, multer({storage: photoConfig}).any(), function (req, res) {
         User.findById(req.payload._id).exec(function (err, user) {
             if(err) { res.serverError(); return; }
-            let groupInformation = JSON.parse(req.body.groupInformation);
+            console.log(req.body)
+            //let groupInformation = JSON.parse(req.body.groupInformation);
+            let groupInformation = req.body.groupInformation;
             groupInformation.tournaments = [
                 {
                     tournamentId: groupInformation.tournamentId,
