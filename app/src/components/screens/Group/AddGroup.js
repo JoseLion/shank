@@ -32,9 +32,9 @@ export default class AddGroup extends BaseComponent {
         this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this);
         this.state = {
+            bet: '',
             name: '',
             selectTournament: '',
-            bet: '',
             groupPhoto: null,
             assignUsers: [],
 
@@ -92,12 +92,12 @@ export default class AddGroup extends BaseComponent {
 
         this.setLoading(true);
         let data = {
-            name: this.state.name,
-            bet: this.state.bet,
-            tournamentId: this.state.selectTournament.TournamentID,
-            tournamentName: this.state.selectTournament.Name,
-            users: this.state.assignUsers,
-            groupToken: this.state.currentGroupToken,
+            groupInformation: {
+                name: this.state.name,
+                bet: this.state.bet,
+                tournamentId: this.state.selectTournament.TournamentID,
+                tournamentName: this.state.selectTournament.Name
+            }
         };
         // if (this.state.groupPhoto) {
         //     let localUri = this.state.groupPhoto;
@@ -106,7 +106,6 @@ export default class AddGroup extends BaseComponent {
         //     let type = match ? `image/${match[1]}` : `image`;
         //     data.photo = {path: localUri, name: filename, type: type};
         // }
-        console.log(data);
 
         this.onCreateGroupPressedAsync(data);
     }
@@ -138,7 +137,7 @@ export default class AddGroup extends BaseComponent {
         }
     };
     onCreateGroupPressedAsync = async(data) => {
-        await BaseModel.post('groups/createGroup', data)
+        await BaseModel.multipart('groups/create', data)
             .then((response) => {
                 console.log(response);
                 this.setLoading(false);
