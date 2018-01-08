@@ -5,7 +5,7 @@ import { List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, Spinner, DropdownAlert } from '../BaseComponent';
+import { BarMessages, BaseComponent, BaseModel, Constants, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class MainScreen extends BaseComponent {
@@ -36,8 +36,6 @@ export default class MainScreen extends BaseComponent {
         super(props);
         this.handleRefresh = this.handleRefresh.bind(this);
         this.tapCenterButton = this.tapCenterButton.bind(this);
-        this._myGroupsAsyncRemoteRequest = this._myGroupsAsyncRemoteRequest.bind(this);
-        this._collectGroupData = this._collectGroupData.bind(this);
         this.state = {
             loading: false,
             data: [],
@@ -57,20 +55,13 @@ export default class MainScreen extends BaseComponent {
             if (authToken) {
                 AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
                     this.setState({currentUser: JSON.parse(user)})
-                    this._myGroupsAsyncRemoteRequest();
+                    this.onListGroupAsync();
                 });
             }
         });
     }
 
-    // Methods:
     setLoading(loading) { this.setState({loading: loading}); }
-    handleRefresh = () => {
-        this.setState(
-            { page: 1, seed: this.state.seed + 1, refreshing: true },
-            () => { this._myGroupsAsyncRemoteRequest(); }
-        );
-    };
     tapCenterButton(onLogin) {
         if(this.state.auth) {
             super.navigateToScreen(onLogin);
@@ -78,9 +69,15 @@ export default class MainScreen extends BaseComponent {
             super.navigateToScreen('Login');
         }
     }
+    handleRefresh = () => {
+        this.setState(
+            { page: 1, seed: this.state.seed + 1, refreshing: true },
+            () => { this.onListGroupAsync(); }
+        );
+    };
 
-    // Async calls:
-    _myGroupsAsyncRemoteRequest = async(data) => {
+    // Async methods:
+    onListGroupAsync = async(data) => {
         const {page, currentUser} = this.state;
         this.setState({refreshing: true, loading: true});
         await BaseModel.get(`groups/myList/${currentUser._id}`).then((groups) => {
@@ -103,9 +100,6 @@ export default class MainScreen extends BaseComponent {
             }
         });
     };
-    _collectGroupData(group) {
-        super.navigateToScreen('SingleGroup', group);
-    };
 
     render() {
         let addPhoto = require('../../../../resources/add_edit_photo.png');
@@ -124,10 +118,15 @@ export default class MainScreen extends BaseComponent {
                                         )
                                     ]}>
                                         <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR}
-                                            onPress={() => this._collectGroupData(item)}>
+                                            onPress={() => super.navigateToScreen('SingleGroup', item)}>
                                             <View style={[MainStyles.viewFlexItemsR]}>
                                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
-                                                    <Image style={{height:50,width:50}} source={addPhoto}></Image>
+                                                    { item.photo != null
+                                                        ?
+                                                            <Image style={{height:50,width:50}} source={{uri: item.photo.path}}></Image>
+                                                        :
+                                                            <Image style={{height:50,width:50}} source={addPhoto}></Image>
+                                                    }
                                                 </View>
                                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
                                                     <Text numberOfLines={1} style={[LocalStyles.titleText]}>{item.name}</Text>
