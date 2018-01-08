@@ -1,24 +1,21 @@
 // React components:
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Button, TouchableHighlight, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Image, Text, TouchableHighlight, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 // Shank components:
-import MainStyles from '../../../styles/MainStyles';
-import LocalStyles from './styles/local'
+import { BaseComponent, MainStyles, Constants } from '../BaseComponent';
+import LocalStyles from './styles/local';
 
-export default class SliderScreen extends Component {
+export default class SliderScreen extends BaseComponent {
 
-    static propTypes = { navigation: PropTypes.object.isRequired };
-    static navigationOptions = {
+    static navigationOptions = ({navigation}) => ({
         title: 'Slider',
-        header: null
-    };
+        header: null,
+        imageSource: null
+    });
 
-    constructor(props) {
-        super(props);
-    }
+    constructor(props) { super(props); }
 
     render() {
         let ImgSlideOne = require('../../../../resources/slider/shank-slider_1.png');
@@ -34,9 +31,9 @@ export default class SliderScreen extends Component {
                 </View>
                 <View style={LocalStyles.slide}>
                     <Image style={LocalStyles.coverImage} source={ImgSlideThree}></Image>
-                    <TouchableOpacity style={[MainStyles.button, MainStyles.tertiary, LocalStyles.startButton]} onPress={ () => this.props.navigation.navigate('Register', {url: this.props.navigation.state.params.url}) }>
+                    <TouchableHighlight style={[MainStyles.button, MainStyles.tertiary, LocalStyles.startButton]} underlayColor={Constants.HIGHLIGHT_COLOR} onPress={() => super.navigateToScreen('Login')}>
                         <Text style={MainStyles.buttonLinkText}>Let{"\'"}s get start</Text>
-                    </TouchableOpacity>
+                    </TouchableHighlight>
                 </View>
             </Swiper>
         );

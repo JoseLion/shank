@@ -1,7 +1,6 @@
 // React components:
 import React from 'react';
-import { View, Image, StatusBar, Linking, AsyncStorage, Animated } from 'react-native';
-import qs from 'qs';
+import { Animated, AsyncStorage, Image, Linking, StatusBar, View } from 'react-native';
 
 // Shank components:
 import { BaseComponent, MainStyles, Constants } from '../BaseComponent';
@@ -17,7 +16,6 @@ export default class SplashScreen extends BaseComponent {
         header: null,
         imageSource: null
     });
-    url = '';
 
     constructor(props) {
         super(props);
@@ -26,22 +24,18 @@ export default class SplashScreen extends BaseComponent {
         };
     };
     componentDidMount() {
-        Linking.getInitialURL()
-            .then(url => { this.url = url; console.log(this.url) })
-            .catch(err => console.error('An error occurred', err));
-
         this.setState({imageSource: BackgroundSolid});
         Animated.timing(this.state.fadeAnim, { toValue: 1, duration: 2500 }).start(() => {
-            Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 2000 }).start(() => {
+            Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 500 }).start(() => {
                 this.setState({imageSource: BackgroundTransparent});
                 Animated.timing(this.state.fadeAnim, { toValue: 1, duration: 2500 }).start(() => {
-                    Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 2500 }).start(() => {
+                    Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 2000 }).start(() => {
                         AsyncStorage.getItem(Constants.FIRST_TIME).then(firstTime => {
                             if(firstTime) {
-                                this.props.navigation.navigate('Main', {url: this._handleRedirects(this.url), auth: true})
+                                this.props.navigation.navigate('Main', {auth: true})
                             } else {
                                 AsyncStorage.setItem(Constants.FIRST_TIME, 'no');
-                                this.props.navigation.navigate('Slider', {url: this._handleRedirects(this.url), auth: false})
+                                this.props.navigation.navigate('Slider', {auth: false})
                             }
                         });
                     });
@@ -50,20 +44,6 @@ export default class SplashScreen extends BaseComponent {
         });
     };
     componentWillUnmount() { clearTimeout(this.timeoutHandle); };
-
-    _handleRedirects = (url) => {
-        let query = url.replace(Constants.LINKING_URI + '+', '');
-        let data;
-        if (query) {
-            data = qs.parse(query);
-            if(!data['tag']){
-                data = '';
-            }
-        } else {
-            data = '';
-        }
-        return data;
-    }
 
     render() {
         let { fadeAnim } = this.state;
