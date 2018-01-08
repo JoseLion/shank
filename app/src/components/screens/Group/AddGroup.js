@@ -46,7 +46,7 @@ export default class AddGroup extends BaseComponent {
 
     componentDidMount() {
         this.setLoading(true);
-        this.initialRequest('pga', '2018');
+        this.initialRequest();
         this.props.navigation.setParams({
             actionSheet: this.showActionSheet
         });
@@ -111,7 +111,7 @@ export default class AddGroup extends BaseComponent {
     }
 
     // Async methods:
-    initialRequest = async (tour, year) => {
+    initialRequest = async () => {
         this.setLoading(true);
         try {
             GolfApiModel.get('Tournaments').then((tournaments) => {
@@ -129,7 +129,7 @@ export default class AddGroup extends BaseComponent {
         await BaseModel.multipart('groups/create', data)
             .then((response) => {
                 this.setLoading(false);
-                super.navigateToScreen('Group', response);
+                super.navigateToScreen('Group', {groupId: response._id, isOwner: true});
             }).catch((error) => {
                 this.setLoading(false);
                 BarMessages.showError(error, this.validationMessage);
