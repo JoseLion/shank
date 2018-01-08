@@ -132,25 +132,27 @@ let prepareRouter = function (app) {
                 let activeTournaments = 1;
                 let groups = new Array();
                 user.bettingGroups.forEach(function(group) {
-                    let myScore = 0;
-                    group.tournaments.forEach(function(tournament) {
-                        if(group.activeTournaments <= 3) {
-                            group.isOwner = (group.owner == user._id);
-                            if(tournament.status) {
-                                tournament.users.forEach(function(userGroup) {
-                                    if(userGroup._id == user._id) {
-                                        tournament.myScore = userGroup.score;
-                                        tournament.myRanking = userGroup.ranking;
-                                        return;
-                                    }
-                                });
-                                myScore += tournament.myScore;
+                    if(group.status) {
+                        let myScore = 0;
+                        group.tournaments.forEach(function(tournament) {
+                            if(group.activeTournaments <= 3) {
+                                group.isOwner = (group.owner == user._id);
+                                if(tournament.status) {
+                                    tournament.users.forEach(function(userGroup) {
+                                        if(userGroup._id == user._id) {
+                                            tournament.myScore = userGroup.score;
+                                            tournament.myRanking = userGroup.ranking;
+                                            return;
+                                        }
+                                    });
+                                    myScore += tournament.myScore;
+                                }
                             }
-                        }
-                    });
-                    group.myScore = myScore;
-                    group.myRanking = 0;
-                    groups.push(group);
+                        });
+                        group.myScore = myScore;
+                        group.myRanking = 0;
+                        groups.push(group);
+                    }
                 });
                 res.ok(groups);
                 return;
