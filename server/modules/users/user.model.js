@@ -41,6 +41,8 @@ let UserSchema = new mongoose.Schema({
 
 UserSchema.pre('save', function(next) {
     let self = this;
+    self.fullName = self.fullName.trim();
+    self.email = self.email.trim();
     if(self._id == null) {
         Counter.getNextSequence('users', function(err, counter) {
             if(err) {
