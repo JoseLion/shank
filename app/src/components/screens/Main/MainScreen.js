@@ -36,6 +36,7 @@ export default class MainScreen extends BaseComponent {
         super(props);
         this.handleRefresh = this.handleRefresh.bind(this);
         this.tapCenterButton = this.tapCenterButton.bind(this);
+        this.removeGroup = this.removeGroup.bind(this);
         this.state = {
             loading: false,
             data: [],
@@ -69,6 +70,7 @@ export default class MainScreen extends BaseComponent {
             super.navigateToScreen('Login');
         }
     }
+    removeGroup(item) { this.onRemoveGroupAsync(item); }
     handleRefresh = () => {
         this.setState(
             { page: 1, seed: this.state.seed + 1, refreshing: true },
@@ -87,7 +89,6 @@ export default class MainScreen extends BaseComponent {
                 refreshing: false
             });
         }).catch((error) => {
-            this.setLoading(false);
             if (error === 401) {
                 try {
                     AsyncStorage.removeItem(Constants.AUTH_TOKEN);
@@ -98,6 +99,25 @@ export default class MainScreen extends BaseComponent {
                 console.log('ERROR: ', error);
                 BarMessages.showError(error, this.validationMessage);
             }
+        }).finally(() => {
+            this.setLoading(false);
+        });
+    };
+    onRemoveGroupAsync = async(data) => {
+        this.setLoading(true);
+        let endPoint;
+        if(data.isOwner) {
+            endPoint = `groups/changeStatus/${data._id}/false`;
+        } else {
+            endPoint = `groups/removeUser/${data._id}/${this.state.currentUser._id}`;
+        }
+        await BaseModel.delete(endPoint).then(() => {
+            this.handleRefresh();
+        }).catch((error) => {
+            console.log('ERROR! ', error);
+            BarMessages.showError(error, this.validationMessage);
+        }).finally(() => {
+            this.setLoading(false);
         });
     };
 
@@ -112,13 +132,13 @@ export default class MainScreen extends BaseComponent {
                             <FlatList data={this.state.data} renderItem={({item}) => (
                                     <Swipeable rightButtons={[
                                         (
-                                            <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
+                                            <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]} onPress={() => this.removeGroup(item)}>
                                                 <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
                                             </TouchableHighlight>
                                         )
                                     ]}>
                                         <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR}
-                                            onPress={() => super.navigateToScreen('Group', item)}>
+                                            onPress={() => super.navigateToScreen('Group', {groupId: item._id, isOwner: item.isOwner})}>
                                             <View style={[MainStyles.viewFlexItemsR]}>
                                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                                                     { item.photo != null

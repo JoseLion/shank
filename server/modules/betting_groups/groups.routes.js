@@ -114,6 +114,30 @@ let prepareRouter = function (app) {
             res.serverError(); return;
         }
     })
+    .delete(`${path}/removeUser/:groupId/:userId`, auth, function(req, res) {
+        try {
+            BettingGroup.findById(req.params.groupId).exec(function(errG, group) {
+                if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
+                group.users = group.users.filter(function(user) {
+                    return user._id != req.params.userId;
+                });
+                group.tournaments.forEach(function(tournament) {
+                    tournament.users = tournament.users.filter(function(user) {
+                        return user._id != req.params.userId;
+                    });
+                });
+                BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU, finalGroup) {
+                    User.findByIdAndUpdate(req.params.userId, {$pull: {bettingGroups: group._id}}, {new: true}, function(errUU) {
+                        res.ok(finalGroup);
+                        return;
+                    });
+                })
+            });
+        } catch(ex) {
+            console.log('EX: ', ex);
+            res.serverError(); return;
+        }
+    })
     .get(`${path}/myList/:userId`, auth, function (req, res) {
         try {
             User.findOne({_id: req.params.userId}).select('_id bettingGroups')
@@ -124,9 +148,9 @@ let prepareRouter = function (app) {
                 user.bettingGroups.forEach(function(group) {
                     if(group.status) {
                         let myScore = 0;
+                        group.isOwner = (group.owner == user._id);
                         group.tournaments.forEach(function(tournament) {
                             if(group.activeTournaments <= 3) {
-                                group.isOwner = (group.owner == user._id);
                                 if(tournament != null && tournament.status) {
                                     tournament.users.forEach(function(userGroup) {
                                         if(userGroup._id == user._id) {
@@ -213,30 +237,6 @@ let prepareRouter = function (app) {
             res.serverError(); return;
         }
     })
-    .delete(`${path}/removeUser/:groupId/:userId`, auth, function(req, res) {
-        try {
-            BettingGroup.findById(req.params.groupId).exec(function(errG, group) {
-                if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
-                group.users = group.users.filter(function(user) {
-                    return user._id != req.params.userId;
-                });
-                group.tournaments.forEach(function(tournament) {
-                    tournament.users = tournament.users.filter(function(user) {
-                        return user._id != req.params.userId;
-                    });
-                });
-                BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU, finalGroup) {
-                    User.findByIdAndUpdate(req.params.userId, {$pull: {bettingGroups: group._id}}, {new: true}, function(errUU) {
-                        res.ok(finalGroup);
-                        return;
-                    });
-                })
-            });
-        } catch(ex) {
-            console.log('EX: ', ex);
-            res.serverError(); return;
-        }
-    })
     .put(`${path}/editMyPlayers/:groupId/:tournamentId`, auth, function(req, res) {
         try{
             BettingGroup.findById(req.params.groupId)
@@ -262,122 +262,9 @@ let prepareRouter = function (app) {
             console.log('EX: ', ex);
             res.serverError(); return;
         }
-    })
+    });
 
-
-    /*
-    .post('/groupInformation', auth, function(req, res) {
-    if(!req.payload._id) { res.forbidden(); return; }
-    BettingGroup.findOne(req.body)
-    .exec(function(err, bettingGroup) {
-    res.ok(bettingGroup);
-    return;
-});
-})
-.get('/myGroups', auth, function (req, res) {
-if (!req.payload._id) {
-res.ok({}, 'Usuario no autorizado.');
-return;
-}
-User
-.findById(req.payload._id)
-.select('_id bettingGroups')
-.exec(function (err, user) {
-if (err) {
-res.ok({}, err);
-return;
-}
-if (user) {
-BettingGroup.find({'_id': {$in: user.bettingGroups}}, function (err, groupArray) {
-if (err) {
-console.log(err);
-res.ok({}, 'error finding groups, try later');
-} else {
-console.log(groupArray);
-res.ok({results: groupArray, err: null});
-}
-});
-}else{
-res.status(401).send({ error: "old token, logging out" });
-}
-});
-})
-.get('/findGroupByHash', function (req, res) {
-let data = req.body;
-if (!data.groupToken) {
-return;
-}
-BettingGroup
-.find({'groupToken': data.groupToken})
-.select('_id name users tournament city photo bet users')
-.exec(function (err, user) {
-if (err) {
-res.ok({}, 'Al seleccionar grupos.');
-return;
-}
-if (user) {
-res.ok(user);
-} else {
-res.ok({}, 'Group doesnt exist');
-}
-});
-})
-.get('/allGroups', function (req, res) {
-BettingGroup
-.find()
-.select('_id name users tournament city photo bet users groupToken')
-.exec(function (err, user) {
-if (err) {
-res.ok({}, 'Al seleccionar grupos.');
-return;
-}
-res.ok(user);
-});
-})
-.get('/latestPlayerSelection', auth, function (req, res) {
-if (!req.payload._id) {
-res.ok({}, 'Usuario no autorizado.');
-return;
-}
-let data = req.body;
-
-BettingGroup.find({_id: data.groupId, 'users._id': data.userGroupId}).select('playerRanking')
-.exec(function (err, playerRanking) {
-if (err) {
-res.ok({}, 'Al seleccionar player rankings.');
-return;
-}
-res.ok(playerRanking);
-});
-
-})
-.post('/updateUserPlayerRankingByGroup', auth, function (req, res) {
-if (!req.payload._id) {
-res.ok({}, 'Usuario no autorizado.');
-return;
-}
-let data = req.body;
-console.log("ghosssssssssssssssssssssssssssssstttt")
-console.log(data)
-
-BettingGroup.findOneAndUpdate({_id: data.groupId, 'users._id': data.userGroupId},
-{
-$set: {
-'users.$.playerRanking': data.playerRankings,
-}
-}, {new: true, upsert: true, setDefaultsOnInsert: true},
-function (err, data) {
-if (err) {
-console.log("okokokokokokokokokokokokokok")
-console.log(err)
-res.ok({}, 'Data not updated');
-}
-else {
-res.ok(data);
-}
-});
-});
-*/    return router;
+    return router;
 };
 
 module.exports = prepareRouter;
