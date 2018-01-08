@@ -46,7 +46,8 @@ let prepareRouter = function (app) {
                         {
                             _id: user._id,
                             fullName: user.fullName,
-                            playerRanking: []
+                            playerRanking: [],
+                            ranking: 1
                         }
                     ]
                 }
