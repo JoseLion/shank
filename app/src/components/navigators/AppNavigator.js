@@ -8,7 +8,7 @@ import { BackHandler } from 'react-native';
 import * as Constants from '../../core/Constants';
 
 import Splash from '../screens/Splash/Splash';
-import Slider from '../screens/Slider/Slider';
+import Slider from '../screens/Splash/Slider';
 import Login from '../screens/SignIn/Login';
 import Register from '../screens/SignIn/Register';
 import Main from '../screens/Main/MainScreen';

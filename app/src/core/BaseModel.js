@@ -45,6 +45,51 @@ let BaseModel = {
         else return json.response;
     },
 
+    async multipart(resource, params) {
+        let token = await AsyncStorage.getItem(AuthToken);
+        if (!token) throw notLogged;
+
+        const data = new FormData();
+        console.log('PARAMS: ', params);
+        for(key in params) {
+            console.log('KEY: ', key);
+            if(params[key] instanceof Array && params[key].length > 0 && params[key][0] instanceof Blob) {
+                params[key].forEach(function(value) {
+                    data.append(key, value);
+                });
+            } else if(params[key] instanceof Blob){
+                data.append(key, params[key]);
+            } else {
+                data.append(key, new Blob([JSON.stringify(params[key])], {type: "application/json"}));
+            }
+        }
+
+        let options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': undefined,
+                'Authorization': 'Bearer ' + token,
+            },
+            body: data
+        }
+
+        const response = await fetch(ApiHost + resource, options).catch(
+            error => {
+                throw requestServerError;
+            }
+        );
+
+        const json = await response.json().catch(
+            error => {
+                throw parsingResponseError;
+            }
+        );
+
+        if (json.error !== '') throw json.error;
+        else return json.response;
+    },
+
     async get(resource) {
 
         let token = await AsyncStorage.getItem(Constants.AUTH_TOKEN);
