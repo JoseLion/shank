@@ -97,6 +97,7 @@ export default class Group extends BaseComponent {
 
             playersLeaderboard: [],
 
+            usersLength: 5,
             score: 0,
             ranking: 0,
             playerRanking: [
@@ -134,35 +135,9 @@ export default class Group extends BaseComponent {
         };
     }
     componentDidMount() {
-        let currentGroup = this.props.navigation.state.params;
-        this.setState({currentGroup: currentGroup, currentTournament: currentGroup.tournaments[0]});
-        AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
-            this.setState({currentUser: JSON.parse(user)});
-            // for(let idx=0 ; idx<currentGroup.users.length ; idx++) {
-            //     let userTmp = currentGroup.users[idx];
-            //     if(userTmp._id == currentUser._id) {
-            //         this.setState({score: userTmp.score, ranking: userTmp.ranking});
-            //         if(userTmp.playerRanking.length > 0) {
-            //             this.setState({playerRanking: userTmp.playerRanking});
-            //         }
-            //         break;
-            //     }
-            // }
-        });
-        this.props.navigation.setParams({
-            actionSheet: this.showActionSheet
-        });
-
-        let tournaments = [];
-        let tournamentsName = [];
-        this.props.navigation.state.params.tournaments.forEach(function(tournament) {
-            tournaments.push(tournament);
-            tournamentsName.push(tournament.tournamentName);
-        });
-        tournamentsName.push('Cancel');
-        this.setState({tournaments: tournaments, tournamentsName: tournamentsName});
-
-
+        this.props.navigation.setParams({ actionSheet: this.showActionSheet });
+        AsyncStorage.getItem(Constants.USER_PROFILE).then(user => { this.setState({currentUser: JSON.parse(user)}); });
+        this.onGroupAsync(this.props.navigation.state.params.groupId);
 
         // this.props.navigation.setParams({movementsDone: this.state.movementsDone});
         // this.setInitialPlayerRanking(this.props.navigation);
@@ -204,7 +179,6 @@ export default class Group extends BaseComponent {
          BackHandler.addEventListener('hardwareBackPress', this.backHandler(dispatch)).bind(this);
          }*/
          // this._getPricePerMovement();
-         this.initialRequest();
     }
 
 
@@ -230,8 +204,8 @@ export default class Group extends BaseComponent {
         this.setLoading(true);
         try {
             do {
-                this.props.navigation.state.params.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
-            } while(this.props.navigation.state.params.users.length < 5);
+                this.state.currentGroup.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
+            } while(this.state.currentGroup.users.length < 5);
             this.setState({tournamentData: {
                 "Canceled": false,
                 "City": null,
@@ -435,9 +409,34 @@ export default class Group extends BaseComponent {
         }).then(this._showResult).catch(err => console.log(err))
     }
 
+    onGroupAsync = async(data) => {
+        this.setState({loading: true});
+        await BaseModel.get(`groups/group/${data}`).then((currentGroup) => {
+            let tournaments = [];
+            let tournamentsName = [];
+            currentGroup.tournaments.forEach(function(tournament) {
+                tournaments.push(tournament);
+                tournamentsName.push(tournament.tournamentName);
+            });
+            tournamentsName.push('Cancel');
+            this.setState({
+                currentGroup: currentGroup,
+                currentTournament: currentGroup.tournaments[0],
+                tournaments: tournaments,
+                tournamentsName: tournamentsName,
+                usersLength: currentGroup.users.length,
+                loading: false});
+            this.props.navigation.setParams({currentGroup: currentGroup});
+            this.initialRequest();
+        }).catch((error) => {
+            console.log('ERROR! ', error);
+            this.setLoading(false);
+            BarMessages.showError(error, this.validationMessage);
+        });
+    };
+
     render() {
         let addPhoto = require('../../../../resources/add_edit_photo.png');
-        let currentGroup = this.props.navigation.state.params;
         let navigation = this.props.navigation;
 
         let oneDay = 24*60*60*1000;
@@ -457,7 +456,7 @@ export default class Group extends BaseComponent {
                         <Image style={[LocalStyles.groupImage, {width:50,height:50}]} source={addPhoto}></Image>
                     </View>
                     <View style={[LocalStyles.viewContent, {flex:3,flexDirection:'column'}]}>
-                        <View><Text style={[LocalStyles.titleText]}>{currentGroup.name}</Text></View>
+                        <View><Text style={[LocalStyles.titleText]}>{this.state.currentGroup.name}</Text></View>
                         <View>
                             <TouchableHighlight underlayColor={Constants.HIGHLIGHT_COLOR}
                                 onPress={() => navigation.state.params.actionSheet()}>
@@ -466,7 +465,7 @@ export default class Group extends BaseComponent {
                         </View>
                     </View>
                     <View style={[LocalStyles.viewContent, {flex:2,flexDirection:'column'}]}>
-                        { currentGroup.isOwner
+                        { this.state.currentGroup.isOwner
                             ? ( <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
                                     <Text style={MainStyles.buttonText}>Invite</Text>
                                 </TouchableOpacity> )
@@ -477,7 +476,7 @@ export default class Group extends BaseComponent {
                 <View style={[LocalStyles.groupInformation, {borderBottomWidth: 3, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
                     <View style={[LocalStyles.viewContent, {flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.subtitleText]}>PRIZE</Text></View>
-                        <View><Text style={[LocalStyles.normalText]}>{currentGroup.bet}</Text></View>
+                        <View><Text style={[LocalStyles.normalText]}>{this.state.currentGroup.bet}</Text></View>
                     </View>
                 </View>
                 <View style={[LocalStyles.groupInformation, {borderBottomWidth: 2, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
@@ -486,7 +485,7 @@ export default class Group extends BaseComponent {
                         <View><Text style={[LocalStyles.infoText]}>Points</Text></View>
                     </View>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myRanking}/{currentGroup.users.length}</Text></View>
+                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myRanking}/{this.state.usersLength}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Ranking</Text></View>
                     </View>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
