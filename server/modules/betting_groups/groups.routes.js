@@ -123,7 +123,6 @@ let prepareRouter = function (app) {
         try {
             User.findOne({_id: req.params.userId}).select('_id bettingGroups')
             .populate('bettingGroups')
-            .populate('bettingGroups.users')
             .exec(function (err, user) {
                 if(err) { res.serverError(); return; }
                 let activeTournaments = 1;
@@ -162,6 +161,7 @@ let prepareRouter = function (app) {
     .get(`${path}/group/:groupId`, auth, function(req, res) {
         try {
             BettingGroup.findById(req.params.groupId)
+            populate('users')
             .exec(function (err, group) {
                 if(err) { res.serverError(); return; }
                 group.tournaments.forEach(function(tournament) {
