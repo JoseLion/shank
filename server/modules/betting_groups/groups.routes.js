@@ -117,7 +117,7 @@ let prepareRouter = function (app) {
     .get(`${path}/myList/:userId`, auth, function (req, res) {
         try {
             User.findOne({_id: req.params.userId}).select('_id bettingGroups')
-            .populate('bettingGroups', '_id name photo tournaments')
+            .populate('bettingGroups')
             .exec(function (err, user) {
                 let activeTournaments = 1;
                 let groups = new Array();
