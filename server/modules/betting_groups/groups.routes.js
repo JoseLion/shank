@@ -36,13 +36,12 @@ let prepareRouter = function (app) {
             });
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
     .post(`${path}/create`, auth, multer({storage: photoConfig}).any(), function (req, res) {
         try{
             User.findById(req.payload._id).exec(function (err, user) {
-                if(err) { res.serverError(); return; }
                 let groupInformation = JSON.parse(req.body.groupInformation);
                 groupInformation.tournaments = [
                     {
@@ -69,11 +68,9 @@ let prepareRouter = function (app) {
                 }
                 let bettingGroupModel = new BettingGroup(groupInformation);
                 bettingGroupModel.save(function(err, bettingGroupFinal) {
-                    if(err) { res.serverError(); return; }
                     let userModel = new User(user);
                     userModel.addGroup(bettingGroupFinal._id);
                     userModel.save(function(err) {
-                        if(err) { res.serverError(); return; }
                         res.ok(bettingGroupFinal);
                         return;
                     });
@@ -81,7 +78,7 @@ let prepareRouter = function (app) {
             });
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
     .post(`${path}/edit`, auth, multer({storage: photoConfig}).any(), function (req, res) {
@@ -96,27 +93,25 @@ let prepareRouter = function (app) {
             groupInformation.updateDate = new Date();
             groupInformation.activeTournaments = groupInformation.tournaments.length;
             BettingGroup.findOneAndUpdate({_id: groupInformation._id}, { $set : groupInformation}, {new: true}, function(err, group) {
-                if(err) { res.serverError(); return; }
                 if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
                 res.ok(group);
                 return;
             });
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
     .delete(`${path}/changeStatus/:groupId/:status`, auth, function(req, res) {
         try {
             BettingGroup.findOneAndUpdate({_id: req.params.groupId}, { $set : {status : req.params.status}}, {new: true}, function(err, group) {
-                if(err) { res.serverError(); return; }
                 if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
                 res.ok({finalStatus: group.status});
                 return;
             });
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
     .get(`${path}/myList/:userId`, auth, function (req, res) {
@@ -124,7 +119,6 @@ let prepareRouter = function (app) {
             User.findOne({_id: req.params.userId}).select('_id bettingGroups')
             .populate('bettingGroups')
             .exec(function (err, user) {
-                if(err) { res.serverError(); return; }
                 let activeTournaments = 1;
                 let groups = new Array();
                 user.bettingGroups.forEach(function(group) {
@@ -155,7 +149,7 @@ let prepareRouter = function (app) {
             });
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
     .get(`${path}/group/:groupId`, auth, function(req, res) {
@@ -163,7 +157,7 @@ let prepareRouter = function (app) {
             BettingGroup.findById(req.params.groupId)
             populate('users')
             .exec(function (err, group) {
-                if(err) { res.serverError(); return; }
+                console.log(group);
                 group.tournaments.forEach(function(tournament) {
                     if(group.activeTournaments <= 3) {
                         group.isOwner = (group.owner == req.payload._id);
@@ -183,16 +177,14 @@ let prepareRouter = function (app) {
             })
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
     .put(`${path}/addUser/:groupToken/:userId`, auth, function(req, res) {
         try {
             BettingGroup.findOne({groupToken: req.params.groupToken}).exec(function(errG, group) {
-                if(errG) { res.serverError(); return; }
                 if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
                 User.findById(req.params.userId).exec(function(errU, user) {
-                    if(errU) { res.serverError(); return; }
                     if(!user) { res.ok({}, 'The user doesn\'t exist!'); return; }
                     let exists = false;
                     group.users.forEach(function(groupUser) {
@@ -209,9 +201,7 @@ let prepareRouter = function (app) {
                             tournament.users.push({_id: user._id, fullName: user.fullName, playerRanking: []});
                         });
                         BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU) {
-                            if(errGU) { res.serverError(); return; }
                             User.findByIdAndUpdate(user._id, {$push: {bettingGroups: group._id}}, {new: true}, function(errUU) {
-                                if(errUU) { res.serverError(); return; }
                                 res.ok({userAdded: true});
                                 return;
                             });
@@ -221,13 +211,12 @@ let prepareRouter = function (app) {
             });
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
     .delete(`${path}/removeUser/:groupId/:userId`, auth, function(req, res) {
         try {
             BettingGroup.findById(req.params.groupId).exec(function(errG, group) {
-                if(errG) { res.serverError(); return; }
                 if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
                 group.users = group.users.filter(function(user) {
                     return user._id != req.params.userId;
@@ -238,9 +227,7 @@ let prepareRouter = function (app) {
                     });
                 });
                 BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU, finalGroup) {
-                    if(errGU) { res.serverError(); return; }
                     User.findByIdAndUpdate(req.params.userId, {$pull: {bettingGroups: group._id}}, {new: true}, function(errUU) {
-                        if(errUU) { res.serverError(); return; }
                         res.ok(finalGroup);
                         return;
                     });
@@ -248,14 +235,13 @@ let prepareRouter = function (app) {
             });
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
     .put(`${path}/editMyPlayers/:groupId/:tournamentId`, auth, function(req, res) {
         try{
             BettingGroup.findById(req.params.groupId)
             .exec(function(err, group) {
-                if(err) { res.serverError(); return; }
                 if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
                 group.tournaments.forEach(function(tournament) {
                     if(tournament._id == req.params.tournamentId) {
@@ -269,14 +255,13 @@ let prepareRouter = function (app) {
                     }
                 });
                 BettingGroup.findByIdAndUpdate(req.params.groupId, {$set: group}, {new: true}, function(errGU, finalGroup) {
-                    if(errGU) { res.serverError(); return; }
                     res.ok(finalGroup);
                     return;
                 });
             });
         } catch(ex) {
             console.log('EX: ', ex);
-            if(err) { res.serverError(); return; }
+            res.serverError(); return;
         }
     })
 
