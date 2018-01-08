@@ -29,74 +29,35 @@ let BaseModel = {
             body: data
         }
 
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
-
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
+        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
+        const json = await response.json().catch( error => { throw parsingResponseError; } );
         if (json.error !== '') throw json.error;
         else return json.response;
     },
 
-    async multipart(resource, params) {
+    async multipart(resource, data) {
         let token = await AsyncStorage.getItem(AuthToken);
         if (!token) throw notLogged;
-
-        const data = new FormData();
-        console.log('PARAMS: ', params);
-        for(key in params) {
-            console.log('KEY: ', key);
-            if(params[key] instanceof Array && params[key].length > 0 && params[key][0] instanceof Blob) {
-                params[key].forEach(function(value) {
-                    data.append(key, value);
-                });
-            } else if(params[key] instanceof Blob){
-                data.append(key, params[key]);
-            } else {
-                data.append(key, new Blob([JSON.stringify(params[key])], {type: "application/json"}));
-            }
-        }
 
         let options = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': undefined,
+                'Content-Type': 'multipart/form-data',
                 'Authorization': 'Bearer ' + token,
             },
             body: data
         }
 
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
-
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
+        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
+        const json = await response.json().catch( error => { throw parsingResponseError; } );
         if (json.error !== '') throw json.error;
         else return json.response;
     },
 
     async get(resource) {
-
-        let token = await AsyncStorage.getItem(Constants.AUTH_TOKEN);
-
-        if (!token) {
-            throw notLogged;
-        }
+        let token = await AsyncStorage.getItem(AuthToken);
+        if (!token) { throw notLogged; }
 
         let options = {
             method: 'GET',
@@ -106,29 +67,60 @@ let BaseModel = {
                 'Authorization': 'Bearer ' + token,
             }
         };
-        console.log(ApiHost + resource, '********-----------------------');
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
 
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
-        if(response.status == 401){
-            throw 401
-        }
-        if (json.error !== '') {
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
+        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
+        const json = await response.json().catch( error => { throw parsingResponseError; } );
+        if (json.error !== '') throw json.error;
+        else return json.response;
     },
+
+    async put(resource, params) {
+        let token = await AsyncStorage.getItem(AuthToken);
+        if (!token) { throw notLogged; }
+
+        const data = JSON.stringify(params);
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: data
+        };
+
+        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
+        const json = await response.json().catch( error => { throw parsingResponseError; } );
+        if (json.error !== '') throw json.error;
+        else return json.response;
+    },
+
+    async delete(resource, params) {
+        let token = await AsyncStorage.getItem(AuthToken);
+        if (!token) { throw notLogged; }
+
+        const data = JSON.stringify(params);
+        let options = {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: data
+        };
+
+        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
+        const json = await response.json().catch( error => { throw parsingResponseError; } );
+        if (json.error !== '') throw json.error;
+        else return json.response;
+    },
+
+
+
+
+
+    // REMOVE ALL ABOVE
 
     async createPhoto(resource, params) {
         let token = await AsyncStorage.getItem(AuthToken);
@@ -147,14 +139,14 @@ let BaseModel = {
         }
 
         await fetch(ApiHost + resource, options)
-            .then((responseData) => {
-                // Log the response form the server
-                // Here we get what we sent to Postman back
-                console.log(responseData);
-            })
-            .catch(err => {
-                console.log(err);
-            })
+        .then((responseData) => {
+            // Log the response form the server
+            // Here we get what we sent to Postman back
+            console.log(responseData);
+        })
+        .catch(err => {
+            console.log(err);
+        })
     },
 
     async create(resource, params) {
@@ -196,7 +188,7 @@ let BaseModel = {
             return json.response;
         }
     },
-//TODO: REFACTOR MULTIPART
+    //TODO: REFACTOR MULTIPART
     async multiPartCreate(resource, params) {
 
         let token = await AsyncStorage.getItem(AuthToken);
