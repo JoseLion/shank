@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, TouchableOpacity, Image, TextInput, TouchableHighlight, Alert} from 'react-native';
-import MainStyles from '../../../styles/main';
+import MainStyles from '../../../styles/MainStyles';
 import LocalStyles from './styles/local'
 import { FontAwesome } from '@expo/vector-icons';
 import BaseModel from '../../../core/BaseModel';

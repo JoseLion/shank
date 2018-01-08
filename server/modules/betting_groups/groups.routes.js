@@ -9,25 +9,63 @@ let mongoose = require('mongoose'),
     path = '/groups',
 
     router = require('../core/routes.js')(BettingGroup, path),
-    auth = require('../../config/auth')
-    bettingGroupPhoto = multer.diskStorage({
-        destination: function (req, file, cb) {
-            let path = `../../uploads/betting_groups/${req.body.user}`;
+    auth = require('../../config/auth'),
+    constants = require('../../config/constants'),
+    photoConfig = multer.diskStorage({
+        destination: function(req, file, cb) {
+            let path = `${constants.photoPath}groups/${req.payload._id}`;
             ds1.mkdirsSync(path);
             cb(null, path);
         },
-        filename: function (req, file, cb) {
+        filename: function(req, file, cb) {
             cb(null, file.originalname);
         }
     });
 
 let prepareRouter = function (app) {
 
-    router.post(`${path}/createGroup`, auth, function (req, res) {
-        let bettingGroupModel = new BettingGroup(req.body);
-        bettingGroupModel.save(function(err, bettingGroupFinal) {
+    router
+    .post(`${path}/list`, auth, function(req, res) {
+        BettingGroup.find(req.body)
+        .populate('owner')
+        .exec(function(err, groups) {
             if(err) { res.serverError(); return; }
-            User.findById(req.payload._id).exec(function (err, user) {
+            res.ok(groups);
+            return;
+        });
+    })
+    .post(`${path}/create`, auth, multer({storage: photoConfig}).any(), function (req, res) {
+        User.findById(req.payload._id).exec(function (err, user) {
+            if(err) { res.serverError(); return; }
+            let groupInformation = JSON.parse(req.body.groupInformation);
+            groupInformation.tournaments = [
+                {
+                    tournamentId: groupInformation.tournamentId,
+                    tournamentName: groupInformation.tournamentName,
+                    users: [
+                        {
+                            _id: user._id,
+                            fullName: user.fullName,
+                            playerRanking: []
+                        }
+                    ]
+                }
+            ];
+            groupInformation.owner = user._id;
+            groupInformation.users = [
+                {
+                    _id: user._id
+                }
+            ];
+            groupInformation.groupToken = Math.round((Math.pow(36, 21) - Math.random() * Math.pow(36, 20))).toString(36).slice(1);
+            if(req.files.length > 0) {
+                groupInformation.photo = {
+                    name: req.files[0].filename,
+                    path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
+                };
+            }
+            let bettingGroupModel = new BettingGroup(groupInformation);
+            bettingGroupModel.save(function(err, bettingGroupFinal) {
                 if(err) { res.serverError(); return; }
                 let userModel = new User(user);
                 userModel.addGroup(bettingGroupFinal._id);
@@ -38,96 +76,167 @@ let prepareRouter = function (app) {
                 });
             });
         });
-        // let data = req.body;
-        // let groupModel = new BettingGroup(data);
-        // let form = new formidable.IncomingForm();
-        // form.parse(req, function (err, fields, files) {
-        //     if(err) res.serverError();
-        //     let oldpath = files.photo.path;
-        //     let newpath = `../../public/uploads/betting_groups/${files.photo.name}`;
-        //     fs.rename(oldpath, newpath, function (err) {
-        //         if(err) {
-        //             res.serverError();
-        //             return;
-        //         }
-        //     });
-        // });
-        // groupModel.save(function (err) {
-        //     if (err) {
-        //         res.ok({err}, 'GROUP ERROR ONM SAVE.');
-        //         return;
-        //     }
-        //     let updateUserGroup = { $push: {bettingGroups: groupModel._id} };
-        //     User.findByIdAndUpdate(req.payload._id, updateUserGroup, {new: true}, function (err, data) {
-        //         if (err) res.ok({}, 'Data not updated');
-        //         else res.ok(data);
-        //     });
-        // });
     })
-    .post(`${path}/editGroup`, auth, function (req, res) {
-        BettingGroup.findOne({_id: req.body._id}).exec(function(err, group) {
+    .post(`${path}/edit`, auth, multer({storage: photoConfig}).any(), function (req, res) {
+        let groupInformation = JSON.parse(req.body.groupInformation);
+        if(req.files.length > 0) {
+            groupInformation.photo = {
+                name: req.files[0].filename,
+                path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
+            };
+        }
+        groupInformation.updateDate = new Date();
+        groupInformation.activeTournaments = groupInformation.tournaments.length;
+        BettingGroup.findOneAndUpdate({_id: groupInformation._id}, { $set : groupInformation}, {new: true}, function(err, group) {
             if(err) { res.serverError(); return; }
             if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
-
-            let bettingGroupModel = new BettingGroup(req.body);
-            bettingGroupModel.save(function(err) {
-                if(err) { res.serverError(); return; }
-                res.ok(bettingGroupModel);
-                return;
-            })
-        })
-        let bettingGroupModel = new BettingGroup(req.body);
-        bettingGroupModel.save(function(err, bettingGroupFinal) {
-            if(err) { res.serverError(); return; }
-            res.ok(bettingGroupFinal);
+            res.ok(group);
             return;
         });
-        // let data = req.body;
-        // let groupModel = new BettingGroup(data);
-        // let form = new formidable.IncomingForm();
-        // form.parse(req, function (err, fields, files) {
-        //     if(err) res.serverError();
-        //     let oldpath = files.photo.path;
-        //     let newpath = `../../public/uploads/betting_groups/${files.photo.name}`;
-        //     fs.rename(oldpath, newpath, function (err) {
-        //         if(err) {
-        //             res.serverError();
-        //             return;
-        //         }
-        //     });
-        // });
-        // groupModel.save(function (err) {
-        //     if (err) {
-        //         res.ok({err}, 'GROUP ERROR ONM SAVE.');
-        //         return;
-        //     }
-        //     let updateUserGroup = { $push: {bettingGroups: groupModel._id} };
-        //     User.findByIdAndUpdate(req.payload._id, updateUserGroup, {new: true}, function (err, data) {
-        //         if (err) res.ok({}, 'Data not updated');
-        //         else res.ok(data);
-        //     });
-        // });
+    })
+    .delete(`${path}/changeStatus/:groupId/:status`, auth, function(req, res) {
+        BettingGroup.findOneAndUpdate({_id: req.params.groupId}, { $set : {status : req.params.status}}, {new: true}, function(err, group) {
+            if(err) { res.serverError(); return; }
+            if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
+            res.ok({finalStatus: group.status});
+            return;
+        });
     })
     .get(`${path}/myList/:userId`, auth, function (req, res) {
         User.findOne({_id: req.params.userId}).select('_id bettingGroups')
         .populate('bettingGroups')
         .exec(function (err, user) {
             if(err) { res.serverError(); return; }
-            console.log(user);
-            if(user) {
-                res.ok(user.bettingGroups);
+            let activeTournaments = 1;
+            let groups = new Array();
+            user.bettingGroups.forEach(function(group) {
+                let myScore = 0;
+                group.tournaments.forEach(function(tournament) {
+                    if(group.activeTournaments <= 3) {
+                        group.isOwner = (group.owner == user._id);
+                        if(tournament.status) {
+                            tournament.users.forEach(function(userGroup) {
+                                if(userGroup._id == user._id) {
+                                    tournament.myScore = userGroup.score;
+                                    tournament.myRanking = userGroup.ranking;
+                                    return;
+                                }
+                            });
+                            myScore += tournament.myScore;
+                        }
+                    }
+                });
+                group.myScore = myScore;
+                group.myRanking = 0;
+                groups.push(group);
+            });
+            res.ok(groups);
+            return;
+        });
+    })
+    .get(`${path}/group/:groupId`, auth, function(req, res) {
+        BettingGroup.findById(req.params.groupId)
+        .exec(function (err, group) {
+            if(err) { res.serverError(); return; }
+            group.tournaments.forEach(function(tournament) {
+                if(group.activeTournaments <= 3) {
+                    group.isOwner = (group.owner == req.payload._id);
+                    if(tournament.status) {
+                        tournament.users.forEach(function(userGroup) {
+                            if(userGroup._id == req.payload._id) {
+                                tournament.myScore = userGroup.score;
+                                tournament.myRanking = userGroup.ranking;
+                                return;
+                            }
+                        });
+                    }
+                }
+            });
+            res.ok(group);
+            return;
+        })
+    })
+    .put(`${path}/addUser/:groupToken/:userId`, auth, function(req, res) {
+        BettingGroup.findOne({groupToken: req.params.groupToken}).exec(function(errG, group) {
+            if(errG) { res.serverError(); return; }
+            if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
+            User.findById(req.params.userId).exec(function(errU, user) {
+                if(errU) { res.serverError(); return; }
+                if(!user) { res.ok({}, 'The user doesn\'t exist!'); return; }
+                let exists = false;
+                group.users.forEach(function(groupUser) {
+                    if(groupUser._id == user._id) {
+                        exists = true;
+                        return;
+                    }
+                });
+                if(exists) {
+                    res.ok({}, 'The user is already on the group!'); return;
+                } else {
+                    group.users.push(user._id);
+                    group.tournaments.forEach(function(tournament) {
+                        tournament.users.push({_id: user._id, fullName: user.fullName, playerRanking: []})
+                    });
+                    BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU) {
+                        if(errGU) { res.serverError(); return; }
+                        User.findByIdAndUpdate(user._id, {$push: {bettingGroups: group._id}}, {new: true}, function(errUU) {
+                            if(errUU) { res.serverError(); return; }
+                            res.ok({userAdded: true});
+                            return;
+                        });
+                    });
+                }
+            });
+        });
+    })
+    .delete(`${path}/removeUser/:groupId/:userId`, auth, function(req, res) {
+        BettingGroup.findById(req.params.groupId).exec(function(errG, group) {
+            if(errG) { res.serverError(); return; }
+            if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
+            group.users = group.users.filter(function(user) {
+                return user._id != req.params.userId;
+            });
+            group.tournaments.forEach(function(tournament) {
+                tournament.users = tournament.users.filter(function(user) {
+                    return user._id != req.params.userId;
+                });
+            });
+            BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU, finalGroup) {
+                if(errGU) { res.serverError(); return; }
+                User.findByIdAndUpdate(req.params.userId, {$pull: {bettingGroups: group._id}}, {new: true}, function(errUU) {
+                    if(errUU) { res.serverError(); return; }
+                    res.ok(finalGroup);
+                    return;
+                });
+            })
+        });
+    })
+    .put(`${path}/editMyPlayers/:groupId/:tournamentId`, auth, function(req, res) {
+        BettingGroup.findById(req.params.groupId)
+        .exec(function(err, group) {
+            if(err) { res.serverError(); return; }
+            if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
+            group.tournaments.forEach(function(tournament) {
+                if(tournament._id == req.params.tournamentId) {
+                    tournament.users.forEach(function(user) {
+                        if(user._id == req.payload._id) {
+                            user.playerRanking = req.body.players;
+                            return;
+                        }
+                    });
+                    return;
+                }
+            });
+            BettingGroup.findByIdAndUpdate(req.params.groupId, {$set: group}, {new: true}, function(errGU, finalGroup) {
+                if(errGU) { res.serverError(); return; }
+                res.ok(finalGroup);
                 return;
-            } else {
-                res.ok([]);
-                return;
-            }
+            });
         });
     })
 
 
-
-
-
+/*
     .post('/groupInformation', auth, function(req, res) {
         if(!req.payload._id) { res.forbidden(); return; }
         BettingGroup.findOne(req.body)
@@ -136,7 +245,6 @@ let prepareRouter = function (app) {
             return;
         });
     })
-
     .get('/myGroups', auth, function (req, res) {
         if (!req.payload._id) {
             res.ok({}, 'Usuario no autorizado.');
@@ -239,36 +347,8 @@ let prepareRouter = function (app) {
                 res.ok(data);
             }
         });
-
-        /*            BettingGroup.findOneAndUpdate({id: data.groupId,'users._id': data.userGroupId}, SampleComment, {new: true, upsert: true, setDefaultsOnInsert: true}, function(error, result) {
-        if(error){
-        console.log("Something wrong when updating data!");
-    }
-
-    console.log(result);
-});*/
-
-/*        User.findOneAndUpdate(
-{ id: data.groupId, 'users._id': data.userGroupId},
-{
-$push: {
-'users.$.playerRanking': {  playerRanking: data.playerRankings},
-}
-}
-)*/
-
-/* BettingGroup.findById(data.groupId, function(err, post) {
-let subDoc = post.users.id(data.userGroupId);
-subDoc.push(data.playerRankings);
-post.save().then(function(savedUserGroup) {
-res.ok(savedUserGroup);
-}).catch(function(err) {
-res.ok({}, 'Data not updated');
-});
-});*/
-})
-;
-return router;
+    });
+*/    return router;
 };
 
 module.exports = prepareRouter;

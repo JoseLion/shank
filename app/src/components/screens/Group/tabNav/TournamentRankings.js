@@ -4,7 +4,7 @@
 import React, {Component} from 'react';
 
 import LocalStyles from '../styles/local';
-import MainStyles from '../../../../styles/main';
+import MainStyles from '../../../../styles/MainStyles';
 import {Text, View, FlatList} from 'react-native';
 import {List, ListItem} from "react-native-elements"; // 0.17.0
 

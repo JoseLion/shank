@@ -10,7 +10,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 // Shank components:
 import NoAuthModel from '../../../core/NoAuthModel';
-import MainStyles from '../../../styles/main';
+import MainStyles from '../../../styles/MainStyles';
 import LocalStyles from './styles/local';
 import * as Constants from '../../../core/Constants';
 import * as BarMessages from '../../../core/BarMessages';

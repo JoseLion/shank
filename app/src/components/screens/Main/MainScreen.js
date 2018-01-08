@@ -1,18 +1,13 @@
 // React components:
 import React from 'react';
-import { Text, View, FlatList, TouchableHighlight, AsyncStorage, TouchableOpacity, Image } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
-import { List, ListItem, SearchBar } from 'react-native-elements';
-import ActionSheet from 'react-native-actionsheet';
-import { ActionSheetProvider, connectActionSheet } from '@expo/react-native-action-sheet';
-import DropdownAlert from 'react-native-dropdownalert';
+import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, Spinner, DropdownAlert } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
-@connectActionSheet
 export default class MainScreen extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
@@ -61,7 +56,7 @@ export default class MainScreen extends BaseComponent {
             this.setState({auth: authToken});
             if (authToken) {
                 AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
-                    this.setState({currentUser: user})
+                    this.setState({currentUser: JSON.parse(user)})
                     this._myGroupsAsyncRemoteRequest();
                 });
             }
@@ -86,13 +81,11 @@ export default class MainScreen extends BaseComponent {
 
     // Async calls:
     _myGroupsAsyncRemoteRequest = async(data) => {
-        const {page} = this.state;
+        const {page, currentUser} = this.state;
         this.setState({refreshing: true, loading: true});
-        await BaseModel.get('groups/myList').then((groups) => {
-            console.log(groups);
+        await BaseModel.get(`groups/myList/${currentUser._id}`).then((groups) => {
             this.setState({
                 data: page === 1 ? groups : [...this.state.data, ...groups],
-                error: group.error || null,
                 loading: false,
                 refreshing: false
             });
@@ -110,25 +103,8 @@ export default class MainScreen extends BaseComponent {
             }
         });
     };
-    _collectGroupData = async(groupId) => {
-        this.setLoading(true);
-        try {
-            let data = {};
-            // GolfApiModel.get(`Leaderboard/${tournamentId}`).then(leaderboard => {
-            //     data.leaderboard = leaderboard
-            // }).catch(error => {
-            //     console.log('ERROR: ', error);
-            // });
-            BaseModel.post('groupInformation', {_id: groupId}).then(group => {
-                data.currentGroup = group;
-                this.setLoading(false);
-                super.navigateToScreen('SingleGroup', {data: data, currentUser: JSON.parse(this.state.currentUser)});
-            }).catch((error) => {
-                this.setLoading(false);
-            });
-        } catch (error) {
-            console.log('ERROR: ', error);
-        }
+    _collectGroupData(group) {
+        super.navigateToScreen('SingleGroup', group);
     };
 
     render() {
@@ -137,11 +113,9 @@ export default class MainScreen extends BaseComponent {
             return (
                 <View style={[MainStyles.container]}>
                     <Spinner visible={this.state.loading} animation='fade'/>
-                    <View style={{flex: 2, width: '100%', height: '92%'}}>
-                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
-                            <FlatList
-                                data={this.state.data}
-                                renderItem={({item}) => (
+                    <View style={[MainStyles.viewFlexItems]}>
+                        <List containerStyle={[MainStyles.noBorder, {height:'100%'}]}>
+                            <FlatList data={this.state.data} renderItem={({item}) => (
                                     <Swipeable rightButtons={[
                                         (
                                             <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
@@ -149,31 +123,22 @@ export default class MainScreen extends BaseComponent {
                                             </TouchableHighlight>
                                         )
                                     ]}>
-                                        <TouchableHighlight
-                                            underlayColor='#c3c3c3'
-                                            onPress={() => this._collectGroupData(item._id)}
-                                            style={{
-                                                flex: 1,
-                                                padding: 20,
-                                                backgroundColor: '#ffffff',
-                                                borderBottomWidth: 1.5,
-                                                borderColor: Constants.TERTIARY_COLOR_ALT,
-                                                alignItems: 'center',
-                                                flexDirection: 'row',
-                                                justifyContent: 'center',
-                                            }}>
-                                            <View style={{
-                                                flex: 1,
-                                                alignItems: 'center',
-                                                flexDirection: 'row',
-                                                justifyContent: 'space-between',
-                                            }}>
-                                                <Image style={{height:50,width:50}} source={addPhoto}></Image>
-                                                <Text numberOfLines={3} style={[LocalStyles.titleText]}>{item.name}{'\n'}
-                                                    <Text style={[MainStyles.shankGreen, LocalStyles.subtitleText]} numberOfLines={1}>{item.tournamentName}</Text>{'\n'}
-                                                    <Text style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>{'Score: 0     Rank: 1/5'}</Text>
-                                                </Text>
-                                                <FontAwesome name='chevron-right' size={29} color={Constants.TERTIARY_COLOR_ALT} />
+                                        <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR}
+                                            onPress={() => this._collectGroupData(item)}>
+                                            <View style={[MainStyles.viewFlexItemsR]}>
+                                                <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
+                                                    <Image style={{height:50,width:50}} source={addPhoto}></Image>
+                                                </View>
+                                                <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
+                                                    <Text numberOfLines={1} style={[LocalStyles.titleText]}>{item.name}</Text>
+                                                    <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>{item.tournamentName}</Text>
+                                                    <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>
+                                                        {`Score: ${item.myScore}     Rank: ${item.myRanking}/${item.users.length}`}
+                                                    </Text>
+                                                </View>
+                                                <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd]}>
+                                                    <FontAwesome name='chevron-right' size={29} color={Constants.TERTIARY_COLOR_ALT}/>
+                                                </View>
                                             </View>
                                         </TouchableHighlight>
                                     </Swipeable>
