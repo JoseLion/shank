@@ -126,6 +126,7 @@ let prepareRouter = function (app) {
         try {
             User.findOne({_id: req.params.userId}).select('_id bettingGroups')
             .populate('bettingGroups')
+            .populate('bettingGroups.users')
             .exec(function (err, user) {
                 if(err) { res.serverError(); return; }
                 let activeTournaments = 1;

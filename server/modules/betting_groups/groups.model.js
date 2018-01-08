@@ -40,9 +40,7 @@ let BettingGroupSchema = new mongoose.Schema({
     ],
     owner: { type: Number, ref: 'User' },
     users: [
-        {
-            _id: { type: Number, ref: 'User' }
-        }
+        { type: Number, ref: 'User' }
     ],
     groupToken: String,
     photo: {
