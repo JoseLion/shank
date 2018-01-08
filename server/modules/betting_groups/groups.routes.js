@@ -92,7 +92,7 @@ let prepareRouter = function (app) {
             }
             groupInformation.updateDate = new Date();
             groupInformation.activeTournaments = groupInformation.tournaments.length;
-            BettingGroup.findOneAndUpdate({_id: groupInformation._id}, { $set : groupInformation}, {new: true}, function(err, group) {
+            BettingGroup.findByIdAndUpdate(groupInformation._id, { $set : groupInformation}, {new: true}, function(err, group) {
                 if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
                 res.ok(group);
                 return;
@@ -127,7 +127,7 @@ let prepareRouter = function (app) {
                         group.tournaments.forEach(function(tournament) {
                             if(group.activeTournaments <= 3) {
                                 group.isOwner = (group.owner == user._id);
-                                if(tournament.status) {
+                                if(tournament != null && tournament.status) {
                                     tournament.users.forEach(function(userGroup) {
                                         if(userGroup._id == user._id) {
                                             tournament.myScore = userGroup.score;
@@ -160,7 +160,7 @@ let prepareRouter = function (app) {
                 group.tournaments.forEach(function(tournament) {
                     if(group.activeTournaments <= 3) {
                         group.isOwner = (group.owner == req.payload._id);
-                        if(tournament.status) {
+                        if(tournament != null && tournament.status) {
                             tournament.users.forEach(function(userGroup) {
                                 if(userGroup._id == req.payload._id) {
                                     tournament.myScore = userGroup.score;
