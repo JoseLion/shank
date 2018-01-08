@@ -1,16 +1,18 @@
 // React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, Share, AsyncStorage } from 'react-native';
+import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, FlatList } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
 import { ImagePicker } from 'expo';
+import { List } from 'react-native-elements';
+import Swipeable from 'react-native-swipeable';
+
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
 import LocalStyles from './styles/local'
-import { ClienHost } from '../../../config/variables';
 
 export default class EditGroup extends BaseComponent {
 
@@ -20,37 +22,56 @@ export default class EditGroup extends BaseComponent {
         headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: (
-            <TouchableHighlight onPress={() => navigation.dispatch()}>
-                <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
+            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
+                <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
             </TouchableHighlight>
         ),
-        headerRight: (
-            <View></View>
-        )
+        headerRight: (<View></View>)
     });
 
     constructor(props) {
         super(props);
-        this._handleNewGroupRegistry = this._handleNewGroupRegistry.bind(this);
-        this._pickImage = this._pickImage.bind(this);
-        this.handlePress = this.handlePress.bind(this);
+        this.onCreateGroupPressed = this.onCreateGroupPressed.bind(this);
+        this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this);
-
         this.state = {
+            currentGroup: {},
+
             name: '',
-            selectTournament: '',
             bet: '',
             groupPhoto: null,
-            assignUsers: [],
+
+            tournaments: [],
 
             tournamentData: [],
-            tName: 'Select a tournament',
-            currentGroupToken: '',
-
+            tName: 'Pick a tournament',
             loading: false,
         };
     }
 
+    componentDidMount() {
+        this.setLoading(true);
+        this.initialRequest('pga', '2018');
+        this.props.navigation.setParams({
+            actionSheet: this.showActionSheet
+        });
+        let currentGroup = this.props.navigation.state.params;
+        let tournaments = currentGroup.tournaments;
+        while(tournaments.length < 3) {
+            tournaments.push({tournamentName: this.state.tName, _id: (Math.random() * -1000)});
+        }
+
+        this.setState({
+            currentGroup: currentGroup,
+            groupPhoto: currentGroup.photo == null ? null : currentGroup.photo.path,
+            name: currentGroup.name,
+            bet: currentGroup.bet,
+            tournaments: tournaments
+        });
+    }
+
+    setLoading(loading) { this.setState({loading: loading}); }
+    optionSelectedPressed(actionIndex) { this.pictureSelection(actionIndex); }
     showActionSheet() {
         if(isAndroid) {
             this.ActionSheet.show();
@@ -60,127 +81,81 @@ export default class EditGroup extends BaseComponent {
                     options: [ 'Open your gallery', 'Take a picture', 'Cancel' ],
                     cancelButtonIndex: 2
                 },
-                buttonIndex => this.handlePress(buttonIndex)
+                buttonIndex => this.optionSelectedPressed(buttonIndex)
             );
         }
     }
-
-    componentDidMount() {
-        this.setLoading(true);
-        this.initialRequest('pga', '2018');
-        this.props.navigation.setParams({
-            actionSheet: this.showActionSheet
-        });
-    }
-
-    setLoading(loading) { this.setState({loading: loading}); }
-
-    _tournamentSelect(t) {
-        this.setState({
-            ...this.state,
-            selectTournament: t
-        });
-    }
-
-    handlePress(actionIndex) {
-        switch (actionIndex) {
-            case 0:
-                this._pickImage();
-                break;
-            case 1:
-                this._takePicture()
-                break;
+    onCreateGroupPressed() {
+        if (!this.state.groupPhoto) {
+            BarMessages.showError('Please enter a photo for the group.', this.validationMessage);
+            return;
         }
+
+        if (!this.state.name) {
+            BarMessages.showError('Please enter a name for the group.', this.validationMessage);
+            return;
+        }
+        this.state.currentGroup.name = this.state.name;
+
+        if (!this.state.bet) {
+            BarMessages.showError('Please enter a bet.', this.validationMessage);
+            return;
+        }
+        this.state.currentGroup.bet = this.state.bet;
+
+        this.setLoading(true);
+        let formData = new FormData();
+        delete this.state.currentGroup.isOwner;
+        delete this.state.currentGroup.myScore;
+        delete this.state.currentGroup.myRanking;
+        formData.append('groupInformation', JSON.stringify(this.state.currentGroup));
+        if (this.state.groupPhoto) {
+            let filename = this.state.groupPhoto;
+            filename = filename.split('/').pop();
+            let match = /\.(\w+)$/.exec(filename);
+            let type = match ? `image/${match[1]}` : `image`;
+            formData.append('groupPhoto', {uri: this.state.groupPhoto, type: type, name: filename});
+        }
+
+        this.onCreateGroupPressedAsync(formData);
     }
 
+    // Async methods:
     initialRequest = async (tour, year) => {
         this.setLoading(true);
-        // try {
-        //     GolfApiModel.get('Tournaments').then(tournaments => {
-        //         this.setState({tournamentData: tournaments});
-        //         this.setLoading(false);
-        //     }).catch(error => {
-        //         console.log('ERROR: ', error);
-        //         this.setLoading(false);
-        //     });
-        //
-        //     let userInformation = await AsyncStorage.getItem(Constants.USER_PROFILE);
-        //     userInformation = JSON.parse(userInformation);
-        //     let groupUser = [
-        //         {
-        //             userId: userInformation._id,
-        //             name: userInformation.name,
-        //             playerRanking: []
-        //         }
-        //     ];
-        //     this.setState({assignUsers: groupUser});
-        // } catch (error) {
-        //     console.log('ERROR! ', error);
-        // }
-    };
-
-    async _handleNewGroupRegistry() {
-
-        // if (!this.state.name) {
-        //     BarMessages.showError('Please enter a name for the group.', this.validationMessage);
-        //     return;
-        // }
-        //
-        // if (!this.state.selectTournament) {
-        //     BarMessages.showError('Please select a tournament.', this.validationMessage);
-        //     return;
-        // }
-        //
-        // if (!this.state.bet) {
-        //     BarMessages.showError('Please enter a bet.', this.validationMessage);
-        //     return;
-        // }
-        //
-        // this.setLoading(true);
-        // let data = {
-        //     name: this.state.name,
-        //     bet: this.state.bet,
-        //     tournamentId: this.state.selectTournament.TournamentID,
-        //     tournamentName: this.state.selectTournament.Name,
-        //     users: this.state.assignUsers,
-        //     groupToken: this.state.currentGroupToken,
-        // };
-        // console.log(data);
-        // if (this.state.groupPhoto) {
-        //     let localUri = this.state.groupPhoto;
-        //     let filename = localUri.split('/').pop();
-        //     let match = /\.(\w+)$/.exec(filename);
-        //     let type = match ? `image/${match[1]}` : `image`;
-        //     data.photo = {path: localUri, name: filename, type: type};
-        // }
-
-        // BaseModel.create('/groups/createGroup', data).then((response) => {
-            this.setLoading(false);
-            // this._collectGroupData(response.tournamentId, response._id, this.props.navigation);
-            super.navigateDispatch()
-
-        // }).catch((error) => {
-        //     this.setLoading(false);
-        //     BarMessages.showError(error, this.validationMessage);
-        // });
-    }
-
-    _pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [4, 4],
-        });
-        if (!result.cancelled) {
-            this.setState({groupPhoto: result.uri});
+        try {
+            // GolfApiModel.get('Tournaments').then((tournaments) => {
+            //     this.setState({tournamentData: tournaments});
+            //     this.setLoading(false);
+            // }).catch(error => {
+            //     console.log('ERROR! ', error);
+                this.setLoading(false);
+            // });
+        } catch (error) {
+            console.log('ERROR! ', error);
         }
     };
-
-    _takePicture = async () => {
-        let result = await ImagePicker.launchCameraAsync({
+    onCreateGroupPressedAsync = async(data) => {
+        await BaseModel.multipart('groups/edit', data)
+            .then((response) => {
+                this.setLoading(false);
+                super.navigateToScreen('Group', response);
+            }).catch((error) => {
+                this.setLoading(false);
+                BarMessages.showError(error, this.validationMessage);
+            });
+    };
+    pictureSelection = async(option) => {
+        let settings = {
             allowsEditing: true,
-            aspect: [4, 3],
-        });
-        if (!result.cancelled) {
+            aspect: [4, 4],
+        };
+        let result;
+        switch (option) {
+            case 0: result = await ImagePicker.launchImageLibraryAsync(settings); break;
+            case 1: result = await ImagePicker.launchCameraAsync(settings); break;
+        }
+        if (result != null && !result.cancelled) {
             this.setState({groupPhoto: result.uri});
         }
     };
@@ -212,7 +187,7 @@ export default class EditGroup extends BaseComponent {
                                 'Take a picture',
                                 'Cancel']}
                             cancelButtonIndex={2}
-                            onPress={this.handlePress} />
+                            onPress={this.optionSelectedPressed} />
 
                         <View style={[LocalStyles.formContainer]}>
 
@@ -230,34 +205,8 @@ export default class EditGroup extends BaseComponent {
                                 style={[MainStyles.formInput, MainStyles.noMargin]}
                                 onChangeText={(name) => this.setState({name})}
                                 value={this.state.name}
-                                placeholder={'Group name'} />
-
-                            { isAndroid
-                                ?
-                                    <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
-                                        <Picker style={MainStyles.noMargin} selectedValue={this.state.selectTournament} onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                                            <Picker.Item style={[MainStyles.formPickerText]} color={Constants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
-                                            {tournamentItems}
-                                        </Picker>
-                                    </View>
-                                :
-                                    <TouchableOpacity style={[MainStyles.formPicker, MainStyles.noMargin]} onPress={() => {
-                                        ActionSheetIOS.showActionSheetWithOptions({
-                                                options: tournamentName,
-                                                cancelButtonIndex: tournamentName.length - 1,
-                                            },
-                                            (buttonIndex) => {
-                                                if (tournamentKeys[buttonIndex] != 'none') {
-                                                    this.setState({
-                                                        selectTournament: tournamentKeys[buttonIndex],
-                                                        tName: tournamentName[buttonIndex]
-                                                    })
-                                                }
-                                            })
-                                    }}>
-                                        <Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.tName}</Text>
-                                    </TouchableOpacity>
-                            }
+                                placeholder={'Group name'}
+                                maxLength={25} />
 
                             <TextInput
                                 returnKeyType={'next'}
@@ -267,10 +216,82 @@ export default class EditGroup extends BaseComponent {
                                 value={this.state.bet}
                                 multiline={true}
                                 numberOfLines={3}
-                                placeholder={'Bet'} />
+                                placeholder={'Bet'}
+                                maxLength={50} />
 
-                            <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this._handleNewGroupRegistry}>
-                                <Text style={MainStyles.buttonText}>Create a Group</Text>
+                            <Text style={[MainStyles.centerText, {marginTop: 5}]}>Tournaments</Text>
+                            <List containerStyle={[MainStyles.noBorder]}>
+                                <FlatList data={this.state.tournaments} renderItem={({item}) => (
+                                        <Swipeable rightButtons={[
+                                            (
+                                                <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
+                                                    <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
+                                                </TouchableHighlight>
+                                            )
+                                        ]}>
+                                            { isAndroid
+                                                ?
+                                                    <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+                                                        <Picker style={MainStyles.noMargin} selectedValue={item.selectTournament} onValueChange={(tValue) => item.selectTournament = tValue}>
+                                                            <Picker.Item style={[MainStyles.formPickerText]} color={Constants.TERTIARY_COLOR_ALT} value='' label={this.state.tName} />
+                                                            {tournamentItems}
+                                                        </Picker>
+                                                    </View>
+                                                :
+                                                    <TouchableOpacity style={[MainStyles.formPicker, MainStyles.noMargin]} onPress={() => {
+                                                        ActionSheetIOS.showActionSheetWithOptions({
+                                                                options: tournamentName,
+                                                                cancelButtonIndex: tournamentName.length - 1,
+                                                            },
+                                                            (buttonIndex) => {
+                                                                if (tournamentKeys[buttonIndex] != 'none') {
+                                                                    this.setState({selectTournament: tournamentKeys[buttonIndex]})
+                                                                }
+                                                            })
+                                                    }}>
+                                                        <Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.tName}</Text>
+                                                    </TouchableOpacity>
+                                            }
+                                        </Swipeable>
+                                    )}
+                                    keyExtractor={item => item._id}
+                                    onEndReachedThreshold={1} />
+                            </List>
+
+                            <Text style={[MainStyles.centerText, {marginTop: 5}]}>Users</Text>
+                            <List containerStyle={[MainStyles.noBorder]}>
+                                <FlatList data={this.state.currentGroup.users} renderItem={({item}) => (
+                                        <Swipeable rightButtons={[
+                                            (
+                                                <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
+                                                    <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
+                                                </TouchableHighlight>
+                                            )
+                                        ]}>
+                                            <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR}
+                                                onPress={() => console.log(item)}>
+                                                <View style={[MainStyles.viewFlexItemsR]}>
+                                                    <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
+                                                        { item.photo != null
+                                                            ?
+                                                                <Image style={{height:50,width:50}} source={{uri: item.photo.path}}></Image>
+                                                            :
+                                                                <Image style={{height:50,width:50}} source={addPhoto}></Image>
+                                                        }
+                                                    </View>
+                                                    <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
+                                                        <Text numberOfLines={1} style={[LocalStyles.titleText]}>{item.fullName}</Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableHighlight>
+                                        </Swipeable>
+                                    )}
+                                    keyExtractor={item => item._id}
+                                    onEndReachedThreshold={1} />
+                            </List>
+
+                            <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this.onCreateGroupPressed}>
+                                <Text style={MainStyles.buttonText}>Edit Group</Text>
                             </TouchableOpacity>
 
                         </View>
@@ -282,3 +303,28 @@ export default class EditGroup extends BaseComponent {
     }
 
 }
+
+
+// { isAndroid
+//     ?
+//         <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+//             <Picker style={MainStyles.noMargin} selectedValue={this.state.selectTournament} onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+//                 <Picker.Item style={[MainStyles.formPickerText]} color={Constants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
+//                 {tournamentItems}
+//             </Picker>
+//         </View>
+//     :
+//         <TouchableOpacity style={[MainStyles.formPicker, MainStyles.noMargin]} onPress={() => {
+//             ActionSheetIOS.showActionSheetWithOptions({
+//                     options: tournamentName,
+//                     cancelButtonIndex: tournamentName.length - 1,
+//                 },
+//                 (buttonIndex) => {
+//                     if (tournamentKeys[buttonIndex] != 'none') {
+//                         this.setState({selectTournament: tournamentKeys[buttonIndex]})
+//                     }
+//                 })
+//         }}>
+//             <Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.tName}</Text>
+//         </TouchableOpacity>
+// }

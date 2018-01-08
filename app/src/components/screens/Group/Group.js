@@ -1,14 +1,15 @@
 // React components:
 import React from 'react';
-import { AsyncStorage, FlatList, Image, Share, TouchableHighlight, TouchableOpacity, Text, View } from 'react-native';
+import { ActionSheetIOS, AsyncStorage, FlatList, Image, Share, TouchableHighlight, TouchableOpacity, Text, View } from 'react-native';
 import { List } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview'
 import {ScrollableTabBar, ScrollableTabView} from 'react-native-scrollable-tab-view';
 import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
+import ActionSheet from 'react-native-actionsheet'
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
 import LocalStyles from './styles/local';
 import { ClienHost } from '../../../config/variables';
 
@@ -16,7 +17,6 @@ class RoasterRow extends BaseComponent {
 
     constructor(props) { super(props); }
     addPlayer() {
-        console.log('ROW SELECTED: ', this.props.data);
         this.setState({playerSelectionPosition: this.props.data.position});
         this.props.navigation.navigate('PlayerSelection', {
             tPlayers: this.props.playerRankings,
@@ -54,7 +54,7 @@ class RoasterRow extends BaseComponent {
     }
 }
 
-export default class SingleGroup extends BaseComponent {
+export default class Group extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
         title: 'GROUP',
@@ -66,12 +66,19 @@ export default class SingleGroup extends BaseComponent {
                 <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
             </TouchableHighlight>
         ),
-        headerRight: (<View></View>)
+        headerRight:
+            navigation.state.params.isOwner
+            ? ( <TouchableHighlight onPress={() => navigation.navigate('EditGroup', navigation.state.params)}>
+                    <Entypo name='pencil' style={[MainStyles.headerIconButton]} />
+                </TouchableHighlight> )
+            : (<View></View>)
     });
 
     constructor(props) {
         super(props);
         this.inviteToJoin = this.inviteToJoin.bind(this);
+        this.showActionSheet = this.showActionSheet.bind(this);
+        this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
         // this.updatePlayerRankingsList = this.updatePlayerRankingsList.bind(this);
         // this.updateUserRankingsListPersist = this.updateUserRankingsListPersist.bind(this);
         // this.goMain = this.goMain.bind(this);
@@ -83,7 +90,11 @@ export default class SingleGroup extends BaseComponent {
         // this.lastPosition = 1;
         this.state = {
             currentGroup: {},
+            currentTournament: {},
             tournamentData: {},
+            tournaments: [],
+            tournamentsName: [],
+
             playersLeaderboard: [],
 
             score: 0,
@@ -123,21 +134,36 @@ export default class SingleGroup extends BaseComponent {
         };
     }
     componentDidMount() {
-        console.log('PARAMS: ', this.props.navigation.state.params);
-        this.setState({currentGroup: this.props.navigation.state.params});
+        let currentGroup = this.props.navigation.state.params;
+        this.setState({currentGroup: currentGroup, currentTournament: currentGroup.tournaments[0]});
         AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
             this.setState({currentUser: JSON.parse(user)});
-            for(let idx=0 ; idx<this.props.navigation.state.params.users.length ; idx++) {
-                let userTmp = this.props.navigation.state.params.users[idx];
-                if(userTmp._id === this.state.currentUser._id) {
-                    this.setState({score: userTmp.score, ranking: userTmp.ranking});
-                    if(userTmp.playerRanking.length > 0) {
-                        this.setState({playerRanking: userTmp.playerRanking});
-                    }
-                    break;
-                }
-            }
+            // for(let idx=0 ; idx<currentGroup.users.length ; idx++) {
+            //     let userTmp = currentGroup.users[idx];
+            //     if(userTmp._id == currentUser._id) {
+            //         this.setState({score: userTmp.score, ranking: userTmp.ranking});
+            //         if(userTmp.playerRanking.length > 0) {
+            //             this.setState({playerRanking: userTmp.playerRanking});
+            //         }
+            //         break;
+            //     }
+            // }
         });
+        this.props.navigation.setParams({
+            actionSheet: this.showActionSheet
+        });
+
+        let tournaments = [];
+        let tournamentsName = [];
+        this.props.navigation.state.params.tournaments.forEach(function(tournament) {
+            tournaments.push(tournament);
+            tournamentsName.push(tournament.tournamentName);
+        });
+        tournamentsName.push('Cancel');
+        this.setState({tournaments: tournaments, tournamentsName: tournamentsName});
+
+
+
         // this.props.navigation.setParams({movementsDone: this.state.movementsDone});
         // this.setInitialPlayerRanking(this.props.navigation);
         // if (Platform.OS === 'android') {
@@ -179,6 +205,25 @@ export default class SingleGroup extends BaseComponent {
          }*/
          // this._getPricePerMovement();
          this.initialRequest();
+    }
+
+
+    optionSelectedPressed(actionIndex) {
+        //this.pictureSelection(actionIndex);
+        console.log(actionIndex);
+    }
+    showActionSheet() {
+        if(isAndroid) {
+            this.ActionSheet.show();
+        } else {
+            this.props.showActionSheetWithOptions(
+                {
+                    options: [ 'Cancel' ],
+                    cancelButtonIndex: 0
+                },
+                buttonIndex => this.optionSelectedPressed(buttonIndex)
+            );
+        }
     }
 
     initialRequest = async () => {
@@ -333,7 +378,7 @@ export default class SingleGroup extends BaseComponent {
         //         Notifier.message({title: 'RESPONSE', message: 'Your list has been updated successfully'});
         //     }
         // } catch (e) {
-        //     console.log('error in initialRequest: SingleGroup.js')
+        //     console.log('error in initialRequest: Group.js')
         //     console.log(e)
         // }
     };
@@ -399,32 +444,34 @@ export default class SingleGroup extends BaseComponent {
         let diffDays = new Date(this.state.tournamentData.EndDate).getTime() - new Date().getTime();
         if(diffDays < 0) diffDays = 0;
         else diffDays = Math.round(diffDays / oneDay);
-        // let notAbsoluteDiff = new Date() - this.state.currentDate.getTime();
-        // let diffDays = 0;
-        // if (notAbsoluteDiff > 0) {
-        //     let daysLeft = Math.abs(notAbsoluteDiff);
-        //     diffDays = Math.ceil(daysLeft / (1000 * 3600 * 24));
-        // }
-        // let lockScrollTabView = false;
-        //navigation.state.params.data.currentGroup.name
-        //navigation.state.params.data.tournamentName
-
-        // let totalWidth = Dimensions.get('window').width;
 
         return (
             <View style={[MainStyles.container]}>
+                <ActionSheet
+                    ref={o => this.ActionSheet = o}
+                    options={this.state.tournamentsName}
+                    cancelButtonIndex={this.state.tournamentsName.length - 1}
+                    onPress={this.optionSelectedPressed} />
                 <View style={[LocalStyles.groupInformation]}>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
                         <Image style={[LocalStyles.groupImage, {width:50,height:50}]} source={addPhoto}></Image>
                     </View>
                     <View style={[LocalStyles.viewContent, {flex:3,flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.titleText]}>{currentGroup.name}</Text></View>
-                        <View><Text style={[LocalStyles.subtitleText]}>{currentGroup.tournamentName}</Text></View>
+                        <View>
+                            <TouchableHighlight underlayColor={Constants.HIGHLIGHT_COLOR}
+                                onPress={() => navigation.state.params.actionSheet()}>
+                                <Text style={[LocalStyles.subtitleText]}>{this.state.currentTournament.tournamentName}</Text>
+                            </TouchableHighlight>
+                        </View>
                     </View>
                     <View style={[LocalStyles.viewContent, {flex:2,flexDirection:'column'}]}>
-                        <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
-                            <Text style={MainStyles.buttonText}>Invite</Text>
-                        </TouchableOpacity>
+                        { currentGroup.isOwner
+                            ? ( <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
+                                    <Text style={MainStyles.buttonText}>Invite</Text>
+                                </TouchableOpacity> )
+                            : <View></View>
+                        }
                     </View>
                 </View>
                 <View style={[LocalStyles.groupInformation, {borderBottomWidth: 3, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
@@ -435,129 +482,17 @@ export default class SingleGroup extends BaseComponent {
                 </View>
                 <View style={[LocalStyles.groupInformation, {borderBottomWidth: 2, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.score}</Text></View>
+                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myScore}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Points</Text></View>
                     </View>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.ranking + '/' + currentGroup.users.length}</Text></View>
+                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myRanking}/{currentGroup.users.length}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Ranking</Text></View>
                     </View>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{diffDays}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Days Left</Text></View>
                     </View>
-                </View>
-                <View style={[LocalStyles.groupInformation, LocalStyles.tabsInformation]}>
-                    {(
-                        <ScrollableTabView
-                            initialPage={0}
-                            locked={true}
-                            tabBarActiveTextColor={Constants.PRIMARY_COLOR}
-                            tabBarInactiveTextColor={Constants.PRIMARY_COLOR}
-                            renderTabBar={() => <ScrollableTabBar /> }>
-                            <View tabLabel='Leaderboard' style={[{
-                                width: '100%'
-                            }, LocalStyles.slideBorderStyle]}>
-                                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
-                                    <FlatList
-                                        data={currentGroup.users}
-                                        renderItem={({item}) => (
-                                            <Swipeable rightButtons={[
-                                                (
-                                                    <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
-                                                        <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
-                                                    </TouchableHighlight>
-                                                )
-                                            ]}>
-                                                <TouchableHighlight
-                                                    underlayColor='#c3c3c3'
-                                                    style={{
-                                                        flex: 1,
-                                                        padding: 20,
-                                                        backgroundColor: '#ffffff',
-                                                        borderBottomWidth: 1.5,
-                                                        borderColor: Constants.TERTIARY_COLOR_ALT,
-                                                        alignItems: 'center',
-                                                        flexDirection: 'row',
-                                                        justifyContent: 'center',
-                                                    }}
-                                                    onPress={() => {if(item._id < 0) this.inviteToJoin();} }>
-                                                    <View style={{
-                                                        flex: 1,
-                                                        alignItems: 'center',
-                                                        flexDirection: 'row',
-                                                        justifyContent: 'space-between',
-                                                    }}>
-                                                        <Text style={[LocalStyles.titleText]}>{item.ranking}</Text>
-                                                        <Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
-                                                        <Text style={[LocalStyles.titleText, {color: Constants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score}</Text>
-                                                    </View>
-                                                </TouchableHighlight>
-                                            </Swipeable>
-                                        )}
-                                        keyExtractor={item => item._id}
-                                    />
-                                </List>
-                            </View>
-                            <View tabLabel='Roaster' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
-                                <SortableListView
-                                    style={{flex: 1, marginBottom: '20%'}}
-                                    data={this.state.playerRanking}
-                                    onMoveStart={() => {
-                                        console.log('onMoveStart')
-                                        lockScrollTabView = true;
-                                    }}
-                                    onMoveEnd={() => {
-                                        console.log('onMoveEnd')
-                                        lockScrollTabView = false;
-                                    }}
-                                    onMoveCancel ={() => {
-                                        console.log('move canceled')
-                                    }}
-                                    onRowMoved={e => {
-                                        // let dataCopy = this.state.order.slice();
-                                        // let playerRankings = this.state.playerRankings.slice();
-                                        // let dataOrderedListCopy = this.state.orderedPlayerRankings;
-                                        // dataCopy.splice(e.to, 0, dataCopy.splice(e.from, 1)[0])
-                                        // playerRankings.splice(e.to, 0, playerRankings.splice(e.from, 1)[0])
-                                        //
-                                        // playerRankings.forEach(function (element, index) {
-                                        //     element.position = index + 1
-                                        // });
-                                        // this.setPlayerRankings(playerRankings)
-                                        // this.setOrderPlayer(dataCopy);
-                                        // this.setOrderedList(dataOrderedListCopy);
-                                        // this.setStateMovements(dataCopy, dataOrderedListCopy);
-                                        //this.forceUpdate()
-                                    }}
-                                    renderRow={(row, sectionID, rowID) => <RoasterRow data={row}
-                                                                                        navigation={navigation}
-                                                                                        sectionID={sectionID}
-                                                                                        rowID={rowID}
-                                                                                        currentGroup={currentGroup}
-                                                                                        playerRankings={this.state.playerRanking}
-                                                                                        groupLoggedUser={this.state.currentUser}
-                                                                                        updatePlayerRankingsList={ this.updatePlayerRankingsList}/>}/>
-
-                                {
-                                    diffDays > 4
-                                    ?
-                                        <TouchableOpacity
-                                            onPress={() => this.updateUserRankingsListPersist(JSON.parse(JSON.stringify(this.state.orderedPlayerRankings)).position, this.state.currentUser._id, currentGroup._id)}
-                                            style={[{
-                                                position: 'absolute',
-                                                bottom: '3%',
-                                                left: '10%',
-                                                width: '80%'
-                                            }, MainStyles.button, MainStyles.success]}>
-                                            <Text style={MainStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * this.state.pricePerMovement).toFixed(2)} $</Text>
-                                        </TouchableOpacity>
-                                    :
-                                        <View></View>
-                                }
-                            </View>
-                        </ScrollableTabView>
-                    )}
                 </View>
                 <DropdownAlert ref={ref => this.validationMessage = ref} />
             </View>);

@@ -6,11 +6,13 @@ import ActionSheet from 'react-native-actionsheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
 import { ImagePicker } from 'expo';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
 import LocalStyles from './styles/local'
 
+@connectActionSheet
 export default class AddGroup extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
@@ -36,19 +38,14 @@ export default class AddGroup extends BaseComponent {
             name: '',
             selectTournament: '',
             groupPhoto: null,
-            assignUsers: [],
-
             tournamentData: [],
             tName: 'Select a tournament',
-            currentGroupToken: '',
-
             loading: false,
         };
     }
 
     componentDidMount() {
         this.setLoading(true);
-        this.generateGroupToken(20);
         this.initialRequest('pga', '2018');
         this.props.navigation.setParams({
             actionSheet: this.showActionSheet
@@ -56,7 +53,6 @@ export default class AddGroup extends BaseComponent {
     }
 
     setLoading(loading) { this.setState({loading: loading}); }
-    generateGroupToken(length) { this.setState({currentGroupToken: Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1)}); }
     showActionSheet() {
         if(isAndroid) {
             this.ActionSheet.show();
@@ -74,7 +70,11 @@ export default class AddGroup extends BaseComponent {
         this.pictureSelection(actionIndex);
     }
     onCreateGroupPressed() {
-        console.log('PATH: ', this.state.groupPhoto)
+        if (!this.state.groupPhoto) {
+            BarMessages.showError('Please enter a photo for the group.', this.validationMessage);
+            return;
+        }
+
         if (!this.state.name) {
             BarMessages.showError('Please enter a name for the group.', this.validationMessage);
             return;
@@ -91,23 +91,23 @@ export default class AddGroup extends BaseComponent {
         }
 
         this.setLoading(true);
+        let formData = new FormData();
         let data = {
-            groupInformation: {
-                name: this.state.name,
-                bet: this.state.bet,
-                tournamentId: this.state.selectTournament.TournamentID,
-                tournamentName: this.state.selectTournament.Name
-            }
+            name: this.state.name,
+            bet: this.state.bet,
+            tournamentId: this.state.selectTournament.TournamentID,
+            tournamentName: this.state.selectTournament.Name
         };
-        // if (this.state.groupPhoto) {
-        //     let localUri = this.state.groupPhoto;
-        //     let filename = localUri.split('/').pop();
-        //     let match = /\.(\w+)$/.exec(filename);
-        //     let type = match ? `image/${match[1]}` : `image`;
-        //     data.photo = {path: localUri, name: filename, type: type};
-        // }
+        formData.append('groupInformation', JSON.stringify(data));
+        if (this.state.groupPhoto) {
+            let filename = this.state.groupPhoto;
+            filename = filename.split('/').pop();
+            let match = /\.(\w+)$/.exec(filename);
+            let type = match ? `image/${match[1]}` : `image`;
+            formData.append('groupPhoto', {uri: this.state.groupPhoto, type: type, name: filename});
+        }
 
-        this.onCreateGroupPressedAsync(data);
+        this.onCreateGroupPressedAsync(formData);
     }
 
     // Async methods:
@@ -121,17 +121,6 @@ export default class AddGroup extends BaseComponent {
                 console.log('ERROR! ', error);
                 this.setLoading(false);
             });
-
-            let userInformation = await AsyncStorage.getItem(Constants.USER_PROFILE);
-            userInformation = JSON.parse(userInformation);
-            let groupUser = [
-                {
-                    _id: userInformation._id,
-                    fullName: userInformation.fullName,
-                    playerRanking: []
-                }
-            ];
-            this.setState({assignUsers: groupUser});
         } catch (error) {
             console.log('ERROR! ', error);
         }
@@ -139,9 +128,8 @@ export default class AddGroup extends BaseComponent {
     onCreateGroupPressedAsync = async(data) => {
         await BaseModel.multipart('groups/create', data)
             .then((response) => {
-                console.log(response);
                 this.setLoading(false);
-                super.navigateToScreen('SingleGroup', response);
+                super.navigateToScreen('Group', response);
             }).catch((error) => {
                 this.setLoading(false);
                 BarMessages.showError(error, this.validationMessage);
@@ -207,7 +195,8 @@ export default class AddGroup extends BaseComponent {
                                 style={[MainStyles.formInput, MainStyles.noMargin]}
                                 onChangeText={(name) => this.setState({name})}
                                 value={this.state.name}
-                                placeholder={'Group name'} />
+                                placeholder={'Group name'}
+                                maxLength={25} />
 
                             { isAndroid
                                 ?
@@ -241,7 +230,8 @@ export default class AddGroup extends BaseComponent {
                                 value={this.state.bet}
                                 multiline={true}
                                 numberOfLines={3}
-                                placeholder={'Bet'} />
+                                placeholder={'Bet'}
+                                maxLength={50} />
 
                             <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this.onCreateGroupPressed}>
                                 <Text style={MainStyles.buttonText}>Create a Group</Text>
