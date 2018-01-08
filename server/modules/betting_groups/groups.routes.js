@@ -58,11 +58,7 @@ let prepareRouter = function (app) {
                     }
                 ];
                 groupInformation.owner = user._id;
-                groupInformation.users = [
-                    {
-                        _id: user._id
-                    }
-                ];
+                groupInformation.users = [ user._id ];
                 groupInformation.groupToken = Math.round((Math.pow(36, 21) - Math.random() * Math.pow(36, 20))).toString(36).slice(1);
                 if(req.files.length > 0) {
                     groupInformation.photo = {
