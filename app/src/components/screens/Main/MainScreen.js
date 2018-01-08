@@ -104,18 +104,21 @@ export default class MainScreen extends BaseComponent {
         });
     };
     onRemoveGroupAsync = async(data) => {
-        console.log('GROUP: ', data)
         this.setLoading(true);
+        let endPoint;
         if(data.isOwner) {
-            await BaseModel.delete(`groups/changeStatus/${data._id}/false`).then(() => {
-                this.handleRefresh();
-            }).catch((error) => {
-                console.log('ERROR! ', error);
-                BarMessages.showError(error, this.validationMessage);
-            }).finally(() => {
-                this.setLoading(false);
-            });
+            endPoint = `groups/changeStatus/${data._id}/false`;
+        } else {
+            endPoint = `groups/removeUser/${data._id}/${this.state.currentUser._id}`;
         }
+        await BaseModel.delete(endPoint).then(() => {
+            this.handleRefresh();
+        }).catch((error) => {
+            console.log('ERROR! ', error);
+            BarMessages.showError(error, this.validationMessage);
+        }).finally(() => {
+            this.setLoading(false);
+        });
     };
 
     render() {
