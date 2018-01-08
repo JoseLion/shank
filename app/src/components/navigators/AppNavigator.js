@@ -16,7 +16,7 @@ import Profile from '../screens/Profile/Profile';
 import Tournament from '../screens/Tournament/Tournament';
 import AddGroup from '../screens/Group/AddGroup';
 import EditGroup from '../screens/Group/EditGroup';
-import SingleGroup from '../screens/Group/SingleGroup';
+import Group from '../screens/Group/Group';
 import PlayerSelection from '../screens/Group/PlayerSelection';
 import Settings from '../screens/Settings/Settings';
 
@@ -56,7 +56,7 @@ export const AppNavigator = StackNavigator({
     Profile: { screen: Profile },
     AddGroup: { screen: AddGroup },
     EditGroup: { screen: EditGroup },
-    SingleGroup: { screen: SingleGroup },
+    Group: { screen: Group },
     PlayerSelection: { screen: PlayerSelection },
     Settings: { screen: Settings }
 });

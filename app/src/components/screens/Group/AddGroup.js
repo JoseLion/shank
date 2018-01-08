@@ -6,11 +6,13 @@ import ActionSheet from 'react-native-actionsheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
 import { ImagePicker } from 'expo';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
 import LocalStyles from './styles/local'
 
+@connectActionSheet
 export default class AddGroup extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
@@ -127,7 +129,7 @@ export default class AddGroup extends BaseComponent {
         await BaseModel.multipart('groups/create', data)
             .then((response) => {
                 this.setLoading(false);
-                super.navigateToScreen('SingleGroup', response);
+                super.navigateToScreen('Group', response);
             }).catch((error) => {
                 this.setLoading(false);
                 BarMessages.showError(error, this.validationMessage);

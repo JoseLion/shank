@@ -118,7 +118,7 @@ export default class MainScreen extends BaseComponent {
                                         )
                                     ]}>
                                         <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR}
-                                            onPress={() => super.navigateToScreen('SingleGroup', item)}>
+                                            onPress={() => super.navigateToScreen('Group', item)}>
                                             <View style={[MainStyles.viewFlexItemsR]}>
                                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                                                     { item.photo != null

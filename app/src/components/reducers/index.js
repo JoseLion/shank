@@ -14,74 +14,43 @@ function nav(state = initialNavState, action) {
     let nextState;
     switch (action.type) {
         case 'Splash':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Splash'}),
-            state
-        );
-        break;
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Splash'}), state );
+            break;
         case 'Slider':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Slider'}),
-            state
-        );
-        break;
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Slider'}), state );
+            break;
         case 'Login':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Login'}),
-            state
-        );
-        break;
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Login'}), state );
+            break;
         case 'Logout':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Logout'}),
-            state
-        );
-        break;
-        case 'Main':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Main'}),
-            state
-        );
-        break;
-        case 'Group':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Group'}),
-            state
-        );
-        break;
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Logout'}), state );
+            break;
         case 'Register':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Register'}),
-            state
-        );
-        break;
-        case 'SingleGroup':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'SingleGroup'}),
-            state
-        );
-        break;
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Register'}), state );
+            break;
+        case 'Main':
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Main'}), state );
+            break;
+        case 'AddGroup':
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'AddGroup'}), state );
+            break;
+        case 'EditGroup':
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'EditGroup'}), state );
+            break;
+        case 'Group':
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Group'}), state );
+            break;
         case 'PlayerSelection':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'PlayerSelection'}),
-            state
-        );
-        break;
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'PlayerSelection'}), state );
+            break;
         case 'Profile':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Profile'}),
-            state
-        );
-        break
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Profile'}), state );
+            break
         case 'Settings':
-        nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({routeName: 'Settings'}),
-            state
-        );
-        break
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Settings'}), state );
+            break
         default:
-        nextState = AppNavigator.router.getStateForAction(action, state);
-        break;
+            nextState = AppNavigator.router.getStateForAction(action, state); break;
     }
     return nextState || state;
 }

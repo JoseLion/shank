@@ -67,12 +67,12 @@ export default class PlayersList extends Component {
         console.log(this.props)
         return (
             <TouchableOpacity style={[MainStyles.centeredObject, {height: '13%', justifyContent: 'center', alignItems: 'center'}]}
-                              onPress={() => navigation.goBack(null)/*navigation.navigate('SingleGroup', {extraPlayer: this.props.item})*/}>
+                              onPress={() => navigation.goBack(null)/*navigation.navigate('Group', {extraPlayer: this.props.item})*/}>
                 <Avatar
                     small
                     rounded
                     source={{uri: item.urlPhoto}}
-                    onPress={() => navigation.navigate('SingleGroup', {extraPlayer: index})}
+                    onPress={() => navigation.navigate('Group', {extraPlayer: index})}
                     activeOpacity={0.7}
                 />
                 <Text>{item.name} {item.lastName}</Text>
