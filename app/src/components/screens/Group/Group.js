@@ -1,9 +1,10 @@
 // React components:
 import React from 'react';
-import { ActionSheetIOS, AsyncStorage, FlatList, Image, Share, TouchableHighlight, TouchableOpacity, Text, View } from 'react-native';
-import { List } from 'react-native-elements';
+// import { ActionSheetIOS, AsyncStorage, FlatList, Image, Share, TouchableHighlight, TouchableOpacity, Text, View } from 'react-native';
+import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage } from 'react-native';
+import { List, ListItem } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview'
-import {ScrollableTabBar, ScrollableTabView} from 'react-native-scrollable-tab-view';
+import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
 import ActionSheet from 'react-native-actionsheet'
@@ -15,32 +16,31 @@ import { ClienHost } from '../../../config/variables';
 
 class RoasterRow extends BaseComponent {
 
-    constructor(props) { super(props); }
+    constructor(props) {
+        super(props);
+        this.addPlayer = this.addPlayer.bind(this);
+    }
     addPlayer() {
-        this.setState({playerSelectionPosition: this.props.data.position});
-        this.props.navigation.navigate('PlayerSelection', {
-            tPlayers: this.props.playerRankings,
-            userGroupId: this.props.groupLoggedUser._id,
-            groupId: this.props.currentGroup._id,
-            currentPosition: this.props.data.position,
-            updatePlayerRankingsList: this.props.updatePlayerRankingsList,
-        })
-    };
+        super.navigateToScreen('PlayerSelection', {
+            actualPosition: this.props.data.position,
+            groupId: this.props.groupId,
+            tournamentId: this.props.tournamentId,
+            playerRanking: this.props.playerRanking,
+            updatePlayerRankingList: this.props.updatePlayerRankingList
+        });
+    }
 
     render() {
-        if (this.props.data.PlayerID) {
+        if (this.props.data.playerId) {
             return (
-                <TouchableHighlight underlayColor='#E4E4E4' onPress={this.addPlayer} style={[LocalStyles.roasterRowHighlight]}>
+                <TouchableHighlight style={[LocalStyles.roasterRowHighlight]} underlayColor={Constants.HIGHLIGHT_COLOR} onPress={this.addPlayer}>
                     <View style={[LocalStyles.roasterRowView]}>
                         <Text style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>
-                        <Image style={[LocalStyles.roasterRowPhoto]} source={{uri: this.props.data.PhotoUrl}}/>
+                        <Image style={[LocalStyles.roasterRowPhoto]} source={{uri: this.props.data.photoUrl}}/>
                         <Text numberOfLines={2} style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>
-                            {this.props.data.FirstName} {this.props.data.LastName}{'\n'}
-                            // TODO: TR LOGIC...
-                            <Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`   TR: 15   SCORE: ${this.props.data.position}`}</Text>
+                            {this.props.data.firstName} {this.props.data.lastName}{'\n'}
+                            <Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`   TR: 15   SCORE: ${this.props.data.score}`}</Text>
                         </Text>
-                        <Text/>
-                        <FontAwesome onPress={this.addPlayer} name='pencil' size={29} color='green' />
                     </View>
                 </TouchableHighlight >
             )
@@ -79,8 +79,9 @@ export default class Group extends BaseComponent {
         this.inviteToJoin = this.inviteToJoin.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this);
         this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
-        // this.updatePlayerRankingsList = this.updatePlayerRankingsList.bind(this);
-        // this.updateUserRankingsListPersist = this.updateUserRankingsListPersist.bind(this);
+        this.updateRankingList = this.updateRankingList.bind(this);
+        this.updatePlayerRankingList = this.updatePlayerRankingList.bind(this);
+        this.onGroupAsync = this.onGroupAsync.bind(this);
         // this.goMain = this.goMain.bind(this);
         // this.setOrderPlayer = this.setOrderPlayer.bind(this);
         // this.setOrderedList = this.setOrderedList.bind(this);
@@ -119,7 +120,7 @@ export default class Group extends BaseComponent {
             // currentUser: {},
             // sliderPosition: 0,
             // newPlayer: {},
-            // orderedPlayerRankings: [],
+            orderedPlayerRankings: [],
             // groupLoggedUser: {},
             // initialPlayerRankings: {},
             // playerRankings: [
@@ -130,55 +131,14 @@ export default class Group extends BaseComponent {
             //     {none: true, position: 5}
             // ],
             // playerSelectionPosition: 0,
-            // movementsDone: 0,
-            // pricePerMovement: 0
+            movementsDone: 0,
+            pricePerMovement: 0
         };
     }
     componentDidMount() {
         this.props.navigation.setParams({ actionSheet: this.showActionSheet });
         AsyncStorage.getItem(Constants.USER_PROFILE).then(user => { this.setState({currentUser: JSON.parse(user)}); });
         this.onGroupAsync(this.props.navigation.state.params.groupId);
-
-        // this.props.navigation.setParams({movementsDone: this.state.movementsDone});
-        // this.setInitialPlayerRanking(this.props.navigation);
-        // if (Platform.OS === 'android') {
-            // this.backHandler = BackHandler.addEventListener('hardwareBackPress', function () {
-            //     if (this.state.playersAdded.length >= 5) {
-            //         if (this.state.movementsDone == 0) {
-            //             return false;
-            //         } else {
-            //             Alert.alert(
-            //                 'RESPONSE',
-            //                 'You have made some changes. Are you sure you want to go back.',
-            //                 [
-            //                     {
-            //                         text: 'Cancel', onPress: () => {
-            //                         return false
-            //                     }, style: 'cancel'
-            //                     },
-            //                     {text: 'OK', onPress: () => this.goMain()},
-            //                 ]
-            //             );
-            //             return true;
-            //         }
-            //     } else {
-            //         Alert.alert(
-            //             'RESPONSE',
-            //             'You have to add at least 5 players to continue. Are you sure you want to go back?',
-            //             [
-            //                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-            //                 {text: 'OK', onPress: () => this.goMain()},
-            //             ]
-            //         );
-            //         return true;
-            //     }
-            // }.bind(this));
-        // }
-        /*   if (Platform.OS === 'android') {
-         const { dispatch, navigation, nav } = this.props;
-         BackHandler.addEventListener('hardwareBackPress', this.backHandler(dispatch)).bind(this);
-         }*/
-         // this._getPricePerMovement();
     }
 
 
@@ -204,61 +164,16 @@ export default class Group extends BaseComponent {
         this.setLoading(true);
         try {
             do {
-                this.state.currentGroup.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
-            } while(this.state.currentGroup.users.length < 5);
-            this.setState({tournamentData: {
-                "Canceled": false,
-                "City": null,
-                "Country": null,
-                "Covered": true,
-                "EndDate": "2018-01-08T00:00:00",
-                "Format": null,
-                "IsInProgress": true,
-                "IsOver": false,
-                "Location": "Dallas, TX",
-                "Name": "AT&T Byron Nelson",
-                "Par": null,
-                "Purse": 7700000,
-                "Rounds": [
-                    {
-                        "Day": "2018-01-05T00:00:00",
-                        "Number": 4,
-                        "RoundID": 990,
-                    },
-                    {
-                        "Day": "2018-01-06T00:00:00",
-                        "Number": 3,
-                        "RoundID": 989,
-                    },
-                    {
-                        "Day": "2018-01-07T00:00:00",
-                        "Number": 2,
-                        "RoundID": 988,
-                    },
-                    {
-                        "Day": "2018-01-08T00:00:00",
-                        "Number": 1,
-                        "RoundID": 987,
-                    },
-                ],
-                "StartDate": "2018-01-05T00:00:00",
-                "StartDateTime": null,
-                "State": null,
-                "TimeZone": null,
-                "TournamentID": 267,
-                "Venue": "Trinity Forest Golf Club",
-                "Yards": null,
-                "ZipCode": null,
-            }, playersLeaderboard: []});
-
-            // GolfApiModel.get(`Leaderboard/${this.props.navigation.state.params.tournamentId}`).then(leaderboard => {
-            //     this.setState({tournamentData: leaderboard.Tournament, playersLeaderboard: leaderboard.Players});
-            //     this.setLoading(false);
-            // }).catch(error => {
-            //     this.setLoading(false);
-            //     console.log('ERROR: ', error);
-            // });
-            // this.setState({assignUsers: groupUser});
+                this.state.currentTournament.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
+            } while(this.state.currentTournament.users.length < 5);
+            this.state.currentGroup.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
+            GolfApiModel.get(`Leaderboard/${this.props.navigation.state.params.tournamentId}`).then(leaderboard => {
+                this.setState({tournamentData: leaderboard.Tournament, playersLeaderboard: leaderboard.Players});
+                this.setLoading(false);
+            }).catch(error => {
+                this.setLoading(false);
+                console.log('ERROR: ', error);
+            });
         } catch (error) {
             this.setLoading(false);
             console.log('ERROR! ', error);
@@ -286,8 +201,8 @@ export default class Group extends BaseComponent {
     }
 
     setOrderPlayer(order) { this.setState({order: order}); }
-    setOrderedList(newList) { this.setState({orderedPlayerRankings: newList}); }
-    setPlayerRankings(newList) { this.setState({playerRankings: newList}); }
+    setOrderedList(newList) { this.setState({orderedPlayerRanking: newList}); }
+    setPlayerRanking(newList) { this.setState({playerRanking: newList}); }
 
     // goMain = () => {
     //     this.props.navigation.dispatch({type: 'Main'})
@@ -304,21 +219,22 @@ export default class Group extends BaseComponent {
         return notEqualMatches;
     }
 
-    //TODO REFACTOR updatePlayerRankingsList AND DOES SOM LIKE THE setInitialPlayerRanking
-    updatePlayerRankingsList(currentPosition, newAddition) {
+    //TODO REFACTOR updatePlayerRankingList AND DOES SOM LIKE THE setInitialPlayerRanking
+    updatePlayerRankingList(playerRanking) {
+        this.setState({playerRanking: playerRanking});
         // let existingPlayer = this.state.playerRanking.find(o => o.PlayerID === newAddition.PlayerID);
         // if (existingPlayer) {
         //     BarMessages.showError('You already have this player on your prediction list.', this.validationMessage);
         // } else {
         //     newAddition.position = currentPosition;
         //     obj[currentPosition - 1] = newAddition;
-        //     let clonePlayerRankings = this.state.playerRankings.slice();
-        //     let oldReportCopy = Object.assign(clonePlayerRankings, obj);
-        //     let orderedPlayerRankings = clonePlayerRankings.reduce(function (obj, item) {
-        //         obj[item.position] = item;
-        //         return obj;
-        //     }, {});
-        //     let order = Object.keys(orderedPlayerRankings);
+        let clonePlayerRankings = playerRanking.slice();
+        // let oldReportCopy = Object.assign(clonePlayerRankings, obj);
+        let orderedPlayerRankings = clonePlayerRankings.reduce(function (obj, item) {
+            obj[item.position] = item;
+            return obj;
+        }, {});
+        let order = Object.keys(orderedPlayerRankings);
         //     if (this.state.playersAdded.length >= 5) {
         //         let matches = this.isPlayerObjectEqual(this.state.initialPlayerRankings, orderedPlayerRankings);
         //         if (matches > 0) {
@@ -329,34 +245,17 @@ export default class Group extends BaseComponent {
         //             // this.props.navigation.setParams({movementsDone: 0})
         //         }
         //     }
-        //     this.setState({
-        //         playerRankings: oldReportCopy,
-        //         orderedPlayerRankings: orderedPlayerRankings,
-        //         order: order
-        //     });
+            this.setState({
+                playerRanking: playerRanking,
+                orderedPlayerRankings: orderedPlayerRankings,
+                order: order
+            });
         // }
     }
 
-    updateUserRankingsListPersist = async (currentPosition, userGroupId, groupId) => {
-        // this.setLoading(true);
-        // let data = {
-        //     userGroupId: userGroupId,
-        //     playerRankings: this.state.playerRankings,
-        //     groupId: groupId,
-        // };
-        // try {
-        //     const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data);
-        //     if (currentGroup) {
-        //         this.setState({movementsDone: 0})
-        //         this.props.navigation.setParams({movementsDone: 0});
-        //         Notifier.message({title: 'RESPONSE', message: 'Your list has been updated successfully'});
-        //     }
-        // } catch (e) {
-        //     console.log('error in initialRequest: Group.js')
-        //     console.log(e)
-        // }
-    };
-
+    updateRankingList() {
+        // this.updateRankingListAsync();
+    }
     setInitialPlayerRanking(navigation) {
         // let playerRankings = this.state.playerRankings.slice();
         // let groupLoggedUser = navigation.state.params.data.currentGroup.users.find(user => user.userId === navigation.state.params.currentUser._id);
@@ -410,6 +309,7 @@ export default class Group extends BaseComponent {
     }
 
     onGroupAsync = async(data) => {
+        let self = this;
         this.setState({loading: true});
         await BaseModel.get(`groups/group/${data}`).then((currentGroup) => {
             let tournaments = [];
@@ -426,6 +326,13 @@ export default class Group extends BaseComponent {
                 tournamentsName: tournamentsName,
                 usersLength: currentGroup.users.length,
                 loading: false});
+            currentGroup.tournaments[0].users.forEach(function(user) {
+                if(user._id == self.state.currentUser._id) {
+                    self.setState({playerRanking: user.playerRanking});
+                    console.log('PLAYER RANKING: ', user.playerRanking);
+                    return;
+                }
+            });
             this.props.navigation.setParams({currentGroup: currentGroup});
             this.initialRequest();
         }).catch((error) => {
@@ -433,6 +340,25 @@ export default class Group extends BaseComponent {
             this.setLoading(false);
             BarMessages.showError(error, this.validationMessage);
         });
+    };
+    updateRankingListAsync = async (data) => {
+        // this.setLoading(true);
+        // let data = {
+        //     userGroupId: userGroupId,
+        //     playerRankings: this.state.playerRankings,
+        //     groupId: groupId,
+        // };
+        // try {
+        //     const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data);
+        //     if (currentGroup) {
+        //         this.setState({movementsDone: 0})
+        //         this.props.navigation.setParams({movementsDone: 0});
+        //         Notifier.message({title: 'RESPONSE', message: 'Your list has been updated successfully'});
+        //     }
+        // } catch (e) {
+        //     console.log('error in initialRequest: Group.js')
+        //     console.log(e)
+        // }
     };
 
     render() {
@@ -446,11 +372,8 @@ export default class Group extends BaseComponent {
 
         return (
             <View style={[MainStyles.container]}>
-                <ActionSheet
-                    ref={o => this.ActionSheet = o}
-                    options={this.state.tournamentsName}
-                    cancelButtonIndex={this.state.tournamentsName.length - 1}
-                    onPress={this.optionSelectedPressed} />
+                <ActionSheet ref={o => this.ActionSheet = o} options={this.state.tournamentsName} cancelButtonIndex={this.state.tournamentsName.length - 1} onPress={this.optionSelectedPressed} />
+
                 <View style={[LocalStyles.groupInformation]}>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
                         <Image style={[LocalStyles.groupImage, {width:50,height:50}]} source={addPhoto}></Image>
@@ -473,12 +396,14 @@ export default class Group extends BaseComponent {
                         }
                     </View>
                 </View>
+
                 <View style={[LocalStyles.groupInformation, {borderBottomWidth: 3, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
                     <View style={[LocalStyles.viewContent, {flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.subtitleText]}>PRIZE</Text></View>
                         <View><Text style={[LocalStyles.normalText]}>{this.state.currentGroup.bet}</Text></View>
                     </View>
                 </View>
+
                 <View style={[LocalStyles.groupInformation, {borderBottomWidth: 2, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myScore}</Text></View>
@@ -493,6 +418,122 @@ export default class Group extends BaseComponent {
                         <View><Text style={[LocalStyles.infoText]}>Days Left</Text></View>
                     </View>
                 </View>
+
+                <View style={[LocalStyles.groupInformation, LocalStyles.tabsInformation]}>
+                    {(
+                        <ScrollableTabView
+                            initialPage={0}
+                            locked={true}
+                            tabBarActiveTextColor={Constants.PRIMARY_COLOR}
+                            tabBarInactiveTextColor={Constants.PRIMARY_COLOR}
+                            renderTabBar={() => <ScrollableTabBar /> }>
+                            <View tabLabel='Leaderboard' style={[{
+                                width: '100%'
+                            }, LocalStyles.slideBorderStyle]}>
+                                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                                    <FlatList
+                                        data={this.state.currentTournament.users}
+                                        renderItem={({item}) => (
+                                            <Swipeable rightButtons={[
+                                                (item._id > 0 && item._id != this.state.currentGroup.owner)
+                                                ? ( <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
+                                                        <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
+                                                    </TouchableHighlight> )
+                                                : ( <View></View> ) ]}
+                                                rightButtonWidth={(item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
+                                                <TouchableHighlight
+                                                    underlayColor='#c3c3c3'
+                                                    style={{
+                                                        flex: 1,
+                                                        padding: 20,
+                                                        backgroundColor: '#ffffff',
+                                                        borderBottomWidth: 1.5,
+                                                        borderColor: Constants.TERTIARY_COLOR_ALT,
+                                                        alignItems: 'center',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                    }}
+                                                    onPress={() => {if(item._id < 0) this.inviteToJoin();} }>
+                                                    <View style={{
+                                                        flex: 1,
+                                                        alignItems: 'center',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'space-between',
+                                                    }}>
+                                                        <Text style={[LocalStyles.titleText]}>{item.ranking}</Text>
+                                                        <Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
+                                                        <Text style={[LocalStyles.titleText, {color: Constants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score}</Text>
+                                                    </View>
+                                                </TouchableHighlight>
+                                            </Swipeable>
+                                        )}
+                                        keyExtractor={item => item._id}
+                                    />
+                                </List>
+                            </View>
+                            <View tabLabel='Roaster' style={[LocalStyles.GroupList, LocalStyles.listContainer]}>
+                                <SortableListView
+                                    style={{flex: 1, marginBottom: '20%'}}
+                                    data={this.state.playerRanking}
+                                    onMoveStart={() => {
+                                        console.log('onMoveStart')
+                                        lockScrollTabView = true;
+                                    }}
+                                    onMoveEnd={() => {
+                                        console.log('onMoveEnd')
+                                        lockScrollTabView = false;
+                                    }}
+                                    onMoveCancel ={() => {
+                                        console.log('move canceled')
+                                    }}
+                                    onRowMoved={e => {
+                                        // let dataCopy = this.state.order.slice();
+                                        // let playerRankings = this.state.playerRankings.slice();
+                                        // let dataOrderedListCopy = this.state.orderedPlayerRankings;
+                                        // dataCopy.splice(e.to, 0, dataCopy.splice(e.from, 1)[0])
+                                        // playerRankings.splice(e.to, 0, playerRankings.splice(e.from, 1)[0])
+                                        //
+                                        // playerRankings.forEach(function (element, index) {
+                                        //     element.position = index + 1
+                                        // });
+                                        // this.setPlayerRankings(playerRankings)
+                                        // this.setOrderPlayer(dataCopy);
+                                        // this.setOrderedList(dataOrderedListCopy);
+                                        // this.setStateMovements(dataCopy, dataOrderedListCopy);
+                                        //this.forceUpdate()
+                                    }}
+                                    renderRow={(row) =>
+                                        (<RoasterRow
+                                                    navigation={navigation}
+                                                    data={row}
+                                                    groupId={this.state.currentGroup._id}
+                                                    tournamentId={this.state.currentTournament._id}
+                                                    playerRanking={this.state.playerRanking}
+                                                    updatePlayerRankingList={this.updatePlayerRankingList} />)
+                                    }
+                                />
+
+                                {
+                                    diffDays > 4
+                                    ?
+                                        <TouchableOpacity
+                                            onPress={() => this.updateUserRankingsListPersist()}
+                                            style={[{
+                                                position: 'absolute',
+                                                bottom: '3%',
+                                                left: '10%',
+                                                width: '80%'
+                                            }, MainStyles.button, MainStyles.success]}>
+                                            <Text style={MainStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * this.state.pricePerMovement).toFixed(2)} $</Text>
+                                        </TouchableOpacity>
+                                    :
+                                        <View></View>
+                                }
+                            </View>
+                        </ScrollableTabView>
+                    )}
+                </View>
+
                 <DropdownAlert ref={ref => this.validationMessage = ref} />
             </View>);
     }

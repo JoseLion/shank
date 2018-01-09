@@ -1,48 +1,37 @@
 // React components:
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import { TouchableOpacity, Text, View, TouchableHighlight } from 'react-native';
-import {TabNavigator} from 'react-navigation';
-import {Avatar} from "react-native-elements";
-import AtoZListView from 'react-native-atoz-listview';
-import SortableListView from 'react-native-sortable-listview'
-import ScrollableTabView, {ScrollableTabBar,} from 'react-native-scrollable-tab-view';
+import React from 'react';
+import { Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { Avatar } from 'react-native-elements';
+import SortableListView from 'react-native-sortable-listview';
+import DropdownAlert from 'react-native-dropdownalert';
 
-import { Ionicons, Entypo, FontAwesome } from '@expo/vector-icons'; // 5.2.0
-
-import BaseModel from '../../../core/BaseModel';
-import PlayersList from './PlayerList';
-import MainStyles from '../../../styles/MainStyles';
+// Shank components:
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
 import LocalStyles from './styles/local';
-import * as Constants from '../../../core/Constants';
-import * as BarMessages from '../../../core/BarMessages';
-import Notifier from '../../../core/Notifier';
 
-class RowComponent extends React.Component {
+class PlayerRow extends BaseComponent {
 
     constructor(props) {
         super(props);
-        this.state = {
-            checkIsSelected: this.props.data.selected ? LocalStyles.checkIsSelected : {},
-            refreshing: false
-        };
+        this.playerSelected = this.playerSelected.bind(this);
+        this.state = { checkIsSelected: null };
     }
 
-    playerSelected = function() {
-        let self = this;
-        this.props.players.forEach(function(player) {
-            player.selected = false;
-            if(player === self.props.data) {
-                player.selected = true;
-            }
-        });
-        this.setState({refreshing: true});
+    playerSelected() {
+        if(this.state.checkIsSelected != null) {
+            this.props.data.isSelected = false;
+            this.setState({checkIsSelected: null});
+        } else {
+            this.props.data.isSelected = true;
+            this.setState({checkIsSelected: LocalStyles.checkIsSelected});
+
+        }
+        this.props.setUpdateSelected(this.props.data);
     }
 
     render() {
         return (
-            <TouchableHighlight
-                underlayColor="#c3c3c3"
+            <TouchableHighlight underlayColor={Constants.HIGHLIGHT_COLOR}
                 style={{
                     flex: 1,
                     padding: 20,
@@ -60,21 +49,17 @@ class RowComponent extends React.Component {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                 }}>
-                    <Avatar
-                        small
-                        rounded
-                        source={{uri: this.props.data.urlPhoto}}
-                        activeOpacity={0.7} />
+                    <Avatar medium rounded source={{uri: this.props.data.PhotoUrl}} />
                     <Text>{this.props.data.position}</Text>
-                    <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.name} {this.props.data.lastName}</Text>
-                    <FontAwesome name="check" size={29} style={[LocalStyles.selectedCheck, this.state.checkIsSelected]}/>
+                    <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.FirstName} {this.props.data.LastName}</Text>
+                    <FontAwesome name='check' size={29} style={[LocalStyles.selectedCheck, this.state.checkIsSelected]}/>
                 </View>
             </TouchableHighlight >
         );
     }
 }
 
-export default class PlayerSelection extends Component {
+export default class PlayerSelection extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
         title: 'CHOOSE PLAYER',
@@ -83,91 +68,131 @@ export default class PlayerSelection extends Component {
         headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
         headerLeft: (
             <TouchableHighlight onPress={() => navigation.goBack(null)}>
-                <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
+                <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
             </TouchableHighlight>
         ),
         headerRight: (
             <View>
-                <FontAwesome name='search' style={MainStyles.headerIconButton} />
+                <FontAwesome name='search' style={[MainStyles.headerIconButton]} />
             </View>
         )
     });
 
     constructor(props) {
         super(props);
+        this.setUpdateSelected = this.setUpdateSelected.bind(this);
         this.state = {
-            loading: false,
-            tPLayers: this.props.tPlayers,
-            data:
-                [
-                    {"name": "Bernard", "lastName": "Ford", "urlPhoto":"http://ichef.bbci.co.uk/onesport/cps/480/mcs/media/images/71780000/jpg/_71780044_gallacherpa.jpg"},
-                    {"name": "Emiliano", "lastName": "Grillo", "urlPhoto":"http://fedegolfcba.com.ar/sites/default/files/styles/slider-home/public/field/image/grillo_emiliano.jpg?itok=X4SviB3z"},
-                    {"name": "Issac", "lastName": "Hines", "urlPhoto":"https://static1.squarespace.com/static/58abbdb120099e0b12538e67/t/5923a3a1c534a5397b32c34b/1495507887454/Richie3.jpg?format=300w"},
-                    {"name": "Shawn", "lastName": "Harper", "urlPhoto":"http://media.jrn.com/images/photo-0627bc6sacc_6137489_ver1.0_640_480.jpg"},
-                    {"name": "Si Woo", "lastName": "Kim", "urlPhoto":"http://www.golfchannel.com/sites/golfchannel.prod.acquia-sites.com/files/styles/blog_header_image_304x176/public/9/C/C/%7B9CC84FBA-BEE3-482B-9EA7-16CB3EF643AF%7Dkim_si_woo_q-school12_final_day_610.jpg?itok=DCgt_CPy"},
-                    {"name": "David", "lastName": "Lightnment", "urlPhoto":"http://news.xinhuanet.com/english/photo/2015-06/08/134307137_14337441855531n.jpg"},
-                    {"name": "Graeme", "lastName": "Mcdowell ", "urlPhoto":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Graeme_McDowell_2012.jpg/220px-Graeme_McDowell_2012.jpg"},
-                    {"name": "Patrick", "lastName": "Rodgers ", "urlPhoto":"https://i1.wp.com/blog.trackmangolf.com/wp-content/uploads/2016/11/Patrick-Rodgers-Swing-optimization-with-TrackMan.png?fit=1200%2C823&ssl=1"},
-                    {"name": "Daniel", "lastName": "Summerhays", "urlPhoto":"http://i2.cdn.turner.com/dr/pga/sites/default/files/articles/summerhays-daniel-071813-640x360.jpg"},
-                    {"name": "Keegan", "lastName": "Taylor", "urlPhoto":"http://media.gettyimages.com/photos/may-2000-kevin-keegan-the-england-manager-plays-out-of-a-bunker-on-picture-id1030959"},
-                    {"name": "William", "lastName": "Wheeler", "urlPhoto":"http://media.golfdigest.com/photos/592442b5c45e221ebef6e668/master/w_768/satoshi-kodaira-sony-open-2017.jpg"},
-                ]
+            groupId: this.props.navigation.state.params.groupId,
+            tournamentId: this.props.navigation.state.params.tournamentId,
+            actualPosition: this.props.navigation.state.params.actualPosition,
+            playerRanking: this.props.navigation.state.params.playerRanking,
+            playersSelected: [],
+            players: [],
+            loading: false
         };
     }
-
-    updateLocalPlayerList(navigation) {
-        let self = this;
-        let playerSelected = null;
-        this.state.data.forEach(player => {
-            if(player.selected) {
-                playerSelected = player;
-                return;
-            }
-        });
-        if(playerSelected) {
-            navigation.state.params.updatePlayerRankingsList(navigation.state.params.currentPosition, playerSelected);
-        }
-        navigation.goBack(null);
-    }
+    componentDidMount() { this.initialRequest(); }
 
     setLoading(loading) { this.setState({loading: loading}); }
+    updateLocalPlayerList() {
+        if(this.state.playersSelected.length > 5) {
+            BarMessages.showError('You must select only 5 players.', this.validationMessage);
+            return;
+        }
+        let playerRanking = this.state.playerRanking;
+        if(this.state.playersSelected.length == 1) {
+            this.state.playersSelected[0].position = this.state.actualPosition;
+            playerRanking[this.state.actualPosition - 1] = this.state.playersSelected[0];
+        } else {
+            playerRanking = [];
+            let actualPosition = this.state.actualPosition;
+            this.state.playersSelected.forEach(function(player) {
+                player.actualPosition = actualPosition++;
+                playerRanking.push(player);
+                if(actualPosition == 6) actualPosition = 0;
+            });
+            while(playerRanking.length < 5) {
+                playerRanking.push({none: true, position: actualPosition++});
+                if(actualPosition == 6) actualPosition = 0;
+            }
+        }
+        this.setLoading(true);
+        this.onPlayerRankingSaveAsync(playerRanking);
+    }
+    setUpdateSelected(playerSelected) {
+        let players = this.state.playersSelected;
+        if(playerSelected.isSelected) {
+            players.push({
+                playerId: playerSelected.PlayerID,
+                firstName: playerSelected.FirstName,
+                lastName: playerSelected.LastName,
+                photoUrl: playerSelected.PhotoUrl
+            });
+        } else {
+            for(let idx=0 ; idx<players.length ; idx++) {
+                if(players[idx].playerId == playerSelected.PlayerID) {
+                    players.splice(idx, 1);
+                    break;
+                }
+            }
+        }
+        this.setState({playersSelected: players});
+    }
+
+    // Async methods:
+    initialRequest = async () => {
+        this.setLoading(true);
+        try {
+            GolfApiModel.get('Players').then((players) => {
+                this.setState({players: players});
+                this.setLoading(false);
+            }).catch(error => {
+                console.log('ERROR! ', error);
+                this.setLoading(false);
+            });
+        } catch (error) {
+            console.log('ERROR! ', error);
+            this.setLoading(false);
+        }
+    };
+    onPlayerRankingSaveAsync = async(data) => {
+        await BaseModel.put(`groups/editMyPlayers/${this.state.groupId}/${this.state.tournamentId}`, {players: data})
+            .then((response) => {
+                this.setLoading(false);
+                this.props.navigation.state.params.updatePlayerRankingList(data);
+                this.props.navigation.goBack(null);
+            }).catch((error) => {
+                this.setLoading(false);
+                BarMessages.showError(error, this.validationMessage);
+            });
+    };
 
     render() {
-        let navigation = this.props.navigation;
-        let completeData = this.state.data;
         return (
-            <View style={{flex:1, width:'100%'}} >
+            <View style={{flex:1, width:'100%', backgroundColor: Constants.BACKGROUND_COLOR}} >
+                <Spinner visible={this.state.loading} animation='fade' />
                 <SortableListView
                     style={{flex: 1, marginBottom: '20%'}}
-                    data={this.state.data}
-                    onMoveStart={() => {
-                        console.log("onMoveStart")
-                    }}
-                    onMoveEnd={() => {
-                        console.log("onMoveEnd")
-                    }}
-                    onMoveCancel ={() => {
-                        console.log("move canceled")
-                    }}
-                    renderRow=
-                        {
-                            (row, sectionID, rowID) => <RowComponent data={row}
-                                                                        navigation={navigation}
-                                                                        sectionID={sectionID}
-                                                                        rowID={rowID}
-                                                                        players={completeData}/>
-                        }/>
+                    data={this.state.players}
+                    renderRow= { (row) =>
+                        <PlayerRow
+                            data={row}
+                            players={this.state.players}
+                            setUpdateSelected={this.setUpdateSelected}
+                            navigation={this.props.navigation} />
+                    } />
 
-                <TouchableOpacity
-                    onPress={() => this.updateLocalPlayerList(navigation)}
-                    style={[{
+                <TouchableOpacity onPress={() => this.updateLocalPlayerList()}
+                    style={[MainStyles.button, MainStyles.success, {
                         position: 'absolute',
                         bottom: '1%',
-                        width: '80%'
-                    }, MainStyles.button, MainStyles.success]}>
+                        left: '5%',
+                        width: '90%'
+                    }]}>
                     <Text style={MainStyles.buttonText}>Save</Text>
                 </TouchableOpacity>
+                <DropdownAlert ref={ref => this.validationMessage = ref} />
             </View>
-        )
+        );
     }
 }

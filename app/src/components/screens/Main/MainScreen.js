@@ -1,7 +1,7 @@
 // React components:
 import React from 'react';
 import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
-import { List } from 'react-native-elements';
+import { Avatar, List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
@@ -142,10 +142,8 @@ export default class MainScreen extends BaseComponent {
                                             <View style={[MainStyles.viewFlexItemsR]}>
                                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                                                     { item.photo != null
-                                                        ?
-                                                            <Image style={{height:50,width:50}} source={{uri: item.photo.path}}></Image>
-                                                        :
-                                                            <Image style={{height:50,width:50}} source={addPhoto}></Image>
+                                                        ? <Avatar medium rounded source={{uri: item.photo.path}} />
+                                                        : <Avatar medium rounded source={addPhoto} />
                                                     }
                                                 </View>
                                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>

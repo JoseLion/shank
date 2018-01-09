@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { ActionSheetIOS, AsyncStorage, FlatList, Image, Picker, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { ActionSheetIOS, AsyncStorage, FlatList, Image, Picker, Share, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -13,6 +13,7 @@ import { connectActionSheet } from '@expo/react-native-action-sheet';
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
 import LocalStyles from './styles/local'
+import { ClienHost } from '../../../config/variables';
 
 @connectActionSheet
 export default class EditGroup extends BaseComponent {
@@ -35,6 +36,7 @@ export default class EditGroup extends BaseComponent {
         this.onCreateGroupPressed = this.onCreateGroupPressed.bind(this);
         this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this);
+        this.inviteToJoin = this.inviteToJoin.bind(this);
         this.state = {
             currentGroup: {},
             name: '',
@@ -46,7 +48,6 @@ export default class EditGroup extends BaseComponent {
             loading: false,
         };
     }
-
     componentDidMount() {
         this.setLoading(true);
         this.initialRequest();
@@ -109,6 +110,20 @@ export default class EditGroup extends BaseComponent {
         }
 
         this.onCreateGroupPressedAsync(formData);
+    }
+    inviteToJoin() {
+        Share.share({
+            message: `Shank Group Invitation: http://${ClienHost}invite/${this.state.currentGroup.groupToken}`,
+            title: 'Shank Group Invitation',
+            url: `http://${ClienHost}invite/${this.state.currentGroup.groupToken}`
+        }, {
+            dialogTitle: 'Shank Group Invitation',
+            excludedActivityTypes: [
+                'com.apple.UIKit.activity.PostToTwitter',
+                'com.apple.uikit.activity.mail'
+            ],
+            tintColor: 'green'
+        }).then(this._showResult).catch(err => console.log(err))
     }
 
     // Async methods:
@@ -256,7 +271,7 @@ export default class EditGroup extends BaseComponent {
                                             : ( <View></View> ) ]}
                                             rightButtonWidth={(item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
                                             <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR}
-                                                onPress={() => console.log(item)}>
+                                                onPress={ () => {if(item._id < 0) this.inviteToJoin()} }>
                                                 <View style={[MainStyles.viewFlexItemsR]}>
                                                     <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                                                         { item.photo != null
