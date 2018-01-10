@@ -75,7 +75,7 @@ export default class Group extends BaseComponent {
         headerRight:
             navigation.state.params.isOwner
             ? ( <TouchableHighlight onPress={() => navigation.navigate('EditGroup', navigation.state.params)}>
-                    <Entypo name='pencil' style={[MainStyles.headerIconButton]} />
+                    <Entypo name='user' style={[MainStyles.headerIconButton]} />
                 </TouchableHighlight> )
             : (<View></View>)
     });
