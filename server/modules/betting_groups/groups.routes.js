@@ -92,6 +92,18 @@ let prepareRouter = function (app) {
             }
             groupInformation.updateDate = new Date();
             groupInformation.activeTournaments = groupInformation.tournaments.length;
+            groupInformation.tournaments.forEach(function(tournament) {
+                if(tournament._id == null) {
+                    tournament.users = [];
+                    groupInformation.users.forEach(function(user) {
+                        tournament.users.push({
+                            _id: user._id,
+                            fullName: user.fullName,
+                            playerRanking: []
+                        });
+                    });
+                }
+            })
             BettingGroup.findByIdAndUpdate(groupInformation._id, { $set : groupInformation}, {new: true}, function(err, group) {
                 if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
                 res.ok(group);
