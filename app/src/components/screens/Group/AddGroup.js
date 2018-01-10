@@ -39,7 +39,7 @@ export default class AddGroup extends BaseComponent {
             selectTournament: '',
             groupPhoto: null,
             tournamentData: [],
-            tName: 'Select a tournament',
+            tName: 'Pick a tournament',
             loading: false,
         };
     }

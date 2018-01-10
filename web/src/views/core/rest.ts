@@ -40,10 +40,28 @@ export class Rest {
         return this.authHttp.get(finalUrl, {headers: contentHeaders});
     }
 
-    post(url: string, body: any) {
+    post(url: string, body?: any) {
         let finalUrl = this.baseUrl.concat(url);
+        if(body == null) body = {};
         contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
         return this.authHttp.post(finalUrl, body, {headers: contentHeaders});
+    }
+
+    put(url: string, body?: any) {
+        let finalUrl = this.baseUrl.concat(url);
+        contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
+        return this.authHttp.put(finalUrl, body, {headers: contentHeaders});
+    }
+
+    delete(url: string, params?: any) {
+        let finalUrl = this.baseUrl.concat(url);
+        if(params != null) {
+            for(let param in params) {
+                finalUrl = finalUrl.concat('/').concat(params[param]);
+            }
+        }
+        contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
+        return this.authHttp.delete(finalUrl, {headers: contentHeaders});
     }
 
 }

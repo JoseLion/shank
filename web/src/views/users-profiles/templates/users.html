@@ -1,56 +1,84 @@
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="m-t-lg">
-                <h1>
-                    Users: <span class="page-title">{{title}}</span>
-                </h1>
-            </div>
-            <div class="m-t-lg">
-                <p-dataTable [value]="users" [loading]="isLoading" [rows]="20" [paginator]="true">
-                    <p-headerColumnGroup>
-                        <p-row>
-                            <p-column header="Name(s)" styleClass="col-md-2" rowspan="2"></p-column>
-                            <p-column header="Last Name(s)" styleClass="col-md-2" rowspan="2"></p-column>
-                            <p-column header="Email" styleClass="col-md-4" rowspan="2"></p-column>
-                            <p-column header="Status" styleClass="col-md-1" rowspan="2"></p-column>
-                            <p-column header="Date" colspan="2"></p-column>
-                            <p-column header="Actions" styleClass="col-md-1" rowspan="2"></p-column>
-                        </p-row>
-                        <p-row>
-                            <p-column header="Creation" styleClass="col-md-1"></p-column>
-                            <p-column header="Update" styleClass="col-md-1"></p-column>
-                        </p-row>
-                    </p-headerColumnGroup>
 
-                    <p-column field="name"></p-column>
-                    <p-column field="lastName"></p-column>
-                    <p-column field="email"></p-column>
-                    <p-column field="status">
-                        <ng-template let-col let-user="rowData" pTemplate="body">
-                            <span>{{user.status ? 'Enabled' : 'Disabled'}}</span>
-                        </ng-template>
-                    </p-column>
-                    <p-column field="creationDate" styleClass="text-center">
-                        <ng-template let-col let-user="rowData" pTemplate="body">
-                            <span>{{user.creationDate | date:'dd-MM-yyyy'}}</span>
-                        </ng-template>
-                    </p-column>
-                    <p-column field="updateDate" styleClass="text-center">
-                        <ng-template let-col let-user="rowData" pTemplate="body">
-                            <span>{{user.updateDate | date:'dd-MM-yyyy'}}</span>
-                        </ng-template>
-                    </p-column>
-                    <p-column styleClass="text-right">
-                        <ng-template let-col let-user="rowData" pTemplate="body">
-                            <button pButton type="button" icon="fa-trash" class="ui-button-icon"
-                            [ngClass]="{'ui-button-danger': user.status, 'ui-button-success': !user.status}"
-                            pTooltip="{{!user.status ? 'Enable' : 'Disable'}}" tooltipPosition="top"></button>
-                            <button pButton type="button" icon="fa-pencil" class="ui-button-warning ui-button-icon" pTooltip="Edit" tooltipPosition="top"></button>
-                        </ng-template>
-                    </p-column>
-                </p-dataTable>
-            </div>
+    <p-growl></p-growl>
+
+    <div class="col-md-12 header-top">
+        <div class="col-md-6 header-title">
+            <h1>Users: <span class="page-title">{{title}}</span></h1>
         </div>
+        <div class="col-md-6 text-right">
+            <button type="submit" class="btn btn-success btn-w-m" *ngIf="isAdmin" (click)="openDialog(true)">New</button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="col-md-12 body-container">
+        <p-dataTable [value]="users" [loading]="isLoading" [rows]="20" [paginator]="true">
+            <p-headerColumnGroup>
+                <p-row>
+                    <p-column header="Fullname" styleClass="col-md-4" rowspan="2"></p-column>
+                    <p-column header="Email" styleClass="col-md-4" rowspan="2"></p-column>
+                    <p-column header="Status" styleClass="col-md-1" rowspan="2"></p-column>
+                    <p-column header="Date" colspan="2"></p-column>
+                    <p-column header="Actions" styleClass="col-md-1" rowspan="2"></p-column>
+                </p-row>
+                <p-row>
+                    <p-column header="Creation" styleClass="col-md-1"></p-column>
+                    <p-column header="Update" styleClass="col-md-1"></p-column>
+                </p-row>
+            </p-headerColumnGroup>
+
+            <p-column field="fullName"></p-column>
+            <p-column field="email"></p-column>
+            <p-column field="status">
+                <ng-template let-col let-user="rowData" pTemplate="body">
+                    <span>{{user.status ? 'Enabled' : 'Disabled'}}</span>
+                </ng-template>
+            </p-column>
+            <p-column field="creationDate" styleClass="text-center">
+                <ng-template let-col let-user="rowData" pTemplate="body">
+                    <span>{{user.creationDate | date:'dd-MM-yyyy'}}</span>
+                </ng-template>
+            </p-column>
+            <p-column field="updateDate" styleClass="text-center">
+                <ng-template let-col let-user="rowData" pTemplate="body">
+                    <span>{{user.updateDate | date:'dd-MM-yyyy'}}</span>
+                </ng-template>
+            </p-column>
+            <p-column styleClass="text-right">
+                <ng-template let-col let-user="rowData" pTemplate="body">
+                    <button pButton type="button" icon="fa-trash" class="ui-button-icon" [ngClass]="{'ui-button-danger': user.status, 'ui-button-success': !user.status}" pTooltip="{{!user.status ? 'Enable' : 'Disable'}}" tooltipPosition="top"></button>
+                    <button pButton type="button" icon="fa-pencil" class="ui-button-warning ui-button-icon" pTooltip="Edit" tooltipPosition="top" (click)="openDialog(false, user)"></button>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+
+        <p-dialog header="modalHeader" [(visible)]="display" [resizable]="false" [draggable]="false" modal="true" dismissableMask="true" appendTo="body">
+            <form>
+                <div class="col-md-12 form-group">
+                    <label class="col-md-4 text-right">Fullname</label>
+                    <span class="col-md-8">
+                        <input id="fullname" name="fullName" pInputText [(ngModel)]="user.fullName" />
+                    </span>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="col-md-12 form-group">
+                    <label class="col-md-4 text-right">Email</label>
+                    <span class="col-md-8">
+                        <input id="email" name="email" pInputText [(ngModel)]="user.email" [disabled]="user._id != null"/>
+                    </span>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="col-md-12 form-group">
+                    <label class="col-md-4 text-right">Email</label>
+                    <div class="col-md-8">
+                        <p-dropdown id="profile" name="profile" [options]="profiles" [(ngModel)]="user.profile" appendTo="body" optionLabel="name"></p-dropdown>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </form>
+        </p-dialog>
     </div>
 </div>

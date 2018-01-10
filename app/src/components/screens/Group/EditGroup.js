@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { ActionSheetIOS, AsyncStorage, FlatList, Image, Picker, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { ActionSheetIOS, AsyncStorage, FlatList, Image, Picker, Share, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -13,6 +13,7 @@ import { connectActionSheet } from '@expo/react-native-action-sheet';
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
 import LocalStyles from './styles/local'
+import { ClienHost } from '../../../config/variables';
 
 @connectActionSheet
 export default class EditGroup extends BaseComponent {
@@ -35,26 +36,28 @@ export default class EditGroup extends BaseComponent {
         this.onCreateGroupPressed = this.onCreateGroupPressed.bind(this);
         this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this);
+        this.inviteToJoin = this.inviteToJoin.bind(this);
+        this.setTournamentSelection = this.setTournamentSelection.bind(this);
         this.state = {
             currentGroup: {},
-            name: '',
             bet: '',
+            name: '',
             groupPhoto: null,
-            tournaments: [],
+            tournaments: new Array(3),
             tournamentData: [],
             tName: 'Pick a tournament',
             loading: false,
+            selectedItem1: {},
+            selectedItem2: {},
+            selectedItem3: {}
         };
     }
-
     componentDidMount() {
         this.setLoading(true);
         this.initialRequest();
-        this.props.navigation.setParams({
-            actionSheet: this.showActionSheet
-        });
+        this.props.navigation.setParams({ actionSheet: this.showActionSheet });
         let currentGroup = this.props.navigation.state.params.currentGroup;
-        let tournaments = currentGroup.tournaments;
+        let tournaments = currentGroup.tournaments.filter(function(tournament) {return tournament.status; });
         while(tournaments.length < 3) {
             tournaments.push({tournamentName: this.state.tName, _id: (Math.random() * -1000)});
         }
@@ -97,7 +100,11 @@ export default class EditGroup extends BaseComponent {
         delete this.state.currentGroup.myScore;
         delete this.state.currentGroup.myRanking;
         this.state.currentGroup.users = this.state.currentGroup.users.filter(function(user) { return user._id > 0; });
-        this.state.currentGroup.tournaments = this.state.currentGroup.tournaments.filter(function(tournament) { return isNaN(tournament._id) || tournament._id > 0; });
+        this.state.currentGroup.tournaments = this.state.currentGroup.tournaments.filter(function(tournament) {
+            let valid = tournament.tournamentId != null;
+            if(valid && tournament.users != null) tournament.users = tournament.users.filter(function(user) { return user._id > 0; });
+            return valid;
+        });
         formData.append('groupInformation', JSON.stringify(this.state.currentGroup));
 
         if (this.state.groupPhoto) {
@@ -110,6 +117,33 @@ export default class EditGroup extends BaseComponent {
 
         this.onCreateGroupPressedAsync(formData);
     }
+    inviteToJoin() {
+        Share.share({
+            message: `Shank Group Invitation: http://${ClienHost}invite/${this.state.currentGroup.groupToken}`,
+            title: 'Shank Group Invitation',
+            url: `http://${ClienHost}invite/${this.state.currentGroup.groupToken}`
+        }, {
+            dialogTitle: 'Shank Group Invitation',
+            excludedActivityTypes: [
+                'com.apple.UIKit.activity.PostToTwitter',
+                'com.apple.uikit.activity.mail'
+            ],
+            tintColor: 'green'
+        }).then(this._showResult).catch(err => console.log(err))
+    }
+    setTournamentSelection(tournamentI, tournamentSelected, idx) {
+        let currentGroup = this.state.currentGroup;
+        currentGroup.tournaments.push({
+            tournamentName: tournamentSelected.Name,
+            tournamentId: tournamentSelected.TournamentID
+        });
+        switch (idx) {
+            case 0: this.setState({selectedItem1: tournamentSelected}); break;
+            case 1: this.setState({selectedItem2: tournamentSelected}); break;
+            case 2: this.setState({selectedItem3: tournamentSelected}); break;
+        }
+        this.setState({currentGroup: this.state.currentGroup});
+    }
 
     // Async methods:
     initialRequest = async () => {
@@ -117,13 +151,10 @@ export default class EditGroup extends BaseComponent {
         try {
             GolfApiModel.get('Tournaments').then((tournaments) => {
                 this.setState({tournamentData: tournaments});
-            }).catch(error => {
-                console.log('ERROR! ', error);
             }).finally(() => {
                 this.setLoading(false);
             });
         } catch (error) {
-            console.log('ERROR! ', error);
             this.setLoading(false);
         }
     };
@@ -138,18 +169,13 @@ export default class EditGroup extends BaseComponent {
             });
     };
     pictureSelection = async(option) => {
-        let settings = {
-            allowsEditing: true,
-            aspect: [4, 4],
-        };
+        let settings = { allowsEditing: true, aspect: [4, 4] };
         let result;
         switch (option) {
             case 0: result = await ImagePicker.launchImageLibraryAsync(settings); break;
             case 1: result = await ImagePicker.launchCameraAsync(settings); break;
         }
-        if (result != null && !result.cancelled) {
-            this.setState({groupPhoto: result.uri});
-        }
+        if (result != null && !result.cancelled) { this.setState({groupPhoto: result.uri}); }
     };
 
     render() {
@@ -160,8 +186,8 @@ export default class EditGroup extends BaseComponent {
         let tournamentKeys = []
 
         let tournamentItems = this.state.tournamentData.map((s, i) => {
-            tournamentName[i] = s.Name
-            tournamentKeys[i] = s.TournamentID
+            tournamentName[i] = s.Name;
+            tournamentKeys[i] = s.TournamentID;
             return <Picker.Item style={[MainStyles.formPickerText]} key={i} value={s} label={s.Name} />
         });
         tournamentName.push('Cancel');
@@ -214,36 +240,24 @@ export default class EditGroup extends BaseComponent {
                                 maxLength={50} />
 
                             <Text style={[MainStyles.centerText, {marginTop: 15}]}>Tournaments</Text>
-                            <List containerStyle={[MainStyles.noBorder]}>
-                                <FlatList data={this.state.tournaments} renderItem={({item}) => (
-                                        <View>
-                                            { isAndroid
-                                                ?
-                                                    <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
-                                                        <Picker style={MainStyles.noMargin} selectedValue={item.selectTournament} onValueChange={(tValue) => item.selectTournament = tValue}>
-                                                            <Picker.Item style={[MainStyles.formPickerText]} color={Constants.TERTIARY_COLOR_ALT} value='' label={item.tournamentName} />
-                                                            {tournamentItems}
-                                                        </Picker>
-                                                    </View>
-                                                :
-                                                    <TouchableOpacity style={[MainStyles.formPicker, MainStyles.noMargin]} onPress={() => {
-                                                        ActionSheetIOS.showActionSheetWithOptions({
-                                                                options: tournamentName,
-                                                                cancelButtonIndex: tournamentName.length - 1,
-                                                            },
-                                                            (buttonIndex) => {
-                                                                if (tournamentKeys[buttonIndex] != 'none') {
-                                                                    this.setState({selectTournament: tournamentKeys[buttonIndex]})
-                                                                }
-                                                            })
-                                                    }}>
-                                                        <Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.tName}</Text>
-                                                    </TouchableOpacity>
-                                            }
-                                        </View>
-                                    )}
-                                    keyExtractor={item => item._id} />
-                            </List>
+                            <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+                                <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem1} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[0], tValue, 0)} enabled={this.state.tournaments[0] != null && this.state.tournaments[0].tournamentId == null}>
+                                    <Picker.Item style={[MainStyles.formPickerText]} color={Constants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[0] == null ? this.state.tName : this.state.tournaments[0].tournamentName} />
+                                    {tournamentItems}
+                                </Picker>
+                            </View>
+                            <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+                                <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem2} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[1], tValue, 1)} enabled={this.state.tournaments[0] != null && this.state.tournaments[1].tournamentId == null}>
+                                    <Picker.Item style={[MainStyles.formPickerText]} color={Constants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[1] == null ? this.state.tName : this.state.tournaments[1].tournamentName} />
+                                    {tournamentItems}
+                                </Picker>
+                            </View>
+                            <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+                                <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem3} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[2], tValue, 2)} enabled={this.state.tournaments[0] != null && this.state.tournaments[2].tournamentId == null}>
+                                    <Picker.Item style={[MainStyles.formPickerText]} color={Constants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[2] == null ? this.state.tName : this.state.tournaments[2].tournamentName} />
+                                    {tournamentItems}
+                                </Picker>
+                            </View>
 
                             <Text style={[MainStyles.centerText, {marginTop: 15}]}>Users</Text>
                             <List containerStyle={[MainStyles.noBorder]}>
@@ -256,7 +270,7 @@ export default class EditGroup extends BaseComponent {
                                             : ( <View></View> ) ]}
                                             rightButtonWidth={(item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
                                             <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR}
-                                                onPress={() => console.log(item)}>
+                                                onPress={ () => {if(item._id < 0) this.inviteToJoin()} }>
                                                 <View style={[MainStyles.viewFlexItemsR]}>
                                                     <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                                                         { item.photo != null

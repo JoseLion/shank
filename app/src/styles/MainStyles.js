@@ -179,11 +179,10 @@ const MainStyles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     listItem: {
-        padding: 10,
+        padding: 20,
         borderBottomWidth: 1.5,
         borderColor: Constants.TERTIARY_COLOR_ALT
     },
-
 
 
 
