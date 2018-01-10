@@ -38,6 +38,7 @@ export default class EditGroup extends BaseComponent {
         this.showActionSheet = this.showActionSheet.bind(this);
         this.inviteToJoin = this.inviteToJoin.bind(this);
         this.setTournamentSelection = this.setTournamentSelection.bind(this);
+        this.initialRequest = this.initialRequest.bind(this);
         this.state = {
             currentGroup: {},
             bet: '',
