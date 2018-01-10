@@ -81,6 +81,7 @@ export default class PlayerSelection extends BaseComponent {
     constructor(props) {
         super(props);
         this.setUpdateSelected = this.setUpdateSelected.bind(this);
+        this.updateLocalPlayerList = this.updateLocalPlayerList.bind(this);
         this.state = {
             groupId: this.props.navigation.state.params.groupId,
             tournamentId: this.props.navigation.state.params.tournamentId,
@@ -95,8 +96,8 @@ export default class PlayerSelection extends BaseComponent {
 
     setLoading(loading) { this.setState({loading: loading}); }
     updateLocalPlayerList() {
-        if(this.state.playersSelected.length > 5) {
-            BarMessages.showError('You must select only 5 players.', this.validationMessage);
+        if(this.state.playersSelected.length === 0 || this.state.playersSelected.length > 5) {
+            BarMessages.showError('You must select 5 players.', this.validationMessage);
             return;
         }
         let playerRanking = this.state.playerRanking;
@@ -107,13 +108,13 @@ export default class PlayerSelection extends BaseComponent {
             playerRanking = [];
             let actualPosition = this.state.actualPosition;
             this.state.playersSelected.forEach(function(player) {
-                player.actualPosition = actualPosition++;
+                player.position = actualPosition++;
                 playerRanking.push(player);
-                if(actualPosition == 6) actualPosition = 0;
+                if(actualPosition == 6) actualPosition = 1;
             });
             while(playerRanking.length < 5) {
-                playerRanking.push({none: true, position: actualPosition++});
-                if(actualPosition == 6) actualPosition = 0;
+                playerRanking.push({position: actualPosition++});
+                if(actualPosition == 6) actualPosition = 1;
             }
         }
         this.setLoading(true);

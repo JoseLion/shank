@@ -37,10 +37,11 @@ export default class EditGroup extends BaseComponent {
         this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
         this.showActionSheet = this.showActionSheet.bind(this);
         this.inviteToJoin = this.inviteToJoin.bind(this);
+        this.setTournamentSelection = this.setTournamentSelection.bind(this);
         this.state = {
             currentGroup: {},
-            name: '',
             bet: '',
+            name: '',
             groupPhoto: null,
             tournaments: [],
             tournamentData: [],
@@ -55,7 +56,7 @@ export default class EditGroup extends BaseComponent {
             actionSheet: this.showActionSheet
         });
         let currentGroup = this.props.navigation.state.params.currentGroup;
-        let tournaments = currentGroup.tournaments;
+        let tournaments = currentGroup.tournaments.filter(function(tournament) {return tournament.status; });
         while(tournaments.length < 3) {
             tournaments.push({tournamentName: this.state.tName, _id: (Math.random() * -1000)});
         }
@@ -125,11 +126,203 @@ export default class EditGroup extends BaseComponent {
             tintColor: 'green'
         }).then(this._showResult).catch(err => console.log(err))
     }
+    setTournamentSelection(t, tournamentSelected) {
+        let currentGroup = this.state.currentGroup;
+        currentGroup.tournaments.forEach(function(tournament) {
+            if(tournament._id == t._id) {
+                tournament = {
+                    tournamentName: tournamentSelected.Name,
+                    tournamentId: tournamentSelected.TournamentID
+                };
+                // t = tournament;
+                return;
+            }
+        })
+        this.setState({currentGroup: this.state.currentGroup});
+    }
 
     // Async methods:
     initialRequest = async () => {
         this.setLoading(true);
         try {
+//             this.setState({tournamentData: [
+//     {
+//         "TournamentID": 284,
+//         "Name": "Ryder Cup",
+//         "StartDate": "2018-09-28T00:00:00",
+//         "EndDate": "2018-09-30T00:00:00",
+//         "IsOver": false,
+//         "IsInProgress": false,
+//         "Venue": "Le Golf National",
+//         "Location": "Saint-Quentin-en-Yvelines, Fra",
+//         "Par": null,
+//         "Yards": null,
+//         "Purse": null,
+//         "StartDateTime": null,
+//         "Canceled": false,
+//         "Covered": true,
+//         "City": "Saint-Quentin-en-Yvelines",
+//         "State": null,
+//         "ZipCode": null,
+//         "Country": "FRA",
+//         "TimeZone": "America/Chicago",
+//         "Format": "Stroke",
+//         "Rounds": [
+//             {
+//                 "RoundID": 1056,
+//                 "Number": 1,
+//                 "Day": "2018-09-28T00:00:00"
+//             },
+//             {
+//                 "RoundID": 1057,
+//                 "Number": 2,
+//                 "Day": "2018-09-29T00:00:00"
+//             },
+//             {
+//                 "RoundID": 1058,
+//                 "Number": 3,
+//                 "Day": "2018-09-30T00:00:00"
+//             }
+//         ]
+//     },
+//     {
+//         "TournamentID": 238,
+//         "Name": "TOUR Championship",
+//         "StartDate": "2018-09-20T00:00:00",
+//         "EndDate": "2018-09-23T00:00:00",
+//         "IsOver": false,
+//         "IsInProgress": false,
+//         "Venue": "East Lake GC",
+//         "Location": "Atlanta, GA",
+//         "Par": null,
+//         "Yards": null,
+//         "Purse": 9000000,
+//         "StartDateTime": null,
+//         "Canceled": false,
+//         "Covered": true,
+//         "City": "Atlanta",
+//         "State": "GA",
+//         "ZipCode": null,
+//         "Country": "USA",
+//         "TimeZone": "America/New York",
+//         "Format": "Stroke",
+//         "Rounds": [
+//             {
+//                 "RoundID": 866,
+//                 "Number": 1,
+//                 "Day": "2018-09-20T00:00:00"
+//             },
+//             {
+//                 "RoundID": 867,
+//                 "Number": 2,
+//                 "Day": "2018-09-21T00:00:00"
+//             },
+//             {
+//                 "RoundID": 868,
+//                 "Number": 3,
+//                 "Day": "2018-09-22T00:00:00"
+//             },
+//             {
+//                 "RoundID": 869,
+//                 "Number": 4,
+//                 "Day": "2018-09-23T00:00:00"
+//             }
+//         ]
+//     },
+//     {
+//         "TournamentID": 237,
+//         "Name": "BMW Championship",
+//         "StartDate": "2018-09-06T00:00:00",
+//         "EndDate": "2018-09-09T00:00:00",
+//         "IsOver": false,
+//         "IsInProgress": false,
+//         "Venue": "Aronimink GC",
+//         "Location": "Newtown Square, PA",
+//         "Par": null,
+//         "Yards": null,
+//         "Purse": 9000000,
+//         "StartDateTime": null,
+//         "Canceled": false,
+//         "Covered": true,
+//         "City": "Newtown Square",
+//         "State": "PA",
+//         "ZipCode": null,
+//         "Country": "USA",
+//         "TimeZone": "America/Chicago",
+//         "Format": "Stroke",
+//         "Rounds": [
+//             {
+//                 "RoundID": 862,
+//                 "Number": 1,
+//                 "Day": "2018-09-06T00:00:00"
+//             },
+//             {
+//                 "RoundID": 863,
+//                 "Number": 2,
+//                 "Day": "2018-09-07T00:00:00"
+//             },
+//             {
+//                 "RoundID": 864,
+//                 "Number": 3,
+//                 "Day": "2018-09-08T00:00:00"
+//             },
+//             {
+//                 "RoundID": 865,
+//                 "Number": 4,
+//                 "Day": "2018-09-09T00:00:00"
+//             }
+//         ]
+//     },
+//     {
+//         "TournamentID": 281,
+//         "Name": "Dell Technologies Championship",
+//         "StartDate": "2018-08-31T00:00:00",
+//         "EndDate": "2018-09-03T00:00:00",
+//         "IsOver": false,
+//         "IsInProgress": false,
+//         "Venue": "TPC Boston",
+//         "Location": "Norton, MA",
+//         "Par": null,
+//         "Yards": null,
+//         "Purse": 9000000,
+//         "StartDateTime": null,
+//         "Canceled": false,
+//         "Covered": true,
+//         "City": "Norton",
+//         "State": "MA",
+//         "ZipCode": null,
+//         "Country": "USA",
+//         "TimeZone": "America/New York",
+//         "Format": "Stroke",
+//         "Rounds": [
+//             {
+//                 "RoundID": 1043,
+//                 "Number": 1,
+//                 "Day": "2018-08-30T00:00:00"
+//             },
+//             {
+//                 "RoundID": 1044,
+//                 "Number": 2,
+//                 "Day": "2018-08-31T00:00:00"
+//             },
+//             {
+//                 "RoundID": 1045,
+//                 "Number": 3,
+//                 "Day": "2018-09-01T00:00:00"
+//             },
+//             {
+//                 "RoundID": 1046,
+//                 "Number": 4,
+//                 "Day": "2018-09-02T00:00:00"
+//             },
+//             {
+//                 "RoundID": 1073,
+//                 "Number": 5,
+//                 "Day": "2018-09-03T00:00:00"
+//             }
+//         ]
+//     }
+// ]});
             GolfApiModel.get('Tournaments').then((tournaments) => {
                 this.setState({tournamentData: tournaments});
             }).catch(error => {
@@ -235,7 +428,7 @@ export default class EditGroup extends BaseComponent {
                                             { isAndroid
                                                 ?
                                                     <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
-                                                        <Picker style={MainStyles.noMargin} selectedValue={item.selectTournament} onValueChange={(tValue) => item.selectTournament = tValue}>
+                                                        <Picker style={MainStyles.noMargin} selectedValue={item.selectTournament} onValueChange={(tValue) => this.setTournamentSelection(item, tValue)} enabled={item.tournamentId == null}>
                                                             <Picker.Item style={[MainStyles.formPickerText]} color={Constants.TERTIARY_COLOR_ALT} value='' label={item.tournamentName} />
                                                             {tournamentItems}
                                                         </Picker>

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Core modules:
 import {
@@ -12,7 +13,9 @@ import {
     DataTableModule,
     SharedModule,
     ButtonModule,
-    TooltipModule
+    TooltipModule,
+    DialogModule,
+    DropdownModule
 } from 'primeng/primeng';
 
 import { ROUTES } from "app/app.routes";
@@ -51,6 +54,7 @@ import { SettingsViewComponent } from "views/settings/settings.component";
         BrowserModule,
         RouterModule.forRoot(ROUTES),
         FormsModule,
+        BrowserAnimationsModule,
 
         // PrimeNG
         InputTextModule,
@@ -60,6 +64,8 @@ import { SettingsViewComponent } from "views/settings/settings.component";
         SharedModule,
         ButtonModule,
         TooltipModule,
+        DialogModule,
+        DropdownModule,
 
         // Modules:
         ReportsModule,

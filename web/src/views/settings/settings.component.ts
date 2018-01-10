@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { consts } from '../core/consts';
 import { Rest } from '../core/rest';
-import { SweetAlert } from 'views/core/SweetAlert';
+import { SweetAlert } from 'views/core/sweetAlert';
 import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({

@@ -9,7 +9,7 @@ import { AuthHttp, AuthConfig, JwtHelper } from 'angular2-jwt';
 import { EmitterService } from '../views/core/emitter.service';
 import { Rest } from '../views/core/rest';
 import { AuthGuard } from '../views/core/AuthGuard';
-import { SweetAlert } from 'views/core/SweetAlert';
+import { SweetAlert } from 'views/core/sweetAlert';
 import { MessageService } from 'primeng/components/common/messageservice';
 
 // App views

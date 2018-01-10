@@ -40,4 +40,8 @@ export class SweetAlert {
         messageService.add({severity: 'success', detail: message});
     }
 
+    static errorNotif(message, messageService) {
+        messageService.add({severity: 'error', detail: message});
+    }
+
 }
