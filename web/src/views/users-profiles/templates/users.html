@@ -1,7 +1,5 @@
 <div class="wrapper wrapper-content animated fadeInRight">
 
-    <p-growl></p-growl>
-
     <div class="col-md-12 header-top">
         <div class="col-md-6 header-title">
             <h1>Users: <span class="page-title">{{title}}</span></h1>
@@ -48,17 +46,18 @@
             <p-column styleClass="text-right">
                 <ng-template let-col let-user="rowData" pTemplate="body">
                     <button pButton type="button" icon="fa-trash" class="ui-button-icon" [ngClass]="{'ui-button-danger': user.status, 'ui-button-success': !user.status}" pTooltip="{{!user.status ? 'Enable' : 'Disable'}}" tooltipPosition="top"></button>
-                    <button pButton type="button" icon="fa-pencil" class="ui-button-warning ui-button-icon" pTooltip="Edit" tooltipPosition="top" (click)="openDialog(false, user)"></button>
+                    <button pButton type="button" icon="fa-pencil" class="ui-button-warning ui-button-icon" pTooltip="Edit" tooltipPosition="top" (click)="changeStatusUser(user)"></button>
                 </ng-template>
             </p-column>
         </p-dataTable>
 
-        <p-dialog header="modalHeader" [(visible)]="display" [resizable]="false" [draggable]="false" modal="true" dismissableMask="true" appendTo="body">
-            <form>
+        <p-dialog header="modalHeader" [(visible)]="display" [resizable]="false" [draggable]="false" modal="true" dismissableMask="true" appendTo="body" responsive="true" width="500">
+            <form (submit)="saveUser()">
+                <p-growl></p-growl>
                 <div class="col-md-12 form-group">
                     <label class="col-md-4 text-right">Fullname</label>
                     <span class="col-md-8">
-                        <input id="fullname" name="fullName" pInputText [(ngModel)]="user.fullName" />
+                        <input id="fullname" name="fullName" pInputText [(ngModel)]="user.fullName" required />
                     </span>
                     <div class="clearfix"></div>
                 </div>
@@ -78,6 +77,9 @@
                     </div>
                     <div class="clearfix"></div>
                 </div>
+                <p-footer>
+                    <button type="submit" class="btn btn-primary btn-w-m">Save</button>
+                </p-footer>
             </form>
         </p-dialog>
     </div>

@@ -37,7 +37,7 @@ export class UserViewComponent {
     }
 
     findUsers = function() {
-        this.rest.post('users/findUsers', {profile: this.title === 'admin' ? 1 : 2})
+        this.rest.post('users/findUsers', this.search)
         .subscribe(
             response => { this.users = response.json().response; },
             error => { SweetAlert.errorNotif(error.text(), this.messageService); },
@@ -55,12 +55,36 @@ export class UserViewComponent {
     };
 
     saveUser = function() {
-        this.rest.post('users/findUsers', {profile: this.title === 'admin' ? 1 : 2})
-        .subscribe(
-            response => { this.users = response.json().response; },
-            error => { SweetAlert.errorNotif(error.text(), this.messageService); },
-            () => { this.isLoading = false; }
-        );
+        let _ = this;
+        SweetAlert.save(function() {
+            _.rest.post('users/updateApp', _.user)
+            .subscribe(
+                response => {
+                    _.display = false;
+                    _.search = {profile: _.title === 'admin' ? 1 : 2};
+                    _.findUsers();
+                },
+                error => { SweetAlert.errorNotif(error.text(), _.messageService); },
+                () => { _.isLoading = false; }
+            );
+        });
+    };
+
+    changeStatusUser = function(user) {
+        let _ = this;
+        SweetAlert.status(function() {
+            user.status = !user.status;
+            _.rest.post('users/updateApp', user)
+            .subscribe(
+                response => {
+                    _.display = false;
+                    _.search = {profile: _.title === 'admin' ? 1 : 2};
+                    _.findUsers();
+                },
+                error => { SweetAlert.errorNotif(error.text(), _.messageService); },
+                () => { _.isLoading = false; }
+            );
+        });
     };
 
     /* GETTERS AND SETTERS */
@@ -91,6 +115,5 @@ export class UserViewComponent {
 
     set search(_search:any) { this._search = _search; }
     get search() { return this._search; }
-
 
 }

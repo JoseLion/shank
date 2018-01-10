@@ -89,6 +89,8 @@ export default class Group extends BaseComponent {
         this.updatePlayerRankingList = this.updatePlayerRankingList.bind(this);
         this.onGroupAsync = this.onGroupAsync.bind(this);
         this.checkChangesOnList = this.checkChangesOnList.bind(this);
+        this.removeUser = this.removeUser.bind(this);
+        this.handleRefresh = this.handleRefresh.bind(this);
         // this.goMain = this.goMain.bind(this);
         // this.setOrderPlayer = this.setOrderPlayer.bind(this);
         // this.setOrderedList = this.setOrderedList.bind(this);
@@ -267,6 +269,13 @@ export default class Group extends BaseComponent {
             this.onPlayerRankingSaveAsync(playerRanking);
         }
     }
+    removeUser(item) { this.onRemoveGroupAsync(item); }
+    handleRefresh = () => {
+        this.setState(
+            { refreshing: true },
+            () => { this.onGroupAsync(this.state.currentGroup._id); }
+        );
+    };
 
     _getPricePerMovement = async() => {
         // await BaseModel.get('appSettings/findByCode/PPM').then((setting) => {
@@ -362,6 +371,18 @@ export default class Group extends BaseComponent {
         //     console.log(e)
         // }
     };
+    onRemoveGroupAsync = async(data) => {
+        this.setLoading(true);
+        let endPoint;
+        await BaseModel.delete(`groups/removeUser/${this.state.currentGroup._id}/${data._id}`).then(() => {
+            this.handleRefresh();
+        }).catch((error) => {
+            console.log('ERROR! ', error);
+            BarMessages.showError(error, this.validationMessage);
+        }).finally(() => {
+            this.setLoading(false);
+        });
+    };
 
     render() {
         let addPhoto = require('../../../../resources/add_edit_photo.png');
@@ -440,12 +461,12 @@ export default class Group extends BaseComponent {
                                         data={this.state.currentTournament.users}
                                         renderItem={({item}) => (
                                             <Swipeable rightButtons={[
-                                                (item._id > 0 && item.owner != this.state.currentGroup.owner)
-                                                ? ( <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
+                                                (this.state.currentGroup.isOwner && item._id > 0 && item._id != this.state.currentGroup.owner)
+                                                ? ( <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}  onPress={() => this.removeUser(item)}>
                                                         <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
                                                     </TouchableHighlight> )
                                                 : ( <View></View> ) ]}
-                                                rightButtonWidth={(item._id < 0 || item.owner == this.state.currentGroup.owner) ? 0 : 75}>
+                                                rightButtonWidth={(!this.state.currentGroup.isOwner || item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
                                                 <TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={Constants.HIGHLIGHT_COLOR}
                                                     onPress={() => {if(item._id < 0) this.inviteToJoin();} }>
                                                     { item.fullName == 'Invite'
