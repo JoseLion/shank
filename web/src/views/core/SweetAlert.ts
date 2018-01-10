@@ -32,6 +32,32 @@ export class SweetAlert {
         });
     }
 
+    static status(onAccept? : any, onCancel? : any) {
+        swal({
+            title: 'Are you sure?',
+            text: 'You will change the status',
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            showLoaderOnConfirm: true
+        }).then(result => {
+            if(result.value) {
+                if(onAccept != null) {
+                    onAccept();
+                } else {
+                    this.close();
+                }
+            } else {
+                if(onCancel != null) {
+                    onCancel();
+                } else {
+                    this.close();
+                }
+            }
+        });
+    }
+
     static close() {
         swal.close();
     }
