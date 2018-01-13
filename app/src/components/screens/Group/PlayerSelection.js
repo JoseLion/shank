@@ -31,30 +31,22 @@ class PlayerRow extends BaseComponent {
 
     render() {
         return (
-            <TouchableHighlight underlayColor={Constants.HIGHLIGHT_COLOR}
-                style={{
-                    flex: 1,
-                    padding: 20,
-                    backgroundColor: '#ffffff',
-                    borderBottomWidth: 1.5,
-                    borderColor: '#c3c3c3',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                }}
-                onPress={() => this.playerSelected()}>
-                <View style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                }}>
-                    <Avatar medium rounded source={{uri: this.props.data.PhotoUrl}} />
-                    <Text>{this.props.data.position}</Text>
-                    <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.FirstName} {this.props.data.LastName}</Text>
-                    <FontAwesome name='check' size={29} style={[LocalStyles.selectedCheck, this.state.checkIsSelected]}/>
+            <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected()}>
+                <View style={[MainStyles.viewFlexItemsR]}>
+                    <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
+                        <Avatar medium rounded source={{uri: this.props.data.PhotoUrl}} />
+                    </View>
+                    <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 4}]}>
+                        <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.FirstName} {this.props.data.LastName}</Text>
+                    </View>
+                    <View style={[MainStyles.viewFlexItemsC]}>
+                        <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>0 %</Text>
+                    </View>
+                    <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd, {flex:2}]}>
+                        <FontAwesome name='check' size={29} style={[LocalStyles.selectedCheck, this.state.checkIsSelected]}/>
+                    </View>
                 </View>
-            </TouchableHighlight >
+            </TouchableHighlight>
         );
     }
 }

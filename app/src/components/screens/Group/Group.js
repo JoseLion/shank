@@ -338,13 +338,13 @@ export default class Group extends BaseComponent {
                 }
             });
             this.props.navigation.setParams({currentGroup: currentGroup});
-            // GolfApiModel.get(`Leaderboard/${currentGroup.tournaments[0].tournamentId}`).then(leaderboard => {
-            //     this.setState({tournamentData: leaderboard.Tournament, playersLeaderboard: leaderboard.Players, diffDays: new Date(leaderboard.Tournament.EndDate).getTime() - new Date().getTime()});
-            //     this.setLoading(false);
-            // }).catch(error => {
-            //     this.setLoading(false);
-            //     console.log('ERROR: ', error);
-            // });
+            GolfApiModel.get(`Leaderboard/${currentGroup.tournaments[0].tournamentId}`).then(leaderboard => {
+                this.setState({tournamentData: leaderboard.Tournament, playersLeaderboard: leaderboard.Players, diffDays: new Date(leaderboard.Tournament.EndDate).getTime() - new Date().getTime()});
+                this.setLoading(false);
+            }).catch(error => {
+                this.setLoading(false);
+                console.log('ERROR: ', error);
+            });
             this.initialRequest();
         }).catch((error) => {
             console.log('ERROR! ', error);
