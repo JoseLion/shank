@@ -24,6 +24,6 @@ export const ROUTES:Routes = [
         ]
     },
     { path: 'login', component: LoginViewComponent },
-    { path: 'invite/:groupToken/login', component: InviteLoginViewComponent },
-    { path: 'invite/:groupToken/register', component: InviteRegisterViewComponent }
+    { path: 'invite/login/:groupToken', component: InviteLoginViewComponent },
+    { path: 'invite/register/:groupToken', component: InviteRegisterViewComponent }
 ];

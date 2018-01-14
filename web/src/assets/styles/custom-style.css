@@ -1,3 +1,7 @@
+#smallLogo{display:none;}
+.body-small #logo{display:none;}
+.body-small #smallLogo{display:block;margin:auto;}
+
 .nav-header{text-align:center;}
 .nav-header img{width:75%;}
 .navbar-header .page-title{float:left;margin:14px 0 0 20px;}
