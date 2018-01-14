@@ -4,7 +4,6 @@ import { Rest } from '../core/rest';
 import { SweetAlert } from 'views/core/sweetAlert';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { AuthService } from "angular2-social-login";
-// import { FacebookService, InitParams } from 'ngx-facebook';
 import { FacebookService, InitParams, LoginResponse, LoginOptions } from 'ngx-facebook';
 
 @Component({
@@ -81,8 +80,8 @@ export class InviteLoginViewComponent {
         let loginOptions: LoginOptions = {
             scope: 'public_profile,email',
             return_scopes: true
-        }
-        this.fb.login().then((response: LoginResponse) => {
+        };
+        this.fb.login(loginOptions).then((response: LoginResponse) => {
             console.log('RESPONSE: ', response);
             this.loginClicked = false;
             this.facebookSpinner = false;
@@ -92,11 +91,6 @@ export class InviteLoginViewComponent {
             this.facebookSpinner = false;
             SweetAlert.errorNotif('Facebook login canceled!', this.messageService);
         });
-        // this.fbLogin.login('facebook').subscribe(response => {
-        //     console.log('RESPONSE: ', response);
-        // }, error => {
-        //     console.log('ERROR: ', error);
-        // })
     }
 
 }
