@@ -52,6 +52,12 @@ export class Rest {
         return this.authHttp.post(finalUrl, body, {headers: contentHeaders});
     }
 
+    openPost(url: string, body?: any) {
+        let finalUrl = this.baseUrl.concat(url);
+        if(body == null) body = {};
+        return this.http.post(finalUrl, body, {headers: contentHeaders});
+    }
+
     put(url: string, body?: any) {
         let finalUrl = this.baseUrl.concat(url);
         console.log('URL: ', finalUrl);

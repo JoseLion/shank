@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Rest } from '../core/rest';
 import { SweetAlert } from 'views/core/sweetAlert';
 import { MessageService } from 'primeng/components/common/messageservice';
-import { AuthService } from "angular2-social-login";
 import { FacebookService, InitParams, LoginResponse, LoginOptions } from 'ngx-facebook';
 
 @Component({
@@ -12,6 +11,7 @@ import { FacebookService, InitParams, LoginResponse, LoginOptions } from 'ngx-fa
 })
 export class InviteLoginViewComponent {
 
+    public signup: any = {};
     public groupToken: string;
     public loginClicked: boolean = false;
     public loginSpinner: boolean = false;
