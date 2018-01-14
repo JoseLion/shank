@@ -2,8 +2,6 @@ import { Component  } from '@angular/core';
 import { Router } from '@angular/router';
 import { Rest } from '../core/rest';
 
-declare var jQuery:any;
-
 @Component({
     selector: 'login',
     templateUrl: 'login.template.html'

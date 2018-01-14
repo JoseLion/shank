@@ -15,6 +15,7 @@ import { MessageService } from 'primeng/components/common/messageservice';
 // App views
 import { MainViewModule } from '../views/main.module';
 import { LoginViewModule } from '../views/login/login.module';
+import { InviteViewModule } from '../views/invite/invite.module';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     return new AuthHttp(new AuthConfig(), http, options);
@@ -32,6 +33,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
         // Views
         MainViewModule,
         LoginViewModule,
+        InviteViewModule,
 
         RouterModule.forRoot(ROUTES)
     ],

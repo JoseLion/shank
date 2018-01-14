@@ -5,10 +5,12 @@ import { DashboardComponent } from 'views/reports/dashboard/dashboard.component'
 import { UserViewComponent } from 'views/users-profiles/user.component';
 import { ProfileViewComponent } from 'views/users-profiles/profile.component';
 import { SettingsViewComponent } from '../views/settings/settings.component';
+import { InviteLoginViewComponent } from '../views/invite/login.component';
+import { InviteRegisterViewComponent } from '../views/invite/register.component';
 
 export const ROUTES:Routes = [
     // Main redirect
-    {path: '', redirectTo: 'login', pathMatch: 'full'},
+    // {path: '', redirectTo: 'login', pathMatch: 'full'},
 
     // App views
     {
@@ -21,5 +23,7 @@ export const ROUTES:Routes = [
             { path: 'settings', component: SettingsViewComponent }
         ]
     },
-    {path: 'login', component: LoginViewComponent }
+    { path: 'login', component: LoginViewComponent },
+    { path: 'invite/:groupToken/login', component: InviteLoginViewComponent },
+    { path: 'invite/:groupToken/register', component: InviteRegisterViewComponent }
 ];

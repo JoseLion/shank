@@ -32,6 +32,48 @@ export class SweetAlert {
         });
     }
 
+    static success(message : string, okButton : string, onAccept? : any) {
+        swal({
+            title: 'Good Job!',
+            text: message,
+            type: 'success',
+            showCancelButton: false,
+            confirmButtonText: okButton,
+            showLoaderOnConfirm: true
+        }).then(result => {
+            if(result.value) {
+                if(onAccept != null) {
+                    onAccept();
+                } else {
+                    this.close();
+                }
+            } else {
+                this.close();
+            }
+        });
+    }
+
+    static error(message : string, onAccept? : any) {
+        swal({
+            title: 'Cancelled!',
+            text: message,
+            type: 'error',
+            showCancelButton: false,
+            confirmButtonText: 'Try again later!',
+            showLoaderOnConfirm: true
+        }).then(result => {
+            if(result.value) {
+                if(onAccept != null) {
+                    onAccept();
+                } else {
+                    this.close();
+                }
+            } else {
+                this.close();
+            }
+        });
+    }
+
     static status(onAccept? : any, onCancel? : any) {
         swal({
             title: 'Are you sure?',

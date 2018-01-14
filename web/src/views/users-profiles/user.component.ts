@@ -33,7 +33,7 @@ export class UserViewComponent {
                 error => { SweetAlert.errorNotif(error.text(), this.messageService); },
                 () => { this.isLoading = false; }
             );
-        })
+        });
     }
 
     findUsers = function() {

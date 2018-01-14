@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthHttp, JwtHelper } from 'angular2-jwt';
 import { consts } from './consts';
 import { contentHeaders } from './contentHeaders';
+// import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class Rest {
@@ -25,8 +26,12 @@ export class Rest {
         return true;
     }
 
+    openAuth(body: any) {
+        return this.http.post( this.baseUrl.concat(consts.host.loginApp), body, { headers: contentHeaders });
+    }
+
     auth(body: any) {
-        return this.http.post( this.baseUrl.concat(consts.host.login), body, { headers: contentHeaders });
+        return this.http.post( this.baseUrl.concat(consts.host.loginAdmin), body, { headers: contentHeaders });
     }
 
     get(url: string, params?: any) {
@@ -49,7 +54,8 @@ export class Rest {
 
     put(url: string, body?: any) {
         let finalUrl = this.baseUrl.concat(url);
-        contentHeaders.append('Authorization', `Bearer ${this.jwt}`);
+        console.log('URL: ', finalUrl);
+        contentHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
         return this.authHttp.put(finalUrl, body, {headers: contentHeaders});
     }
 

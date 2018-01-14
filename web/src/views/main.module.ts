@@ -22,11 +22,6 @@ import { ROUTES } from "app/app.routes";
 
 // App modules:
 import { ReportsModule } from './reports/reports.module';
-// import { UserViewModule } from './users/user.module';
-// import { ProfileViewModule } from './profiles/profile.module';
-
-// App core components:
-// import { TopnavbarModule } from "views/common/topnavbar/topnavbar.module";
 
 // App components:
 import { NavigationComponent } from "views/common/navigation";
@@ -68,13 +63,7 @@ import { SettingsViewComponent } from "views/settings/settings.component";
         DropdownModule,
 
         // Modules:
-        ReportsModule,
-
-        // UserViewModule,
-        // SettingsViewModule,
-        //ProfileViewModule,
-
-        // Modules
+        ReportsModule
 
     ]
 })
