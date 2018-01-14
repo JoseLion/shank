@@ -25,7 +25,6 @@ let UserSchema = new mongoose.Schema({
         required: true,
         index: true
     },
-    cellPhone: String,
 
     profile: {
         type: Number,
