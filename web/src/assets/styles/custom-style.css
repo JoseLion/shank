@@ -34,3 +34,4 @@ p-dropdown>.ui-dropdown{width:100%!important;}
 
 .full-button{display:block;padding:5% 10%;margin:15px auto;width:100%;}
 .btn-facebook{background:#3B5998;color:#FFFFFF;}
+.btn.focus.btn-facebook,.btn.btn-facebook:focus,.btn.btn-facebook:hover{color:#FFFFFF;}
