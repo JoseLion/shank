@@ -5,7 +5,7 @@ import { SweetAlert } from 'views/core/sweetAlert';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { AuthService } from "angular2-social-login";
 // import { FacebookService, InitParams } from 'ngx-facebook';
-import { FacebookService, InitParams, LoginResponse } from 'ngx-facebook';
+import { FacebookService, InitParams, LoginResponse, LoginOptions } from 'ngx-facebook';
 
 @Component({
     selector: 'login',
@@ -78,6 +78,10 @@ export class InviteLoginViewComponent {
     continueWithFacebook() {
         this.loginClicked = true;
         this.facebookSpinner = true;
+        let loginOptions: LoginOptions = {
+            scope: 'public_profile,email',
+            return_scopes: true
+        }
         this.fb.login().then((response: LoginResponse) => {
             console.log('RESPONSE: ', response);
             this.loginClicked = false;
