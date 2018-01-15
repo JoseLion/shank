@@ -47,6 +47,10 @@ export class InviteLoginViewComponent {
                 .subscribe(
                     finalResponse => {
                         let groupRes = finalResponse.json();
+                        if(groupRes.error) {
+                            SweetAlert.errorNotif(groupRes.error, this.messageService);
+                            return;
+                        }
 
                         if(groupRes.response.userAdded) {
                             SweetAlert.success('You joined to the group!', 'Download APP', () => {
