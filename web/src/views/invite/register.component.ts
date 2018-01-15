@@ -106,13 +106,70 @@ export class InviteRegisterViewComponent {
         this.signupClicked = true;
         this.facebookSpinner = true;
         let loginOptions: LoginOptions = {
+            enable_profile_selector: true,
             scope: 'public_profile,email',
             return_scopes: true
         };
-        this.fb.login(loginOptions).then((response: LoginResponse) => {
-            console.log('RESPONSE: ', response);
-            this.signupClicked = false;
-            this.facebookSpinner = false;
+        this.fb.login(loginOptions).then((loginResponse: LoginResponse) => {
+            this.fb.api(`/me?fields=id,name,email,picture&access_token=${loginResponse.authResponse.accessToken}`).then((profile : any) => {
+                if (profile.email) {
+                    let data = {
+                        fullName: profile.name,
+                        email: profile.email,
+                        facebookId: profile.id,
+                        photo: {
+                            name: 'facebook',
+                            path: profile.picture.data.url
+                        }
+                    };
+                    this.rest.openPost('users/facebookSignin', data).subscribe(
+                        response => {
+                            let res = response.json();
+                            if(res.error) {
+                                SweetAlert.errorNotif(res.error, this.messageService);
+                                return;
+                            }
+
+                            localStorage.setItem('token', res.response.token);
+                            this.rest.put(`groups/addUser/${this.groupToken}/${res.response.user._id}`)
+                            .subscribe(
+                                finalResponse => {
+                                    let groupRes = finalResponse.json();
+                                    if(groupRes.error) {
+                                        SweetAlert.errorNotif(groupRes.error, this.messageService);
+                                        return;
+                                    }
+
+                                    if(groupRes.response.userAdded) {
+                                        SweetAlert.success('You joined to the group!', 'Download APP', () => {
+                                            console.log('OK BUTTON CLICKED');
+                                        });
+                                    } else {
+                                        SweetAlert.error('Something went wrong!', () => {
+                                            console.log('OK BUTTON CLICKED BAD');
+                                        });
+                                    }
+                                }, error => {
+                                    console.error('ERROR CONSUMO SERVICIO: ',  error);
+                                    SweetAlert.errorNotif('Internal Server Error', this.messageService);
+                                }, () => {
+                                    localStorage.removeItem('token');
+                                    this.signupClicked = false;
+                                    this.facebookSpinner = false;
+                                }
+                            );
+                        }, error => {
+                            console.error('ERROR CONSUMO SERVICIO: ', error);
+                            SweetAlert.errorNotif('Internal Server Error', this.messageService);
+                        }
+                    );
+                }
+            }).catch(error => {
+                console.error('ERROR: ', error);
+                this.signupClicked = false;
+                this.facebookSpinner = false;
+                SweetAlert.errorNotif('Facebook login canceled!', this.messageService);
+            });
         }).catch(cancel => {
             console.error('CANCEL: ', cancel);
             this.signupClicked = false;

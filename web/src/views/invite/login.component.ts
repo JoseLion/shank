@@ -11,7 +11,6 @@ import { FacebookService, InitParams, LoginResponse, LoginOptions } from 'ngx-fa
 })
 export class InviteLoginViewComponent {
 
-    public signup: any = {};
     public groupToken: string;
     public loginClicked: boolean = false;
     public loginSpinner: boolean = false;
@@ -82,61 +81,59 @@ export class InviteLoginViewComponent {
             return_scopes: true
         };
         this.fb.login(loginOptions).then((loginResponse: LoginResponse) => {
-            console.log('LOGIN: ', loginResponse);
             this.fb.api(`/me?fields=id,name,email,picture&access_token=${loginResponse.authResponse.accessToken}`).then((profile : any) => {
-                console.log('RESPONSE: ', profile);
-                // if (profile.email) {
-                //     let data = {
-                //         fullName: profile.name,
-                //         email: profile.email,
-                //         facebookId: profile.id,
-                //         photo: {
-                //             name: 'facebook',
-                //             path: profile.picture.data.url
-                //         }
-                //     };
-                //     this.rest.openPost('users/facebookSignin', data).subscribe(
-                //         response => {
-                //             let res = response.json();
-                //             if(res.error) {
-                //                 SweetAlert.errorNotif(res.error, this.messageService);
-                //                 return;
-                //             }
-                //
-                //             localStorage.setItem('token', res.response.token);
-                //             this.rest.put(`groups/addUser/${this.groupToken}/${res.response.user._id}`)
-                //             .subscribe(
-                //                 finalResponse => {
-                //                     let groupRes = finalResponse.json();
-                //                     if(groupRes.error) {
-                //                         SweetAlert.errorNotif(groupRes.error, this.messageService);
-                //                         return;
-                //                     }
-                //
-                //                     if(groupRes.response.userAdded) {
-                //                         SweetAlert.success('You joined to the group!', 'Download APP', () => {
-                //                             console.log('OK BUTTON CLICKED');
-                //                         });
-                //                     } else {
-                //                         SweetAlert.error('Something went wrong!', () => {
-                //                             console.log('OK BUTTON CLICKED BAD');
-                //                         });
-                //                     }
-                //                 }, error => {
-                //                     console.error('ERROR CONSUMO SERVICIO: ',  error);
-                //                     SweetAlert.errorNotif('Internal Server Error', this.messageService);
-                //                 }, () => {
-                //                     localStorage.removeItem('token');
-                //                     this.loginClicked = false;
-                //                     this.facebookSpinner = false;
-                //                 }
-                //             );
-                //         }, error => {
-                //             console.error('ERROR CONSUMO SERVICIO: ', error);
-                //             SweetAlert.errorNotif('Internal Server Error', this.messageService);
-                //         }
-                //     );
-                // }
+                if (profile.email) {
+                    let data = {
+                        fullName: profile.name,
+                        email: profile.email,
+                        facebookId: profile.id,
+                        photo: {
+                            name: 'facebook',
+                            path: profile.picture.data.url
+                        }
+                    };
+                    this.rest.openPost('users/facebookSignin', data).subscribe(
+                        response => {
+                            let res = response.json();
+                            if(res.error) {
+                                SweetAlert.errorNotif(res.error, this.messageService);
+                                return;
+                            }
+
+                            localStorage.setItem('token', res.response.token);
+                            this.rest.put(`groups/addUser/${this.groupToken}/${res.response.user._id}`)
+                            .subscribe(
+                                finalResponse => {
+                                    let groupRes = finalResponse.json();
+                                    if(groupRes.error) {
+                                        SweetAlert.errorNotif(groupRes.error, this.messageService);
+                                        return;
+                                    }
+
+                                    if(groupRes.response.userAdded) {
+                                        SweetAlert.success('You joined to the group!', 'Download APP', () => {
+                                            console.log('OK BUTTON CLICKED');
+                                        });
+                                    } else {
+                                        SweetAlert.error('Something went wrong!', () => {
+                                            console.log('OK BUTTON CLICKED BAD');
+                                        });
+                                    }
+                                }, error => {
+                                    console.error('ERROR CONSUMO SERVICIO: ',  error);
+                                    SweetAlert.errorNotif('Internal Server Error', this.messageService);
+                                }, () => {
+                                    localStorage.removeItem('token');
+                                    this.loginClicked = false;
+                                    this.facebookSpinner = false;
+                                }
+                            );
+                        }, error => {
+                            console.error('ERROR CONSUMO SERVICIO: ', error);
+                            SweetAlert.errorNotif('Internal Server Error', this.messageService);
+                        }
+                    );
+                }
             }).catch(error => {
                 console.error('ERROR: ', error);
                 this.loginClicked = false;
