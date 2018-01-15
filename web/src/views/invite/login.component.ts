@@ -82,7 +82,8 @@ export class InviteLoginViewComponent {
             return_scopes: true
         };
         this.fb.login(loginOptions).then((loginResponse: LoginResponse) => {
-            this.fb.api('/me?fields=id,name,email,picture').then((profile : any) => {
+            console.log('LOGIN: ', loginResponse);
+            this.fb.api(`/me?fields=id,name,email,picture&access_token=${loginResponse.authResponse.accessToken}`).then((profile : any) => {
                 console.log('RESPONSE: ', profile);
                 // if (profile.email) {
                 //     let data = {
