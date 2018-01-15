@@ -222,10 +222,8 @@ let prepareRouter = function (app) {
                 User.findById(req.params.userId).exec(function(errU, user) {
                     if(!user) { res.ok({}, 'The user doesn\'t exist!'); return; }
                     let exists = false;
-                    console.log('USERS IN GROUP: ', group.users, 'USER: ', req.params.userId);
                     group.users.forEach(function(groupUser) {
-                        if(groupUser._id == req.params.userId) {
-                            console.log('ALREADY ON GROUP!');
+                        if(groupUser == req.params.userId) {
                             res.ok({}, 'The user is already on the group!'); return;
                         }
                     });
