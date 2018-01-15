@@ -338,13 +338,56 @@ export default class Group extends BaseComponent {
                 }
             });
             this.props.navigation.setParams({currentGroup: currentGroup});
-            GolfApiModel.get(`Leaderboard/${currentGroup.tournaments[0].tournamentId}`).then(leaderboard => {
-                this.setState({tournamentData: leaderboard.Tournament, playersLeaderboard: leaderboard.Players, diffDays: new Date(leaderboard.Tournament.EndDate).getTime() - new Date().getTime()});
+
+            // GolfApiModel.get(`Leaderboard/${currentGroup.tournaments[0].tournamentId}`).then(leaderboard => {
+            //     leaderboard.Tournament
+                let tournamentData = {
+                    "TournamentID": 284,
+                    "Name": "Ryder Cup",
+                    "StartDate": "2018-01-14T00:00:00",
+                    "EndDate": "2018-01-17T00:00:00",
+                    "IsOver": false,
+                    "IsInProgress": true,
+                    "Canceled": false,
+                    "Rounds": [
+                        {
+                            "RoundID": 1056,
+                            "Number": 1,
+                            "Day": "2018-01-14T00:00:00"
+                        },
+                        {
+                            "RoundID": 1057,
+                            "Number": 2,
+                            "Day": "2018-01-15T00:00:00"
+                        },
+                        {
+                            "RoundID": 1058,
+                            "Number": 3,
+                            "Day": "2018-01-16T00:00:00"
+                        },
+                        {
+                            "RoundID": 1059,
+                            "Number": 4,
+                            "Day": "2018-01-17T00:00:00"
+                        }
+                    ]
+                };
+                let nowDate = new Date();
+                nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+                let diff = new Date(tournamentData.EndDate).getTime() - nowDate.getTime();
+                if(diff > 0) diff = Math.ceil(diff / (1000*3600*24));
+                else diff = 0;
+                this.setState({
+                    tournamentData: tournamentData,
+                    playersLeaderboard: [],
+                    diffDays: diff
+                });
+            //     this.setState({tournamentData: leaderboard.Tournament, playersLeaderboard: leaderboard.Players, diffDays: new Date(leaderboard.Tournament.EndDate).getTime() - new Date().getTime()});
+            //     this.setLoading(false);
+            // }).catch(error => {
                 this.setLoading(false);
-            }).catch(error => {
-                this.setLoading(false);
-                console.log('ERROR: ', error);
-            });
+            //     console.log('ERROR: ', error);
+            // });
             this.initialRequest();
         }).catch((error) => {
             console.log('ERROR! ', error);
@@ -388,11 +431,7 @@ export default class Group extends BaseComponent {
         let addPhoto = require('../../../../resources/add_edit_photo.png');
         let navigation = this.props.navigation;
 
-        let oneDay = 24*60*60*1000;
-        let diffDays = this.state.diffDays;
-        if(diffDays < 0) diffDays = 0;
-        else diffDays = Math.round(diffDays / oneDay);
-
+        // let diffDays = this.state.diffDays;
         return (
             <View style={[MainStyles.container]}>
                 <Spinner visible={this.state.loading} animation='fade' />
@@ -441,7 +480,7 @@ export default class Group extends BaseComponent {
                         <View><Text style={[LocalStyles.infoText]}>Ranking</Text></View>
                     </View>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{diffDays}</Text></View>
+                        <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.diffDays}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Days Left</Text></View>
                     </View>
                 </View>
@@ -498,10 +537,10 @@ export default class Group extends BaseComponent {
                             </View>
                             <View tabLabel='Roaster' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
                                 <SortableListView
-                                    style={{flex: 1}}
+                                    style={{flex: 1, marginBottom: '22.5%'}}
                                     data={this.state.playerRanking}
                                     order={this.state.order}
-                                    disableSorting={diffDays == 0}
+                                    disableSorting={this.state.diffDays == 0}
                                     onMoveStart={() => {
                                         lockScrollTabView = true;
                                     }}
@@ -538,13 +577,13 @@ export default class Group extends BaseComponent {
                                     }
                                 />
 
-                                { diffDays > 0 && diffDays <= 4
+                                { this.state.diffDays > 0 && this.state.diffDays <= 4
                                     ?
                                         <TouchableOpacity
                                             onPress={() => this.onPlayerRankingSaveAsync(this.state.playerRanking)}
                                             style={[{
                                                 position: 'absolute',
-                                                bottom: '3%',
+                                                bottom: '2%',
                                                 left: '10%',
                                                 width: '80%'
                                             }, MainStyles.button, MainStyles.success]}>
