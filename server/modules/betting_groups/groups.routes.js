@@ -224,20 +224,25 @@ let prepareRouter = function (app) {
                     let exists = false;
                     group.users.forEach(function(groupUser) {
                         if(groupUser == req.params.userId) {
-                            res.ok({}, 'The user is already on the group!'); return;
+                            exists = true;
+                            return;
                         }
                     });
 
-                    group.users.push(user._id);
-                    group.tournaments.forEach(function(tournament) {
-                        tournament.users.push({_id: user._id, fullName: user.fullName, playerRanking: []});
-                    });
-                    BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU) {
-                        User.findByIdAndUpdate(user._id, {$push: {bettingGroups: group._id}}, {new: true}, function(errUU) {
-                            res.ok({userAdded: true});
-                            return;
+                    if(exists) {
+                        res.ok({}, 'The user is already on the group!'); return;
+                    } else {
+                        group.users.push(user._id);
+                        group.tournaments.forEach(function(tournament) {
+                            tournament.users.push({_id: user._id, fullName: user.fullName, playerRanking: []});
                         });
-                    });
+                        BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU) {
+                            User.findByIdAndUpdate(user._id, {$push: {bettingGroups: group._id}}, {new: true}, function(errUU) {
+                                res.ok({userAdded: true});
+                                return;
+                            });
+                        });
+                    }
                 });
             });
         } catch(ex) {
