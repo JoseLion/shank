@@ -64,6 +64,8 @@ export class InviteRegisterViewComponent {
                 let res = response.json();
                 if(res.error) {
                     SweetAlert.errorNotif(res.error, this.messageService);
+                    this.signupClicked = false;
+                    this.signupSpinner = false;
                     return;
                 }
 
@@ -127,6 +129,8 @@ export class InviteRegisterViewComponent {
                             let res = response.json();
                             if(res.error) {
                                 SweetAlert.errorNotif(res.error, this.messageService);
+                                this.signupClicked = false;
+                                this.signupSpinner = false;
                                 return;
                             }
 

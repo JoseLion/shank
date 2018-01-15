@@ -37,6 +37,8 @@ export class InviteLoginViewComponent {
                 let res = response.json();
                 if(res.error) {
                     SweetAlert.errorNotif(res.error, this.messageService);
+                    this.loginClicked = false;
+                    this.loginSpinner = false;
                     return;
                 }
 
@@ -97,6 +99,8 @@ export class InviteLoginViewComponent {
                             let res = response.json();
                             if(res.error) {
                                 SweetAlert.errorNotif(res.error, this.messageService);
+                                this.loginClicked = false;
+                                this.loginSpinner = false;
                                 return;
                             }
 
