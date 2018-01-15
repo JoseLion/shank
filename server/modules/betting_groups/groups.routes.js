@@ -222,26 +222,24 @@ let prepareRouter = function (app) {
                 User.findById(req.params.userId).exec(function(errU, user) {
                     if(!user) { res.ok({}, 'The user doesn\'t exist!'); return; }
                     let exists = false;
+                    console.log('USERS IN GROUP: ', group.users, 'USER: ', req.params.userId);
                     group.users.forEach(function(groupUser) {
-                        if(groupUser._id == user._id) {
-                            exists = true;
-                            return;
+                        if(groupUser._id == req.params.userId) {
+                            console.log('ALREADY ON GROUP!');
+                            res.ok({}, 'The user is already on the group!'); return;
                         }
                     });
-                    if(exists) {
-                        res.ok({}, 'The user is already on the group!'); return;
-                    } else {
-                        group.users.push(user._id);
-                        group.tournaments.forEach(function(tournament) {
-                            tournament.users.push({_id: user._id, fullName: user.fullName, playerRanking: []});
+
+                    group.users.push(user._id);
+                    group.tournaments.forEach(function(tournament) {
+                        tournament.users.push({_id: user._id, fullName: user.fullName, playerRanking: []});
+                    });
+                    BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU) {
+                        User.findByIdAndUpdate(user._id, {$push: {bettingGroups: group._id}}, {new: true}, function(errUU) {
+                            res.ok({userAdded: true});
+                            return;
                         });
-                        BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU) {
-                            User.findByIdAndUpdate(user._id, {$push: {bettingGroups: group._id}}, {new: true}, function(errUU) {
-                                res.ok({userAdded: true});
-                                return;
-                            });
-                        });
-                    }
+                    });
                 });
             });
         } catch(ex) {
