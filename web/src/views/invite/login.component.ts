@@ -4,6 +4,7 @@ import { Rest } from '../core/rest';
 import { SweetAlert } from 'views/core/sweetAlert';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { FacebookService, InitParams, LoginResponse, LoginOptions } from 'ngx-facebook';
+import { AuthService } from "angular2-social-login";
 
 @Component({
     selector: 'login',
@@ -17,7 +18,7 @@ export class InviteLoginViewComponent {
     public loginSpinner: boolean = false;
     public facebookSpinner: boolean = false;
 
-    constructor(private route : ActivatedRoute, private rest: Rest, private sweetAlert : SweetAlert, private messageService : MessageService, private fb: FacebookService) {
+    constructor(private route : ActivatedRoute, private rest: Rest, private sweetAlert : SweetAlert, private messageService : MessageService, private fb : FacebookService, private fbAuth : AuthService) {
         this.route.params.subscribe(params => {
             this.groupToken = params['groupToken'];
         });
@@ -75,22 +76,25 @@ export class InviteLoginViewComponent {
     }
 
     continueWithFacebook() {
-        this.loginClicked = true;
-        this.facebookSpinner = true;
-        let loginOptions: LoginOptions = {
-            scope: 'public_profile,email',
-            return_scopes: true
-        };
-        this.fb.login(loginOptions).then((response: LoginResponse) => {
-            console.log('RESPONSE: ', response);
-            this.loginClicked = false;
-            this.facebookSpinner = false;
-        }).catch(cancel => {
-            console.error('CANCEL: ', cancel);
-            this.loginClicked = false;
-            this.facebookSpinner = false;
-            SweetAlert.errorNotif('Facebook login canceled!', this.messageService);
+        this.fbAuth.login('facebook').subscribe(response => {
+            console.log(response);
         });
+        // this.loginClicked = true;
+        // this.facebookSpinner = true;
+        // let loginOptions: LoginOptions = {
+        //     scope: 'public_profile,email',
+        //     return_scopes: true
+        // };
+        // this.fb.login(loginOptions).then((response: LoginResponse) => {
+        //     console.log('RESPONSE: ', response);
+        //     this.loginClicked = false;
+        //     this.facebookSpinner = false;
+        // }).catch(cancel => {
+        //     console.error('CANCEL: ', cancel);
+        //     this.loginClicked = false;
+        //     this.facebookSpinner = false;
+        //     SweetAlert.errorNotif('Facebook login canceled!', this.messageService);
+        // });
     }
 
 }

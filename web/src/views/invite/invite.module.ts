@@ -19,7 +19,7 @@ import {
 } from 'primeng/primeng';
 
 import { ROUTES } from 'app/app.routes';
-// import { Angular2SocialLoginModule } from "angular2-social-login";
+import { Angular2SocialLoginModule } from "angular2-social-login";
 import { FacebookModule } from 'ngx-facebook';
 
 // App components:
@@ -57,9 +57,9 @@ import { InviteRegisterViewComponent } from './register.component';
 })
 export class InviteViewModule { }
 
-// Angular2SocialLoginModule.loadProvidersScripts({
-//     'facebook': {
-//       'clientId': '520526514985916',
-//       'apiVersion': 'v2.11'
-//     }
-// });
+Angular2SocialLoginModule.loadProvidersScripts({
+    'facebook': {
+      'clientId': '520526514985916',
+      'apiVersion': 'v2.11'
+    }
+});

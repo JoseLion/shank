@@ -30,7 +30,8 @@
             ],
             "scripts": [
                 "../node_modules/jquery/dist/jquery.min.js",
-                "../node_modules/metismenu/dist/metisMenu.min.js"
+                "../node_modules/metismenu/dist/metisMenu.min.js",
+                "../node_modules/angular2-social-login/dist/bundles/angular2-social-login.min.js"
             ],
             "environmentSource": "environments/environment.ts",
             "environments": {
