@@ -19,7 +19,6 @@ import {
 } from 'primeng/primeng';
 
 import { ROUTES } from 'app/app.routes';
-// import { Angular2SocialLoginModule } from "angular2-social-login";
 import { FacebookModule } from 'ngx-facebook';
 
 // App components:
@@ -50,16 +49,8 @@ import { InviteRegisterViewComponent } from './register.component';
         DropdownModule,
 
         // FB api:
-        // Angular2SocialLoginModule
         FacebookModule.forRoot()
 
     ]
 })
 export class InviteViewModule { }
-
-// Angular2SocialLoginModule.loadProvidersScripts({
-//     'facebook': {
-//       'clientId': '520526514985916',
-//       'apiVersion': 'v2.11'
-//     }
-// });

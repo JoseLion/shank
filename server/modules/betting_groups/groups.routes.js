@@ -223,11 +223,12 @@ let prepareRouter = function (app) {
                     if(!user) { res.ok({}, 'The user doesn\'t exist!'); return; }
                     let exists = false;
                     group.users.forEach(function(groupUser) {
-                        if(groupUser._id == user._id) {
+                        if(groupUser == req.params.userId) {
                             exists = true;
                             return;
                         }
                     });
+
                     if(exists) {
                         res.ok({}, 'The user is already on the group!'); return;
                     } else {
