@@ -24,7 +24,6 @@ export class InviteLoginViewComponent {
 
         let initParams: InitParams = {
             appId: '520526514985916',
-            xfbml: true,
             version: 'v2.11'
         };
         this.fb.init(initParams);
@@ -79,11 +78,11 @@ export class InviteLoginViewComponent {
         this.facebookSpinner = true;
         let loginOptions: LoginOptions = {
             enable_profile_selector: true,
-            scope: 'public_profile,user_friends,email,pages_show_list',
+            scope: 'public_profile,email',
             return_scopes: true
         };
         this.fb.login(loginOptions).then((loginResponse: LoginResponse) => {
-            this.fb.api('/me').then((profile : any) => {
+            this.fb.api('/me?fields=id,name,email,picture').then((profile : any) => {
                 console.log('RESPONSE: ', profile);
                 // if (profile.email) {
                 //     let data = {
