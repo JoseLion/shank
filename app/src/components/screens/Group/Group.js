@@ -1,6 +1,5 @@
 // React components:
 import React from 'react';
-// import { ActionSheetIOS, AsyncStorage, FlatList, Image, Share, TouchableHighlight, TouchableOpacity, Text, View } from 'react-native';
 import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import { Avatar, List, ListItem } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview'
@@ -295,17 +294,18 @@ export default class Group extends BaseComponent {
 
     inviteToJoin() {
         Share.share({
-            message: `Shank Group Invitation: http://${ClienHost}invite/${this.state.currentGroup.groupToken}`,
+            message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}invite/login/${this.state.currentGroup.groupToken}`,
             title: 'Shank Group Invitation',
-            url: `http://${ClienHost}invite/${this.state.currentGroup.groupToken}`
+            url: `http://${ClienHost}invite/login/${this.state.currentGroup.groupToken}`
         }, {
+            subject: 'Shank Group Invitation',
             dialogTitle: 'Shank Group Invitation',
             excludedActivityTypes: [
                 'com.apple.UIKit.activity.PostToTwitter',
                 'com.apple.uikit.activity.mail'
             ],
             tintColor: 'green'
-        }).then(this._showResult).catch(err => console.log(err))
+        }).then(this._showResult).catch(err => console.log(err));
     }
 
     onGroupAsync = async(data) => {
