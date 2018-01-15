@@ -18,6 +18,7 @@ import AddGroup from '../screens/Group/AddGroup';
 import EditGroup from '../screens/Group/EditGroup';
 import Group from '../screens/Group/Group';
 import PlayerSelection from '../screens/Group/PlayerSelection';
+import PlayerSelectionSearch from '../screens/Group/PlayerSelectionSearch';
 import Settings from '../screens/Settings/Settings';
 
 export const TabNav = TabNavigator({
@@ -58,6 +59,7 @@ export const AppNavigator = StackNavigator({
     EditGroup: { screen: EditGroup },
     Group: { screen: Group },
     PlayerSelection: { screen: PlayerSelection },
+    PlayerSelectionSearch: { screen: PlayerSelectionSearch },
     Settings: { screen: Settings }
 });
 
@@ -72,16 +74,6 @@ const mapStateToProps = state => ({
 
 export class AppWithNavigationState extends Component {
     // TODO: Set the back button press action ###
-    // componentDidMount() { BackHandler.addEventListener('hardwareBackPress', this.onBackPress); }
-    // componentWillUnmount() { BackHandler.removeEventListener('hardwareBackPress', this.onBackPress); }
-    // onBackPress = () => {
-    //     const { dispatch, nav } = this.props;
-    //     if (nav.index === 0 || nav.routes[nav.index].routeName === 'Main') {
-    //         return false;
-    //     }
-    //     dispatch(NavigationActions.back());
-    //     return true;
-    // };
     render() {
         const { dispatch, nav } = this.props;
         return (

@@ -14,7 +14,7 @@ class PlayerRow extends BaseComponent {
     constructor(props) {
         super(props);
         this.playerSelected = this.playerSelected.bind(this);
-        this.state = { checkIsSelected: null };
+        this.state = { checkIsSelected: this.props.data.isSelected ? LocalStyles.checkIsSelected : null };
     }
 
     playerSelected() {
@@ -64,9 +64,9 @@ export default class PlayerSelection extends BaseComponent {
             </TouchableHighlight>
         ),
         headerRight: (
-            <View>
+            <TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.state.params.searchPlayer()}>
                 <FontAwesome name='search' style={[MainStyles.headerIconButton]} />
-            </View>
+            </TouchableHighlight>
         )
     });
 
@@ -74,6 +74,9 @@ export default class PlayerSelection extends BaseComponent {
         super(props);
         this.setUpdateSelected = this.setUpdateSelected.bind(this);
         this.updateLocalPlayerList = this.updateLocalPlayerList.bind(this);
+        this.searchPlayer = this.searchPlayer.bind(this);
+        this.initialRequest = this.initialRequest.bind(this);
+        this.updateListSelected = this.updateListSelected.bind(this);
         this.state = {
             groupId: this.props.navigation.state.params.groupId,
             tournamentId: this.props.navigation.state.params.tournamentId,
@@ -84,7 +87,12 @@ export default class PlayerSelection extends BaseComponent {
             loading: false
         };
     }
-    componentDidMount() { this.initialRequest(); }
+    componentDidMount() {
+        this.props.navigation.setParams({
+            searchPlayer: this.searchPlayer
+        });
+        this.initialRequest();
+    }
 
     setLoading(loading) { this.setState({loading: loading}); }
     updateLocalPlayerList() {
@@ -131,33 +139,84 @@ export default class PlayerSelection extends BaseComponent {
         }
         this.setState({playersSelected: players});
     }
+    searchPlayer() {
+        super.navigateToScreen('PlayerSelectionSearch', {
+            playersSelected: this.state.playersSelected,
+            players: this.state.players,
+            updateListSelected: this.updateListSelected
+        });
+    }
+    updateListSelected(playersSelected, players) {
+        let playersSelectedFinal = [];
+        this.state.playersSelected.forEach(player => {
+            if(player.playerId != null) playersSelectedFinal.push(player);
+            players.filter(found => {
+                return found.PlayerID == player.playerId;
+            }).map(found => {
+                found.isSelected = true;
+                return found;
+            });
+        });
+        this.setState({players: players, playersSelected: playersSelectedFinal});
+    }
 
     // Async methods:
     initialRequest = async () => {
-        this.setLoading(true);
-        try {
-            GolfApiModel.get('Players').then((players) => {
-                this.setState({players: players});
-                this.setLoading(false);
-            }).catch(error => {
-                console.log('ERROR! ', error);
-                this.setLoading(false);
+
+        let players = [
+            { "PlayerID": 40000024, "FirstName": "Frank", "LastName": "Adams", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000024.png" },
+            { "PlayerID": 40000028, "FirstName": "Felipe", "LastName": "Aguilar", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000028.png" },
+            { "PlayerID": 40000031, "FirstName": "Thomas", "LastName": "Aiken", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000031.png" },
+            { "PlayerID": 40000035, "FirstName": "Steven", "LastName": "Alker", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000035.png" },
+            { "PlayerID": 40000037, "FirstName": "Fulton", "LastName": "Allem", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000037.png" },
+            { "PlayerID": 40000038, "FirstName": "Michael", "LastName": "Allen", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000038.png" },
+            { "PlayerID": 40000039, "FirstName": "Robert", "LastName": "Allenby", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000039.png" },
+            { "PlayerID": 40000040, "FirstName": "Jason", "LastName": "Allred", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000040.png" },
+            { "PlayerID": 40000044, "FirstName": "Stephen", "LastName": "Ames", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000044.png" },
+            { "PlayerID": 40000045, "FirstName": "Byeong-Hun", "LastName": "An", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000045.png" },
+            { "PlayerID": 40000052, "FirstName": "Billy", "LastName": "Andrade", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000052.png" },
+            { "PlayerID": 40001657, "FirstName": "Mark", "LastName": "Anguiano", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40001657.png" },
+            { "PlayerID": 40000053, "FirstName": "Kiradech", "LastName": "Aphibarnrat", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000053.png" },
+            { "PlayerID": 40000054, "FirstName": "Stuart", "LastName": "Appleby", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000054.png" },
+            { "PlayerID": 40000055, "FirstName": "Alex", "LastName": "Aragon", "PhotoUrl": "https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/golf/low-res/40000055.png" }
+        ];
+
+        let playersSelected = [];
+        this.state.playerRanking.forEach(player => {
+            if(player.playerId != null) playersSelected.push(player);
+            players.filter(found => {
+                return found.PlayerID == player.playerId;
+            }).map(found => {
+                found.isSelected = true;
+                return found;
             });
-        } catch (error) {
-            console.log('ERROR! ', error);
-            this.setLoading(false);
-        }
+        });
+        this.setState({players: players, playersSelected: playersSelected});
+
+        // this.setLoading(true);
+        // try {
+        // GolfApiModel.get('Players').then((players) => {
+        //     this.setState({players: players});
+        //     this.setLoading(false);
+        // }).catch(error => {
+        //     console.log('ERROR! ', error);
+        //     this.setLoading(false);
+        // });
+        // } catch (error) {
+        //     console.log('ERROR! ', error);
+        this.setLoading(false);
+        // }
     };
     onPlayerRankingSaveAsync = async(data) => {
         await BaseModel.put(`groups/editMyPlayers/${this.state.groupId}/${this.state.tournamentId}`, {players: data})
-            .then((response) => {
-                this.setLoading(false);
-                this.props.navigation.state.params.updatePlayerRankingList(data);
-                this.props.navigation.goBack(null);
-            }).catch((error) => {
-                this.setLoading(false);
-                BarMessages.showError(error, this.validationMessage);
-            });
+        .then((response) => {
+            this.setLoading(false);
+            this.props.navigation.state.params.updatePlayerRankingList(data);
+            this.props.navigation.goBack(null);
+        }).catch((error) => {
+            this.setLoading(false);
+            BarMessages.showError(error, this.validationMessage);
+        });
     };
 
     render() {

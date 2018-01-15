@@ -43,6 +43,9 @@ function nav(state = initialNavState, action) {
         case 'PlayerSelection':
             nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'PlayerSelection'}), state );
             break;
+        case 'PlayerSelectionSearch':
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'PlayerSelectionSearch'}), state );
+            break;
         case 'Profile':
             nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Profile'}), state );
             break
