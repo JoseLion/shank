@@ -79,14 +79,64 @@ export class InviteLoginViewComponent {
         this.facebookSpinner = true;
         let loginOptions: LoginOptions = {
             enable_profile_selector: true,
-            scope: 'public_profile,email',
+            scope: 'public_profile,user_friends,email,pages_show_list',
             return_scopes: true
         };
-        this.fb.login(loginOptions).then((response: LoginResponse) => {
-            this.fb.api('/me').then(profile => {
+        this.fb.login(loginOptions).then((loginResponse: LoginResponse) => {
+            this.fb.api('/me').then((profile : any) => {
                 console.log('RESPONSE: ', profile);
-                this.loginClicked = false;
-                this.facebookSpinner = false;
+                // if (profile.email) {
+                //     let data = {
+                //         fullName: profile.name,
+                //         email: profile.email,
+                //         facebookId: profile.id,
+                //         photo: {
+                //             name: 'facebook',
+                //             path: profile.picture.data.url
+                //         }
+                //     };
+                //     this.rest.openPost('users/facebookSignin', data).subscribe(
+                //         response => {
+                //             let res = response.json();
+                //             if(res.error) {
+                //                 SweetAlert.errorNotif(res.error, this.messageService);
+                //                 return;
+                //             }
+                //
+                //             localStorage.setItem('token', res.response.token);
+                //             this.rest.put(`groups/addUser/${this.groupToken}/${res.response.user._id}`)
+                //             .subscribe(
+                //                 finalResponse => {
+                //                     let groupRes = finalResponse.json();
+                //                     if(groupRes.error) {
+                //                         SweetAlert.errorNotif(groupRes.error, this.messageService);
+                //                         return;
+                //                     }
+                //
+                //                     if(groupRes.response.userAdded) {
+                //                         SweetAlert.success('You joined to the group!', 'Download APP', () => {
+                //                             console.log('OK BUTTON CLICKED');
+                //                         });
+                //                     } else {
+                //                         SweetAlert.error('Something went wrong!', () => {
+                //                             console.log('OK BUTTON CLICKED BAD');
+                //                         });
+                //                     }
+                //                 }, error => {
+                //                     console.error('ERROR CONSUMO SERVICIO: ',  error);
+                //                     SweetAlert.errorNotif('Internal Server Error', this.messageService);
+                //                 }, () => {
+                //                     localStorage.removeItem('token');
+                //                     this.loginClicked = false;
+                //                     this.facebookSpinner = false;
+                //                 }
+                //             );
+                //         }, error => {
+                //             console.error('ERROR CONSUMO SERVICIO: ', error);
+                //             SweetAlert.errorNotif('Internal Server Error', this.messageService);
+                //         }
+                //     );
+                // }
             }).catch(error => {
                 console.error('ERROR: ', error);
                 this.loginClicked = false;
