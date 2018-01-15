@@ -78,13 +78,21 @@ export class InviteLoginViewComponent {
         this.loginClicked = true;
         this.facebookSpinner = true;
         let loginOptions: LoginOptions = {
+            enable_profile_selector: true,
             scope: 'public_profile,email',
             return_scopes: true
         };
         this.fb.login(loginOptions).then((response: LoginResponse) => {
-            console.log('RESPONSE: ', response);
-            this.loginClicked = false;
-            this.facebookSpinner = false;
+            this.fb.api('/me').then(profile => {
+                console.log('RESPONSE: ', profile);
+                this.loginClicked = false;
+                this.facebookSpinner = false;
+            }).catch(error => {
+                console.error('ERROR: ', error);
+                this.loginClicked = false;
+                this.facebookSpinner = false;
+                SweetAlert.errorNotif('Facebook login canceled!', this.messageService);
+            });
         }).catch(cancel => {
             console.error('CANCEL: ', cancel);
             this.loginClicked = false;
