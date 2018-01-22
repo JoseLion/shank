@@ -66,7 +66,8 @@ export default class PlayerSelectionSearch extends BaseComponent {
             playersSelected: this.props.navigation.state.params.playersSelected,
             players: this.props.navigation.state.params.players,
             loading: false,
-            data: []
+            data: [],
+            finalPlayersSelected: []
         };
     }
 
@@ -88,7 +89,7 @@ export default class PlayerSelectionSearch extends BaseComponent {
                 }
             }
         }
-        this.setState({playersSelected: players});
+        this.setState({finalPlayersSelected: players});
         this.props.navigation.state.params.updateListSelected(players, this.state.players);
     }
     searchInPlayers(playerName) {
@@ -133,7 +134,7 @@ export default class PlayerSelectionSearch extends BaseComponent {
                         </View>
                         <View style={[MainStyles.viewFlexItemsC]}>
                             <TouchableHighlight  style={[MainStyles.headerIconButtonContainer]} onPress={() => this.props.navigation.goBack()}>
-                                <Text style={[{color: '#FFF'}]}>Cancel</Text>
+                                <Text style={[{color: '#FFF'}]}>{this.state.finalPlayersSelected.length > 0 ? 'Close' : 'Cancel'}</Text>
                             </TouchableHighlight>
                         </View>
                     </View>

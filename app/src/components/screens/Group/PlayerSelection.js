@@ -161,18 +161,20 @@ export default class PlayerSelection extends BaseComponent {
         });
     }
     updateListSelected(playersSelected, players) {
-        let playersSelectedFinal = [];
-        this.state.finalPlayers.forEach(player => {
-            if(player.playerId != null) playersSelectedFinal.push(player);
-            players.filter(found => {
-                return found.PlayerID != player.playerId;
-            })
+        // let playersSelectedFinal = [];
+        // console.log('PLAYERS: ', players)
+        // console.log('SELECTED: ', playersSelected)
+        // playersSelected.forEach(player => {
+        //     if(player.playerId != null) playersSelectedFinal.push(player);
+        //     players.filter(found => {
+        //         return found.PlayerID != player.playerId;
+        //     })
             // .map(found => {
             //     found.isSelected = true;
             //     return found;
             // });
-        });
-        this.setState({players: players, playersSelected: playersSelectedFinal});
+        // });
+        this.setState({players: players, playersSelected: playersSelected, finalPlayers: playersSelected});
     }
 
     // Async methods:
