@@ -22,6 +22,7 @@ class RoasterRow extends BaseComponent {
     addPlayer() {
         super.navigateToScreen('PlayerSelection', {
             actualPosition: Number.parseInt(this.props.rowId) + 1,
+            isEmpty: this.props.data == null || this.props.data.playerId == null,
             groupId: this.props.groupId,
             tournamentId: this.props.tournamentId,
             playerRanking: this.props.playerRanking,
@@ -48,13 +49,13 @@ class RoasterRow extends BaseComponent {
                         </View>
                     </View>
                 </TouchableHighlight>
-            )
+            );
         } else {
             return (
                 <TouchableHighlight underlayColor='#E4E4E4' onPress={this.addPlayer} style={[LocalStyles.roasterRowHighlight]}>
                     <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>EMPTY SLOT</Text>
                 </TouchableHighlight>
-            )
+            );
         }
     }
 }
@@ -90,6 +91,7 @@ export default class Group extends BaseComponent {
         this.checkChangesOnList = this.checkChangesOnList.bind(this);
         this.removeUser = this.removeUser.bind(this);
         this.handleRefresh = this.handleRefresh.bind(this);
+        this.onPlayerRankingSaveAsync = this.onPlayerRankingSaveAsync.bind(this);
         // this.goMain = this.goMain.bind(this);
         // this.setOrderPlayer = this.setOrderPlayer.bind(this);
         // this.setOrderedList = this.setOrderedList.bind(this);
@@ -158,8 +160,8 @@ export default class Group extends BaseComponent {
         } else {
             this.props.showActionSheetWithOptions(
                 {
-                    options: [ 'Cancel' ],
-                    cancelButtonIndex: 0
+                    options: this.state.tournamentsName,
+                    cancelButtonIndex: this.state.tournamentsName.length
                 },
                 buttonIndex => this.optionSelectedPressed(buttonIndex)
             );
@@ -259,11 +261,12 @@ export default class Group extends BaseComponent {
                 let found = playerRanking.filter(function(ranking) {
                     return original.playerId == ranking.playerId;
                 });
-                if(original.position != found[0].position) {
+                if(found[0] == null || original.position != found[0].position) {
                     quantityMovements++;
                 }
             }
         });
+        this.setState({movementsDone: quantityMovements});
         if(this.state.diffDays > 4) {
             this.onPlayerRankingSaveAsync(playerRanking);
         }
@@ -288,7 +291,11 @@ export default class Group extends BaseComponent {
     onPlayerRankingSaveAsync = async(data) => {
         this.setLoading(true);
         await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: data})
-            .then((response) => { this.setLoading(false); })
+            .then((response) => {
+                this.setLoading(false);
+                this.setState({originalRanking: JSON.stringify(this.state.playerRanking)});
+                this.checkChangesOnList(this.state.playerRanking);
+            })
             .catch((error) => { BarMessages.showError(error, this.validationMessage); });
     };
 
@@ -296,7 +303,7 @@ export default class Group extends BaseComponent {
         Share.share({
             message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}invite/login/${this.state.currentGroup.groupToken}`,
             title: 'Shank Group Invitation',
-            url: `http://${ClienHost}invite/login/${this.state.currentGroup.groupToken}`
+            url: `http://${ClienHost}/#/invite/login/${this.state.currentGroup.groupToken}`
         }, {
             subject: 'Shank Group Invitation',
             dialogTitle: 'Shank Group Invitation',
@@ -329,9 +336,13 @@ export default class Group extends BaseComponent {
                 loading: false});
             currentGroup.tournaments[0].users.forEach(function(user) {
                 if(user._id == self.state.currentUser._id) {
-                    let playerRanking = (user.playerRanking == null) ? [] : user.playerRanking;
-                    while(playerRanking.length < 5)
-                        playerRanking.push({position: 6});
+                    let playerRanking = (user.playerRanking == null || user.playerRanking.length == 0) ? [
+                        {position: 1},
+                        {position: 2},
+                        {position: 3},
+                        {position: 4},
+                        {position: 5}
+                    ] : user.playerRanking;
                     self.setState({originalRanking: JSON.stringify(playerRanking)});
                     self.updatePlayerRankingList(playerRanking);
                     return;
@@ -340,12 +351,12 @@ export default class Group extends BaseComponent {
             this.props.navigation.setParams({currentGroup: currentGroup});
 
             // GolfApiModel.get(`Leaderboard/${currentGroup.tournaments[0].tournamentId}`).then(leaderboard => {
-            //     leaderboard.Tournament
+            //     let tournamentData = leaderboard.Tournament;
                 let tournamentData = {
                     "TournamentID": 284,
                     "Name": "Ryder Cup",
-                    "StartDate": "2018-01-14T00:00:00",
-                    "EndDate": "2018-01-17T00:00:00",
+                    "StartDate": "2018-01-20T00:00:00",
+                    "EndDate": "2018-01-23T00:00:00",
                     "IsOver": false,
                     "IsInProgress": true,
                     "Canceled": false,
@@ -353,22 +364,22 @@ export default class Group extends BaseComponent {
                         {
                             "RoundID": 1056,
                             "Number": 1,
-                            "Day": "2018-01-14T00:00:00"
+                            "Day": "2018-01-20T00:00:00"
                         },
                         {
                             "RoundID": 1057,
                             "Number": 2,
-                            "Day": "2018-01-15T00:00:00"
+                            "Day": "2018-01-21T00:00:00"
                         },
                         {
                             "RoundID": 1058,
                             "Number": 3,
-                            "Day": "2018-01-16T00:00:00"
+                            "Day": "2018-01-22T00:00:00"
                         },
                         {
                             "RoundID": 1059,
                             "Number": 4,
-                            "Day": "2018-01-17T00:00:00"
+                            "Day": "2018-01-23T00:00:00"
                         }
                     ]
                 };
@@ -537,7 +548,6 @@ export default class Group extends BaseComponent {
                             </View>
                             <View tabLabel='Roaster' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
                                 <SortableListView
-                                    style={{flex: 1, marginBottom: '22.5%'}}
                                     data={this.state.playerRanking}
                                     order={this.state.order}
                                     disableSorting={this.state.diffDays == 0}
@@ -577,7 +587,12 @@ export default class Group extends BaseComponent {
                                     }
                                 />
 
-                                { this.state.diffDays > 0 && this.state.diffDays <= 4
+                                { this.state.diffDays > 0 && this.state.diffDays <= 4 && this.state.movementsDone > 0
+                                    ? <View style={[{ width:'100%', height: '22.5%'}]}></View>
+                                    : <View></View>
+                                }
+
+                                { this.state.diffDays > 0 && this.state.diffDays <= 4 && this.state.movementsDone > 0
                                     ?
                                         <TouchableOpacity
                                             onPress={() => this.onPlayerRankingSaveAsync(this.state.playerRanking)}

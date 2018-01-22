@@ -36,6 +36,7 @@ class BaseComponent extends Component {
         if(!this.state.navigationPress) {
             this.setState({navigationPress: true});
             this.props.navigation.dispatch({type: page});
+            this.setState({navigationPress: false});
         }
     }
 
@@ -43,6 +44,7 @@ class BaseComponent extends Component {
         if(!this.state.navigationPress) {
             this.setState({navigationPress: true});
             this.props.navigation.navigate(page, data);
+            this.setState({navigationPress: false});
         }
     }
 
@@ -50,6 +52,7 @@ class BaseComponent extends Component {
         if(!this.state.navigationPress) {
             this.setState({navigationPress: true});
             this.props.navigation.dispatch();
+            this.setState({navigationPress: false});
         }
     }
 

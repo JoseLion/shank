@@ -9,11 +9,11 @@
         "scheme": "Shank",
         "ios": {
             "bundleIdentifier": "com.levelap.shank",
-            "buildNumber" : "1.0.2"
+            "buildNumber" : "1.0.3"
         },
         "android": {
             "package": "com.levelap.shank",
-            "versionCode": 2
+            "versionCode": 3
         },
         "androidStatusBar": {
             "barStyle": "light-content",
