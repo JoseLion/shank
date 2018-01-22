@@ -155,6 +155,8 @@ let prepareRouter = function (app) {
             User.findOne({_id: req.params.userId}).select('_id bettingGroups')
             .populate('bettingGroups')
             .exec(function (err, user) {
+                if(!user) { res.ok({}, 'The user doesn\'t exist!'); return; }
+
                 let activeTournaments = 1;
                 let groups = new Array();
                 user.bettingGroups.forEach(function(group) {

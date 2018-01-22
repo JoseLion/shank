@@ -77,12 +77,15 @@ export default class PlayerSelection extends BaseComponent {
         this.searchPlayer = this.searchPlayer.bind(this);
         this.initialRequest = this.initialRequest.bind(this);
         this.updateListSelected = this.updateListSelected.bind(this);
+        console.log('IS EMPTY: ', this.props.navigation.state.params.isEmpty)
         this.state = {
+            isEmpty: this.props.navigation.state.params.isEmpty,
             groupId: this.props.navigation.state.params.groupId,
             tournamentId: this.props.navigation.state.params.tournamentId,
             actualPosition: this.props.navigation.state.params.actualPosition,
             playerRanking: this.props.navigation.state.params.playerRanking,
             playersSelected: [],
+            finalPlayers: [],
             players: [],
             loading: false
         };
@@ -96,32 +99,43 @@ export default class PlayerSelection extends BaseComponent {
 
     setLoading(loading) { this.setState({loading: loading}); }
     updateLocalPlayerList() {
-        if(this.state.playersSelected.length === 0 || this.state.playersSelected.length > 5) {
-            BarMessages.showError('You must select 5 players.', this.validationMessage);
-            return;
-        }
-        let playerRanking = this.state.playerRanking;
-        if(this.state.playersSelected.length == 1) {
-            this.state.playersSelected[0].position = this.state.actualPosition;
-            playerRanking[this.state.actualPosition - 1] = this.state.playersSelected[0];
-        } else {
-            playerRanking = [];
-            let actualPosition = this.state.actualPosition;
-            this.state.playersSelected.forEach(function(player) {
-                player.position = actualPosition++;
-                playerRanking.push(player);
-                if(actualPosition == 6) actualPosition = 1;
-            });
-            while(playerRanking.length < 5) {
-                playerRanking.push({position: actualPosition++});
-                if(actualPosition == 6) actualPosition = 1;
+        if(this.state.isEmpty) {
+            let quantityPlayersEmpty = 0;
+            this.state.playerRanking.forEach(player => { if(player.playerId == null) quantityPlayersEmpty++; });
+            if(this.state.finalPlayers.length > quantityPlayersEmpty) {
+                let message = (quantityPlayersEmpty > 1)
+                    ? `You must select between 1 and ${quantityPlayersEmpty} players.`
+                    : 'You must select one player.';
+                BarMessages.showError(message, this.validationMessage);
+                return;
             }
+        } else {
+            if(this.state.finalPlayers.length != 1) {
+                BarMessages.showError('You must select one player.', this.validationMessage);
+                return;
+            }
+        }
+
+        let playerRanking = this.state.playerRanking;
+        if(this.state.finalPlayers.length == 1) {
+            this.state.finalPlayers[0].position = this.state.actualPosition;
+            playerRanking[this.state.actualPosition - 1] = this.state.finalPlayers[0];
+        } else {
+            this.state.finalPlayers.forEach(player => {
+                for(let idx = 0 ; idx<5 ; idx++) {
+                    if(playerRanking[idx].playerId == null) {
+                        player.position = playerRanking[idx].position;
+                        playerRanking[idx] = player;
+                        break;
+                    }
+                }
+            });
         }
         this.setLoading(true);
         this.onPlayerRankingSaveAsync(playerRanking);
     }
     setUpdateSelected(playerSelected) {
-        let players = this.state.playersSelected;
+        let players = this.state.finalPlayers;
         if(playerSelected.isSelected) {
             players.push({
                 playerId: playerSelected.PlayerID,
@@ -141,23 +155,26 @@ export default class PlayerSelection extends BaseComponent {
     }
     searchPlayer() {
         super.navigateToScreen('PlayerSelectionSearch', {
-            playersSelected: this.state.playersSelected,
+            playersSelected: this.state.finalPlayers,
             players: this.state.players,
             updateListSelected: this.updateListSelected
         });
     }
     updateListSelected(playersSelected, players) {
-        let playersSelectedFinal = [];
-        this.state.playersSelected.forEach(player => {
-            if(player.playerId != null) playersSelectedFinal.push(player);
-            players.filter(found => {
-                return found.PlayerID == player.playerId;
-            }).map(found => {
-                found.isSelected = true;
-                return found;
-            });
-        });
-        this.setState({players: players, playersSelected: playersSelectedFinal});
+        // let playersSelectedFinal = [];
+        // console.log('PLAYERS: ', players)
+        // console.log('SELECTED: ', playersSelected)
+        // playersSelected.forEach(player => {
+        //     if(player.playerId != null) playersSelectedFinal.push(player);
+        //     players.filter(found => {
+        //         return found.PlayerID != player.playerId;
+        //     })
+            // .map(found => {
+            //     found.isSelected = true;
+            //     return found;
+            // });
+        // });
+        this.setState({players: players, playersSelected: playersSelected, finalPlayers: playersSelected});
     }
 
     // Async methods:
@@ -184,12 +201,13 @@ export default class PlayerSelection extends BaseComponent {
         let playersSelected = [];
         this.state.playerRanking.forEach(player => {
             if(player.playerId != null) playersSelected.push(player);
-            players.filter(found => {
-                return found.PlayerID == player.playerId;
-            }).map(found => {
-                found.isSelected = true;
-                return found;
-            });
+            players = players.filter(found => {
+                return found.PlayerID != player.playerId;
+            })
+            // .map(found => {
+            //     found.isSelected = true;
+            //     return found;
+            // });
         });
         this.setState({players: players, playersSelected: playersSelected});
 
