@@ -110,7 +110,7 @@ export default class Group extends BaseComponent {
 
             playersLeaderboard: [],
 
-            usersLength: 5,
+            usersLength: 1,
             score: 0,
             ranking: 0,
             playerRanking: [],
@@ -301,9 +301,9 @@ export default class Group extends BaseComponent {
 
     inviteToJoin() {
         Share.share({
-            message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}invite/login/${this.state.currentGroup.groupToken}`,
+            message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}#/invite/login/${this.state.currentGroup.groupToken}`,
             title: 'Shank Group Invitation',
-            url: `http://${ClienHost}/#/invite/login/${this.state.currentGroup.groupToken}`
+            url: `http://${ClienHost}#/invite/login/${this.state.currentGroup.groupToken}`
         }, {
             subject: 'Shank Group Invitation',
             dialogTitle: 'Shank Group Invitation',
@@ -355,8 +355,8 @@ export default class Group extends BaseComponent {
                 let tournamentData = {
                     "TournamentID": 284,
                     "Name": "Ryder Cup",
-                    "StartDate": "2018-01-20T00:00:00",
-                    "EndDate": "2018-01-23T00:00:00",
+                    "StartDate": "2018-01-23T00:00:00",
+                    "EndDate": "2018-01-26T00:00:00",
                     "IsOver": false,
                     "IsInProgress": true,
                     "Canceled": false,
@@ -364,22 +364,22 @@ export default class Group extends BaseComponent {
                         {
                             "RoundID": 1056,
                             "Number": 1,
-                            "Day": "2018-01-20T00:00:00"
+                            "Day": "2018-01-23T00:00:00"
                         },
                         {
                             "RoundID": 1057,
                             "Number": 2,
-                            "Day": "2018-01-21T00:00:00"
+                            "Day": "2018-01-24T00:00:00"
                         },
                         {
                             "RoundID": 1058,
                             "Number": 3,
-                            "Day": "2018-01-22T00:00:00"
+                            "Day": "2018-01-25T00:00:00"
                         },
                         {
                             "RoundID": 1059,
                             "Number": 4,
-                            "Day": "2018-01-23T00:00:00"
+                            "Day": "2018-01-26T00:00:00"
                         }
                     ]
                 };
@@ -430,6 +430,7 @@ export default class Group extends BaseComponent {
         let endPoint;
         await BaseModel.delete(`groups/removeUser/${this.state.currentGroup._id}/${data._id}`).then(() => {
             this.handleRefresh();
+            this.setState({usersLength: this.state.usersLength - 1});
         }).catch((error) => {
             console.log('ERROR! ', error);
             BarMessages.showError(error, this.validationMessage);
