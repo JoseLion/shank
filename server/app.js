@@ -13,7 +13,7 @@ let app = express();
 
 const databaseUri = 'mongodb://shank.levelaptesting.com:27017/shank';
 mongoose.Promise = global.Promise;
-mongoose.connect(databaseUri, {databaseUri: true})
+mongoose.connect(databaseUri, {})
 .then(() => console.log(`Database connected at ${databaseUri}`))
 .catch(err => console.log(`Database connection error: ${err.message}`));
 

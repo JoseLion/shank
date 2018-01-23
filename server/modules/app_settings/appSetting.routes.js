@@ -77,7 +77,7 @@ module.exports = function (app) {
             // TODO: if is not logged
             // res.ok({}, 'Usuario no autorizado.')
             Profile.find(req.body)
-            .select('id creationDate updateDate status name')
+            .select('id created_at updated_at status name')
             .exec(function(err, profiles) {
                 res.ok(profiles);
             });

@@ -90,7 +90,7 @@ let prepareRouter = function (app) {
                     path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
                 };
             }
-            groupInformation.updateDate = new Date();
+            groupInformation.updated_at = new Date();
             groupInformation.activeTournaments = groupInformation.tournaments.length;
             groupInformation.tournaments.forEach(function(tournament) {
                 if(tournament._id == null) {
