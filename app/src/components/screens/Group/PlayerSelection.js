@@ -77,7 +77,6 @@ export default class PlayerSelection extends BaseComponent {
         this.searchPlayer = this.searchPlayer.bind(this);
         this.initialRequest = this.initialRequest.bind(this);
         this.updateListSelected = this.updateListSelected.bind(this);
-        console.log('IS EMPTY: ', this.props.navigation.state.params.isEmpty)
         this.state = {
             isEmpty: this.props.navigation.state.params.isEmpty,
             groupId: this.props.navigation.state.params.groupId,
@@ -91,9 +90,7 @@ export default class PlayerSelection extends BaseComponent {
         };
     }
     componentDidMount() {
-        this.props.navigation.setParams({
-            searchPlayer: this.searchPlayer
-        });
+        this.props.navigation.setParams({ searchPlayer: this.searchPlayer });
         this.initialRequest();
     }
 
@@ -154,27 +151,22 @@ export default class PlayerSelection extends BaseComponent {
         this.setState({playersSelected: players});
     }
     searchPlayer() {
-        super.navigateToScreen('PlayerSelectionSearch', {
-            playersSelected: this.state.finalPlayers,
-            players: this.state.players,
-            updateListSelected: this.updateListSelected
-        });
+        let players = this.state.players.filter(player => { return player.isSelected == null || !player.isSelected; });
+        super.navigateToScreen('PlayerSelectionSearch', { players: players, updateListSelected: this.updateListSelected });
     }
-    updateListSelected(playersSelected, players) {
-        // let playersSelectedFinal = [];
-        // console.log('PLAYERS: ', players)
-        // console.log('SELECTED: ', playersSelected)
-        // playersSelected.forEach(player => {
-        //     if(player.playerId != null) playersSelectedFinal.push(player);
-        //     players.filter(found => {
-        //         return found.PlayerID != player.playerId;
-        //     })
-            // .map(found => {
-            //     found.isSelected = true;
-            //     return found;
-            // });
-        // });
-        this.setState({players: players, playersSelected: playersSelected, finalPlayers: playersSelected});
+    updateListSelected(playersSelected) {
+        let finalPlayers = this.state.finalPlayers;
+        let players = this.state.players;
+        playersSelected.forEach(player => {
+            if(player.playerId != null && finalPlayers.filter(found => { return found.playerId == player.playerId; }).length == 0) finalPlayers.push(player);
+            this.state.players.filter(found => {
+                return found.PlayerID == player.playerId;
+            }).map(found => {
+                found.isSelected = true;
+                return found;
+            });
+        });
+        this.setState({finalPlayers: finalPlayers});
     }
 
     // Async methods:
@@ -203,11 +195,7 @@ export default class PlayerSelection extends BaseComponent {
             if(player.playerId != null) playersSelected.push(player);
             players = players.filter(found => {
                 return found.PlayerID != player.playerId;
-            })
-            // .map(found => {
-            //     found.isSelected = true;
-            //     return found;
-            // });
+            });
         });
         this.setState({players: players, playersSelected: playersSelected});
 
@@ -222,7 +210,7 @@ export default class PlayerSelection extends BaseComponent {
         // });
         // } catch (error) {
         //     console.log('ERROR! ', error);
-        this.setLoading(false);
+            this.setLoading(false);
         // }
     };
     onPlayerRankingSaveAsync = async(data) => {

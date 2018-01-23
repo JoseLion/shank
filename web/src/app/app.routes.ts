@@ -10,7 +10,7 @@ import { InviteRegisterViewComponent } from '../views/invite/register.component'
 
 export const ROUTES:Routes = [
     // Main redirect
-    // {path: '', redirectTo: 'login', pathMatch: 'full'},
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
 
     // App views
     {

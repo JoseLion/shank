@@ -63,17 +63,16 @@ export default class PlayerSelectionSearch extends BaseComponent {
         this.setUpdateSelected = this.setUpdateSelected.bind(this);
         this.searchInPlayers = this.searchInPlayers.bind(this);
         this.state = {
-            playersSelected: this.props.navigation.state.params.playersSelected,
             players: this.props.navigation.state.params.players,
+            finalPlayers: [],
             loading: false,
-            data: [],
-            finalPlayersSelected: []
+            data: []
         };
     }
 
     setLoading(loading) { this.setState({loading: loading}); }
     setUpdateSelected(playerSelected) {
-        let players = this.state.playersSelected;
+        let players = this.state.finalPlayers;
         if(playerSelected.isSelected) {
             players.push({
                 playerId: playerSelected.PlayerID,
@@ -89,8 +88,8 @@ export default class PlayerSelectionSearch extends BaseComponent {
                 }
             }
         }
-        this.setState({finalPlayersSelected: players});
-        this.props.navigation.state.params.updateListSelected(players, this.state.players);
+        this.setState({finalPlayers: players});
+        this.props.navigation.state.params.updateListSelected(players);
     }
     searchInPlayers(playerName) {
         if(playerName.length === 0) {
@@ -134,7 +133,7 @@ export default class PlayerSelectionSearch extends BaseComponent {
                         </View>
                         <View style={[MainStyles.viewFlexItemsC]}>
                             <TouchableHighlight  style={[MainStyles.headerIconButtonContainer]} onPress={() => this.props.navigation.goBack()}>
-                                <Text style={[{color: '#FFF'}]}>{this.state.finalPlayersSelected.length > 0 ? 'Close' : 'Cancel'}</Text>
+                                <Text style={[{color: '#FFF'}]}>{this.state.finalPlayers.length > 0 ? 'Close' : 'Cancel'}</Text>
                             </TouchableHighlight>
                         </View>
                     </View>
