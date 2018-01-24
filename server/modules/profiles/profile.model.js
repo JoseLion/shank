@@ -1,5 +1,4 @@
 let mongoose = require('mongoose');
-let Counter = mongoose.model('Counter');
 
 let ProfileSchema = new mongoose.Schema({
   status: {type: Boolean, default: true},

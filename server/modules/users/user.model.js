@@ -2,7 +2,6 @@ let mongoose = require('mongoose');
 let crypto = require('crypto');
 let jwt = require('jsonwebtoken');
 let configJWT = require('../../config/jwt');
-let Counter = mongoose.model('Counter');
 
 let UserSchema = new mongoose.Schema({
   status: { type: Boolean, default: true },
@@ -35,10 +34,10 @@ let UserSchema = new mongoose.Schema({
 
 UserSchema.pre('save', function(next) {
   let self = this;
-  
+
   self.fullName = self.fullName.trim();
   self.email = self.email.trim();
-  
+
   next();
 });
 
@@ -62,7 +61,7 @@ UserSchema.methods.validPassword = function (password) {
 UserSchema.methods.generateJwt = function (permissions) {
   let expiry = new Date();
   expiry.setDate(expiry.getDate() + 10000);
-  
+
   return jwt.sign({
     _id: this._id,
     email: this.email,

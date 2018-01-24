@@ -1,5 +1,4 @@
 let mongoose = require('mongoose');
-let Counter = mongoose.model('Counter');
 
 let BettingGroupSchema = new mongoose.Schema({
   status: { type: Boolean, default: true },

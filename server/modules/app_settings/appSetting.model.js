@@ -1,5 +1,4 @@
 let mongoose = require('mongoose');
-let Counter = mongoose.model('Counter');
 
 let AppSettingSchema = new mongoose.Schema({
   code: {
