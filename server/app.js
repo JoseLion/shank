@@ -11,9 +11,9 @@ let express = require('express'),
 
 let app = express();
 
-const databaseUri = 'mongodb://shank.levelaptesting.com:27017/shank';
+const databaseUri = 'mongodb://localhost/shank';
 mongoose.Promise = global.Promise;
-mongoose.connect(databaseUri, {databaseUri: true})
+mongoose.connect(databaseUri, {})
 .then(() => console.log(`Database connected at ${databaseUri}`))
 .catch(err => console.log(`Database connection error: ${err.message}`));
 
@@ -45,36 +45,35 @@ require('./config/passport');
 app.use(passport.initialize());
 
 app.use(function (req, res, next) {
-    let err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  let err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
+  app.use(function (err, req, res, next) {
 
-        if (err.code === 'invalid_token') {
-            return res.unauthorized(err.status);
-        }
-
-        if (err.code === 'permission_denied') {
-            return res.forbidden(err.status);
-        }
-
-        res.status(err.status || 500).json({response: {}, error: err.message});
-    });
+    if (err.code === 'invalid_token') {
+      return res.unauthorized(err.status);
+    }
+    
+    if (err.code === 'permission_denied') {
+      return res.forbidden(err.status);
+    }
+    
+    res.status(err.status || 500).json({response: {}, error: err.message});
+  });
 }
 
 app.use(function (err, req, res, next) {
-
-    if (err.code === 'invalid_token') { return res.status(err.status).json({response: {}, error: 'User not authorized'}); }
-    if (err.code === 'permission_denied') { return res.status(err.status).json({response: {}, error: 'Permission denied'}); }
-
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+  if (err.code === 'invalid_token') { return res.status(err.status).json({response: {}, error: 'User not authorized'}); }
+  if (err.code === 'permission_denied') { return res.status(err.status).json({response: {}, error: 'Permission denied'}); }
+  
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
 
 module.exports = app;
