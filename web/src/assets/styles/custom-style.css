@@ -20,7 +20,7 @@ button{position:relative;}
 .text-medium{font-size:1.5em;}
 
 .form-group input{width:100%;}
-.form-group label{margin-top:5px;}
+.form-group label{margin-top:5px;text-align:right;}
 .form-group label::after{content:":";}
 
 .form-group .cash-input::before{content:"\f155";font-family:FontAwesome;position:absolute;left:1em;top:0.2em;}
