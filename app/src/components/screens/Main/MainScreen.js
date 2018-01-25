@@ -69,31 +69,39 @@ export default class MainScreen extends BaseComponent {
       tapCenterButton: this.tapCenterButton
     });
     
-    Linking.addEventListener('url', this._handleOpenURL);
-    
     AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).then(authToken => {
+      
       this.setState({auth: authToken});
+      
       if (authToken) {
-        AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
-          this.setState({currentUser: JSON.parse(user)})
-          this.onListGroupAsync();
-        });
+        
+        Linking.addEventListener('url', this._handleOpenURL);
         
         Linking.getInitialURL().then((url) => {
           if (url) {
             let queryString = url.replace(Constants.linkingUri, '');
             if (queryString) {
               let data = qs.parse(queryString);
-              //alert(`App closed to app with data: ${JSON.stringify(data)}`);
+              
+              if (data.group && data.user) {
+                addToGroup();
+              }
             }
           }
-        }).catch(err => console.error('An error occurred', err));
+        }).catch(err => {
+          console.error('An error occurred', err);
+          
+          AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
+            this.setState({currentUser: JSON.parse(user)})
+            this.onListGroupAsync();
+          });
+        });
       }
     });
   }
   
   componentWillUnmount() {
-    Linking.removeEventListener('url', this._handleOpenURL);
+    Linking.removeEventListener('url', (e) => {});
   }
   
   _handleOpenURL = (url) => {
@@ -101,8 +109,27 @@ export default class MainScreen extends BaseComponent {
     let queryString = url.url.replace(Constants.linkingUri, '');
     if (queryString) {
       let data = qs.parse(queryString);
-      //alert(`App openned to app with data: ${JSON.stringify(data)}`);
+      data = JSON.stringify(data);
+      
+      if (data.group && data.user) {
+        addToGroup();
+      }
     }
+  }
+  
+  addToGroup = async(data) => {
+    BaseModel.put(`groups/addUser/${data.group}/${data.user}`).then((groups) => {
+      AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
+        this.setState({currentUser: JSON.parse(user)})
+        this.onListGroupAsync();
+      });
+    })
+    .catch((error)=> {
+      AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
+        this.setState({currentUser: JSON.parse(user)})
+        this.onListGroupAsync();
+      });
+    });
   }
   
   setLoading(loading) {
