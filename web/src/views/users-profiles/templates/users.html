@@ -26,7 +26,7 @@
                 </p-row>
             </p-headerColumnGroup>
 
-            <p-column field="name"></p-column>
+            <p-column field="fullName"></p-column>
             <p-column field="email"></p-column>
             <p-column field="status">
                 <ng-template let-col let-user="rowData" pTemplate="body">
@@ -55,9 +55,9 @@
             <form role="form" (submit)="saveUser()" novalidate>
                 <p-growl></p-growl>
                 <div class="col-md-12 form-group">
-                    <label for="name" class="col-md-4 text-right control-label">Name</label>
+                    <label for="fullName" class="col-md-4 text-right control-label">Name</label>
                     <span class="col-md-8">
-                        <input name="name" pInputText [(ngModel)]="user.name" required />
+                        <input name="fullName" pInputText [(ngModel)]="user.fullName" required />
                     </span>
                     <div class="clearfix"></div>
                 </div>
