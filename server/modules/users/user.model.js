@@ -2,6 +2,7 @@ let mongoose = require('mongoose');
 let crypto = require('crypto');
 let jwt = require('jsonwebtoken');
 let configJWT = require('../../config/jwt');
+let Profile = mongoose.model('Profile');
 
 let UserSchema = new mongoose.Schema({
   status: { type: Boolean, default: true },
@@ -22,8 +23,7 @@ let UserSchema = new mongoose.Schema({
   },
   profile: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Profile',
-    default: 2
+    ref: 'Profile'
   },
   bettingGroups: [ {type: mongoose.Schema.Types.ObjectId, ref: 'BettingGroup'} ],
   facebookId: String,
@@ -37,8 +37,17 @@ UserSchema.pre('save', function(next) {
 
   self.fullName = self.fullName.trim();
   self.email = self.email.trim();
-
-  next();
+  if(!self.profile) {
+    Profile.findOne({acronyms: 'public'}).exec((err, profile) => {
+      if(err) {
+        self.profile = null;
+      } else {
+        self.profile = profile._id;
+      }
+      next();
+      return;
+    });
+  }
 });
 
 UserSchema.methods.setPassword = function (password) {
