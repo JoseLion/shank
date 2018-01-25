@@ -1,6 +1,6 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 
-import * as Constants from '../../../../core/Constants';
+import * as ShankConstants from '../../../../core/ShankConstants';
 
 const isAndroid = Platform.OS == 'android' ? true : false;
 const {width, height} = Dimensions.get('window');
@@ -13,12 +13,12 @@ const LocalStyles = StyleSheet.create({
         paddingRight: Style.EM(0.5)
     },
     titleText: {
-        color: Constants.PRIMARY_COLOR,
+        color: ShankConstants.PRIMARY_COLOR,
         fontSize: Style.EM(1),
         fontWeight: '700'
     },
     subtitleText: {
-        color: Constants.TERTIARY_COLOR_ALT,
+        color: ShankConstants.TERTIARY_COLOR_ALT,
         fontSize: Style.EM(0.75),
         fontWeight: '700'
     },

@@ -1,23 +1,23 @@
 {
-    "expo": {
-        "name": "Shank",
-        "icon": "resources/shank_logo_bg.png",
-        "version": "1.0.3",
-        "slug": "Shank",
-        "sdkVersion": "21.0.0",
-        "orientation": "portrait",
-        "scheme": "Shank",
-        "ios": {
-            "bundleIdentifier": "com.levelap.shank",
-            "buildNumber" : "1.0.4"
-        },
-        "android": {
-            "package": "com.levelap.shank",
-            "versionCode": 4
-        },
-        "androidStatusBar": {
-            "barStyle": "light-content",
-            "backgroundColor": "#53627c"
-        }
+  "expo": {
+    "name": "shank",
+    "icon": "resources/shank_logo_bg.png",
+    "version": "1.0.3",
+    "slug": "shank",
+    "sdkVersion": "21.0.0",
+    "orientation": "portrait",
+    "scheme": "shank",
+    "ios": {
+      "bundleIdentifier": "com.levelap.shank",
+      "buildNumber" : "1.0.4"
+    },
+    "android": {
+      "package": "com.levelap.shank",
+      "versionCode": 4
+    },
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#53627c"
     }
+  }
 }

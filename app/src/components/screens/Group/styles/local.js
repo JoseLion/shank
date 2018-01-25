@@ -1,7 +1,7 @@
 import { Dimensions, Platform, StyleSheet } from 'react-native';
 import Style from '../../../../styles/Stylesheet';
 
-import * as Constants from '../../../../core/Constants';
+import * as ShankConstants from '../../../../core/ShankConstants';
 
 
 const isAndroid = Platform.OS == 'android' ? true : false;
@@ -38,7 +38,7 @@ const LocalStyles = StyleSheet.create({
     titleText: {
         fontSize: Style.EM(1),
         fontWeight: '700',
-        color: Constants.PRIMARY_COLOR
+        color: ShankConstants.PRIMARY_COLOR
     },
     titleTextNumber: {
         fontSize: Style.EM(1.5)
@@ -46,15 +46,15 @@ const LocalStyles = StyleSheet.create({
     subtitleText: {
         fontSize: Style.EM(0.75),
         fontWeight: '700',
-        color: Constants.PRIMARY_COLOR
+        color: ShankConstants.PRIMARY_COLOR
     },
     normalText: {
         fontSize: Style.EM(0.75),
-        color: Constants.PRIMARY_COLOR
+        color: ShankConstants.PRIMARY_COLOR
     },
     infoText: {
         fontSize: Style.EM(0.75),
-        color: Constants.TERTIARY_COLOR_ALT
+        color: ShankConstants.TERTIARY_COLOR_ALT
     },
     trashButton: {
         alignItems: 'center',
@@ -88,16 +88,11 @@ const LocalStyles = StyleSheet.create({
         width: 30,
         borderRadius: 15
     },
-
-
-
-
-
     table: {
-        backgroundColor: Constants.BACKGROUND_COLOR
+        backgroundColor: ShankConstants.BACKGROUND_COLOR
     },
     tableCols: {
-        backgroundColor: Constants.BACKGROUND_COLOR,
+        backgroundColor: ShankConstants.BACKGROUND_COLOR,
         height: Style.EM(2.5)
     },
     tableContent: {
@@ -107,17 +102,17 @@ const LocalStyles = StyleSheet.create({
         paddingTop: Style.EM(0.75)
     },
     selectedCheck: {
-        backgroundColor: Constants.TERTIARY_COLOR,
+        backgroundColor: ShankConstants.TERTIARY_COLOR,
         borderWidth: 1,
         borderRadius: 10,
-        borderColor: Constants.SUCCESS_COLOR,
+        borderColor: ShankConstants.SUCCESS_COLOR,
         paddingLeft: Style.EM(1),
         paddingRight: Style.EM(1),
-        color: Constants.SUCCESS_COLOR
+        color: ShankConstants.SUCCESS_COLOR
     },
     checkIsSelected: {
-        backgroundColor: Constants.SUCCESS_COLOR,
-        color: Constants.TERTIARY_COLOR
+        backgroundColor: ShankConstants.SUCCESS_COLOR,
+        color: ShankConstants.TERTIARY_COLOR
     },
 
     //Modal

@@ -4,7 +4,7 @@ import React from 'react';
 import { AsyncStorage } from 'react-native';
 
 import * as ApiUtils from './ApiUtils';
-import * as Constants from './Constants';
+import * as ShankConstants from './ShankConstants';
 import {Host, ApiHost, AuthToken, ApiKey, version} from '../config/variables';
 
 let internetError = 'No fue posible acceder al internet de su teléfono.';

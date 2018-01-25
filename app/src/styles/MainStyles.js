@@ -1,22 +1,22 @@
 import { StyleSheet } from 'react-native';
 import Style from './Stylesheet';
-import * as Constants from '../core/Constants';
+import * as ShankConstants from '../core/ShankConstants';
 
 const MainStyles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Constants.BACKGROUND_COLOR
+        backgroundColor: ShankConstants.BACKGROUND_COLOR
     },
     outerContainer: {
         flex: 2,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Constants.BACKGROUND_COLOR,
+        backgroundColor: ShankConstants.BACKGROUND_COLOR,
     },
     background: {
-        backgroundColor: Constants.BACKGROUND_COLOR
+        backgroundColor: ShankConstants.BACKGROUND_COLOR
     },
     stretchContainer :{
         flex: 1,
@@ -33,10 +33,10 @@ const MainStyles = StyleSheet.create({
         textAlign: 'center',
     },
     formInput: {
-        borderColor: Constants.TERTIARY_COLOR_ALT,
+        borderColor: ShankConstants.TERTIARY_COLOR_ALT,
         borderRadius: 0,
         borderWidth: 1,
-        color: Constants.PRIMARY_COLOR,
+        color: ShankConstants.PRIMARY_COLOR,
         fontSize: Style.EM(1),
         marginBottom: Style.EM(0.5),
         marginTop: Style.EM(0.5),
@@ -47,7 +47,7 @@ const MainStyles = StyleSheet.create({
         width: '100%'
     },
     formPicker: {
-        borderColor: Constants.TERTIARY_COLOR_ALT,
+        borderColor: ShankConstants.TERTIARY_COLOR_ALT,
         borderRadius: 0,
         borderWidth: 1,
         height: Style.EM(2.5),
@@ -61,7 +61,7 @@ const MainStyles = StyleSheet.create({
     },
     formPickerText: {
         fontSize: Style.EM(1),
-        color: Constants.PRIMARY_COLOR
+        color: ShankConstants.PRIMARY_COLOR
     },
     button: {
         alignItems: 'center',
@@ -76,7 +76,7 @@ const MainStyles = StyleSheet.create({
         paddingTop: Style.EM(0.5)
     },
     buttonText: {
-        color: Constants.TERTIARY_COLOR,
+        color: ShankConstants.TERTIARY_COLOR,
         fontSize: Style.EM(1)
     },
     buttonLink: {
@@ -87,30 +87,30 @@ const MainStyles = StyleSheet.create({
         width: '100%'
     },
     buttonLinkText: {
-        color: Constants.PRIMARY_COLOR,
+        color: ShankConstants.PRIMARY_COLOR,
         fontSize: Style.EM(1),
         marginTop: Style.EM(0.5)
     },
     success: {
-        backgroundColor: Constants.SUCCESS_COLOR
+        backgroundColor: ShankConstants.SUCCESS_COLOR
     },
     textSuccess: {
-        color: Constants.SUCCESS_COLOR
+        color: ShankConstants.SUCCESS_COLOR
     },
     error: {
-        backgroundColor: Constants.ERROR_COLOR
+        backgroundColor: ShankConstants.ERROR_COLOR
     },
     textError: {
-        color: Constants.ERROR_COLOR
+        color: ShankConstants.ERROR_COLOR
     },
     facebook: {
         backgroundColor: '#3B5998'
     },
     tertiary: {
-        backgroundColor: Constants.TERTIARY_COLOR
+        backgroundColor: ShankConstants.TERTIARY_COLOR
     },
     tabBarIcon: {
-        color: Constants.TERTIARY_COLOR,
+        color: ShankConstants.TERTIARY_COLOR,
         fontSize: Style.EM(1)
     },
     headerIconButtonContainer: {
@@ -119,7 +119,7 @@ const MainStyles = StyleSheet.create({
         alignItems: 'center'
     },
     headerIconButton: {
-        color: Constants.TERTIARY_COLOR,
+        color: ShankConstants.TERTIARY_COLOR,
         fontSize: Style.EM(1.5),
         paddingLeft: Style.EM(0.5),
         paddingRight: Style.EM(0.5)
@@ -143,16 +143,16 @@ const MainStyles = StyleSheet.create({
         paddingTop: 0
     },
     withoutGroupsButton: {
-        backgroundColor: Constants.BACKGROUND_COLOR,
+        backgroundColor: ShankConstants.BACKGROUND_COLOR,
         height: '100%',
         width: '100%'
     },
     withoutGroups: {
-        color: Constants.TERTIARY_COLOR_ALT,
+        color: ShankConstants.TERTIARY_COLOR_ALT,
         fontSize: Style.EM(1)
     },
     placeholderText: {
-        color: Constants.TERTIARY_COLOR_ALT,
+        color: ShankConstants.TERTIARY_COLOR_ALT,
         fontSize: Style.EM(0.75)
     },
     viewFlexItems: {
@@ -181,16 +181,8 @@ const MainStyles = StyleSheet.create({
     listItem: {
         padding: 20,
         borderBottomWidth: 1.5,
-        borderColor: Constants.TERTIARY_COLOR_ALT
+        borderColor: ShankConstants.TERTIARY_COLOR_ALT
     },
-
-
-
-
-
-
-
-
     groupsNone: {
         fontSize: Style.FONT_15,
         color: 'black'
@@ -224,19 +216,19 @@ const MainStyles = StyleSheet.create({
     },
     shankTitle: {
         fontSize: Style.FONT_50,
-        color: Constants.TERTIARY_COLOR,
+        color: ShankConstants.TERTIARY_COLOR,
         textAlign: 'center',
         fontWeight: 'bold',
     },
     medShankFont: {
         fontSize: Style.FONT_19,
-        color: Constants.TERTIARY_COLOR,
+        color: ShankConstants.TERTIARY_COLOR,
         textAlign: 'center',
     },
 
     smallShankFont: {
         fontSize: Style.FONT_13,
-        color: Constants.TERTIARY_COLOR,
+        color: ShankConstants.TERTIARY_COLOR,
         textAlign: 'left',
     },
     smallShankBlackFont: {

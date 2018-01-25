@@ -1,10 +1,10 @@
 import { Dimensions, StyleSheet } from 'react-native';
-import * as Constants from '../../../../core/Constants';
+import * as ShankConstants from '../../../../core/ShankConstants';
 const {width} = Dimensions.get('window');
 
 const LocalStyles = StyleSheet.create({
     container: {
-        backgroundColor: Constants.PRIMARY_COLOR
+        backgroundColor: ShankConstants.PRIMARY_COLOR
     },
     slide: {
         flex: 1,

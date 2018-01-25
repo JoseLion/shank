@@ -12,10 +12,10 @@ import { FontAwesome } from '@expo/vector-icons';
 import NoAuthModel from '../../../core/NoAuthModel';
 import MainStyles from '../../../styles/MainStyles';
 import LocalStyles from './styles/local';
-import * as Constants from '../../../core/Constants';
+import * as ShankConstants from '../../../core/ShankConstants';
 import * as BarMessages from '../../../core/BarMessages';
 
-const DismissKeyboardView = Constants.DismissKeyboardHOC(View);
+const DismissKeyboardView = ShankConstants.DismissKeyboardHOC(View);
 
 class RowComponent extends React.Component {
 
@@ -55,9 +55,9 @@ export default class Settings extends Component {
     static propTypes = { navigation: PropTypes.object.isRequired };
     static navigationOptions = ({navigation}) => ({
         title: 'SETTINGS',
-        headerTintColor: Constants.TERTIARY_COLOR,
-        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
-        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerTintColor: ShankConstants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
         headerLeft: (
             <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
                 <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
@@ -79,7 +79,7 @@ export default class Settings extends Component {
                     name: 'Edit Profile',
                     action: function() {
                         self.setLoading(true);
-                        AsyncStorage.getItem(Constants.USER_PROFILE).then(user => {
+                        AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
                             self.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)})
                             self.setLoading(false);
                         });
@@ -112,7 +112,7 @@ export default class Settings extends Component {
 
     async _removeStorage() {
         try {
-            let token = await AsyncStorage.removeItem(Constants.AUTH_TOKEN);
+            let token = await AsyncStorage.removeItem(ShankConstants.AUTH_TOKEN);
             this.props.navigation.dispatch({type: 'Main'})
         } catch (error) {
             console.log('error on :Token removed from disk.');

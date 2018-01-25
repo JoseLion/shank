@@ -23,8 +23,7 @@ let UserSchema = new mongoose.Schema({
   },
   profile: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Profile',
-    default: 2
+    ref: 'Profile'
   },
   bettingGroups: [ {type: mongoose.Schema.Types.ObjectId, ref: 'BettingGroup'} ],
   facebookId: String,

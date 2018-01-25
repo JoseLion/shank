@@ -6,16 +6,16 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components:
-import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, Facebook } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Facebook } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class Register extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
         title: 'SIGN UP',
-        headerTintColor: Constants.TERTIARY_COLOR,
-        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
-        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerTintColor: ShankConstants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
         headerLeft: (
             <TouchableHighlight onPress={() => navigation.dispatch({type: 'Login'})}>
                 <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
@@ -75,8 +75,8 @@ export default class Register extends BaseComponent {
         await NoAuthModel.create('/users/register', data)
             .then((response) => {
                 this.setLoading(false);
-                AsyncStorage.setItem(Constants.AUTH_TOKEN, response.token);
-                AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(response.user));
+                AsyncStorage.setItem(ShankConstants.AUTH_TOKEN, response.token);
+                AsyncStorage.setItem(ShankConstants.USER_PROFILE, JSON.stringify(response.user));
                 super.navigateDispatchToScreen('Main');
             }).catch((error) => {
                 this.setLoading(false);
@@ -87,7 +87,7 @@ export default class Register extends BaseComponent {
         this.setLoading(true);
         let option = 'Signup';
         try {
-            const {type, token} = await Facebook.logInWithReadPermissionsAsync(Constants.APP_FB_ID, { permissions: ['public_profile', 'email'] });
+            const {type, token} = await Facebook.logInWithReadPermissionsAsync(ShankConstants.APP_FB_ID, { permissions: ['public_profile', 'email'] });
             switch (type) {
                 case 'success': {
                     // Get the user's name using Facebook's Graph API
@@ -108,8 +108,8 @@ export default class Register extends BaseComponent {
                         await NoAuthModel.post('users/facebookSignin', data)
                             .then((userInfo) => {
                                 this.setLoading(false);
-                                AsyncStorage.setItem(Constants.AUTH_TOKEN, userInfo.token);
-                                AsyncStorage.setItem(Constants.USER_PROFILE, JSON.stringify(userInfo.user));
+                                AsyncStorage.setItem(ShankConstants.AUTH_TOKEN, userInfo.token);
+                                AsyncStorage.setItem(ShankConstants.USER_PROFILE, JSON.stringify(userInfo.user));
                                 this.props.navigation.dispatch({type: 'Main'});
                             }).catch((error) => {
                                 this.setLoading(false);

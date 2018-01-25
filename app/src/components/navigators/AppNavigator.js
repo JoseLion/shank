@@ -5,7 +5,7 @@ import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions }
 import { Entypo, FontAwesome } from '@expo/vector-icons';
 import { BackHandler } from 'react-native';
 
-import * as Constants from '../../core/Constants';
+import * as ShankConstants from '../../core/ShankConstants';
 
 import Splash from '../screens/Splash/Splash';
 import Slider from '../screens/Splash/Slider';
@@ -28,19 +28,19 @@ export const TabNav = TabNavigator({
     tabBarPosition: 'bottom',
     swipeEnabled: false,
     tabBarOptions: {
-        activeTintColor: Constants.TERTIARY_COLOR,
-        activeBackgroundColor: Constants.PRIMARY_COLOR,
-        inactiveTintColor: Constants.PRIMARY_COLOR,
-        inactiveBackgroundColor: Constants.TERTIARY_COLOR_ALT,
+        activeTintColor: ShankConstants.TERTIARY_COLOR,
+        activeBackgroundColor: ShankConstants.PRIMARY_COLOR,
+        inactiveTintColor: ShankConstants.PRIMARY_COLOR,
+        inactiveBackgroundColor: ShankConstants.TERTIARY_COLOR_ALT,
         showIcon: true,
         showLabel: true,
         upperCaseLabel: false,
         indicatorStyle: {
-            backgroundColor: Constants.PRIMARY_COLOR,
+            backgroundColor: ShankConstants.PRIMARY_COLOR,
             height: '100%'
         },
         style: {
-            backgroundColor: Constants.TERTIARY_COLOR_ALT
+            backgroundColor: ShankConstants.TERTIARY_COLOR_ALT
         },
         labelStyle: {
             fontWeight: 'bold'
