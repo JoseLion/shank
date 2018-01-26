@@ -8,16 +8,16 @@ import AppReducer from './components/reducers';
 import AppWithNavigationState from './components/navigators/AppNavigator';
 
 class ShankApp extends React.Component {
-    store = createStore(AppReducer);
-    render() {
-        return (
-            <ActionSheetProvider>
-                <Provider store={this.store}>
-                    <AppWithNavigationState/>
-                </Provider>
-            </ActionSheetProvider>
-        );
-    }
+  store = createStore(AppReducer);
+  render() {
+    return (
+      <ActionSheetProvider>
+        <Provider store={this.store}>
+          <AppWithNavigationState/>
+        </Provider>
+      </ActionSheetProvider>
+    );
+  }
 }
 
 AppRegistry.registerComponent('ShankApp', () => ShankApp);

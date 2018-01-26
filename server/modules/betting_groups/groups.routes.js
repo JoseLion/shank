@@ -41,41 +41,57 @@ let prepareRouter = function (app) {
     })
     .post(`${path}/create`, auth, multer({storage: photoConfig}).any(), function (req, res) {
         try{
-            User.findById(req.payload._id).exec(function (err, user) {
-                let groupInformation = JSON.parse(req.body.groupInformation);
-                groupInformation.tournaments = [
-                    {
-                        tournamentId: groupInformation.tournamentId,
-                        tournamentName: groupInformation.tournamentName,
-                        users: [
-                            {
-                                _id: user._id,
-                                fullName: user.fullName,
-                                playerRanking: [],
-                                ranking: 1
-                            }
-                        ]
-                    }
-                ];
-                groupInformation.owner = user._id;
-                groupInformation.users = [ user._id ];
-                groupInformation.groupToken = Math.round((Math.pow(36, 21) - Math.random() * Math.pow(36, 20))).toString(36).slice(1);
-                if(req.files.length > 0) {
-                    groupInformation.photo = {
-                        name: req.files[0].filename,
-                        path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
-                    };
+          User.findById(req.payload._id).exec(function (err, user) {
+            let groupInformation = JSON.parse(req.body.groupInformation);
+            
+            groupInformation.tournaments = [
+              {
+                tournamentId: groupInformation.tournamentId,
+                tournamentName: groupInformation.tournamentName,
+                users: [
+                  {
+                    _id: user._id,
+                    fullName: user.fullName,
+                    playerRanking: [],
+                    ranking: 1
+                  }
+                ]
+              }
+            ];
+            
+            groupInformation.owner = user._id;
+            groupInformation.users = [ user._id ];
+            groupInformation.groupToken = Math.round((Math.pow(36, 21) - Math.random() * Math.pow(36, 20))).toString(36).slice(1);
+            
+            if (req.files.length > 0) {
+              groupInformation.photo = {
+                name: req.files[0].filename,
+                path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
+              };
+            }
+            
+            let bettingGroupModel = new BettingGroup(groupInformation);
+            
+            bettingGroupModel.save(function(err, bettingGroupFinal) {
+              
+              try {
+                if (err) {
+                  return res.serverError();
                 }
-                let bettingGroupModel = new BettingGroup(groupInformation);
-                bettingGroupModel.save(function(err, bettingGroupFinal) {
-                    let userModel = new User(user);
-                    userModel.addGroup(bettingGroupFinal._id);
-                    userModel.save(function(err) {
-                        res.ok(bettingGroupFinal);
-                        return;
-                    });
+                
+                User.update({ _id: user._id },{ $push: { bettingGroups: bettingGroupFinal._id } }, (err, res_data) => {
+                  if (err) {
+                    return res.serverError();
+                  }
+                  
+                  res.ok(bettingGroupFinal);
                 });
+              }
+              catch (err) {
+                res.serverError();
+              }
             });
+          });
         } catch(ex) {
             console.log('EX: ', ex);
             res.serverError(); return;
@@ -86,8 +102,8 @@ let prepareRouter = function (app) {
             let groupInformation = JSON.parse(req.body.groupInformation);
             if(req.files.length > 0) {
                 groupInformation.photo = {
-                    name: req.files[0].filename,
-                    path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
+                  name: req.files[0].filename,
+                  path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
                 };
             }
             groupInformation.updated_at = new Date();
