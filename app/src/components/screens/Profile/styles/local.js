@@ -16,14 +16,14 @@ const LocalStyles = StyleSheet.create({
         borderColor: '#A39534',
     },
     createTInput :{
-        height: '8%',
+        height: '12%',
         width:'80%',
         borderWidth: 2,
         borderColor: '#rgba(0, 0, 0, .2)',
         borderRadius: 0,
         padding: 5,
         fontSize: 18,
-        borderBottomWidth: 0,
+        //borderBottomWidth: 0,
         color: '#333'
     },
     buttonText: {

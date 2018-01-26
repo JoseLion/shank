@@ -78,10 +78,10 @@ export default class Settings extends Component {
                     id: 0,
                     name: 'Edit Profile',
                     action: function() {
-                        self.setLoading(true);
+                        //self.setLoading(true);
                         AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
                             self.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)})
-                            self.setLoading(false);
+                            //self.setLoading(false);
                         });
                     }
                 },
