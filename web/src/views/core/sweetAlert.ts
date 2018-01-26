@@ -14,7 +14,7 @@ export class SweetAlert {
             showCancelButton: true,
             confirmButtonText: 'Yes!',
             cancelButtonText: 'No!',
-            showLoaderOnConfirm: true
+            allowOutsideClick: true
         }).then(result => {
             if(result.value) {
                 if(onAccept != null) {
@@ -39,7 +39,7 @@ export class SweetAlert {
             type: 'success',
             showCancelButton: false,
             confirmButtonText: okButton,
-            showLoaderOnConfirm: true
+            allowOutsideClick: true
         }).then(result => {
             if(result.value) {
                 if(onAccept != null) {
@@ -60,7 +60,7 @@ export class SweetAlert {
             type: 'error',
             showCancelButton: false,
             confirmButtonText: 'Try again later!',
-            showLoaderOnConfirm: true
+            allowOutsideClick: true
         }).then(result => {
             if(result.value) {
                 if(onAccept != null) {
@@ -82,7 +82,7 @@ export class SweetAlert {
             showCancelButton: true,
             confirmButtonText: 'Yes!',
             cancelButtonText: 'No!',
-            showLoaderOnConfirm: true
+            allowOutsideClick: true
         }).then(result => {
             if(result.value) {
                 if(onAccept != null) {

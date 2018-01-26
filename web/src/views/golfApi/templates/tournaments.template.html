@@ -1,0 +1,129 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="col-md-12 header-top">
+        <div class="col-md-6 header-title">
+            <h1>Tournaments</h1>
+        </div>
+        <div class="col-md-6 text-right">
+            <button type="submit" class="btn btn-success btn-w-m" (click)="openDialog(true)">Add tournament</button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="col-md-12 body-container">
+        <p-dataTable [value]="tournaments" [loading]="isLoading" [rows]="20" [paginator]="true">
+            <p-headerColumnGroup>
+                <p-row>
+                    <p-column header="Tournament ID" styleClass="col-md-1" rowspan="2"></p-column>
+                    <p-column header="Name" styleClass="col-md-3" rowspan="2"></p-column>
+                    <p-column header="Rounds" styleClass="col-md-4" rowspan="2"></p-column>
+                    <p-column header="Date" colspan="2"></p-column>
+                    <p-column header="Actions" styleClass="col-md-1" rowspan="2"></p-column>
+                </p-row>
+                <p-row>
+                    <p-column header="Start" styleClass="col-md-1"></p-column>
+                    <p-column header="End" styleClass="col-md-1"></p-column>
+                </p-row>
+            </p-headerColumnGroup>
+
+            <p-column field="tournamentId" styleClass="text-right"></p-column>
+            <p-column field="tournamentName"></p-column>
+            <p-column field="rounds">
+                <ng-template let-col let-tournament="rowData" pTemplate="body">
+                    <div *ngFor="let round of tournament.rounds">
+                        <span>Round {{round.number}}: {{round.day | date:'dd-MM-yyyy'}}</span>
+                        <span *ngIf="round.player != null">Winner: {{round.player.fullName}}</span>
+                    </div>
+                </ng-template>
+            </p-column>
+            <p-column field="startDate" styleClass="text-center">
+                <ng-template let-col let-tournament="rowData" pTemplate="body">
+                    <span>{{tournament.startDate | date:'dd-MM-yyyy'}}</span>
+                </ng-template>
+            </p-column>
+            <p-column field="endDate" styleClass="text-center">
+                <ng-template let-col let-tournament="rowData" pTemplate="body">
+                    <span>{{tournament.endDate | date:'dd-MM-yyyy'}}</span>
+                </ng-template>
+            </p-column>
+            <p-column styleClass="text-center">
+                <ng-template let-col let-tournament="rowData" pTemplate="body">
+                    <div style="padding-bottom:0.5em;">
+                        <button pButton type="button" icon="fa-eye" class="ui-button-primary ui-button-icon" pTooltip="View" tooltipPosition="top"></button>
+                        <button pButton type="button" icon="fa-pencil" class="ui-button-warning ui-button-icon" pTooltip="Edit" tooltipPosition="top" (click)="openDialog(false, tournament)"></button>
+                    </div>
+                    <div>
+                        <button pButton type="button" icon="fa-exchange" class="ui-button-info ui-button-icon" pTooltip="Associate player to round" tooltipPosition="top" (click)="openDialog(false, tournament, true)"></button>
+                    </div>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+
+        <p-dialog header="Add Tournament" [(visible)]="dialogToAdd" [resizable]="false" [draggable]="false" modal="true" dismissableMask="true" appendTo="body" responsive="true" width="500">
+            <form role="form" (submit)="create()" novalidate>
+                <p-growl></p-growl>
+                <div class="col-md-12 form-group">
+                    <label for="tournament" class="col-md-4 text-right control-label">Tournament</label>
+                    <div class="col-md-8">
+                        <p-dropdown name="tournament" [options]="tournamentsApi" [(ngModel)]="tournament" appendTo="body" optionLabel="Name" required placeholder="Pick a tournament..."></p-dropdown>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <p-footer class="text-right">
+                    <button type="submit" class="btn btn-primary btn-w-m">Save</button>
+                </p-footer>
+            </form>
+        </p-dialog>
+
+        <p-dialog header="Edit Tournament" [(visible)]="dialogToView" [resizable]="false" [draggable]="false" modal="true" dismissableMask="true" appendTo="body" responsive="true" width="500">
+            <form role="form" (submit)="save()" novalidate>
+                <p-growl></p-growl>
+                <div class="col-md-12 form-group">
+                    <label class="col-md-4 text-right control-label">Tournament</label>
+                    <span class="col-md-8">{{tournament.tournamentName}}</span>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label for="startDate" class="col-md-4 text-right control-label">Start Date</label>
+                    <div class="col-md-8">
+                        <p-calendar name="startDate" [(ngModel)]="tournament.startDate" dateFormat="dd-mm-yy" placeholder="DD-MM-YYYY"showIcon="true" readonlyInput="true" required monthNavigator="true" yearNavigator="true" showButtonBar="true" appendTo="body"></p-calendar>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label for="endDate" class="col-md-4 text-right control-label">End Date</label>
+                    <div class="col-md-8">
+                        <p-calendar name="endDate" [(ngModel)]="tournament.endDate" dateFormat="dd-mm-yy" placeholder="DD-MM-YYYY"showIcon="true" readonlyInput="true" required monthNavigator="true" yearNavigator="true" showButtonBar="true" appendTo="body"></p-calendar>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-md-12 form-group" *ngFor="let round of tournament.rounds">
+                    <label for="roundDay-{{round.number}}" class="col-md-4 text-right control-label">Round: {{round.number}}</label>
+                    <div class="col-md-8">
+                        <p-calendar name="roundDay-{{round.number}}" [(ngModel)]="round.day" dateFormat="dd-mm-yy" placeholder="DD-MM-YYYY"showIcon="true" readonlyInput="true" required monthNavigator="true" yearNavigator="true" showButtonBar="true" appendTo="body"></p-calendar>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <p-footer class="text-right">
+                    <button type="submit" class="btn btn-primary btn-w-m">Save</button>
+                </p-footer>
+            </form>
+        </p-dialog>
+
+        <p-dialog header="Edit Tournament" [(visible)]="dialogToAssociate" [resizable]="false" [draggable]="false" modal="true" dismissableMask="true" appendTo="body" responsive="true" width="500">
+            <form role="form" (submit)="save()" novalidate>
+                <p-growl></p-growl>
+                <div class="col-md-12 form-group" *ngFor="let round of tournament.rounds">
+                    <label for="player-{{round.number}}" class="col-md-4 text-right control-label">Round: {{round.number}}</label>
+                    <div class="col-md-8">
+                        <p-dropdown name="player-{{round.number}}" [options]="players" [(ngModel)]="round.player" appendTo="body" optionLabel="fullName" required placeholder="Pick a player..." [filter]="true"></p-dropdown>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <p-footer class="text-right">
+                    <button type="submit" class="btn btn-primary btn-w-m">Save</button>
+                </p-footer>
+            </form>
+        </p-dialog>
+    </div>
+</div>

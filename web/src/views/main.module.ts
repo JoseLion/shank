@@ -15,7 +15,8 @@ import {
     ButtonModule,
     TooltipModule,
     DialogModule,
-    DropdownModule
+    DropdownModule,
+    CalendarModule
 } from 'primeng/primeng';
 
 import { ROUTES } from "app/app.routes";
@@ -31,6 +32,8 @@ import { TopnavbarComponent } from "views/common/topnavbar";
 import { MainViewComponent } from "views/main.component";
 import { UserViewComponent } from "views/users-profiles/user.component";
 import { ProfileViewComponent } from "views/users-profiles/profile.component";
+import { TournamentsViewComponent } from 'views/golfApi/tournaments.component';
+import { PlayersViewComponent } from 'views/golfApi/players.component';
 import { SettingsViewComponent } from "views/settings/settings.component";
 
 @NgModule({
@@ -42,6 +45,8 @@ import { SettingsViewComponent } from "views/settings/settings.component";
         MainViewComponent,
         UserViewComponent,
         ProfileViewComponent,
+        TournamentsViewComponent,
+        PlayersViewComponent,
         SettingsViewComponent
     ],
     imports: [
@@ -61,6 +66,7 @@ import { SettingsViewComponent } from "views/settings/settings.component";
         TooltipModule,
         DialogModule,
         DropdownModule,
+        CalendarModule,
 
         // Modules:
         ReportsModule

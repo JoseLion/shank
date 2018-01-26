@@ -14,6 +14,8 @@
 .header-top,.body-container{background:#FFFFFF;padding-bottom:15px;padding-top:15px;margin-bottom:2em;}
 .header-top .header-title h1{margin:unset;}
 
+.navbar-static-side{bottom:0;overflow-y:auto;position:fixed;top:0;}
+
 button{position:relative;}
 
 .text-bigger{font-size:2em;}

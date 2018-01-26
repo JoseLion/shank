@@ -1,0 +1,30 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <p-growl></p-growl>
+
+    <div class="col-md-12 header-top">
+        <div class="col-md-6 header-title">
+            <h1>Players</h1>
+        </div>
+        <div class="col-md-6 text-right">
+            <button type="submit" class="btn btn-success btn-w-m" (click)="updatePlayers()">Update List</button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="col-md-12 body-container">
+        <p-dataTable [value]="players" [loading]="isLoading" [rows]="20" [paginator]="true">
+            <p-headerColumnGroup>
+                <p-row>
+                    <p-column header="Photo" styleClass="col-md-8 "></p-column>
+                    <p-column header="Player ID" styleClass="col-md-1"></p-column>
+                    <p-column header="Full Name" styleClass="col-md-3"></p-column>
+                </p-row>
+            </p-headerColumnGroup>
+
+            <p-column field="photoUrl"></p-column>
+            <p-column field="playerId" styleClass="text-right"></p-column>
+            <p-column field="fullName"></p-column>
+        </p-dataTable>
+    </div>
+</div>

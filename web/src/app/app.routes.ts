@@ -4,6 +4,8 @@ import { LoginViewComponent } from '../views/login/login.component';
 import { DashboardComponent } from 'views/reports/dashboard/dashboard.component';
 import { UserViewComponent } from 'views/users-profiles/user.component';
 import { ProfileViewComponent } from 'views/users-profiles/profile.component';
+import { TournamentsViewComponent } from '../views/golfApi/tournaments.component';
+import { PlayersViewComponent } from '../views/golfApi/players.component';
 import { SettingsViewComponent } from '../views/settings/settings.component';
 import { InviteLoginViewComponent } from '../views/invite/login.component';
 import { InviteRegisterViewComponent } from '../views/invite/register.component';
@@ -20,6 +22,8 @@ export const ROUTES:Routes = [
             { path: 'reports/dashboard', component: DashboardComponent },
             { path: 'usersProfiles/users/:profile', component: UserViewComponent },
             { path: 'usersProfiles/profiles', component: ProfileViewComponent },
+            { path: 'tournaments', component: TournamentsViewComponent },
+            { path: 'players', component: PlayersViewComponent },
             { path: 'settings', component: SettingsViewComponent }
         ]
     },
