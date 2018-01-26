@@ -9,7 +9,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import ActionSheet from 'react-native-actionsheet'
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, isAndroid, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, isAndroid, Spinner } from '../BaseComponent';
 import LocalStyles from './styles/local';
 import { ClienHost } from '../../../config/variables';
 
@@ -33,7 +33,7 @@ class RoasterRow extends BaseComponent {
     render() {
         if (this.props.data != null && this.props.data.playerId) {
             return (
-                <TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={Constants.HIGHLIGHT_COLOR} onPress={this.addPlayer} {...this.props.sortHandlers}>
+                <TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer} {...this.props.sortHandlers}>
                     <View style={[MainStyles.viewFlexItemsR]}>
                         <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                             <Text style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>
@@ -64,9 +64,9 @@ export default class Group extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
         title: 'GROUP',
-        headerTintColor: Constants.TERTIARY_COLOR,
-        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
-        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerTintColor: ShankConstants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
         headerLeft: (
             <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
                 <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
@@ -145,7 +145,7 @@ export default class Group extends BaseComponent {
     }
     componentDidMount() {
         this.props.navigation.setParams({ actionSheet: this.showActionSheet });
-        AsyncStorage.getItem(Constants.USER_PROFILE).then(user => { this.setState({currentUser: JSON.parse(user)}); });
+        AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => { this.setState({currentUser: JSON.parse(user)}); });
         this.onGroupAsync(this.props.navigation.state.params.groupId);
     }
 
@@ -459,7 +459,7 @@ export default class Group extends BaseComponent {
                     <View style={[LocalStyles.viewContent, {flex:3,flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.titleText]}>{this.state.currentGroup.name}</Text></View>
                         <View>
-                            <TouchableHighlight underlayColor={Constants.HIGHLIGHT_COLOR}
+                            <TouchableHighlight underlayColor={ShankConstants.HIGHLIGHT_COLOR}
                                 onPress={() => navigation.state.params.actionSheet()}>
                                 <Text style={[LocalStyles.subtitleText]}>{this.state.currentTournament.tournamentName}</Text>
                             </TouchableHighlight>
@@ -475,14 +475,14 @@ export default class Group extends BaseComponent {
                     </View>
                 </View>
 
-                <View style={[LocalStyles.groupInformation, {borderBottomWidth: 3, borderBottomColor: Constants.TERTIARY_COLOR_ALT}]}>
+                <View style={[LocalStyles.groupInformation, {borderBottomWidth: 3, borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT}]}>
                     <View style={[LocalStyles.viewContent, {flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.titleText]}>PRIZE</Text></View>
                         <View><Text style={[LocalStyles.titleText, {fontWeight:'400'}]}>{this.state.currentGroup.bet}</Text></View>
                     </View>
                 </View>
 
-                <View style={[LocalStyles.groupInformation, {borderBottomWidth: 2, borderBottomColor: Constants.TERTIARY_COLOR_ALT, paddingTop: 15, paddingBottom: 15}]}>
+                <View style={[LocalStyles.groupInformation, {borderBottomWidth: 2, borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT, paddingTop: 15, paddingBottom: 15}]}>
                     <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
                         <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myScore}</Text></View>
                         <View><Text style={[LocalStyles.infoText]}>Points</Text></View>
@@ -502,8 +502,8 @@ export default class Group extends BaseComponent {
                         <ScrollableTabView
                             initialPage={0}
                             locked={true}
-                            tabBarActiveTextColor={Constants.PRIMARY_COLOR}
-                            tabBarInactiveTextColor={Constants.PRIMARY_COLOR}
+                            tabBarActiveTextColor={ShankConstants.PRIMARY_COLOR}
+                            tabBarInactiveTextColor={ShankConstants.PRIMARY_COLOR}
                             renderTabBar={() => <ScrollableTabBar /> }>
                             <View tabLabel='Leaderboard' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
                                 <Text style={[LocalStyles.subtitleText, {paddingTop: 20, paddingBottom: 0}]}>Rank</Text>
@@ -518,7 +518,7 @@ export default class Group extends BaseComponent {
                                                     </TouchableHighlight> )
                                                 : ( <View></View> ) ]}
                                                 rightButtonWidth={(!this.state.currentGroup.isOwner || item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
-                                                <TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={Constants.HIGHLIGHT_COLOR}
+                                                <TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={ShankConstants.HIGHLIGHT_COLOR}
                                                     onPress={() => {if(item._id < 0) this.inviteToJoin();} }>
                                                     { item.fullName == 'Invite'
                                                         ?
@@ -536,7 +536,7 @@ export default class Group extends BaseComponent {
                                                                     <Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
                                                                 </View>
                                                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd], {flex:1}}>
-                                                                    <Text style={[LocalStyles.subtitleText, {color: Constants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score}</Text>
+                                                                    <Text style={[LocalStyles.subtitleText, {color: ShankConstants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score}</Text>
                                                                 </View>
                                                             </View>
                                                     }

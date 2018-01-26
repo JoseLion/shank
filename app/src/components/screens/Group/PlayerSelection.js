@@ -6,7 +6,7 @@ import SortableListView from 'react-native-sortable-listview';
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 class PlayerRow extends BaseComponent {
@@ -31,7 +31,7 @@ class PlayerRow extends BaseComponent {
 
     render() {
         return (
-            <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected()}>
+            <TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected()}>
                 <View style={[MainStyles.viewFlexItemsR]}>
                     <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                         <Avatar medium rounded source={{uri: this.props.data.PhotoUrl}} />
@@ -55,9 +55,9 @@ export default class PlayerSelection extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
         title: 'CHOOSE PLAYER',
-        headerTintColor: Constants.TERTIARY_COLOR,
-        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
-        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerTintColor: ShankConstants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
         headerLeft: (
             <TouchableHighlight onPress={() => navigation.goBack(null)}>
                 <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
@@ -227,7 +227,7 @@ export default class PlayerSelection extends BaseComponent {
 
     render() {
         return (
-            <View style={{flex:1, width:'100%', backgroundColor: Constants.BACKGROUND_COLOR}} >
+            <View style={{flex:1, width:'100%', backgroundColor: ShankConstants.BACKGROUND_COLOR}} >
                 <Spinner visible={this.state.loading} animation='fade' />
                 <SortableListView
                     style={{flex: 1, marginBottom: '20%'}}

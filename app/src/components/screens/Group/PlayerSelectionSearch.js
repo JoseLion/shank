@@ -7,7 +7,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, Constants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 class PlayerRow extends BaseComponent {
@@ -32,7 +32,7 @@ class PlayerRow extends BaseComponent {
 
     render() {
         return (
-            <TouchableHighlight style={[MainStyles.listItem]} underlayColor={Constants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected()}>
+            <TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected()}>
                 <View style={[MainStyles.viewFlexItemsR]}>
                     <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                         <Avatar medium rounded source={{uri: this.props.data.PhotoUrl}} />
@@ -107,10 +107,10 @@ export default class PlayerSelectionSearch extends BaseComponent {
 
     render() {
         return (
-            <View style={{flex:1, width:'100%', backgroundColor: Constants.BACKGROUND_COLOR}} >
+            <View style={{flex:1, width:'100%', backgroundColor: ShankConstants.BACKGROUND_COLOR}} >
                 <Spinner visible={this.state.loading} animation='fade' />
                 <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={MainStyles.background}>
-                    <View style={[MainStyles.viewFlexItemsR, { backgroundColor: Constants.PRIMARY_COLOR }]}>
+                    <View style={[MainStyles.viewFlexItemsR, { backgroundColor: ShankConstants.PRIMARY_COLOR }]}>
                         <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 4}]}>
                             <TextInput
                                 underlineColorAndroid='transparent'

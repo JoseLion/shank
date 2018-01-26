@@ -9,7 +9,7 @@ import Notifier from '../../../core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ImagePicker} from 'expo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import * as Constants from '../../../core/Constants';
+import * as ShankConstants from '../../../core/ShankConstants';
 import * as BarMessages from '../../../core/BarMessages';
 
 export default class ProfileScreen extends Component {
@@ -21,9 +21,9 @@ export default class ProfileScreen extends Component {
     static propTypes = { navigation: PropTypes.object.isRequired };
     static navigationOptions = ({navigation}) => ({
         title: 'User Profile',
-        headerTintColor: Constants.TERTIARY_COLOR,
-        headerTitleStyle: {alignSelf: 'center', color: Constants.TERTIARY_COLOR},
-        headerStyle: { backgroundColor: Constants.PRIMARY_COLOR },
+        headerTintColor: ShankConstants.TERTIARY_COLOR,
+        headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
+        headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
         headerLeft: (
             <TouchableHighlight onPress={() => navigation.dispatch({type: 'Settings'})}>
                 <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />

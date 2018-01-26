@@ -3,7 +3,7 @@
 const endPoint = 'shank.levelaptesting.com';
 
 const Host = `http://${endPoint}:3000/`;
-const ApiHost = Host + 'api';
+const ApiHost = Host + 'api/';
 const ClienHost = `${endPoint}/`;
 
 const AuthToken = 'shank-auth-token';

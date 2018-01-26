@@ -11,7 +11,7 @@ import NoAuthModel from '../../core/NoAuthModel';
 import BaseModel from '../../core/BaseModel';
 import GolfApiModel from '../../core/GolfApiModel';
 import MainStyles from '../../styles/MainStyles';
-import * as Constants from '../../core/Constants';
+import * as ShankConstants from '../../core/ShankConstants';
 import * as BarMessages from '../../core/BarMessages';
 import Style from '../../styles/Stylesheet';
 
@@ -74,7 +74,7 @@ export {
     BarMessages,
     BaseComponent,
     BaseModel,
-    Constants,
+    ShankConstants,
     GolfApiModel,
     isAndroid,
     MainStyles,

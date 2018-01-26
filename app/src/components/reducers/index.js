@@ -2,7 +2,7 @@ import {combineReducers} from 'redux';
 import {NavigationActions} from 'react-navigation';
 import {AppNavigator} from '../navigators/AppNavigator';
 import {AsyncStorage} from 'react-native';
-import * as Constants from '../../core/Constants';
+import * as ShankConstants from '../../core/ShankConstants';
 
 
 const firstAction = AppNavigator.router.getActionForPathAndParams('Splash');
@@ -61,13 +61,13 @@ function nav(state = initialNavState, action) {
 const initialAuthState = {isLoggedIn: false};
 
 async function _isItLoggedAsync() {
-    return await AsyncStorage.getItem(Constants.AUTH_TOKEN)
+    return await AsyncStorage.getItem(ShankConstants.AUTH_TOKEN)
 }
 
 function _isUserLogged() {
     _isItLoggedAsync().then((authToken) => {
         console.log("current logged");
-        console.log(authToken);
+        alert(authToken);
         return authToken
     })
 }

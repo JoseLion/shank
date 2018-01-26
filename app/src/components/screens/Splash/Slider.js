@@ -4,7 +4,7 @@ import { Image, Text, TouchableHighlight, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 // Shank components:
-import { BaseComponent, MainStyles, Constants } from '../BaseComponent';
+import { BaseComponent, MainStyles, ShankConstants } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class SliderScreen extends BaseComponent {
@@ -31,7 +31,7 @@ export default class SliderScreen extends BaseComponent {
                 </View>
                 <View style={LocalStyles.slide}>
                     <Image style={LocalStyles.coverImage} source={ImgSlideThree}></Image>
-                    <TouchableHighlight style={[MainStyles.button, MainStyles.tertiary, LocalStyles.startButton]} underlayColor={Constants.HIGHLIGHT_COLOR} onPress={() => super.navigateToScreen('Login')}>
+                    <TouchableHighlight style={[MainStyles.button, MainStyles.tertiary, LocalStyles.startButton]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => super.navigateToScreen('Login')}>
                         <Text style={MainStyles.buttonLinkText}>Let{"\'"}s get start</Text>
                     </TouchableHighlight>
                 </View>
