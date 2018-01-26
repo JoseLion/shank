@@ -67,7 +67,6 @@ let prepareRouter = function (app) {
       let userModel = new User(req.body);
       userModel.setPassword(req.body.password);
       userModel.save((err, userFinal) => {
-        console.log(err)
         if(err) { res.serverError(); return; }
         res.ok({user: userFinal, token: userFinal.generateJwt([])});
         return;
