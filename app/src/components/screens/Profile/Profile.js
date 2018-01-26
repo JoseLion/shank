@@ -46,8 +46,6 @@ export default class ProfileScreen extends Component {
   }
   
   componentDidMount() {
-    //this.setLoading(false);
-    
     BaseModel.get('users/' + this.props.navigation.state.params.currentUser._id).then((response) => {
       this.setState({
         loading: false,
