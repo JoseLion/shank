@@ -52,6 +52,8 @@ export default class MainScreen extends BaseComponent {
     this.handleRefresh = this.handleRefresh.bind(this);
     this.tapCenterButton = this.tapCenterButton.bind(this);
     this.removeGroup = this.removeGroup.bind(this);
+    this.getGroupList = this.getGroupList.bind(this);
+    
     this.state = {
       loading: false,
       data: [],
@@ -86,15 +88,21 @@ export default class MainScreen extends BaseComponent {
               if (data.group && data.user) {
                 addToGroup();
               }
+              else {
+                this.getGroupList();
+              }
+            }
+            else {
+              this.getGroupList();
             }
           }
+          else {
+            this.getGroupList();
+          }
+          
         }).catch(err => {
           console.error('An error occurred', err);
-          
-          AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
-            this.setState({currentUser: JSON.parse(user)})
-            this.onListGroupAsync();
-          });
+          this.getGroupList();
         });
       }
     });
@@ -102,6 +110,13 @@ export default class MainScreen extends BaseComponent {
   
   componentWillUnmount() {
     Linking.removeEventListener('url', (e) => {});
+  }
+  
+  async getGroupList() {
+    let user = await AsyncStorage.getItem(ShankConstants.USER_PROFILE);
+    
+    this.setState({currentUser: JSON.parse(user)})
+    this.onListGroupAsync();
   }
   
   _handleOpenURL = (url) => {
@@ -119,16 +134,10 @@ export default class MainScreen extends BaseComponent {
   
   addToGroup = async(data) => {
     BaseModel.put(`groups/addUser/${data.group}/${data.user}`).then((groups) => {
-      AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
-        this.setState({currentUser: JSON.parse(user)})
-        this.onListGroupAsync();
-      });
+      this.getGroupList();
     })
-    .catch((error)=> {
-      AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
-        this.setState({currentUser: JSON.parse(user)})
-        this.onListGroupAsync();
-      });
+    .catch((error) => {
+      this.getGroupList();
     });
   }
   
