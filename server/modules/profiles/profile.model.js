@@ -1,9 +1,9 @@
 let mongoose = require('mongoose');
-let Counter = mongoose.model('Counter');
 
 let ProfileSchema = new mongoose.Schema({
   status: {type: Boolean, default: true},
-  name: {type: String, unique: true}
+  name: {type: String},
+  acronyms: {type: String, unique: true}
 },
 { timestamps: { createdAt: 'created_at' , updatedAt: 'updated_at' }});
 

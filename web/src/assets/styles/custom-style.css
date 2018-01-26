@@ -11,8 +11,10 @@
 .page-title{text-transform:capitalize;}
 .navbar-static-top{z-index:unset;}
 
-.header-top,.body-container{background:#FFFFFF;padding-bottom:1.5em;padding-top:1.5em;margin-bottom:2em;}
+.header-top,.body-container{background:#FFFFFF;padding-bottom:15px;padding-top:15px;margin-bottom:2em;}
 .header-top .header-title h1{margin:unset;}
+
+.navbar-static-side{bottom:0;overflow-y:auto;position:fixed;top:0;}
 
 button{position:relative;}
 
@@ -21,7 +23,8 @@ button{position:relative;}
 
 .form-group input{width:100%;}
 .form-group label{margin-top:5px;}
-.form-group label::after{content:":";}
+.form-group label.control-label{text-align:right;}
+.form-group label.control-label::after{content:":";}
 
 .form-group .cash-input::before{content:"\f155";font-family:FontAwesome;position:absolute;left:1em;top:0.2em;}
 .form-group .cash-input input{padding-left:1em;}

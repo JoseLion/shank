@@ -43,8 +43,19 @@
                     </li>
                 </ul>
             </li>
-            <li [ngClass]="{active: activeRoute('settings')}">
-                <a [routerLink]="['./settings']"><i class="fa fa-cogs"></i> <span class="nav-label">Settings</span></a>
+            <li [ngClass]="{active: activeRoute('application')}">
+                <a><i class="fa fa-mobile"></i> <span class="nav-label">Application</span></a>
+                <ul class="nav metismenu">
+                    <li [ngClass]="{active: activeRoute('tournaments')}">
+                        <a [routerLink]="['./tournaments']"><i class="fa fa-trophy"></i> <span class="nav-label">Tournaments</span></a>
+                    </li>
+                    <li [ngClass]="{active: activeRoute('players')}">
+                        <a [routerLink]="['./players']"><i class="fa fa-address-card-o"></i> <span class="nav-label">Players</span></a>
+                    </li>
+                    <li [ngClass]="{active: activeRoute('settings')}">
+                        <a [routerLink]="['./settings']"><i class="fa fa-cogs"></i> <span class="nav-label">Settings</span></a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>

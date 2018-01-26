@@ -8,6 +8,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthHttp, AuthConfig, JwtHelper } from 'angular2-jwt';
 import { EmitterService } from '../views/core/emitter.service';
 import { Rest } from '../views/core/rest';
+import { GolfApi } from '../views/core/golfApi';
 import { AuthGuard } from '../views/core/AuthGuard';
 import { SweetAlert } from 'views/core/sweetAlert';
 import { MessageService } from 'primeng/components/common/messageservice';
@@ -41,6 +42,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         EmitterService,
         Rest,
+        GolfApi,
         AuthGuard,
         {
             provide: AuthHttp,

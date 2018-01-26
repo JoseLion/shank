@@ -33,47 +33,47 @@
                     <span>{{user.status ? 'Enabled' : 'Disabled'}}</span>
                 </ng-template>
             </p-column>
-            <p-column field="creationDate" styleClass="text-center">
+            <p-column field="created_at" styleClass="text-center">
                 <ng-template let-col let-user="rowData" pTemplate="body">
-                    <span>{{user.creationDate | date:'dd-MM-yyyy'}}</span>
+                    <span>{{user.created_at | date:'dd-MM-yyyy'}}</span>
                 </ng-template>
             </p-column>
-            <p-column field="updateDate" styleClass="text-center">
+            <p-column field="updated_at" styleClass="text-center">
                 <ng-template let-col let-user="rowData" pTemplate="body">
-                    <span>{{user.updateDate | date:'dd-MM-yyyy'}}</span>
+                    <span>{{user.updated_at | date:'dd-MM-yyyy'}}</span>
                 </ng-template>
             </p-column>
             <p-column styleClass="text-right">
                 <ng-template let-col let-user="rowData" pTemplate="body">
-                    <button pButton type="button" icon="fa-trash" class="ui-button-icon" [ngClass]="{'ui-button-danger': user.status, 'ui-button-success': !user.status}" pTooltip="{{!user.status ? 'Enable' : 'Disable'}}" tooltipPosition="top"></button>
-                    <button pButton type="button" icon="fa-pencil" class="ui-button-warning ui-button-icon" pTooltip="Edit" tooltipPosition="top" (click)="changeStatusUser(user)"></button>
+                    <button pButton type="button" icon="fa-trash" class="ui-button-icon" [ngClass]="{'ui-button-danger': user.status, 'ui-button-success': !user.status}" pTooltip="{{!user.status ? 'Enable' : 'Disable'}}" tooltipPosition="top" (click)="changeStatusUser(user)"></button>
+                    <button pButton type="button" icon="fa-pencil" class="ui-button-warning ui-button-icon" pTooltip="Edit" tooltipPosition="top" (click)="openDialog(false, user)"></button>
                 </ng-template>
             </p-column>
         </p-dataTable>
 
         <p-dialog header="modalHeader" [(visible)]="display" [resizable]="false" [draggable]="false" modal="true" dismissableMask="true" appendTo="body" responsive="true" width="500">
-            <form (submit)="saveUser()">
+            <form role="form" (submit)="saveUser()" novalidate>
                 <p-growl></p-growl>
                 <div class="col-md-12 form-group">
-                    <label class="col-md-4 text-right">Fullname</label>
+                    <label for="fullName" class="col-md-4 text-right control-label">Name</label>
                     <span class="col-md-8">
-                        <input id="fullname" name="fullName" pInputText [(ngModel)]="user.fullName" required />
+                        <input name="fullName" pInputText [(ngModel)]="user.fullName" required />
                     </span>
                     <div class="clearfix"></div>
                 </div>
 
                 <div class="col-md-12 form-group">
-                    <label class="col-md-4 text-right">Email</label>
-                    <span class="col-md-8">
-                        <input id="email" name="email" pInputText [(ngModel)]="user.email" [disabled]="user._id != null"/>
+                    <label class="col-md-4 text-right control-label">Email</label>
+                    <span for="email" class="col-md-8">
+                        <input name="email" pInputText [(ngModel)]="user.email" [disabled]="user._id != null"/>
                     </span>
                     <div class="clearfix"></div>
                 </div>
 
                 <div class="col-md-12 form-group">
-                    <label class="col-md-4 text-right">Email</label>
+                    <label for="profile" class="col-md-4 text-right control-label">Profile</label>
                     <div class="col-md-8">
-                        <p-dropdown id="profile" name="profile" [options]="profiles" [(ngModel)]="user.profile" appendTo="body" optionLabel="name"></p-dropdown>
+                        <p-dropdown name="profile" [options]="profiles" [(ngModel)]="user.profile" appendTo="body" optionLabel="name"></p-dropdown>
                     </div>
                     <div class="clearfix"></div>
                 </div>
