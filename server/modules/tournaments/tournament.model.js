@@ -10,7 +10,11 @@ let TournamentSchema = new mongoose.Schema({
       roundId: Number,
       number: Number,
       day: Date,
-      player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },
+      players: [{
+        position: Number,
+        playerId: Number,
+        player: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'}
+      }]
     }
   ],
   status: {type: Boolean, default: true}
