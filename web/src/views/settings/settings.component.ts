@@ -12,21 +12,21 @@ export class SettingsViewComponent {
 
     public settings: any = {
         ppm: { code: 'PPM', name: 'Price Per Payment', value : 0, type: 'number' },
-        pfp: { code: 'PFP', name: 'First Place', value : 0, type: 'number' },
-        psp: { code: 'PSP', name: 'Second Place', value : 0, type: 'number' },
-        ptp: { code: 'PTP', name: 'Third Place', value : 0, type: 'number' },
-        php: { code: 'PHP', name: 'Fourth Place', value : 0, type: 'number' },
-        pvp: { code: 'PVP', name: 'Five Place', value : 0, type: 'number' },
-        pfd: { code: 'PFD', name: 'Day 1', value : 0, type: 'number' },
-        psd: { code: 'PSD', name: 'Day 2', value : 0, type: 'number' },
-        ptd: { code: 'PTD', name: 'Day 3', value : 0, type: 'number' },
-        phd: { code: 'PHD', name: 'Day 4', value : 0, type: 'number' },
-        pvd: { code: 'PVD', name: 'Day 5', value : 0, type: 'number' },
-        pxd: { code: 'PXD', name: 'Day 6', value : 0, type: 'number' },
-        ped: { code: 'PED', name: 'Day 7', value : 0, type: 'number' },
-        pid: { code: 'PID', name: 'Day 8', value : 0, type: 'number' },
-        pnd: { code: 'PND', name: 'Day 9', value : 0, type: 'number' },
-        pod: { code: 'POD', name: 'Day 10', value : 0, type: 'number' }
+        pfp: { code: 'P1', name: 'First Place', value : 0, type: 'number' },
+        psp: { code: 'P2', name: 'Second Place', value : 0, type: 'number' },
+        ptp: { code: 'P3', name: 'Third Place', value : 0, type: 'number' },
+        php: { code: 'P4', name: 'Fourth Place', value : 0, type: 'number' },
+        pvp: { code: 'P5', name: 'Five Place', value : 0, type: 'number' },
+        pfd: { code: 'F1', name: 'Day 1', value : 0, type: 'number' },
+        psd: { code: 'F2', name: 'Day 2', value : 0, type: 'number' },
+        ptd: { code: 'F3', name: 'Day 3', value : 0, type: 'number' },
+        phd: { code: 'F4', name: 'Day 4', value : 0, type: 'number' },
+        pvd: { code: 'F5', name: 'Day 5', value : 0, type: 'number' },
+        pxd: { code: 'F6', name: 'Day 6', value : 0, type: 'number' },
+        ped: { code: 'F7', name: 'Day 7', value : 0, type: 'number' },
+        pid: { code: 'F8', name: 'Day 8', value : 0, type: 'number' },
+        pnd: { code: 'F9', name: 'Day 9', value : 0, type: 'number' },
+        pod: { code: 'F10', name: 'Day 10', value : 0, type: 'number' }
     };
     public isLoading: boolean = true;
 
