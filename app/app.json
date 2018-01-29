@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "shank",
+    "name": "Shank",
     "icon": "resources/shank_logo_bg.png",
     "version": "1.0.3",
-    "slug": "shank",
+    "slug": "Shank",
     "sdkVersion": "21.0.0",
     "orientation": "portrait",
     "scheme": "shank",
@@ -13,7 +13,7 @@
     },
     "android": {
       "package": "com.levelap.shank",
-      "versionCode": 4
+      "versionCode": 5
     },
     "androidStatusBar": {
       "barStyle": "light-content",
