@@ -95,7 +95,7 @@ module.exports = (app) => {
                       let player = round.players.filter(p => {
                         return p.playerId == ranking.playerId && !ranking.scoreAdded;
                       })[0];
-                      if(player) {
+                      if(player && !ranking.scoreAdded) {
                         ranking.score = Number(places[player.position - 1].value);
                         let saveDate = new Date(new Date(ranking.daySaved).getFullYear(), new Date(ranking.daySaved).getMonth(), new Date(ranking.daySaved).getDate());
                         let diff = tournamentDay.getTime() - saveDate.getTime();
