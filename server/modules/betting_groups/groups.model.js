@@ -19,11 +19,12 @@ let BettingGroupSchema = new mongoose.Schema({
             {
               position: { type: Number },
               playerId: { type: Number },
-              firstName: { type: String },
-              lastName: { type: String },
+              fullName: { type: String },
               photoUrl: { type: String },
               tournamentPosition: { type: Number, default: 0 },
-              score: { type: Number, default: 0 }
+              score: { type: Number, default: 0 },
+              daySaved: { type: Date, default: new Date() },
+              scoreAdded: {type: Boolean, default: false}
             }
           ],
         }

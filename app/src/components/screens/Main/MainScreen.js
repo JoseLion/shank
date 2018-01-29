@@ -1,6 +1,5 @@
 // React components:
 import React from 'react';
-
 import {
   AsyncStorage,
   FlatList,
@@ -11,9 +10,7 @@ import {
   View,
   Linking
 } from 'react-native';
-
 import { Constants } from 'expo';
-
 import { Avatar, List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
@@ -24,7 +21,7 @@ import LocalStyles from './styles/local';
 var qs = require('qs');
 
 export default class MainScreen extends BaseComponent {
-  
+
   static navigationOptions = ({navigation}) => ({
     title: 'GROUPS',
     showIcon: true,
@@ -52,8 +49,8 @@ export default class MainScreen extends BaseComponent {
     this.handleRefresh = this.handleRefresh.bind(this);
     this.tapCenterButton = this.tapCenterButton.bind(this);
     this.removeGroup = this.removeGroup.bind(this);
+    this.onListGroupAsync = this.onListGroupAsync.bind(this);
     this.getGroupList = this.getGroupList.bind(this);
-    
     this.state = {
       loading: false,
       data: [],
@@ -64,27 +61,20 @@ export default class MainScreen extends BaseComponent {
       auth: null
     };
   }
-  
+
   componentDidMount() {
-    
     this.props.navigation.setParams({
       tapCenterButton: this.tapCenterButton
     });
-    
     AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).then(authToken => {
-      
       this.setState({auth: authToken});
-      
       if (authToken) {
-        
         Linking.addEventListener('url', this._handleOpenURL);
-        
         Linking.getInitialURL().then((url) => {
           if (url) {
             let queryString = url.replace(Constants.linkingUri, '');
             if (queryString) {
               let data = qs.parse(queryString);
-              
               if (data.group && data.user) {
                 addToGroup();
               }
@@ -102,36 +92,37 @@ export default class MainScreen extends BaseComponent {
           
         }).catch(err => {
           console.error('An error occurred', err);
-          this.getGroupList();
         });
+        //AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
+        //  this.setState({currentUser: JSON.parse(user)})
+        //  this.onListGroupAsync();
+          this.getGroupList();
+        //});
       }
     });
   }
-  
+
   componentWillUnmount() {
     Linking.removeEventListener('url', (e) => {});
   }
-  
+
   async getGroupList() {
     let user = await AsyncStorage.getItem(ShankConstants.USER_PROFILE);
-    
     this.setState({currentUser: JSON.parse(user)})
     this.onListGroupAsync();
   }
-  
+
   _handleOpenURL = (url) => {
-    
     let queryString = url.url.replace(Constants.linkingUri, '');
     if (queryString) {
       let data = qs.parse(queryString);
       data = JSON.stringify(data);
-      
       if (data.group && data.user) {
         addToGroup();
       }
     }
   }
-  
+
   addToGroup = async(data) => {
     BaseModel.put(`groups/addUser/${data.group}/${data.user}`).then((groups) => {
       this.getGroupList();
@@ -140,11 +131,11 @@ export default class MainScreen extends BaseComponent {
       this.getGroupList();
     });
   }
-  
+
   setLoading(loading) {
     this.setState({loading: loading});
   };
-  
+
   tapCenterButton(onLogin) {
     if (this.state.auth) {
       super.navigateToScreen(onLogin);
@@ -152,11 +143,11 @@ export default class MainScreen extends BaseComponent {
       super.navigateToScreen('Login');
     }
   }
-  
+
   removeGroup(item) {
     this.onRemoveGroupAsync(item);
   }
-  
+
   handleRefresh = () => {
     this.setState({
       page: 1,
@@ -171,17 +162,14 @@ export default class MainScreen extends BaseComponent {
   onListGroupAsync = async(data) => {
     const {page, currentUser} = this.state;
     this.setState({refreshing: true, loading: true});
-    
     BaseModel.get(`groups/myList/${currentUser._id}`).then((groups) => {
       this.setState({
         data: page === 1 ? groups : [...this.state.data, ...groups],
         loading: false,
         refreshing: false
       });
-    })
-    .catch((error) => {
+    }).catch((error) => {
       this.setLoading(false);
-      
       if (error === 401) {
         try {
           AsyncStorage.removeItem(ShankConstants.AUTH_TOKEN);
@@ -195,11 +183,10 @@ export default class MainScreen extends BaseComponent {
       }
     });
   };
-    
+
   onRemoveGroupAsync = async(data) => {
     this.setLoading(true);
     let endPoint;
-    
     if (data.isOwner) {
       endPoint = `groups/changeStatus/${data._id}/false`;
     } else {
@@ -217,23 +204,22 @@ export default class MainScreen extends BaseComponent {
 
   render() {
     let addPhoto = require('../../../../resources/add_edit_photo.png');
-    
+
     if (this.state.auth && this.state.data.length > 0) {
       return (
         <View style={[MainStyles.container]}>
           <Spinner visible={this.state.loading} animation='fade'/>
-          
           <View style={[MainStyles.viewFlexItems]}>
             <List containerStyle={[MainStyles.noBorder, {height:'100%'}]}>
               <FlatList data={this.state.data} renderItem={({item}) => (
                 <Swipeable rightButtons={[(
-                    <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]} onPress={() => this.removeGroup(item)}>
-                      <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
-                    </TouchableHighlight>
-                  )]}>
-                  
+                  <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]} onPress={() => this.removeGroup(item)}>
+                    <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
+                  </TouchableHighlight>
+                )]}>
+
                   <TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR}
-                      onPress={() => super.navigateToScreen('Group', {groupId: item._id, isOwner: item.isOwner})}>
+                    onPress={() => super.navigateToScreen('Group', {groupId: item._id, isOwner: item.isOwner})}>
                     <View style={[MainStyles.viewFlexItemsR]}>
                       <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                         { item.photo != null ?
@@ -246,7 +232,7 @@ export default class MainScreen extends BaseComponent {
                         <Text numberOfLines={1} style={[LocalStyles.titleText]}>{item.name}</Text>
                         <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>{item.tournamentName}</Text>
                         <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>
-                            {`Score: ${item.myScore}     Rank: ${item.myRanking}/${item.users.length}`}
+                          {`Score: ${item.myScore}     Rank: ${item.myRanking}/${item.users.length}`}
                         </Text>
                       </View>
                       <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd]}>
@@ -256,14 +242,12 @@ export default class MainScreen extends BaseComponent {
                   </TouchableHighlight>
                 </Swipeable>
               )}
-                
               keyExtractor={item => item._id}
               onRefresh={this.handleRefresh}
               refreshing={this.state.refreshing}
               onEndReachedThreshold={1} />
             </List>
           </View>
-          
           <DropdownAlert ref={ref => this.validationMessage = ref} />
         </View>
       );
@@ -274,8 +258,7 @@ export default class MainScreen extends BaseComponent {
           <Spinner visible={this.state.loading} animation='fade' />
           <TouchableOpacity onPress={() => {this.tapCenterButton('AddGroup')}}>
             <Text style={[MainStyles.withoutGroups]}>
-              Tap the {'"+"'} button to create{'\n'}
-              or join a group
+              Tap the {'"+"'} button to create{'\n'}or join a group
             </Text>
           </TouchableOpacity>
           <DropdownAlert ref={ref => this.validationMessage = ref} />

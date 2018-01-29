@@ -11,10 +11,10 @@
     </div>
 
     <div class="col-md-12 body-container">
-        <p-dataTable [value]="tournaments" [loading]="isLoading" [rows]="20" [paginator]="true">
+        <p-dataTable [value]="tournaments" [loading]="isLoading" [rows]="20" [paginator]="true" expandableRows="true">
             <p-headerColumnGroup>
                 <p-row>
-                    <p-column header="Tournament ID" styleClass="col-md-1" rowspan="2"></p-column>
+                    <p-column header="Tournament ID" styleClass="col-md-1" rowspan="2" colspan="2"></p-column>
                     <p-column header="Name" styleClass="col-md-3" rowspan="2"></p-column>
                     <p-column header="Rounds" styleClass="col-md-4" rowspan="2"></p-column>
                     <p-column header="Date" colspan="2"></p-column>
@@ -26,13 +26,13 @@
                 </p-row>
             </p-headerColumnGroup>
 
+            <p-column expander="true" styleClass="col-icon"></p-column>
             <p-column field="tournamentId" styleClass="text-right"></p-column>
             <p-column field="tournamentName"></p-column>
             <p-column field="rounds">
                 <ng-template let-col let-tournament="rowData" pTemplate="body">
                     <div *ngFor="let round of tournament.rounds">
                         <span>Round {{round.number}}: {{round.day | date:'dd-MM-yyyy'}}</span>
-                        <span *ngIf="round.player != null">Winner: {{round.player.fullName}}</span>
                     </div>
                 </ng-template>
             </p-column>
@@ -57,6 +57,21 @@
                     </div>
                 </ng-template>
             </p-column>
+
+            <ng-template let-tournament pTemplate="rowexpansion">
+                <div class="col-md-6">
+                    <div *ngFor="let round of tournament.rounds">
+                        <label class="col-md-4 text-right control-label">Round {{round.number}}</label>
+                        <div class="col-md-8">
+                            <div *ngFor="let p of round.players">
+                                ({{p.position}}) <span *ngIf="p.player != null">- {{p.player.fullName}}</span>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </ng-template>
         </p-dataTable>
 
         <p-dialog header="Add Tournament" [(visible)]="dialogToAdd" [resizable]="false" [draggable]="false" modal="true" dismissableMask="true" appendTo="body" responsive="true" width="500">
@@ -114,9 +129,14 @@
             <form role="form" (submit)="save()" novalidate>
                 <p-growl></p-growl>
                 <div class="col-md-12 form-group" *ngFor="let round of tournament.rounds">
-                    <label for="player-{{round.number}}" class="col-md-4 text-right control-label">Round: {{round.number}}</label>
+                    <label class="col-md-4 text-right control-label">Round {{round.number}}</label>
+                    <div class="clearfix"></div>
+
+                    <label class="col-md-4 text-right control-label">Players</label>
                     <div class="col-md-8">
-                        <p-dropdown name="player-{{round.number}}" [options]="players" [(ngModel)]="round.player" appendTo="body" optionLabel="fullName" required placeholder="Pick a player..." [filter]="true"></p-dropdown>
+                        <div *ngFor="let p of round.players">
+                            <p-dropdown name="player-{{round.number}}-{{p.position}}" [options]="players" [(ngModel)]="p.player" appendTo="body" optionLabel="fullName" required placeholder="Pick a player..." [filter]="true"></p-dropdown>
+                        </div>
                     </div>
                     <div class="clearfix"></div>
                 </div>

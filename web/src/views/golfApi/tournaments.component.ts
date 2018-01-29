@@ -40,7 +40,7 @@ export class TournamentsViewComponent {
 
     openDialog = function(isNew, tournament?, isAssociate?) {
         if(isNew) {
-            this.tournament = null;
+            this.tournament = {};
             this.dialogToAdd = true;
             if(this.tournamentsApi.length === 0) {
                 this.golfApi.tournaments().subscribe(
@@ -54,6 +54,15 @@ export class TournamentsViewComponent {
             if(tournament.endDate) tournament.endDate = new Date(tournament.endDate);
             tournament.rounds.forEach(round => {
                 round.day = new Date(round.day);
+                if(!round.players || round.players.length === 0) {
+                    round.players = [
+                        { position: 1},
+                        { position: 2},
+                        { position: 3},
+                        { position: 4},
+                        { position: 5}
+                    ];
+                }
             });
             Object.assign(this.tournament, tournament);
             if(isAssociate) this.dialogToAssociate = true;
@@ -77,7 +86,14 @@ export class TournamentsViewComponent {
                     return {
                         roundId: round.RoundID,
                         number: round.Number,
-                        day: new Date(round.Day)
+                        day: new Date(round.Day),
+                        players: [
+                            { position: 1},
+                            { position: 2},
+                            { position: 3},
+                            { position: 4},
+                            { position: 5}
+                        ]
                     };
                 })
             };
@@ -91,6 +107,11 @@ export class TournamentsViewComponent {
 
     save = function() {
         SweetAlert.save(() => {
+            this.tournament.rounds.forEach(round => {
+                round.players.forEach(p => {
+                    if(p.player) p.playerId = p.player.playerId
+                });
+            });
             this.rest.post('tournaments/update', this.tournament).subscribe(
                 response => { this.dialogToView = false; this.dialogToAssociate = false; this.find(); },
                 error => { SweetAlert.errorNotif(error.text(), this.messageService); },
