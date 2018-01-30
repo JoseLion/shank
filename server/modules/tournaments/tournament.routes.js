@@ -111,6 +111,9 @@ module.exports = (app) => {
                   }).sort((a, b) => {
                     return b.score - a.score;
                   });
+                  for(let i=0 ; i<user.playerRanking.length ; i++ ) {
+                      user.playerRanking[i].ranking = i + 1;
+                  }
                 });
               });
               BettingGroup.findByIdAndUpdate(group._id, { $set: group }, { new: true }, (err, finalG) => { })
