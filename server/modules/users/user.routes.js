@@ -6,7 +6,7 @@ let User = mongoose.model('User');
 let BettingGroup = mongoose.model('BettingGroup');
 let Profile = mongoose.model('Profile');
 let path = '/users';
- 
+
 let router = require('../core/routes.js')(User, '/users');
 let auth = require('../../config/auth');
 
@@ -155,14 +155,14 @@ let prepareRouter = function (app) {
     });
   })
   .post('/updateUser', auth, upload.single('file'), function (req, res) {
-    
+
     if (!req.payload._id) {
       res.ok({}, 'Not authorized.');
       return;
     }
-    
+
     let req_body = JSON.parse(req.body.user);
-    
+
     let data_to_update = {
       fullName: req_body.fullName,
       photo: {
@@ -175,11 +175,11 @@ let prepareRouter = function (app) {
       if (err) {
         return res.serverError();
       }
-      
+
       res.ok({});
     });
   });
-  
+
   return router;
 };
 

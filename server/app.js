@@ -11,7 +11,7 @@ let express = require('express'),
 
 let app = express();
 
-const databaseUri = 'mongodb://localhost/shank';
+const databaseUri = 'mongodb://shank.levelaptesting.com:27017/shank';
 mongoose.Promise = global.Promise;
 mongoose.connect(databaseUri, {})
 .then(() => console.log(`Database connected at ${databaseUri}`))
@@ -56,11 +56,11 @@ if (app.get('env') === 'development') {
     if (err.code === 'invalid_token') {
       return res.unauthorized(err.status);
     }
-    
+
     if (err.code === 'permission_denied') {
       return res.forbidden(err.status);
     }
-    
+
     res.status(err.status || 500).json({response: {}, error: err.message});
   });
 }
@@ -68,7 +68,7 @@ if (app.get('env') === 'development') {
 app.use(function (err, req, res, next) {
   if (err.code === 'invalid_token') { return res.status(err.status).json({response: {}, error: 'User not authorized'}); }
   if (err.code === 'permission_denied') { return res.status(err.status).json({response: {}, error: 'Permission denied'}); }
-  
+
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

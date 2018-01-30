@@ -1,6 +1,6 @@
 // shank.levelaptesting.com
 // 192.168.100.6
-const endPoint = '192.168.10.106';
+const endPoint = 'shank.levelaptesting.com';
 
 const Host = `http://${endPoint}:3000/`;
 const ApiHost = Host + 'api/';
