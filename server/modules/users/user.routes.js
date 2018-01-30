@@ -1,17 +1,19 @@
-let mongoose = require('mongoose'),
-multer = require('multer'),
-fs = require('fs-extra'),
+let mongoose = require('mongoose');
+let multer = require('multer');
+let fs = require('fs-extra');
 
-User = mongoose.model('User'),
-BettingGroup = mongoose.model('BettingGroup'),
-Profile = mongoose.model('Profile'),
-path = '/users',
+let User = mongoose.model('User');
+let BettingGroup = mongoose.model('BettingGroup');
+let Profile = mongoose.model('Profile');
+let path = '/users';
 
-router = require('../core/routes.js')(User, '/users'),
-auth = require('../../config/auth'),
-storage = multer.diskStorage({
+let router = require('../core/routes.js')(User, '/users');
+let auth = require('../../config/auth');
+
+let constants = require('../../config/constants');
+let storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let path = `public/uploads/admin_users/151515`;
+    let path = `../server/public/shank/app_users/${req.payload._id}`;
     fs.mkdirsSync(path);
     cb(null, path);
   },
@@ -20,12 +22,15 @@ storage = multer.diskStorage({
   }
 });
 
+//var upload =  multer({ storage: storage }).single('file');
+var upload =  multer({ storage: storage });
+
 let prepareRouter = function (app) {
 
   router
   .post(`${path}/findUsers`, auth, (req, res) => {
     Profile.findOne({acronyms: req.body.profile}).exec((err, profile) => {
-      if(err) {
+      if (err) {
         res.serverError();
         return;
       }
@@ -120,15 +125,6 @@ let prepareRouter = function (app) {
       });
     });
   })
-
-
-
-
-
-
-
-
-
   .get('/profile', auth, function (req, res) {
     if (!req.payload._id) {
       res.ok({}, 'Usuario no autorizado.');
@@ -158,34 +154,33 @@ let prepareRouter = function (app) {
       res.ok(user);
     });
   })
-  .post('/updateUser', function (req, res) {
-    let data = req.body;
-    console.log('req')
-    console.log(data)
+  .post('/updateUser', auth, upload.single('file'), function (req, res) {
 
-    let upload = multer({storage: storage})
-    upload.single('picture')(req, res, function (err) {
-      if (err) {
-        // An error occurred when uploading
-        console.log(err)
-        res.ok({}, err.toString());
-      }
-      /*        console.log("data")
-      console.log(data)
-      let new_user = {
-      name:data.name,
+    if (!req.payload._id) {
+      res.ok({}, 'Not authorized.');
+      return;
+    }
+
+    let req_body = JSON.parse(req.body.user);
+
+    let data_to_update = {
+      fullName: req_body.fullName,
       photo: {
-      name: {type: String},
-      path: {type: String}
-    },
-  };*/
-  res.ok({});
-  // Everything went fine
-})
-})
+        name: req.file.filename,
+        path: `shank/app_users/${req.payload._id}/${req.file.filename}`
+      }
+    }
 
-;
-return router;
+    User.update({_id: req.payload._id}, data_to_update, function(err, user_updated) {
+      if (err) {
+        return res.serverError();
+      }
+
+      res.ok({});
+    });
+  });
+
+  return router;
 };
 
 module.exports = prepareRouter;
