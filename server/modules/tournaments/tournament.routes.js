@@ -93,7 +93,7 @@ module.exports = (app) => {
                     })[0];
                     if(round) {
                       let player = round.players.filter(p => {
-                        return p.playerId == ranking.playerId && !ranking.scoreAdded;
+                        return p.playerId == ranking.playerId && p.position == ranking.position && !ranking.scoreAdded;
                       })[0];
                       if(player && !ranking.scoreAdded) {
                         ranking.score = Number(places[player.position - 1].value);
@@ -108,7 +108,12 @@ module.exports = (app) => {
                       }
                     }
                     return ranking;
+                  }).sort((a, b) => {
+                    return b.score - a.score;
                   });
+                  for(let i=0 ; i<user.playerRanking.length ; i++ ) {
+                      user.playerRanking[i].ranking = i + 1;
+                  }
                 });
               });
               BettingGroup.findByIdAndUpdate(group._id, { $set: group }, { new: true }, (err, finalG) => { })
