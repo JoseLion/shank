@@ -13,18 +13,18 @@
     </div>
 
     <div class="col-md-12 body-container">
-        <p-dataTable [value]="players" [loading]="isLoading" [rows]="20" [paginator]="true">
-            <p-headerColumnGroup>
-                <p-row>
-                    <p-column header="Photo" styleClass="col-md-8 "></p-column>
-                    <p-column header="Player ID" styleClass="col-md-1"></p-column>
-                    <p-column header="Full Name" styleClass="col-md-3"></p-column>
-                </p-row>
-            </p-headerColumnGroup>
-
-            <p-column field="photoUrl"></p-column>
-            <p-column field="playerId" styleClass="text-right"></p-column>
-            <p-column field="fullName"></p-column>
-        </p-dataTable>
+        <p-dataGrid [value]="players" [rows]="20" [paginator]="true">
+            <ng-template let-player pTemplate="item">
+                <div style="padding:0.5em" class="ui-g-12 ui-md-3">
+                    <p-panel [header]="player.playerId" styleClass="text-center">
+                        <img [src]="player.photoUrl" />
+                        <span class="block" style="padding-top:0.5em;">{{player.fullName}}</span>
+                    </p-panel>
+                </div>
+            </ng-template>
+        </p-dataGrid>
     </div>
+
+    <p-confirmDialog header="Are you sure?" icon="fa fa-question-circle" width="425"></p-confirmDialog>
+
 </div>
