@@ -6,6 +6,7 @@ import { HttpModule, Http, RequestOptions } from "@angular/http";
 import { ROUTES } from "./app.routes";
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthHttp, AuthConfig, JwtHelper } from 'angular2-jwt';
+import { ConfirmationService } from 'primeng/primeng';
 import { EmitterService } from '../views/core/emitter.service';
 import { Rest } from '../views/core/rest';
 import { GolfApi } from '../views/core/golfApi';
@@ -51,7 +52,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
         },
         JwtHelper,
         SweetAlert,
-        MessageService
+        MessageService,
+        ConfirmationService
     ],
     bootstrap: [
         AppComponent

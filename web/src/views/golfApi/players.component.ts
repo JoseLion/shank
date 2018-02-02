@@ -4,6 +4,7 @@ import { Rest } from '../core/rest';
 import { GolfApi } from '../core/golfApi';
 import { SweetAlert } from 'views/core/sweetAlert';
 import { MessageService } from 'primeng/components/common/messageservice';
+import { ConfirmationService } from 'primeng/primeng';
 
 @Component({
     selector: 'players',
@@ -17,7 +18,7 @@ export class PlayersViewComponent {
     public totalPlayers: number = 0;
     public totalToCheck: number = 0;
 
-    constructor(private rest : Rest, private golfApi : GolfApi, private sweetAlert : SweetAlert, private messageService : MessageService) {
+    constructor(private rest : Rest, private golfApi : GolfApi, private sweetAlert : SweetAlert, private messageService : MessageService, private confirmationService: ConfirmationService) {
         this.find();
     }
 
@@ -31,20 +32,27 @@ export class PlayersViewComponent {
     };
 
     updatePlayers = () => {
-        SweetAlert.save(() => {
-            if(this.playersApi.length === 0) {
-                this.golfApi.players().subscribe(
-                    response => {
-                        this.playersApi = response.json();
-                        this.totalPlayers = this.playersApi.length;
-                        this.savePlayers();
-                    },
-                    error => { SweetAlert.errorNotif(error.text(), this.messageService); }
-                );
-            } else {
-                this.savePlayers();
+        this.confirmationService.confirm({
+            message: 'You will save the information',
+            accept: () => {
+                //Actual logic to perform a confirmation
             }
         });
+
+        // SweetAlert.save(() => {
+        //     if(this.playersApi.length === 0) {
+        //         this.golfApi.players().subscribe(
+        //             response => {
+        //                 this.playersApi = response.json();
+        //                 this.totalPlayers = this.playersApi.length;
+        //                 this.savePlayers();
+        //             },
+        //             error => { SweetAlert.errorNotif(error.text(), this.messageService); }
+        //         );
+        //     } else {
+        //         this.savePlayers();
+        //     }
+        // });
     };
 
     savePlayers = () => {

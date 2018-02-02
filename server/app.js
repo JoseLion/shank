@@ -11,7 +11,7 @@ let express = require('express'),
 
 let app = express();
 
-const databaseUri = 'mongodb://shank.levelaptesting.com:27017/shank';
+const databaseUri = 'mongodb://localhost:27017/shank';
 mongoose.Promise = global.Promise;
 mongoose.connect(databaseUri, {})
 .then(() => console.log(`Database connected at ${databaseUri}`))
