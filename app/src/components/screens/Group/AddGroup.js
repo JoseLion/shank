@@ -101,7 +101,8 @@ export default class AddGroup extends BaseComponent {
       name: this.state.name,
       bet: this.state.bet,
       tournamentId: this.state.selectTournament.tournamentId,
-      tournamentName: this.state.selectTournament.tournamentName
+      tournamentName: this.state.selectTournament.tournamentName,
+      tournamentStart: this.state.selectTournament.startDate
     };
     formData.append('groupInformation', JSON.stringify(data));
     if (this.state.groupPhoto) {
@@ -137,7 +138,7 @@ export default class AddGroup extends BaseComponent {
       BarMessages.showError(error, this.validationMessage);
     });
   };
-  
+
   pictureSelection = async(option) => {
     let settings = {
       allowsEditing: true,

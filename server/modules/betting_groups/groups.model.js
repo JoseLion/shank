@@ -30,6 +30,7 @@ let BettingGroupSchema = new mongoose.Schema({
         }
       ],
       status: { type: Boolean, default: true },
+      startDate: Date,
       myScore: Number,
       myRanking: Number
     }
@@ -44,6 +45,7 @@ let BettingGroupSchema = new mongoose.Schema({
     path: {type: String}
   },
   activeTournaments: { type: Number, default: 1},
+  myTournament: String,
   myScore: Number,
   myRanking: Number,
   isOwner: Boolean

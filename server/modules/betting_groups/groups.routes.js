@@ -50,9 +50,10 @@ let prepareRouter = function (app) {
                 _id: user._id,
                 fullName: user.fullName,
                 playerRanking: [],
-                ranking: 1
+                ranking: 0
               }
-            ]
+            ],
+            startDate: groupInformation.tournamentStart
           }
         ];
         groupInformation.owner = user._id;
@@ -86,28 +87,36 @@ let prepareRouter = function (app) {
           path: req.files[0].path.replace(/\\/g, '/').replace(constants.photoPath, constants.docHost)
         };
       }
-      groupInformation.updated_at = new Date();
-      groupInformation.activeTournaments = groupInformation.tournaments.length;
-      groupInformation.tournaments.forEach(function(tournament) {
-        if(tournament._id == null) {
-          tournament.users = [];
-          groupInformation.users.forEach(function(user) {
-            tournament.users.push({
-              _id: user._id,
-              fullName: user.fullName,
-              playerRanking: []
-            });
+
+      BettingGroup.findOne({_id: groupInformation._id}).populate('users').exec((err, group) => {
+          group.name = groupInformation.name;
+          group.bet = groupInformation.bet;
+          group.photo = groupInformation.photo;
+          groupInformation.tournaments.forEach((tournament) => {
+            if(tournament._id == null) {
+              tournament.users = new Array();
+              group.users.forEach((user) => {
+                tournament.users.push({
+                  _id: user._id,
+                  fullName: user.fullName,
+                  playerRanking: [],
+                  ranking: 0
+                });
+              });
+              group.tournaments.push(tournament);
+            }
           });
-        }
-      })
-      BettingGroup.findByIdAndUpdate(groupInformation._id, { $set : groupInformation}, {new: true}, function(err, group) {
-        if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
-        res.ok(group);
-        return;
+          group.activeTournaments = activeTournaments.tournaments.length;
+          BettingGroup.findByIdAndUpdate(group._id, { $set : group}, {new: true}, function(err2, final) {
+            if(!final) {
+              return res.ok({}, 'The group doesn\'t exist!');
+            }
+            return res.ok(final);
+          });
       });
     } catch(ex) {
-      console.log('EX: ', ex);
-      res.serverError(); return;
+      console.log('FATAL! ', ex);
+      return res.serverError();
     }
   })
   .delete(`${path}/changeStatus/:groupId/:status`, auth, function(req, res) {
@@ -148,69 +157,64 @@ let prepareRouter = function (app) {
   })
   .get(`${path}/myList/:userId`, auth, function (req, res) {
     try {
-      User.findOne({_id: req.params.userId}).select('_id bettingGroups')
-      .populate('bettingGroups')
-      .exec(function (err, user) {
-        if(!user) { res.ok({}, 'The user doesn\'t exist!'); return; }
+      User.findOne({_id: req.params.userId}).select('_id bettingGroups').populate('bettingGroups').exec(function (err, user) {
+        if(!user) {
+          return res.ok({}, 'The user doesn\'t exist!');
+        }
 
-        let activeTournaments = 1;
         let groups = new Array();
-        user.bettingGroups.forEach(function(group) {
+        let tournaments = new Array();
+        user.bettingGroups.forEach((group) => {
           if(group.status) {
-            let myScore = 0;
-            group.isOwner = (group.owner == user._id);
+            group.isOwner = group.owner.equals(user._id);
             group.tournaments.forEach(function(tournament) {
-              if(group.activeTournaments <= 3) {
-                if(tournament != null && tournament.status) {
-                  tournament.users.forEach(function(userGroup) {
-                    if(userGroup._id == user._id) {
-                      tournament.myScore = userGroup.score;
-                      tournament.myRanking = userGroup.ranking;
-                      return;
-                    }
-                  });
-                  myScore += tournament.myScore;
-                }
+              if(tournament.status) {
+                tournaments.push(tournament);
               }
             });
-            group.myScore = myScore;
-            group.myRanking = 0;
+            group.tournaments = tournaments.sort((a, b) => {
+                return a.startDate.getTime() - b.startDate.getTime();
+            });
+            myTournamentData = group.tournaments[0].users.filter((ranking) => {
+                return ranking._id = user._id;
+            })[0];
+            group.myTournament = group.tournaments[0].tournamentName;
+            group.myScore = myTournamentData.score;
+            group.myRanking = myTournamentData.ranking;
             groups.push(group);
           }
         });
-        res.ok(groups);
-        return;
+        return res.ok(groups);
       });
     } catch(ex) {
-      console.log('EX: ', ex);
-      res.serverError(); return;
+      console.log('FATAL! ', ex);
+      return res.serverError();
     }
   })
   .get(`${path}/group/:groupId`, auth, function(req, res) {
     try {
-      BettingGroup.findById(req.params.groupId)
-      .populate('users', '_id fullName photo')
-      .exec(function (err, group) {
-        group.tournaments.forEach(function(tournament) {
-          if(group.activeTournaments <= 3) {
-            group.isOwner = (group.owner == req.payload._id);
-            if(tournament != null && tournament.status) {
-              tournament.users.forEach(function(userGroup) {
-                if(userGroup._id == req.payload._id) {
-                  tournament.myScore = userGroup.score;
-                  tournament.myRanking = userGroup.ranking;
-                  return;
-                }
-              });
-            }
+      BettingGroup.findById(req.params.groupId).populate('users', '_id fullName photo').exec((err, group) => {
+        group.isOwner = group.owner.equals(req.payload._id);
+        let tournaments = new Array();
+        group.tournaments.forEach((tournament) => {
+          if(tournament.status) {
+            tournament.users.forEach((user) => {
+              if(user._id.equals(req.payload._id)) {
+                tournament.myScore = user.score;
+                tournament.myRanking = user.ranking;
+              }
+            });
+            tournaments.push(tournament);
           }
         });
-        res.ok(group);
-        return;
+        group.tournaments = tournaments.sort((a, b) => {
+          return a.startDate.getTime() - b.startDate.getTime();
+        });
+        return res.ok(group);
       })
     } catch(ex) {
-      console.log('EX: ', ex);
-      res.serverError(); return;
+      console.log('FATAL! ', ex);
+      return res.serverError();
     }
   })
   .put(`${path}/addUser/:groupToken/:userId`, auth, function(req, res) {

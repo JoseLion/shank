@@ -148,8 +148,37 @@ export default class Group extends BaseComponent {
   }
 
   optionSelectedPressed(actionIndex) {
-    //this.pictureSelection(actionIndex);
-    console.log(actionIndex);
+    this.setState({currentTournament: this.state.currentGroup.tournaments[actionIndex]});
+    this.state.currentGroup.tournaments[actionIndex].users.forEach((user) => {
+      if(user._id == this.state.currentUser._id) {
+        let playerRanking = (user.playerRanking == null || user.playerRanking.length == 0) ? [
+          {position: 1},
+          {position: 2},
+          {position: 3},
+          {position: 4},
+          {position: 5}
+        ] : user.playerRanking;
+        this.setState({originalRanking: JSON.stringify(playerRanking)});
+        this.updatePlayerRankingList(playerRanking);
+        return;
+      }
+    });
+    BaseModel.get(`tournaments/getTournament/${this.state.currentGroup.tournaments[actionIndex].tournamentId}`).then((tournamentData) => {
+      let nowDate = new Date();
+      nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+      let diff = new Date(tournamentData.endDate).getTime() - nowDate.getTime();
+      if(diff > 0) diff = Math.ceil(diff / (1000*3600*24));
+      else diff = 0;
+      this.setState({
+        tournamentData: tournamentData,
+        playersLeaderboard: [],
+        diffDays: diff
+      });
+      this.setLoading(false);
+    }).catch((error) => {
+      console.log('ERROR! ', error);
+      this.setLoading(false);
+    });
   }
   showActionSheet() {
     if(isAndroid) {
@@ -181,52 +210,11 @@ export default class Group extends BaseComponent {
   setOrderPlayer(order) { this.setState({order: order}); }
   setOrderedList(newList) { this.setState({orderedPlayerRanking: newList}); }
   setPlayerRanking(newList) { this.setState({playerRanking: newList}); }
-
-  // isPlayerObjectEqual(obj, compareObject) {
-  //     let notEqualMatches = 0;
-  //     Object.keys(obj).forEach(function (key, index) {
-  //         if (new String(obj[key].name).valueOf() !== new String(compareObject[key].name).valueOf()) {
-  //             notEqualMatches++;
-  //         }
-  //     });
-  //     return notEqualMatches;
-  // }
-
   updatePlayerRankingList(playerRanking) {
     playerRanking = playerRanking.sort(function(a, b) { return a.position - b.position; });
     let order = Object.keys(playerRanking);
     this.setState({playerRanking: playerRanking, order: order});
   }
-
-  // updateRankingList() {
-  // this.updateRankingListAsync();
-  // }
-  // setInitialPlayerRanking(navigation) {
-  // let playerRankings = this.state.playerRankings.slice();
-  // let groupLoggedUser = navigation.state.params.data.currentGroup.users.find(user => user.userId === navigation.state.params.currentUser._id);
-  // if (groupLoggedUser.playerRanking.length > 0) {
-  //     playerRankings = groupLoggedUser.playerRanking
-  // }
-  // let orderedPlayerRankings = playerRankings.reduce(function (obj, item) {
-  //     obj[item.position] = item;
-  //     return obj;
-  // }, {});
-  // let order = Object.keys(orderedPlayerRankings); //Array of keys positions
-  // let playersAdded = groupLoggedUser.playerRanking.filter(function (el) {
-  //     if (el.name) {
-  //         return el.name.length > 0;
-  //     }
-  // });
-  // navigation.setParams({playersAdded: playersAdded});
-  // this.setState({
-  //     groupLoggedUser: groupLoggedUser,
-  //     playerRankings: playerRankings,
-  //     orderedPlayerRankings: orderedPlayerRankings,
-  //     initialPlayerRankings: orderedPlayerRankings,
-  //     order: order,
-  //     playersAdded: playersAdded
-  // })
-  // }
   checkChangesOnList(playerRanking) {
     let quantityMovements = 0;
     let originalRanking = JSON.parse(this.state.originalRanking);
@@ -252,7 +240,6 @@ export default class Group extends BaseComponent {
       () => { this.onGroupAsync(this.state.currentGroup._id); }
     );
   };
-
   _getPricePerMovement = async() => {
     await BaseModel.get('appSettings/findByCode/PPM').then((setting) => {
       this.state.pricePerMovement = JSON.parse(setting.value);
@@ -271,7 +258,6 @@ export default class Group extends BaseComponent {
     })
     .catch((error) => { BarMessages.showError(error, this.validationMessage); });
   };
-
   inviteToJoin() {
     Share.share({
       message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}#/invite/login/${this.state.currentGroup.groupToken}`,
