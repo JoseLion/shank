@@ -32,27 +32,27 @@ export class PlayersViewComponent {
     };
 
     updatePlayers = () => {
-        this.confirmationService.confirm({
-            message: 'You will save the information',
-            accept: () => {
-                //Actual logic to perform a confirmation
-            }
-        });
-
-        // SweetAlert.save(() => {
-        //     if(this.playersApi.length === 0) {
-        //         this.golfApi.players().subscribe(
-        //             response => {
-        //                 this.playersApi = response.json();
-        //                 this.totalPlayers = this.playersApi.length;
-        //                 this.savePlayers();
-        //             },
-        //             error => { SweetAlert.errorNotif(error.text(), this.messageService); }
-        //         );
-        //     } else {
-        //         this.savePlayers();
+        // this.confirmationService.confirm({
+        //     message: 'You will save the information',
+        //     accept: () => {
+        //         //Actual logic to perform a confirmation
         //     }
         // });
+
+        SweetAlert.save(() => {
+            if(this.playersApi.length === 0) {
+                this.golfApi.players().subscribe(
+                    response => {
+                        this.playersApi = response.json();
+                        this.totalPlayers = this.playersApi.length;
+                        this.savePlayers();
+                    },
+                    error => { SweetAlert.errorNotif(error.text(), this.messageService); }
+                );
+            } else {
+                this.savePlayers();
+            }
+        });
     };
 
     savePlayers = () => {
