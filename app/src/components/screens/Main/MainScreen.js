@@ -89,7 +89,7 @@ export default class MainScreen extends BaseComponent {
           else {
             this.getGroupList();
           }
-          
+
         }).catch(err => {
           console.error('An error occurred', err);
         });
@@ -230,7 +230,7 @@ export default class MainScreen extends BaseComponent {
                       </View>
                       <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
                         <Text numberOfLines={1} style={[LocalStyles.titleText]}>{item.name}</Text>
-                        <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>{item.tournamentName}</Text>
+                        <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>{item.myTournament}</Text>
                         <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>
                           {`Score: ${item.myScore}     Rank: ${item.myRanking}/${item.users.length}`}
                         </Text>

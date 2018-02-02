@@ -150,7 +150,8 @@ export default class EditGroup extends BaseComponent {
     let currentGroup = this.state.currentGroup;
     currentGroup.tournaments.push({
       tournamentName: tournamentSelected.tournamentName,
-      tournamentId: tournamentSelected.tournamentId
+      tournamentId: tournamentSelected.tournamentId,
+      startDate: tournamentSelected.startDate,
     });
     switch (idx) {
       case 0: this.setState({selectedItem1: tournamentSelected}); break;
