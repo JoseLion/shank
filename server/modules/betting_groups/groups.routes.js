@@ -106,7 +106,7 @@ let prepareRouter = function (app) {
               group.tournaments.push(tournament);
             }
           });
-          group.activeTournaments = activeTournaments.tournaments.length;
+          group.activeTournaments = group.tournaments.length;
           BettingGroup.findByIdAndUpdate(group._id, { $set : group}, {new: true}, function(err2, final) {
             if(!final) {
               return res.ok({}, 'The group doesn\'t exist!');
@@ -173,10 +173,12 @@ let prepareRouter = function (app) {
               }
             });
             group.tournaments = tournaments.sort((a, b) => {
-                return a.startDate.getTime() - b.startDate.getTime();
+              if(a.startDate == null || b.startDate == null)
+                return 0;
+              return a.startDate.getTime() - b.startDate.getTime();
             });
             myTournamentData = group.tournaments[0].users.filter((ranking) => {
-                return ranking._id = user._id;
+              return ranking._id = user._id;
             })[0];
             group.myTournament = group.tournaments[0].tournamentName;
             group.myScore = myTournamentData.score;
