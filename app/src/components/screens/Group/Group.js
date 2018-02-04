@@ -260,9 +260,9 @@ export default class Group extends BaseComponent {
   };
   inviteToJoin() {
     Share.share({
-      message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}#/invite/login/${this.state.currentGroup.groupToken}`,
+      message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}#/invite/${this.state.currentGroup.groupToken}`,
       title: 'Shank Group Invitation',
-      url: `http://${ClienHost}#/invite/login/${this.state.currentGroup.groupToken}`
+      url: `http://${ClienHost}#/invite/${this.state.currentGroup.groupToken}`
     }, {
       subject: 'Shank Group Invitation',
       dialogTitle: 'Shank Group Invitation',
