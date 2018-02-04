@@ -68,6 +68,7 @@ export default class MainScreen extends BaseComponent {
     });
     AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).then(authToken => {
       this.setState({auth: authToken});
+      this.getGroupList();
       if (authToken) {
         Linking.addEventListener('url', this._handleOpenURL);
         Linking.getInitialURL().then((url) => {
@@ -75,29 +76,14 @@ export default class MainScreen extends BaseComponent {
             let queryString = url.replace(Constants.linkingUri, '');
             if (queryString) {
               let data = qs.parse(queryString);
-              if (data.group && data.user) {
-                addToGroup();
-              }
-              else {
-                this.getGroupList();
+              if (data.group) {
+                this.addToGroup(data);
               }
             }
-            else {
-              this.getGroupList();
-            }
           }
-          else {
-            this.getGroupList();
-          }
-
         }).catch(err => {
           console.error('An error occurred', err);
         });
-        //AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
-        //  this.setState({currentUser: JSON.parse(user)})
-        //  this.onListGroupAsync();
-          this.getGroupList();
-        //});
       }
     });
   }
@@ -113,22 +99,26 @@ export default class MainScreen extends BaseComponent {
   }
 
   _handleOpenURL = (url) => {
+    console.log('HANDLE URL: ', url)
     let queryString = url.url.replace(Constants.linkingUri, '');
     if (queryString) {
       let data = qs.parse(queryString);
-      data = JSON.stringify(data);
-      if (data.group && data.user) {
-        addToGroup();
+      if (data.group) {
+        this.addToGroup(data);
       }
     }
   }
 
   addToGroup = async(data) => {
-    BaseModel.put(`groups/addUser/${data.group}/${data.user}`).then((groups) => {
-      this.getGroupList();
-    })
-    .catch((error) => {
-      this.getGroupList();
+    AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(profile => {
+      profile = JSON.parse(profile);
+      this.setLoading(true);
+      BaseModel.put(`groups/addUser/${data.group}/${profile._id}`).then((groups) => {
+        this.getGroupList();
+      }).catch((error) => {
+        this.setLoading(false);
+        BarMessages.showError(error, this.validationMessage);
+      });;
     });
   }
 
