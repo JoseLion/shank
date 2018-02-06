@@ -153,7 +153,7 @@ export default class MainScreen extends BaseComponent {
     this.setState({refreshing: true, loading: true});
     BaseModel.get(`groups/myList/${currentUser._id}`).then((groups) => {
       this.setState({
-        data: page === 1 ? groups : [...this.state.data, ...groups],
+        data: groups,
         loading: false,
         refreshing: false
       });
@@ -217,7 +217,7 @@ export default class MainScreen extends BaseComponent {
                             <Avatar medium rounded source={addPhoto} />
                         }
                       </View>
-                      <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
+                      <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:3}]}>
                         <Text numberOfLines={1} style={[LocalStyles.titleText]}>{item.name}</Text>
                         <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>{item.myTournament}</Text>
                         <Text numberOfLines={1} style={[MainStyles.shankGreen, LocalStyles.subtitleText]}>
