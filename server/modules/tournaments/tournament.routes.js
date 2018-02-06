@@ -111,14 +111,13 @@ module.exports = (app) => {
                   }).sort((a, b) => {
                     return b.score - a.score;
                   });
-                  console.log('USER PLAYER RANKING ', user.fullName, user.playerRanking);
-                  console.log();
-                  console.log();
-                  console.log();
-                  for(let i=0 ; i<user.playerRanking.length ; i++ ) {
-                      user.playerRanking[i].ranking = i + 1;
-                  }
                 });
+                tournament.users = tournament.users.sort((a, b) => {
+                  return b.score - a.score;
+                });
+                for(let i=0 ; i<tournament.users.length ; i++ ) {
+                  tournament.users[i].ranking = i + 1;
+                }
               });
               BettingGroup.findByIdAndUpdate(group._id, { $set: group }, { new: true }, (err, finalG) => { })
             });
