@@ -17,7 +17,7 @@ export class InviteViewComponent {
     }
 
     openUrl = () => {
-        window.location.href = `shank://+group=${this.groupToken}`;
+        window.location.href = `Shank://+group=${this.groupToken}`;
     };
 
 }
