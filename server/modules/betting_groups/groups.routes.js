@@ -163,8 +163,8 @@ let prepareRouter = function (app) {
         }
 
         let groups = new Array();
-        let tournaments = new Array();
         user.bettingGroups.forEach((group) => {
+          let tournaments = new Array();
           if(group.status) {
             group.isOwner = group.owner.equals(user._id);
             group.tournaments.forEach(function(tournament) {
