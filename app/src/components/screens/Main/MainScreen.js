@@ -99,7 +99,6 @@ export default class MainScreen extends BaseComponent {
   }
 
   _handleOpenURL = (url) => {
-    console.log('HANDLE URL: ', url)
     let queryString = url.url.replace(Constants.linkingUri, '');
     if (queryString) {
       let data = qs.parse(queryString);
