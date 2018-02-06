@@ -180,9 +180,11 @@ let prepareRouter = function (app) {
             myTournamentData = group.tournaments[0].users.filter((ranking) => {
               return ranking._id = user._id;
             })[0];
+            if(myTournamentData != null) {
+              group.myScore = myTournamentData.score;
+              group.myRanking = myTournamentData.ranking;
+            }
             group.myTournament = group.tournaments[0].tournamentName;
-            group.myScore = myTournamentData.score;
-            group.myRanking = myTournamentData.ranking;
             groups.push(group);
           }
         });
@@ -222,9 +224,13 @@ let prepareRouter = function (app) {
   .put(`${path}/addUser/:groupToken/:userId`, auth, function(req, res) {
     try {
       BettingGroup.findOne({groupToken: req.params.groupToken}).exec(function(errG, group) {
-        if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
+        if(!group) {
+          return res.ok({}, 'The group doesn\'t exist!');
+        }
         User.findById(req.params.userId).exec(function(errU, user) {
-          if(!user) { res.ok({}, 'The user doesn\'t exist!'); return; }
+          if(!user) {
+            return res.ok({}, 'The user doesn\'t exist!');
+          }
           let exists = false;
           group.users.forEach(function(groupUser) {
             if(groupUser == req.params.userId) {
@@ -234,16 +240,15 @@ let prepareRouter = function (app) {
           });
 
           if(exists) {
-            res.ok({}, 'The user is already on the group!'); return;
+            return res.ok({}, 'The user is already on the group!');
           } else {
-            group.users.push(user._id);
+            group.users.push(req.params.userId);
             group.tournaments.forEach(function(tournament) {
-              tournament.users.push({_id: user._id, fullName: user.fullName, playerRanking: []});
+              tournament.users.push({_id: req.params.userId, fullName: user.fullName, playerRanking: []});
             });
             BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU) {
-              User.findByIdAndUpdate(user._id, {$push: {bettingGroups: group._id}}, {new: true}, function(errUU) {
-                res.ok({userAdded: true});
-                return;
+              User.findByIdAndUpdate(req.params.userId, {$push: {bettingGroups: group._id}}, {new: true}, function(errUU) {
+                return res.ok({userAdded: true});
               });
             });
           }
