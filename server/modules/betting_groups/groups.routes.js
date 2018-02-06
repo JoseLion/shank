@@ -136,11 +136,11 @@ let prepareRouter = function (app) {
       BettingGroup.findById(req.params.groupId).exec(function(errG, group) {
         if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
         group.users = group.users.filter(function(user) {
-          return user._id != req.params.userId;
+          return !user._id.equals(req.params.userId);
         });
         group.tournaments.forEach(function(tournament) {
           tournament.users = tournament.users.filter(function(user) {
-            return user._id != req.params.userId;
+            return !user._id.equals(req.params.userId);
           });
         });
         BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU, finalGroup) {
@@ -178,7 +178,7 @@ let prepareRouter = function (app) {
               return a.startDate.getTime() - b.startDate.getTime();
             });
             myTournamentData = group.tournaments[0].users.filter((ranking) => {
-              return ranking._id = user._id;
+              return ranking._id.equals(user._id);
             })[0];
             if(myTournamentData != null) {
               group.myScore = myTournamentData.score;
@@ -267,7 +267,7 @@ let prepareRouter = function (app) {
         group.tournaments.forEach(function(tournament) {
           if(tournament._id == req.params.tournamentId) {
             tournament.users.forEach(function(user) {
-              if(user._id == req.payload._id) {
+              if(user._id.equals(req.payload._id)) {
                 user.playerRanking = req.body.players;
                 return;
               }
