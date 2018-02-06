@@ -93,7 +93,7 @@ module.exports = (app) => {
                     })[0];
                     if(round) {
                       let player = round.players.filter(p => {
-                        return p.playerId == ranking.playerId && p.position == ranking.position && !ranking.scoreAdded;
+                        return p.playerId.equals(ranking.playerId) && p.position == ranking.position && !ranking.scoreAdded;
                       })[0];
                       if(player && !ranking.scoreAdded) {
                         ranking.score = Number(places[player.position - 1].value);
