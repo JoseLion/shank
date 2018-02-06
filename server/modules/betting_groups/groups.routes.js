@@ -178,11 +178,13 @@ let prepareRouter = function (app) {
               return a.startDate.getTime() - b.startDate.getTime();
             });
             myTournamentData = group.tournaments[0].users.filter((ranking) => {
-              return ranking.fullName = user.fullName;
+              return ranking._id = user._id;
             })[0];
+            if(myTournamentData != null) {
+              group.myScore = myTournamentData.score;
+              group.myRanking = myTournamentData.ranking;
+            }
             group.myTournament = group.tournaments[0].tournamentName;
-            group.myScore = myTournamentData.score;
-            group.myRanking = myTournamentData.ranking;
             groups.push(group);
           }
         });
