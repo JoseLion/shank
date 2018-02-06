@@ -408,11 +408,11 @@ export default class Group extends BaseComponent {
 
         <View style={[LocalStyles.groupInformation, {borderBottomWidth: 2, borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT, paddingTop: 15, paddingBottom: 15}]}>
           <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-            <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myScore == 0 ? '' : this.state.currentTournament.myScore}</Text></View>
+            <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myScore == 0 ? ' ' : this.state.currentTournament.myScore}</Text></View>
             <View><Text style={[LocalStyles.infoText]}>Points</Text></View>
           </View>
           <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-            <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myRanking == 0 ? '' : this.state.currentTournament.myRanking}/{this.state.usersLength}</Text></View>
+            <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myRanking == 0 ? ' ' : this.state.currentTournament.myRanking}/{this.state.usersLength}</Text></View>
             <View><Text style={[LocalStyles.infoText]}>Ranking</Text></View>
           </View>
         <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
@@ -453,13 +453,13 @@ export default class Group extends BaseComponent {
                             :
                               <View style={[MainStyles.viewFlexItemsR]}>
                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
-                                  <Text style={[LocalStyles.titleText]}>{item.ranking == 0 ? '' : item.ranking}</Text>
+                                  <Text style={[LocalStyles.titleText]}>{item.ranking == 0 ? ' ' : item.ranking}</Text>
                                 </View>
                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
                                   <Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
                                 </View>
                                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd], {flex:1}}>
-                                  <Text style={[LocalStyles.subtitleText, {color: ShankConstants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score == 0 ? '' : item.score}</Text>
+                                  <Text style={[LocalStyles.subtitleText, {color: ShankConstants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score == 0 ? ' ' : item.score}</Text>
                                 </View>
                               </View>
                           }

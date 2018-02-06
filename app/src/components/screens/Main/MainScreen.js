@@ -153,7 +153,7 @@ export default class MainScreen extends BaseComponent {
     this.setState({refreshing: true, loading: true});
     BaseModel.get(`groups/myList/${currentUser._id}`).then((groups) => {
       this.setState({
-        data: page === 1 ? groups : [...this.state.data, ...groups],
+        data: groups,
         loading: false,
         refreshing: false
       });
