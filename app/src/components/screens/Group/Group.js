@@ -41,7 +41,7 @@ class RoasterRow extends BaseComponent {
             <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
               <Avatar small rounded source={{uri: this.props.data.photoUrl}} />
             </View>
-            <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:7}]}>
+            <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:6}]}>
               <Text numberOfLines={2} style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>
                 {this.props.data.fullName}{'\n'}
                 <Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`   TR: 15   SCORE: ${this.props.data.score == null ? '-' : this.props.data.score }`}</Text>
@@ -196,10 +196,13 @@ export default class Group extends BaseComponent {
 
   initialRequest = async () => {
     try {
-      do {
-        this.state.currentTournament.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
-      } while(this.state.currentTournament.users.length < 5);
-      this.state.currentGroup.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
+      console.log(this.props)
+      if(this.props.navigation.state.params.isOwner) {
+        do {
+          this.state.currentTournament.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
+        } while(this.state.currentTournament.users.length < 5);
+        this.state.currentGroup.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
+      }
     } catch (error) {
       console.log('ERROR! ', error);
     }
