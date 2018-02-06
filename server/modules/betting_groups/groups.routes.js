@@ -136,11 +136,11 @@ let prepareRouter = function (app) {
       BettingGroup.findById(req.params.groupId).exec(function(errG, group) {
         if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
         group.users = group.users.filter(function(user) {
-          return !user._id.equals(req.params.userId);
+          return !user.equals(req.params.userId);
         });
         group.tournaments.forEach(function(tournament) {
           tournament.users = tournament.users.filter(function(user) {
-            return !user._id.equals(req.params.userId);
+            return !user.equals(req.params.userId);
           });
         });
         BettingGroup.findByIdAndUpdate(group._id, {$set: group}, {new: true}, function(errGU, finalGroup) {

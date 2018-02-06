@@ -196,7 +196,6 @@ export default class Group extends BaseComponent {
 
   initialRequest = async () => {
     try {
-      console.log(this.props)
       if(this.props.navigation.state.params.isOwner) {
         do {
           this.state.currentTournament.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
