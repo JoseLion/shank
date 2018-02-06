@@ -20,4 +20,12 @@ export class InviteViewComponent {
         window.location.href = `Shank://group=${this.groupToken}`;
     };
 
+    openAndroid = () => {
+        window.location.href = `market://details?id=com.levelap.shank`;
+    };
+
+    openIos = () => {
+        window.location.href = `market://details?id=com.levelap.shank`;
+    };
+
 }
