@@ -111,6 +111,10 @@ module.exports = (app) => {
                   }).sort((a, b) => {
                     return b.score - a.score;
                   });
+                  console.log('USER PLAYER RANKING ', user.fullName, user.playerRanking);
+                  console.log();
+                  console.log();
+                  console.log();
                   for(let i=0 ; i<user.playerRanking.length ; i++ ) {
                       user.playerRanking[i].ranking = i + 1;
                   }
