@@ -23,14 +23,10 @@ import { FacebookModule } from 'ngx-facebook';
 
 // App components:
 import { InviteViewComponent } from './invite.component';
-import { InviteLoginViewComponent } from './login.component';
-import { InviteRegisterViewComponent } from './register.component';
 
 @NgModule({
     declarations: [
-        InviteViewComponent,
-        InviteLoginViewComponent,
-        InviteRegisterViewComponent
+        InviteViewComponent
     ],
     imports: [
         // Core:
