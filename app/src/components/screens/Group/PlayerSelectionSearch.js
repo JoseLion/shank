@@ -37,7 +37,7 @@ class PlayerRow extends BaseComponent {
           <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
             <Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
           </View>
-          <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 3}]}>
+          <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 2}]}>
             <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.fullName}</Text>
           </View>
           <View style={[MainStyles.viewFlexItemsC]}>
