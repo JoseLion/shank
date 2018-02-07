@@ -5,13 +5,12 @@
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                <div class="dropdown profile-element" dropdown>
-                    <a class="dropdown-toggle" dropdownToggle>
-                        <strong class="font-bold"><span class="caret"></span> {{user.name}}</strong>
-                    </a>
-                    <ul class="dropdown-menu animated fadeInRight m-t-xs" *dropdownMenu>
+                <div class="dropdown profile-element">
+                    <a class="dropdown-toggle" (click)="menu.toggle($event);"><strong class="font-bold"><span class="caret"></span> {{user.fullName}}</strong></a>
+                    <p-menu #menu popup="popup" [model]="options" appendTo="body"></p-menu>
+                    <!-- <ul class="dropdown-menu animated fadeInRight m-t-xs" *dropdownMenu>
                         <li><a (click)="logout()"><i class="fa fa-sign-out"></i> Log out</a></li>
-                    </ul>
+                    </ul> -->
                 </div>
             </li>
         </ul>

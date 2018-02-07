@@ -8,7 +8,7 @@ declare var jQuery:any;
 })
 export class NavigationComponent {
 
-    constructor(private router: Router) {}
+    constructor(private router: Router) { }
 
     ngAfterViewInit() {
         jQuery('#side-menu').metisMenu();

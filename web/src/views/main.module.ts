@@ -19,7 +19,8 @@ import {
     CalendarModule,
     DataGridModule,
     PanelModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    MenuModule
 } from 'primeng/primeng';
 
 import { ROUTES } from "app/app.routes";
@@ -73,6 +74,7 @@ import { SettingsViewComponent } from "views/settings/settings.component";
         DataGridModule,
         PanelModule,
         ConfirmDialogModule,
+        MenuModule,
 
         // Modules:
         ReportsModule
