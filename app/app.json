@@ -13,7 +13,7 @@
     },
     "android": {
       "package": "com.levelap.shank",
-      "versionCode": 11
+      "versionCode": 12
     },
     "androidStatusBar": {
       "barStyle": "light-content",
