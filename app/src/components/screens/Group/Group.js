@@ -19,6 +19,7 @@ class RoasterRow extends BaseComponent {
     super(props);
     this.addPlayer = this.addPlayer.bind(this);
   }
+
   addPlayer() {
     super.navigateToScreen('PlayerSelection', {
       actualPosition: Number.parseInt(this.props.rowId) + 1,
@@ -26,7 +27,7 @@ class RoasterRow extends BaseComponent {
       groupId: this.props.groupId,
       tournamentId: this.props.tournamentId,
       playerRanking: this.props.playerRanking,
-      updatePlayerRankingList: this.props.updatePlayerRankingList
+      onPlayerRankingSaveAsync: this.props.onPlayerRankingSaveAsync
     });
   }
 
@@ -38,10 +39,10 @@ class RoasterRow extends BaseComponent {
             <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
               <Text style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>
             </View>
-            <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
+            <View style={[MainStyles.viewFlexItemsC, {flex: 3}]}>
               <Avatar small rounded source={{uri: this.props.data.photoUrl}} />
             </View>
-            <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:6}]}>
+            <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:9}]}>
               <Text numberOfLines={2} style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>
                 {this.props.data.fullName}{'\n'}
                 <Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`   TR: 15   SCORE: ${this.props.data.score == null ? '-' : this.props.data.score }`}</Text>
@@ -85,18 +86,13 @@ export default class Group extends BaseComponent {
     this.inviteToJoin = this.inviteToJoin.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
-    // this.updateRankingList = this.updateRankingList.bind(this);
     this.updatePlayerRankingList = this.updatePlayerRankingList.bind(this);
     this.onGroupAsync = this.onGroupAsync.bind(this);
     this.checkChangesOnList = this.checkChangesOnList.bind(this);
     this.removeUser = this.removeUser.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
     this.onPlayerRankingSaveAsync = this.onPlayerRankingSaveAsync.bind(this);
-    // this.setOrderPlayer = this.setOrderPlayer.bind(this);
-    // this.setOrderedList = this.setOrderedList.bind(this);
-    // this.setPlayerRankings = this.setPlayerRankings.bind(this);
 
-    // this.lastPosition = 1;
     this.state = {
       currentGroup: {},
       groupPhoto: null,
@@ -115,32 +111,11 @@ export default class Group extends BaseComponent {
       order: [],
       originalRanking: '',
 
-      // tournamentRankings: [],
-      // initialState: false,
-      // stillLoading: false,
-      // tournamentName: '',
-      // tournamentEndDate: '',
-      // tournamentStartDate: '',
-      // loading: false,
-      // currentDate: new Date(),
-      // currentUser: {},
-      // sliderPosition: 0,
-      // newPlayer: {},
-
-      // groupLoggedUser: {},
-      // initialPlayerRankings: {},
-      // playerRankings: [
-      //     {none: true, position: 1},
-      //     {none: true, position: 2},
-      //     {none: true, position: 3},
-      //     {none: true, position: 4},
-      //     {none: true, position: 5}
-      // ],
-      // playerSelectionPosition: 0,
       movementsDone: 0,
       pricePerMovement: 0
     };
   }
+
   componentDidMount() {
     this.props.navigation.setParams({ actionSheet: this.showActionSheet });
     AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => { this.setState({currentUser: JSON.parse(user)}); });
@@ -148,6 +123,8 @@ export default class Group extends BaseComponent {
   }
 
   optionSelectedPressed(actionIndex) {
+    if(actionIndex == (this.state.tournamentsName.length - 1)) return;
+
     this.setState({currentTournament: this.state.currentGroup.tournaments[actionIndex]});
     this.state.currentGroup.tournaments[actionIndex].users.forEach((user) => {
       if(user._id == this.state.currentUser._id) {
@@ -176,10 +153,10 @@ export default class Group extends BaseComponent {
       });
       this.setLoading(false);
     }).catch((error) => {
-      console.log('ERROR! ', error);
       this.setLoading(false);
     });
   }
+
   showActionSheet() {
     if(isAndroid) {
       this.ActionSheet.show();
@@ -194,30 +171,16 @@ export default class Group extends BaseComponent {
     }
   }
 
-  initialRequest = async () => {
-    try {
-      console.log(this.props)
-      if(this.props.navigation.state.params.isOwner) {
-        do {
-          this.state.currentTournament.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
-        } while(this.state.currentTournament.users.length < 5);
-        this.state.currentGroup.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
-      }
-    } catch (error) {
-      console.log('ERROR! ', error);
-    }
-    this._getPricePerMovement();
-  };
+  setLoading(loading) {
+      this.setState({loading: loading});
+  }
 
-  setLoading(loading) { this.setState({loading: loading}); }
-  setOrderPlayer(order) { this.setState({order: order}); }
-  setOrderedList(newList) { this.setState({orderedPlayerRanking: newList}); }
-  setPlayerRanking(newList) { this.setState({playerRanking: newList}); }
   updatePlayerRankingList(playerRanking) {
     playerRanking = playerRanking.sort(function(a, b) { return a.position - b.position; });
     let order = Object.keys(playerRanking);
     this.setState({playerRanking: playerRanking, order: order});
   }
+
   checkChangesOnList(playerRanking) {
     let quantityMovements = 0;
     let originalRanking = JSON.parse(this.state.originalRanking);
@@ -236,31 +199,18 @@ export default class Group extends BaseComponent {
       this.onPlayerRankingSaveAsync(playerRanking);
     }
   }
-  removeUser(item) { this.onRemoveGroupAsync(item); }
+
+  removeUser(item) {
+      this.onRemoveGroupAsync(item);
+  }
+
   handleRefresh = () => {
     this.setState(
       { refreshing: true },
       () => { this.onGroupAsync(this.state.currentGroup._id); }
     );
   };
-  _getPricePerMovement = async() => {
-    await BaseModel.get('appSettings/findByCode/PPM').then((setting) => {
-      this.state.pricePerMovement = JSON.parse(setting.value);
-    }).catch((error) => {
-      this.setLoading(false);
-      console.log('ERROR: ', error);
-    })
-  }
-  onPlayerRankingSaveAsync = async(data) => {
-    this.setLoading(true);
-    await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: data})
-    .then((response) => {
-      this.setLoading(false);
-      this.setState({originalRanking: JSON.stringify(this.state.playerRanking)});
-      this.checkChangesOnList(this.state.playerRanking);
-    })
-    .catch((error) => { BarMessages.showError(error, this.validationMessage); });
-  };
+
   inviteToJoin() {
     Share.share({
       message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}#/invite/${this.state.currentGroup.groupToken}`,
@@ -276,6 +226,49 @@ export default class Group extends BaseComponent {
       tintColor: 'green'
     }).then(this._showResult).catch(err => console.log(err));
   }
+
+  initialRequest = async () => {
+    try {
+      if(this.props.navigation.state.params.isOwner) {
+        do {
+          this.state.currentTournament.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
+        } while(this.state.currentTournament.users.length < 5);
+        this.state.currentGroup.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
+      }
+    } catch (error) {
+      console.log('ERROR! ', error);
+    }
+    this.getPricePerMovement();
+  };
+
+  getPricePerMovement = async() => {
+    await BaseModel.get('appSettings/findByCode/PPM').then((setting) => {
+      this.state.pricePerMovement = JSON.parse(setting.value);
+    }).catch((error) => {
+      this.setLoading(false);
+    })
+  }
+
+  onPlayerRankingSaveAsync = async(data, method) => {
+    let tournamentData = this.state.currentTournament;
+    let nowDate = new Date();
+    nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+    let tournamentDate = new Date(new Date(tournamentData.startDate).getFullYear(), new Date(tournamentData.startDate).getMonth(), new Date(tournamentData.startDate).getDate());
+    let diff = tournamentDate.getTime() - nowDate.getTime();
+    diff = Math.ceil(diff / (1000*3600*24));
+    console.log('DIFF DAYS: ', diff);
+    this.setLoading(true);
+    await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: data}).then((response) => {
+      this.setLoading(false);
+      this.updatePlayerRankingList(data);
+      this.setState({originalRanking: JSON.stringify(this.state.playerRanking)});
+      if(method != null) {
+          method();
+      }
+    }).catch((error) => {
+        BarMessages.showError(error, this.validationMessage);
+    });
+  };
 
   onGroupAsync = async(data) => {
     let self = this;
@@ -334,25 +327,7 @@ export default class Group extends BaseComponent {
         BarMessages.showError(error, this.validationMessage);
       });
     };
-    updateRankingListAsync = async (data) => {
-      // this.setLoading(true);
-      // let data = {
-      //     userGroupId: userGroupId,
-      //     playerRankings: this.state.playerRankings,
-      //     groupId: groupId,
-      // };
-      // try {
-      //     const currentGroup = await BaseModel.create('updateUserPlayerRankingByGroup', data);
-      //     if (currentGroup) {
-      //         this.setState({movementsDone: 0})
-      //         this.props.navigation.setParams({movementsDone: 0});
-      //         Notifier.message({title: 'RESPONSE', message: 'Your list has been updated successfully'});
-      //     }
-      // } catch (e) {
-      //     console.log('error in initialRequest: Group.js')
-      //     console.log(e)
-      // }
-    };
+
     onRemoveGroupAsync = async(data) => {
       this.setLoading(true);
       let endPoint;
@@ -370,8 +345,6 @@ export default class Group extends BaseComponent {
     render() {
       let addPhoto = require('../../../../resources/add_edit_photo.png');
       let navigation = this.props.navigation;
-
-      // let diffDays = this.state.diffDays;
       return (
         <View style={[MainStyles.container]}>
           <Spinner visible={this.state.loading} animation='fade' />
@@ -508,7 +481,8 @@ export default class Group extends BaseComponent {
                       groupId={this.state.currentGroup._id}
                       tournamentId={this.state.currentTournament._id}
                       playerRanking={this.state.playerRanking}
-                      updatePlayerRankingList={this.updatePlayerRankingList} />)
+
+                      onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync} />)
                     } />
 
                   { this.state.diffDays > 0 && this.state.diffDays <= 4 && this.state.movementsDone > 0
@@ -538,4 +512,5 @@ export default class Group extends BaseComponent {
       <DropdownAlert ref={ref => this.validationMessage = ref} />
     </View>);
   }
+
 }
