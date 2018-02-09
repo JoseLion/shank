@@ -92,6 +92,7 @@ export default class Group extends BaseComponent {
     this.removeUser = this.removeUser.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
     this.onPlayerRankingSaveAsync = this.onPlayerRankingSaveAsync.bind(this);
+    this.goToCheckout = this.goToCheckout.bind(this);
 
     this.state = {
       currentGroup: {},
@@ -111,6 +112,7 @@ export default class Group extends BaseComponent {
       order: [],
       originalRanking: '',
 
+      showCheckout: false,
       movementsDone: 0,
       pricePerMovement: 0
     };
@@ -125,7 +127,7 @@ export default class Group extends BaseComponent {
   optionSelectedPressed(actionIndex) {
     if(actionIndex == (this.state.tournamentsName.length - 1)) return;
 
-    this.setState({currentTournament: this.state.currentGroup.tournaments[actionIndex]});
+    this.setState({currentTournament: this.state.currentGroup.tournaments[actionIndex], showCheckout: false, loading: true});
     this.state.currentGroup.tournaments[actionIndex].users.forEach((user) => {
       if(user._id == this.state.currentUser._id) {
         let playerRanking = (user.playerRanking == null || user.playerRanking.length == 0) ? [
@@ -194,7 +196,7 @@ export default class Group extends BaseComponent {
         }
       }
     });
-    this.setState({movementsDone: quantityMovements});
+    this.setState({movementsDone: quantityMovements, showCheckout: quantityMovements > 0});
     if(this.state.diffDays > 4) {
       this.onPlayerRankingSaveAsync(playerRanking);
     }
@@ -227,6 +229,18 @@ export default class Group extends BaseComponent {
     }).then(this._showResult).catch(err => console.log(err));
   }
 
+  goToCheckout() {
+    let params = {
+      groupId: this.state.currentGroup._id,
+      isOwner: this.props.navigation.state.params.isOwner,
+      tournamentId: this.state.currentTournament._id,
+      originalRanking: JSON.parse(this.state.originalRanking),
+      playerRanking: this.state.playerRanking,
+      round: this.state.tournamentData.rounds.length - this.state.diffDays
+    };
+    this.props.navigation.navigate('Checkout', params);
+  }
+
   initialRequest = async () => {
     try {
       if(this.props.navigation.state.params.isOwner) {
@@ -256,18 +270,50 @@ export default class Group extends BaseComponent {
     let tournamentDate = new Date(new Date(tournamentData.startDate).getFullYear(), new Date(tournamentData.startDate).getMonth(), new Date(tournamentData.startDate).getDate());
     let diff = tournamentDate.getTime() - nowDate.getTime();
     diff = Math.ceil(diff / (1000*3600*24));
-    console.log('DIFF DAYS: ', diff);
-    this.setLoading(true);
-    await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: data}).then((response) => {
-      this.setLoading(false);
-      this.updatePlayerRankingList(data);
-      this.setState({originalRanking: JSON.stringify(this.state.playerRanking)});
-      if(method != null) {
+    if(diff > 0) {
+      this.setLoading(true);
+      await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: data}).then((response) => {
+        this.setLoading(false);
+        this.updatePlayerRankingList(data);
+        this.setState({originalRanking: JSON.stringify(data)});
+        if(method != null) {
           method();
-      }
-    }).catch((error) => {
+        }
+      }).catch((error) => {
         BarMessages.showError(error, this.validationMessage);
-    });
+      });
+    } else {
+      let original = JSON.parse(this.state.originalRanking);
+      let updated = false;
+      let showCheckout = false;
+      for(let i=0 ; i<original.length ; i++) {
+        let dataChanged = data.filter(ranking => { return ranking.position == original[i].position})[0];
+        if(original[i].playerId == null && dataChanged.playerId != null) {
+          original[i] = dataChanged;
+          updated = true;
+        } else if(original[i].playerId != dataChanged.playerId) {
+          showCheckout = true;
+        }
+      }
+      if(updated) {
+        await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: original}).then((response) => {
+          this.setLoading(false);
+          this.updatePlayerRankingList(original);
+          this.setState({originalRanking: JSON.stringify(original)});
+          if(method != null) {
+            method();
+          }
+        }).catch((error) => {
+          BarMessages.showError(error, this.validationMessage);
+        });
+      } else {
+        this.setState({showCheckout: showCheckout});
+        this.updatePlayerRankingList(data);
+        if(method != null) {
+          method();
+        }
+      }
+    }
   };
 
   onGroupAsync = async(data) => {
@@ -289,94 +335,101 @@ export default class Group extends BaseComponent {
         tournamentsName: tournamentsName,
         usersLength: currentGroup.users.length,
         loading: false});
-        currentGroup.tournaments[0].users.forEach(function(user) {
-          if(user._id == self.state.currentUser._id) {
-            let playerRanking = (user.playerRanking == null || user.playerRanking.length == 0) ? [
-              {position: 1},
-              {position: 2},
-              {position: 3},
-              {position: 4},
-              {position: 5}
-            ] : user.playerRanking;
-            self.setState({originalRanking: JSON.stringify(playerRanking)});
-            self.updatePlayerRankingList(playerRanking);
-            return;
+      currentGroup.tournaments[0].users.forEach(function(user) {
+        if(user._id == self.state.currentUser._id) {
+          let playerRanking = (user.playerRanking == null || user.playerRanking.length == 0) ? [
+            {position: 1},
+            {position: 2},
+            {position: 3},
+            {position: 4},
+            {position: 5}
+          ] : user.playerRanking;
+          let showCheckout = false;
+          if(self.state.originalRanking != '') {
+            let original = JSON.parse(self.state.originalRanking);
+            for(let i=0 ; i<original.length ; i++) {
+              let dataChanged = self.state.playerRanking.filter(ranking => { return ranking.position == original[i].position})[0];
+              if(original[i].playerId != dataChanged.playerId) {
+                showCheckout = true;
+              }
+            }
           }
-        });
-        this.props.navigation.setParams({currentGroup: currentGroup});
-        BaseModel.get(`tournaments/getTournament/${currentGroup.tournaments[0].tournamentId}`).then((tournamentData) => {
-          let nowDate = new Date();
-          nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-          let diff = new Date(tournamentData.endDate).getTime() - nowDate.getTime();
-          if(diff > 0) diff = Math.ceil(diff / (1000*3600*24));
-          else diff = 0;
-          this.setState({
-            tournamentData: tournamentData,
-            playersLeaderboard: [],
-            diffDays: diff
-          });
-          this.setLoading(false);
-        }).catch((error) => {
-          console.log('ERROR! ', error);
-          this.setLoading(false);
-        });
-        this.initialRequest();
-      }).catch((error) => {
-        console.log('ERROR! ', error);
-        this.setLoading(false);
-        BarMessages.showError(error, this.validationMessage);
+          self.setState({originalRanking: JSON.stringify(playerRanking), showCheckout: showCheckout});
+          self.updatePlayerRankingList(playerRanking);
+          return;
+        }
       });
-    };
-
-    onRemoveGroupAsync = async(data) => {
-      this.setLoading(true);
-      let endPoint;
-      await BaseModel.delete(`groups/removeUser/${this.state.currentGroup._id}/${data._id}`).then(() => {
-        this.handleRefresh();
-        this.setState({usersLength: this.state.usersLength - 1});
+      this.props.navigation.setParams({currentGroup: currentGroup});
+      BaseModel.get(`tournaments/getTournament/${currentGroup.tournaments[0].tournamentId}`).then((tournamentData) => {
+        let nowDate = new Date();
+        nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+        let diff = new Date(tournamentData.endDate).getTime() - nowDate.getTime();
+        if(diff > 0) diff = Math.ceil(diff / (1000*3600*24));
+        else diff = 0;
+        this.setState({
+          tournamentData: tournamentData,
+          playersLeaderboard: [],
+          diffDays: diff
+        });
+        this.setLoading(false);
       }).catch((error) => {
-        console.log('ERROR! ', error);
-        BarMessages.showError(error, this.validationMessage);
-      }).finally(() => {
         this.setLoading(false);
       });
-    };
+      this.initialRequest();
+    }).catch((error) => {
+      this.setLoading(false);
+      BarMessages.showError(error, this.validationMessage);
+    });
+  };
 
-    render() {
-      let addPhoto = require('../../../../resources/add_edit_photo.png');
-      let navigation = this.props.navigation;
-      return (
-        <View style={[MainStyles.container]}>
-          <Spinner visible={this.state.loading} animation='fade' />
-          <ActionSheet ref={o => this.ActionSheet = o} options={this.state.tournamentsName} cancelButtonIndex={this.state.tournamentsName.length - 1} onPress={this.optionSelectedPressed} />
+  onRemoveGroupAsync = async(data) => {
+    this.setLoading(true);
+    let endPoint;
+    await BaseModel.delete(`groups/removeUser/${this.state.currentGroup._id}/${data._id}`).then(() => {
+      this.handleRefresh();
+      this.setState({usersLength: this.state.usersLength - 1});
+    }).catch((error) => {
+      BarMessages.showError(error, this.validationMessage);
+    }).finally(() => {
+      this.setLoading(false);
+    });
+  };
 
-          <View style={[LocalStyles.groupInformation, {paddingTop: 20}]}>
-            <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-              { this.state.groupPhoto != null && this.state.groupPhoto != ''
-                ? <Avatar large rounded source={{uri: this.state.groupPhoto}} />
-                : <Avatar large rounded source={addPhoto} />
-              }
-            </View>
-            <View style={[LocalStyles.viewContent, {flex:3,flexDirection:'column'}]}>
-              <View><Text style={[LocalStyles.titleText]}>{this.state.currentGroup.name}</Text></View>
-              <View>
-                <TouchableHighlight underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => navigation.state.params.actionSheet()}>
-                  <Text style={[LocalStyles.subtitleText]}>{this.state.currentTournament.tournamentName}</Text>
-                </TouchableHighlight>
-              </View>
-            </View>
-            <View style={[LocalStyles.viewContent, {flex:2,flexDirection:'column', alignItems:'flex-start'}]}>
-              { this.state.currentGroup.isOwner
-                ? ( <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
-                      <Text style={MainStyles.buttonText}>Invite</Text>
-                    </TouchableOpacity> )
-                : <View></View>
-              }
+  render() {
+    let addPhoto = require('../../../../resources/add_edit_photo.png');
+    let navigation = this.props.navigation;
+    return (
+      <View style={[MainStyles.container]}>
+        <Spinner visible={this.state.loading} animation='fade' />
+        <ActionSheet ref={o => this.ActionSheet = o} options={this.state.tournamentsName} cancelButtonIndex={this.state.tournamentsName.length - 1} onPress={this.optionSelectedPressed} />
+
+        <View style={[LocalStyles.groupInformation, {paddingTop: 20}]}>
+          <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
+            { this.state.groupPhoto != null && this.state.groupPhoto != ''
+              ? <Avatar large rounded source={{uri: this.state.groupPhoto}} />
+              : <Avatar large rounded source={addPhoto} />
+            }
+          </View>
+          <View style={[LocalStyles.viewContent, {flex:3,flexDirection:'column'}]}>
+            <View><Text style={[LocalStyles.titleText]}>{this.state.currentGroup.name}</Text></View>
+            <View>
+              <TouchableHighlight underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => navigation.state.params.actionSheet()}>
+                <Text style={[LocalStyles.subtitleText]}>{this.state.currentTournament.tournamentName}</Text>
+              </TouchableHighlight>
             </View>
           </View>
+          <View style={[LocalStyles.viewContent, {flex:2,flexDirection:'column', alignItems:'flex-start'}]}>
+            { this.state.currentGroup.isOwner
+              ? ( <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
+                    <Text style={MainStyles.buttonText}>Invite</Text>
+                  </TouchableOpacity> )
+              : <View></View>
+            }
+          </View>
+        </View>
 
-          <View style={[LocalStyles.groupInformation, {borderBottomWidth: 3, borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT}]}>
-            <View style={[LocalStyles.viewContent, {flexDirection:'column'}]}>
+        <View style={[LocalStyles.groupInformation, {borderBottomWidth: 3, borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT}]}>
+          <View style={[LocalStyles.viewContent, {flexDirection:'column'}]}>
             <View><Text style={[LocalStyles.titleText]}>PRIZE</Text></View>
             <View><Text style={[LocalStyles.titleText, {fontWeight:'400'}]}>{this.state.currentGroup.bet}</Text></View>
           </View>
@@ -391,126 +444,126 @@ export default class Group extends BaseComponent {
             <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.currentTournament.myRanking == 0 ? ' ' : this.state.currentTournament.myRanking}/{this.state.usersLength}</Text></View>
             <View><Text style={[LocalStyles.infoText]}>Ranking</Text></View>
           </View>
-        <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
-          <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.diffDays}</Text></View>
-          <View><Text style={[LocalStyles.infoText]}>Days Left</Text></View>
+          <View style={[LocalStyles.viewContent, MainStyles.centeredObject, {flexDirection:'column'}]}>
+            <View><Text style={[LocalStyles.titleText, LocalStyles.titleTextNumber]}>{this.state.diffDays}</Text></View>
+            <View><Text style={[LocalStyles.infoText]}>Days Left</Text></View>
+          </View>
         </View>
-      </View>
 
-      <View style={[LocalStyles.groupInformation, LocalStyles.tabsInformation]}>
-        {(
-          <ScrollableTabView
-            initialPage={0}
-            locked={true}
-            tabBarActiveTextColor={ShankConstants.PRIMARY_COLOR}
-            tabBarInactiveTextColor={ShankConstants.PRIMARY_COLOR}
-            renderTabBar={() => <ScrollableTabBar />}>
-            <View tabLabel='Leaderboard' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
-              <Text style={[LocalStyles.subtitleText, {paddingTop: 20, paddingBottom: 0}]}>Rank</Text>
-              <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, paddingTop: 5, marginTop: 0}}>
-                <FlatList data={this.state.currentTournament.users} keyExtractor={item => item._id} renderItem={({item}) => (
-                  <Swipeable rightButtons={[
+        <View style={[LocalStyles.groupInformation, LocalStyles.tabsInformation]}>
+          {(
+            <ScrollableTabView
+              initialPage={0}
+              locked={true}
+              tabBarActiveTextColor={ShankConstants.PRIMARY_COLOR}
+              tabBarInactiveTextColor={ShankConstants.PRIMARY_COLOR}
+              renderTabBar={() => <ScrollableTabBar />}>
+              <View tabLabel='Leaderboard' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
+                <Text style={[LocalStyles.subtitleText, {paddingTop: 20, paddingBottom: 0}]}>Rank</Text>
+                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, paddingTop: 5, marginTop: 0}}>
+                  <FlatList data={this.state.currentTournament.users} keyExtractor={item => item._id} renderItem={({item}) => (
+                    <Swipeable rightButtons={[
                       (this.state.currentGroup.isOwner && item._id > 0 && item._id != this.state.currentGroup.owner)
                         ? ( <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}  onPress={() => this.removeUser(item)}>
                               <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
                             </TouchableHighlight> )
                         : ( <View></View> ) ]}
-                    rightButtonWidth={
-                      (!this.state.currentGroup.isOwner || item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
-                        <TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={ShankConstants.HIGHLIGHT_COLOR}
-                          onPress={() => {if(item._id < 0) this.inviteToJoin();} }>
-                          { item.fullName == 'Invite'
-                            ?
-                              <View style={[MainStyles.viewFlexItemsR]}>
-                                <View style={[MainStyles.viewFlexItemsC]}>
-                                  <Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
+                      rightButtonWidth={
+                        (!this.state.currentGroup.isOwner || item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
+                          <TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={ShankConstants.HIGHLIGHT_COLOR}
+                            onPress={() => {if(item._id < 0) this.inviteToJoin();} }>
+                            { item.fullName == 'Invite'
+                              ?
+                                <View style={[MainStyles.viewFlexItemsR]}>
+                                  <View style={[MainStyles.viewFlexItemsC]}>
+                                    <Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
+                                  </View>
                                 </View>
-                              </View>
-                            :
-                              <View style={[MainStyles.viewFlexItemsR]}>
-                                <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
-                                  <Text style={[LocalStyles.titleText]}>{item.ranking == 0 ? ' ' : item.ranking}</Text>
+                              :
+                                <View style={[MainStyles.viewFlexItemsR]}>
+                                  <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
+                                    <Text style={[LocalStyles.titleText]}>{item.ranking == 0 ? ' ' : item.ranking}</Text>
+                                  </View>
+                                  <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
+                                    <Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
+                                  </View>
+                                  <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd], {flex:1}}>
+                                    <Text style={[LocalStyles.subtitleText, {color: ShankConstants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score == 0 ? ' ' : item.score}</Text>
+                                  </View>
                                 </View>
-                                <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
-                                  <Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
-                                </View>
-                                <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd], {flex:1}}>
-                                  <Text style={[LocalStyles.subtitleText, {color: ShankConstants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score == 0 ? ' ' : item.score}</Text>
-                                </View>
-                              </View>
-                          }
-                        </TouchableHighlight>
-                  </Swipeable>
-                )} />
-              </List>
-            </View>
-            <View tabLabel='Roaster' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
-              <SortableListView
-                data={this.state.playerRanking}
-                order={this.state.order}
-                disableSorting={this.state.diffDays == 0}
-                onMoveStart={() => {
-                  lockScrollTabView = true;
-                }}
-                onMoveEnd={() => {
-                  lockScrollTabView = false;
-                }}
-                onRowMoved={e => {
-                  this.state.order.splice(e.to, 0, this.state.order.splice(e.from, 1)[0]);
-                  let playerRanking = [];
-                  Object.assign(playerRanking, this.state.playerRanking);
-                  playerRanking[e.from].position = (e.to + 1);
-                  if(e.to > e.from) {
-                    for(let idx = e.from + 1 ; idx > e.from && idx <= e.to ; idx++) {
-                      playerRanking[idx].position = playerRanking[idx].position - 1;
+                            }
+                          </TouchableHighlight>
+                    </Swipeable>
+                  )} />
+                </List>
+              </View>
+              <View tabLabel='Roaster' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
+                <SortableListView
+                  data={this.state.playerRanking}
+                  order={this.state.order}
+                  disableSorting={this.state.diffDays == 0}
+                  onMoveStart={() => {
+                    lockScrollTabView = true;
+                  }}
+                  onMoveEnd={() => {
+                    lockScrollTabView = false;
+                  }}
+                  onRowMoved={e => {
+                    this.state.order.splice(e.to, 0, this.state.order.splice(e.from, 1)[0]);
+                    let playerRanking = [];
+                    Object.assign(playerRanking, this.state.playerRanking);
+                    playerRanking[e.from].position = (e.to + 1);
+                    if(e.to > e.from) {
+                      for(let idx = e.from + 1 ; idx > e.from && idx <= e.to ; idx++) {
+                        playerRanking[idx].position = playerRanking[idx].position - 1;
+                      }
+                    } else if(e.to < e.from) {
+                      for(let idx = e.to ; idx >= e.to && idx < e.from ; idx++) {
+                        playerRanking[idx].position = playerRanking[idx].position + 1;
+                      }
                     }
-                  } else if(e.to < e.from) {
-                    for(let idx = e.to ; idx >= e.to && idx < e.from ; idx++) {
-                      playerRanking[idx].position = playerRanking[idx].position + 1;
+                    this.updatePlayerRankingList(playerRanking);
+                    this.checkChangesOnList(playerRanking);
+                    this.forceUpdate();
+                  }}
+                  renderRow={(row, rowId, sectionId) =>
+                    (<RoasterRow
+                        navigation={navigation}
+                        data={row}
+                        rowId={sectionId}
+                        groupId={this.state.currentGroup._id}
+                        tournamentId={this.state.currentTournament._id}
+                        playerRanking={this.state.playerRanking}
+                        onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync} />)
+                      } />
+
+                    { this.state.diffDays > 0 && this.state.diffDays <= this.state.tournamentData.rounds.length && this.state.showCheckout
+                      ? <View style={[{ width:'100%', height: '22.5%'}]}></View>
+                      : <View></View>
                     }
-                  }
-                  this.updatePlayerRankingList(playerRanking);
-                  this.checkChangesOnList(playerRanking);
-                  this.forceUpdate();
-                }}
-                renderRow={(row, rowId, sectionId) =>
-                  (<RoasterRow
-                      navigation={navigation}
-                      data={row}
-                      rowId={sectionId}
-                      groupId={this.state.currentGroup._id}
-                      tournamentId={this.state.currentTournament._id}
-                      playerRanking={this.state.playerRanking}
 
-                      onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync} />)
-                    } />
+                    { this.state.diffDays > 0 && this.state.diffDays <= this.state.tournamentData.rounds.length && this.state.showCheckout
+                      ?
+                        <TouchableOpacity
+                          onPress={() => this.goToCheckout()}
+                          style={[{
+                            position: 'absolute',
+                            bottom: '2%',
+                            left: '10%',
+                            width: '80%'
+                          }, MainStyles.button, MainStyles.success]}>
+                          <Text style={MainStyles.buttonText}>Checkout</Text>
+                        </TouchableOpacity>
+                      : <View></View>
+                    }
+              </View>
+            </ScrollableTabView>
+          )}
+        </View>
 
-                  { this.state.diffDays > 0 && this.state.diffDays <= 4 && this.state.movementsDone > 0
-                    ? <View style={[{ width:'100%', height: '22.5%'}]}></View>
-                    : <View></View>
-                  }
-
-                  { this.state.diffDays > 0 && this.state.diffDays <= 4 && this.state.movementsDone > 0
-                    ?
-                      <TouchableOpacity
-                        onPress={() => this.onPlayerRankingSaveAsync(this.state.playerRanking)}
-                        style={[{
-                          position: 'absolute',
-                          bottom: '2%',
-                          left: '10%',
-                          width: '80%'
-                        }, MainStyles.button, MainStyles.success]}>
-                        <Text style={MainStyles.buttonText}>{ this.state.movementsDone} movements {(this.state.movementsDone * this.state.pricePerMovement).toFixed(2)} $</Text>
-                      </TouchableOpacity>
-                    : <View></View>
-                  }
-            </View>
-          </ScrollableTabView>
-        )}
+        <DropdownAlert ref={ref => this.validationMessage = ref} />
       </View>
-
-      <DropdownAlert ref={ref => this.validationMessage = ref} />
-    </View>);
+    );
   }
 
 }

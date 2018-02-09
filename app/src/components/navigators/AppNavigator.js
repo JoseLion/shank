@@ -19,6 +19,7 @@ import EditGroup from '../screens/Group/EditGroup';
 import Group from '../screens/Group/Group';
 import PlayerSelection from '../screens/Group/PlayerSelection';
 import PlayerSelectionSearch from '../screens/Group/PlayerSelectionSearch';
+import Checkout from '../screens/Group/Checkout';
 import Settings from '../screens/Settings/Settings';
 
 export const TabNav = TabNavigator({
@@ -60,6 +61,7 @@ export const AppNavigator = StackNavigator({
     Group: { screen: Group },
     PlayerSelection: { screen: PlayerSelection },
     PlayerSelectionSearch: { screen: PlayerSelectionSearch },
+    Checkout: { screen: Checkout },
     Settings: { screen: Settings }
 });
 
