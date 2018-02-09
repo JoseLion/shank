@@ -91,6 +91,9 @@ const MainStyles = StyleSheet.create({
         fontSize: Style.EM(1),
         marginTop: Style.EM(0.5)
     },
+    primary: {
+        backgroundColor: ShankConstants.PRIMARY_COLOR
+    },
     success: {
         backgroundColor: ShankConstants.SUCCESS_COLOR
     },

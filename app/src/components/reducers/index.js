@@ -48,10 +48,13 @@ function nav(state = initialNavState, action) {
             break;
         case 'Profile':
             nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Profile'}), state );
-            break
+            break;
+        case 'Checkout':
+            nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Checkout'}), state );
+            break;
         case 'Settings':
             nextState = AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName: 'Settings'}), state );
-            break
+            break;
         default:
             nextState = AppNavigator.router.getStateForAction(action, state); break;
     }

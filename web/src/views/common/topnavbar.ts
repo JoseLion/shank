@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { smoothlyMenu } from 'app/app.helpers';
+import { MenuItem } from 'primeng/primeng';
 declare var jQuery:any;
 
 @Component({
@@ -9,7 +10,12 @@ declare var jQuery:any;
 })
 export class TopnavbarComponent {
 
-    private _user: any;
+    public user: any;
+    public options: MenuItem[] = [{
+        label: 'Logout', icon: 'fa-sign-out', command: (event) => {
+            this.router.navigate(['/login']);
+        }
+    }];
 
     constructor(public router: Router) {
         this.user = JSON.parse(localStorage.getItem('user'));
@@ -24,9 +30,5 @@ export class TopnavbarComponent {
         // localStorage.removeItem('token');
         this.router.navigate(['/login']);
     }
-
-    /* GETTERS AND SETTERS */
-    set user(_user:any){ this._user = _user; }
-    get user():any { return this._user; }
 
 }

@@ -14,7 +14,9 @@ class PlayerRow extends BaseComponent {
   constructor(props) {
     super(props);
     this.playerSelected = this.playerSelected.bind(this);
-    this.state = { checkIsSelected: this.props.data.isSelected ? LocalStyles.checkIsSelected : null };
+    this.state = {
+      checkIsSelected: this.props.data.isSelected ? LocalStyles.checkIsSelected : null
+    };
   }
 
   playerSelected() {
@@ -24,7 +26,6 @@ class PlayerRow extends BaseComponent {
     } else {
       this.props.data.isSelected = true;
       this.setState({checkIsSelected: LocalStyles.checkIsSelected});
-
     }
     this.props.setUpdateSelected(this.props.data);
   }
@@ -36,7 +37,7 @@ class PlayerRow extends BaseComponent {
           <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
             <Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
           </View>
-          <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 3}]}>
+          <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 2}]}>
             <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.fullName}</Text>
           </View>
           <View style={[MainStyles.viewFlexItemsC]}>
@@ -60,12 +61,12 @@ export default class PlayerSelection extends BaseComponent {
     headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
     headerLeft: (
       <TouchableHighlight onPress={() => navigation.goBack(null)}>
-      <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
+        <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
       </TouchableHighlight>
     ),
     headerRight: (
       <TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.state.params.searchPlayer()}>
-      <FontAwesome name='search' style={[MainStyles.headerIconButton]} />
+        <FontAwesome name='search' style={[MainStyles.headerIconButton]} />
       </TouchableHighlight>
     )
   });
@@ -104,8 +105,8 @@ export default class PlayerSelection extends BaseComponent {
       this.state.playerRanking.forEach(player => { if(player.playerId == null) quantityPlayersEmpty++; });
       if(this.state.finalPlayers.length > quantityPlayersEmpty) {
         let message = (quantityPlayersEmpty > 1)
-        ? `You must select between 1 and ${quantityPlayersEmpty} players.`
-        : 'You must select one player.';
+          ? `You must select between 1 and ${quantityPlayersEmpty} players.`
+          : 'You must select one player.';
         BarMessages.showError(message, this.validationMessage);
         return;
       }
@@ -132,8 +133,12 @@ export default class PlayerSelection extends BaseComponent {
       });
     }
     this.setLoading(true);
-    this.onPlayerRankingSaveAsync(playerRanking);
+    this.props.navigation.state.params.onPlayerRankingSaveAsync(playerRanking, this.playerGoBack);
   }
+
+  playerGoBack = () => {
+      this.props.navigation.goBack(null);
+  };
 
   setUpdateSelected(playerSelected) {
     let players = this.state.finalPlayers;
@@ -193,18 +198,6 @@ export default class PlayerSelection extends BaseComponent {
     });
   };
 
-  onPlayerRankingSaveAsync = async(data) => {
-    await BaseModel.put(`groups/editMyPlayers/${this.state.groupId}/${this.state.tournamentId}`, {players: data})
-    .then((response) => {
-      this.setLoading(false);
-      this.props.navigation.state.params.updatePlayerRankingList(data);
-      this.props.navigation.goBack(null);
-    }).catch((error) => {
-      this.setLoading(false);
-      BarMessages.showError(error, this.validationMessage);
-    });
-  };
-
   render() {
     return (
       <View style={{flex:1, width:'100%', backgroundColor: ShankConstants.BACKGROUND_COLOR}} >
@@ -214,10 +207,10 @@ export default class PlayerSelection extends BaseComponent {
           data={this.state.players}
           renderRow= { (row) =>
             <PlayerRow
-            data={row}
-            players={this.state.players}
-            setUpdateSelected={this.setUpdateSelected}
-            navigation={this.props.navigation} />
+              data={row}
+              players={this.state.players}
+              setUpdateSelected={this.setUpdateSelected}
+              navigation={this.props.navigation} />
           } />
 
         <TouchableOpacity onPress={() => this.updateLocalPlayerList()}
@@ -233,4 +226,5 @@ export default class PlayerSelection extends BaseComponent {
       </View>
     );
   }
+
 }
