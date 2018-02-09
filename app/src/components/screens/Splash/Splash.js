@@ -15,7 +15,7 @@ import { Constants } from 'expo';
 import { BaseComponent, MainStyles, ShankConstants } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
-import BackgroundSolid from '../../../../resources/shank_completo.png';
+import BackgroundSolid from '../../../../resources/shank_logo.png';
 import BackgroundTransparent from '../../../../resources/shank_fade_out.png';
 
 var qs = require('qs');
@@ -34,10 +34,10 @@ export default class SplashScreen extends BaseComponent {
       fadeAnim: new Animated.Value(0)
     };
   };
-  
+
   componentDidMount() {
     this.setState({imageSource: BackgroundSolid});
-    
+
     Animated.timing(this.state.fadeAnim, { toValue: 1, duration: 2500 }).start(() => {
       Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 500 }).start(() => {
         this.setState({imageSource: BackgroundTransparent});
@@ -57,11 +57,11 @@ export default class SplashScreen extends BaseComponent {
       });
     });
   };
-  
+
   componentWillUnmount() {
     clearTimeout(this.timeoutHandle);
   };
-  
+
   render() {
     let { fadeAnim } = this.state;
     return (
