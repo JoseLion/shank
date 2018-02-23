@@ -205,19 +205,38 @@ const LocalStyles = StyleSheet.create({
     GroupList: {
         flex: 1,
     },
+    cellMainView: {
+        paddingLeft: '10%',
+        paddingRight: '10%',
+        paddingTop: '0%',
+        paddingBottom: '0%',
+        borderBottomWidth: 0,
+        height: 90,
+        backgroundColor: 'white'
+    },
+    cellSubview: {
+        borderColor: ShankConstants.TERTIARY_COLOR_ALT,
+        paddingTop: '5%',
+        paddingBottom: '5%',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
     positionParticipants: {
         marginRight: '2%',
-        fontSize: Style.FONT_15
+        fontSize: Style.FONT_17
     },
     participantsList: {
         flex: 1,
     },
     titleStyle: {
-        fontSize: Style.FONT_15
+        fontSize: Style.FONT_17
     },
     subtitleStyle: {
-        fontSize: Style.FONT_12,
-        color: '#3F3F3F'
+        fontSize: Style.FONT_14,
+        fontWeight: 'bold',
+        color: '#B6B6B5'
     },
     participantsScore: {
         fontSize: Style.FONT_14,
@@ -378,14 +397,38 @@ const LocalStyles = StyleSheet.create({
         fontWeight:'800',
         fontSize:Style.FONT_SMALL
     },
-    alphabeticalText : {
+    alphabeticalText: {
         color:'#556E3E',
         fontWeight:'800',
         fontSize:Style.FONT_MEDIUM
     },
-    viewHeaderPlayerList : {
+    viewHeaderPlayerList: {
         backgroundColor: '#556E3E'
     },
+    roundLabelsView: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        margin: '3%'
+    },
+    roundsText: {
+        marginRight: '2%',
+        fontSize: Style.FONT_16
+    },
+    roundLabel: {
+        marginLeft: '1%',
+        marginRight: '1%',
+        paddingTop: '0.5%',
+        paddingBottom: '0.5%',
+        paddingLeft: '2.5%',
+        paddingRight: '2.5%',
+        borderWidth: 1,
+        borderRadius: 100
+    },
+    roundLabelText: {
+        color: 'white',
+        fontSize: Style.FONT_16
+    }
 });
 
 export default LocalStyles;

@@ -19,7 +19,7 @@ class PlayerRow extends BaseComponent {
     };
   }
 
-  playerSelected() {
+  playerSelected(data) {
     if(this.state.checkIsSelected != null) {
       this.props.data.isSelected = false;
       this.setState({checkIsSelected: null});
@@ -32,7 +32,7 @@ class PlayerRow extends BaseComponent {
 
   render() {
     return (
-      <TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected()}>
+      <TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected(this.props.data)}>
         <View style={[MainStyles.viewFlexItemsR]}>
           <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
             <Avatar medium rounded source={{uri: this.props.data.photoUrl}} />

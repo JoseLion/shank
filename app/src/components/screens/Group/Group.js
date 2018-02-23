@@ -1,5 +1,5 @@
 // React components:
-import React from 'react';
+import React, {Component} from 'react';
 import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import { Avatar, List, ListItem } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview'
@@ -18,6 +18,7 @@ class RoasterRow extends BaseComponent {
   constructor(props) {
     super(props);
     this.addPlayer = this.addPlayer.bind(this);
+    this.getCellBorderStyle = this.getCellBorderStyle.bind(this);
   }
 
   addPlayer() {
@@ -31,22 +32,45 @@ class RoasterRow extends BaseComponent {
     });
   }
 
+  getCellBorderStyle(index) {
+    if (index == 0) {
+      return {borderBottomWidth: 0.75};
+    }
+
+    return {borderTopWidth: 0.75, borderBottomWidth: 0.75};
+  }
+
   render() {
     if (this.props.data != null && this.props.data.playerId) {
       return (
-        <TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer} {...this.props.sortHandlers}>
-          <View style={[MainStyles.viewFlexItemsR]}>
-            <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
+        <TouchableHighlight style={[MainStyles.listItem, LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer} {...this.props.sortHandlers}>
+          <View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId)]}>
+            <View style={{flex: 1}}>
               <Text style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>
             </View>
-            <View style={[MainStyles.viewFlexItemsC, {flex: 3}]}>
-              <Avatar small rounded source={{uri: this.props.data.photoUrl}} />
+
+            <View style={{flex: 2, marginRight: '2.5%'}}>
+              <Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
             </View>
-            <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:9}]}>
-              <Text numberOfLines={2} style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>
-                {this.props.data.fullName}{'\n'}
-                <Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`   TR: 15   SCORE: ${this.props.data.score == null ? '-' : this.props.data.score }`}</Text>
-              </Text>
+
+            <View style={{flex: 6, flexDirection: 'column', justifyContent: 'space-between'}}>
+              <View style={{flex: 1, marginTop: '2%'}}>
+                <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.fullName}</Text>
+              </View>
+
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: '2%'}}>
+                <View style={{flex: 1}}>
+                  <Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`TR: 15`}</Text>
+                </View>
+
+                <View style={{flex: 1}}>
+                  <Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`SCORE: ${this.props.data.score == null ? '-' : this.props.data.score}`}</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={{flex: 1}}>
+              <Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} style={[{height: 15}]}></Image>
             </View>
           </View>
         </TouchableHighlight>
@@ -58,6 +82,41 @@ class RoasterRow extends BaseComponent {
         </TouchableHighlight>
       );
     }
+  }
+}
+
+class RoundLabels extends React.Component {
+  constructor(props) {
+    super(props);
+    this.getLabelColor = this.getLabelColor.bind(this);
+  }
+
+  getLabelColor(round) {
+    const today = new Date();
+    const day = new Date(round.day);
+
+    if (today.getFullYear() == day.getFullYear() && today.getMonth() == day.getMonth() && today.getDate() == day.getDate()) {
+      return {backgroundColor: '#252D3B', borderColor: '#252D3B'};
+    }
+
+    return {backgroundColor: '#BBBBBB', borderColor: '#BBBBBB'};
+  }
+
+  render() {
+    let labels = this.props.tournament.rounds.map((round) => {
+      return (
+        <View key={round._id} style={[LocalStyles.roundLabel, this.getLabelColor(round)]}>
+          <Text style={[LocalStyles.roundLabelText]}>{round.number}</Text>
+        </View>
+      );
+    });
+
+    return (
+      <View style={[LocalStyles.roundLabelsView]}>
+        <Text style={[LocalStyles.roundsText]}>{`ROUND`}</Text>
+        {labels}
+      </View>
+    );
   }
 }
 
@@ -497,17 +556,16 @@ export default class Group extends BaseComponent {
                   )} />
                 </List>
               </View>
-              <View tabLabel='Roaster' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
+
+              <View tabLabel='Roaster' style={[{width:'100%'}, LocalStyles.slideBorderStyle]}>
+                <RoundLabels tournament={this.state.tournamentData}></RoundLabels>
                 <SortableListView
                   data={this.state.playerRanking}
                   order={this.state.order}
                   disableSorting={this.state.diffDays == 0}
-                  onMoveStart={() => {
-                    lockScrollTabView = true;
-                  }}
-                  onMoveEnd={() => {
-                    lockScrollTabView = false;
-                  }}
+                  activeOpacity={1.0}
+                  onMoveStart={() => { lockScrollTabView = true; }}
+                  onMoveEnd={() => { lockScrollTabView = false; }}
                   onRowMoved={e => {
                     this.state.order.splice(e.to, 0, this.state.order.splice(e.from, 1)[0]);
                     let playerRanking = [];
@@ -526,36 +584,38 @@ export default class Group extends BaseComponent {
                     this.checkChangesOnList(playerRanking);
                     this.forceUpdate();
                   }}
-                  renderRow={(row, rowId, sectionId) =>
-                    (<RoasterRow
-                        navigation={navigation}
-                        data={row}
-                        rowId={sectionId}
-                        groupId={this.state.currentGroup._id}
-                        tournamentId={this.state.currentTournament._id}
-                        playerRanking={this.state.playerRanking}
-                        onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync} />)
-                      } />
+                  renderRow={(row, rowId, sectionId) => (
+                    <RoasterRow
+                      navigation={navigation}
+                      data={row}
+                      rowId={sectionId}
+                      groupId={this.state.currentGroup._id}
+                      tournamentId={this.state.currentTournament._id}
+                      playerRanking={this.state.playerRanking}
+                      onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync}>
+                    </RoasterRow>
+                  )}>
+                </SortableListView>
 
-                    { this.state.diffDays > 0 && this.state.diffDays <= this.state.tournamentData.rounds.length && this.state.showCheckout
-                      ? <View style={[{ width:'100%', height: '22.5%'}]}></View>
-                      : <View></View>
-                    }
+                { this.state.diffDays > 0 && this.state.diffDays <= this.state.tournamentData.rounds.length && this.state.showCheckout
+                  ? <View style={[{ width:'100%', height: '22.5%'}]}></View>
+                  : <View></View>
+                }
 
-                    { this.state.diffDays > 0 && this.state.diffDays <= this.state.tournamentData.rounds.length && this.state.showCheckout
-                      ?
-                        <TouchableOpacity
-                          onPress={() => this.goToCheckout()}
-                          style={[{
-                            position: 'absolute',
-                            bottom: '2%',
-                            left: '10%',
-                            width: '80%'
-                          }, MainStyles.button, MainStyles.success]}>
-                          <Text style={MainStyles.buttonText}>Checkout</Text>
-                        </TouchableOpacity>
-                      : <View></View>
-                    }
+                { this.state.diffDays > 0 && this.state.diffDays <= this.state.tournamentData.rounds.length && this.state.showCheckout
+                  ?
+                    <TouchableOpacity
+                      onPress={() => this.goToCheckout()}
+                      style={[{
+                        position: 'absolute',
+                        bottom: '2%',
+                        left: '10%',
+                        width: '80%'
+                      }, MainStyles.button, MainStyles.success]}>
+                      <Text style={MainStyles.buttonText}>Checkout</Text>
+                    </TouchableOpacity>
+                  : <View></View>
+                }
               </View>
             </ScrollableTabView>
           )}
@@ -565,5 +625,4 @@ export default class Group extends BaseComponent {
       </View>
     );
   }
-
 }

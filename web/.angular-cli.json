@@ -68,8 +68,8 @@
         "component": {
         },
         "serve": {
-            "port": 8000,
-            "host": "shank.levelaptesting.com"
+            "port": 8080,
+            "host": "localhost"
         }
     },
     "warnings": {
