@@ -26,123 +26,52 @@ export default class Checkout extends BaseComponent {
 
   constructor(props) {
     super(props);
-    this.initialCalculations = this.initialCalculations.bind(this);
-    this.onPlayerRankingSave = this.onPlayerRankingSave.bind(this);
-    this.onRemoveFromList = this.onRemoveFromList.bind(this);
+    this.playerChanged = this.playerChanged.bind(this);
+    this.saveAndPay = this.saveAndPay.bind(this);
     this.state = {
       loading: false,
       changes: [],
       groupId: this.props.navigation.state.params.groupId,
       isOwner: this.props.navigation.state.params.isOwner,
       tournamentId: this.props.navigation.state.params.tournamentId,
-      originalRanking: this.props.navigation.state.params.originalRanking,
-      playerRanking: this.props.navigation.state.params.playerRanking,
+      currentRoaster: this.props.navigation.state.params.playerRanking,
+      originalRoaster: this.props.navigation.state.params.originalRanking,
       pricePerMovement: 0,
       total: 0
     };
   }
 
   componentDidMount() {
-    this.getPricePerMovement();
-  }
-
-  setLoading(loading) {
-    this.setState({loading: loading});
-  }
-
-  initialCalculations() {
-    let original = this.state.originalRanking;
-    let changes = [];
-    let finalChanges = [];
-    let total = 0;
-
-    for(let i=0 ; i<original.length ; i++) {
-      let dataChanged = this.state.playerRanking.filter(ranking => ranking.position == original[i].position)[0];
-      if(original[i].playerId != dataChanged.playerId) {
-        changes.push({
-          fromId: original[i].playerId,
-          from: original[i].fullName,
-          toId: dataChanged.playerId,
-          to: dataChanged.fullName
-        });
+    let finalCost = 0.0;
+    
+    for (let i = 0; i < this.state.currentRoaster.length; i++) {
+      if (this.playerChanged(i)) {
+        finalCost += 1.99;
       }
     }
 
-    changes.forEach(change => {
-      if(finalChanges.filter(ranking => ranking.fromId == change.toId).length == 0) {
-        finalChanges.push(change);
-      }
-    });
-
-    finalChanges = finalChanges.map((element, idx) => {
-      element.number = idx + 1;
-      element.price = this.state.pricePerMovement;
-      return element;
-    });
-    this.setState({changes: finalChanges, total: (this.state.pricePerMovement * finalChanges.length) });
+    this.setState({total: finalCost});
   }
 
-  onPlayerRankingSave() {
-    this.onPlayerRankingSaveAsync(this.state);
+  playerChanged(index) {
+    if (this.state.currentRoaster[index]._id == this.state.originalRoaster[index]._id) {
+      return false;
+    }
+
+    return true;
   }
 
-  onRemoveFromList(item) {
-    let fromObject = this.state.originalRanking.filter(ranking => ranking.playerId == item.fromId)[0];
-    let settedFrom = false;
-    let toObject = this.state.originalRanking.filter(ranking => ranking.playerId == item.toId)[0];
-    let settedTo = false;
-    let playerRanking = this.state.playerRanking.map(ranking => {
-        if(!settedFrom && ranking.playerId == fromObject.playerId) {
-            ranking = toObject;
-            settedFrom = true;
-        }
-        if(!settedTo && ranking.playerId == toObject.playerId) {
-            ranking = fromObject;
-            settedTo = true;
-        }
-        return ranking;
-    });
-    this.setState(
-      {
-        playerRanking: this.state.playerRanking.map(ranking => {
-          if(!settedFrom && ranking.playerId == fromObject.playerId) {
-            ranking = toObject;
-            settedFrom = true;
-          }
-          if(!settedTo && ranking.playerId == toObject.playerId) {
-            ranking = fromObject;
-            settedTo = true;
-          }
-          return ranking;
-        }),
-        changes: this.state.changes.filter(change => change.number != item.number ).map(change => {
-          change.number = change.number - 1;
-          return change;
-        }),
-        total: (this.state.pricePerMovement * this.state.changes.filter(change => change.number != item.number).length)
-      }
-    );
-  }
+  async saveAndPay() {
+    this.setState({loading: true});
 
-  getPricePerMovement = async() => {
-    await BaseModel.get('appSettings/findByCode/PPM').then((setting) => {
-      this.setState({pricePerMovement: JSON.parse(setting.value)});
-      this.initialCalculations();
-    }).catch((error) => {
-      this.setLoading(false);
-    })
-  };
-
-  onPlayerRankingSaveAsync = async(data) => {
-    this.setLoading(true);
-    await BaseModel.put(`groups/editMyPlayers/${data.groupId}/${data.tournamentId}`, {players: data.playerRanking}).then((response) => {
-      super.navigateToScreen('Group', {groupId: data.groupId, isOwner: data.isOwner})
+    await BaseModel.put(`groups/editMyPlayers/${this.state.groupId}/${this.state.tournamentId}`, {players: this.state.currentRoaster}).then((response) => {
+      super.navigateToScreen('Group', {groupId: this.state.groupId, isOwner: this.state.isOwner})
     }).catch((error) => {
       BarMessages.showError(error, this.validationMessage);
     }).finally(() => {
-      this.setLoading(false);
+      this.setState({loading: false});
     });
-  };
+  }
 
   render() {
     return (
@@ -152,40 +81,36 @@ export default class Checkout extends BaseComponent {
 
           <View style={[{width: '90%'}]}>
             <View>
-              <Text style={[{fontWeight: '700', fontSize: 20, textAlign: 'center', paddingTop: 25, paddingBottom: 25, borderBottomWidth: 3, borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT}]}>
+              <Text style={[LocalStyles.checkoutTitle]}>
                 Round {this.props.navigation.state.params.round} Changes Summary
               </Text>
             </View>
 
             <View>
               <List containerStyle={[MainStyles.noBorder, {marginBottom: 15}]}>
-                <FlatList data={this.state.changes} renderItem={({item}) => (
-                  <View style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]}>
-                    <View style={[MainStyles.viewFlexItemsR]}>
-                      <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: .1}]}>
-                        <Text style={[{fontWeight: '700'}]}>{item.number}</Text>
-                      </View>
-                      <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: .25}]}>
-                        <Text style={[{color: ShankConstants.TERTIARY_COLOR_ALT}]}>{item.from}</Text>
-                      </View>
-                      <View style={[MainStyles.viewFlexItemsC, {flex: .15}]}>
-                        <FontAwesome name='exchange' />
-                      </View>
-                      <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: .25}]}>
-                        <Text style={[{color: ShankConstants.TERTIARY_COLOR_ALT}]}>{item.to}</Text>
-                      </View>
-                      <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd, {flex: .15}]}>
-                        <Text style={[{fontSize: 18, fontWeight: '700'}]}>$ {this.state.pricePerMovement}</Text>
-                      </View>
-                      <View style={[MainStyles.viewFlexItemsC, {flex: .1}]}>
-                        <TouchableHighlight onPress={() => {this.onRemoveFromList(item); }}>
-                          <FontAwesome name='trash-o' style={[{color: ShankConstants.ERROR_COLOR, fontSize: 25}]} />
-                        </TouchableHighlight>
-                      </View>
+                <FlatList data={this.state.currentRoaster} keyExtractor={item => item._id} renderItem={({item, index}) => (
+                  <View style={[LocalStyles.checkoutRow]}>
+                    <View style={{flex: 1}}>
+                      <Text style={[LocalStyles.checkoutNum]}>{index + 1}</Text>
+                    </View>
+
+                    <View style={{flex: 6}}>
+                      <Text style={[LocalStyles.checkoutNames]}>{item.fullName}</Text>
+                    </View>
+
+                    <View style={{flex: 3}}>
+                      <FontAwesome style={[LocalStyles.exchangeIcon]} name='exchange' />
+                    </View>
+
+                    <View style={{flex: 6}}>
+                      <Text style={[LocalStyles.checkoutNames, {textAlign: 'right'}]}>{this.state.originalRoaster[index].fullName}</Text>
+                    </View>
+
+                    <View style={{flex: 3}}>
+                      {this.playerChanged(index) ? (<Text style={[LocalStyles.checkoutCost]}>{`$1.99`}</Text>) : null}
                     </View>
                   </View>
-                )}
-                keyExtractor={item => item.number} />
+                )}></FlatList>
               </List>
             </View>
 
@@ -208,7 +133,7 @@ export default class Checkout extends BaseComponent {
                   </TouchableOpacity>
                 </View>
                 <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd]}>
-                  <TouchableOpacity style={[MainStyles.button, MainStyles.success, {width: '99%'}]} onPress={this.onPlayerRankingSave}>
+                  <TouchableOpacity style={[MainStyles.button, MainStyles.success, {width: '99%'}]} onPress={this.saveAndPay}>
                     <Text style={MainStyles.buttonText}>Confirm</Text>
                   </TouchableOpacity>
                 </View>
@@ -221,5 +146,4 @@ export default class Checkout extends BaseComponent {
       </View>
     );
   }
-
 }

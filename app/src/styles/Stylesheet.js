@@ -84,6 +84,7 @@ const Style = {
     FONT_13: em(0.55),
     FONT_14: em(0.70),
     FONT_15: em(0.85),
+    FONT_15_5: em(0.925),
     FONT_16: em(1),
     FONT_16_5: em(1.075),
     FONT_17: em(1.15),

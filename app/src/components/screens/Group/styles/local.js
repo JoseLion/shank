@@ -390,7 +390,9 @@ const LocalStyles = StyleSheet.create({
         backgroundColor: 'white',
         height:'100%'
     },
-    listContainer: {paddingHorizontal:'6%'},
+    listContainer: {
+        paddingHorizontal:'6%'
+    },
     textHeaderPlayerList : {
         textAlign:'center',
         color:'#fff',
@@ -428,6 +430,49 @@ const LocalStyles = StyleSheet.create({
     roundLabelText: {
         color: 'white',
         fontSize: Style.FONT_16
+    },
+    checkoutButtonView: {
+        paddingLeft: '10%',
+        paddingRight: '10%',
+        paddingBottom: '5%'
+    },
+    checkoutTitle: {
+        fontWeight: '700',
+        fontSize: 20,
+        textAlign: 'center',
+        paddingTop: 25,
+        paddingBottom: 25,
+        borderBottomWidth: 3,
+        borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT
+    },
+    checkoutRow: {
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: '8%',
+        paddingBottom: '8%',
+        paddingLeft: '2%',
+        paddingRight: '2%',
+        borderBottomWidth: 1,
+        borderColor: ShankConstants.TERTIARY_COLOR_ALT
+    },
+    checkoutNum: {
+        fontSize: Style.FONT_15_5,
+        fontWeight: 'bold'
+    },
+    checkoutNames: {
+        fontSize: Style.FONT_15_5,
+        color: ShankConstants.TERTIARY_COLOR_ALT
+    },
+    checkoutCost: {
+        fontSize: Style.FONT_15_5,
+        fontWeight: 'bold',
+        textAlign: 'right'
+    },
+    exchangeIcon: {
+        fontSize: Style.FONT_15_5,
+        textAlign: 'center'
     }
 });
 

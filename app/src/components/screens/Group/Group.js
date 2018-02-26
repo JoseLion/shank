@@ -147,11 +147,12 @@ export default class Group extends BaseComponent {
     this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
     this.updatePlayerRankingList = this.updatePlayerRankingList.bind(this);
     this.onGroupAsync = this.onGroupAsync.bind(this);
-    this.checkChangesOnList = this.checkChangesOnList.bind(this);
     this.removeUser = this.removeUser.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
     this.onPlayerRankingSaveAsync = this.onPlayerRankingSaveAsync.bind(this);
     this.goToCheckout = this.goToCheckout.bind(this);
+    this.roasterHasChanged = this.roasterHasChanged.bind(this);
+    this.isSortingDisabled = this.isSortingDisabled.bind(this);
 
     this.state = {
       currentGroup: {},
@@ -242,25 +243,6 @@ export default class Group extends BaseComponent {
     this.setState({playerRanking: playerRanking, order: order});
   }
 
-  checkChangesOnList(playerRanking) {
-    let quantityMovements = 0;
-    let originalRanking = JSON.parse(this.state.originalRanking);
-    originalRanking.forEach(function(original) {
-      if(original.playerId) {
-        let found = playerRanking.filter(function(ranking) {
-          return original.playerId == ranking.playerId;
-        });
-        if(found[0] == null || original.position != found[0].position) {
-          quantityMovements++;
-        }
-      }
-    });
-    this.setState({movementsDone: quantityMovements, showCheckout: quantityMovements > 0});
-    if(this.state.diffDays > 4) {
-      this.onPlayerRankingSaveAsync(playerRanking);
-    }
-  }
-
   removeUser(item) {
       this.onRemoveGroupAsync(item);
   }
@@ -289,18 +271,63 @@ export default class Group extends BaseComponent {
   }
 
   goToCheckout() {
+    let today = new Date();
+    let round = 0;
+
+    for (let i = 0; i < this.state.tournamentData.rounds.length; i++) {
+      let day = new Date(this.state.tournamentData.rounds[i].day);
+
+      if (today.getFullYear() == day.getFullYear() && today.getMonth() == day.getMonth() && today.getDate() == day.getDate()) {
+        round = i + 1;
+        break;
+      }
+    }
+
     let params = {
       groupId: this.state.currentGroup._id,
       isOwner: this.props.navigation.state.params.isOwner,
       tournamentId: this.state.currentTournament._id,
       originalRanking: JSON.parse(this.state.originalRanking),
       playerRanking: this.state.playerRanking,
-      round: this.state.tournamentData.rounds.length - this.state.diffDays
+      round: round
     };
     this.props.navigation.navigate('Checkout', params);
   }
 
-  initialRequest = async () => {
+  roasterHasChanged() {
+    let hasChanged = false;
+    let today = new Date();
+    let startDate = new Date(this.state.tournamentData.startDate);
+    let endDate = new Date(this.state.tournamentData.endDate);
+
+    if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime()) {
+      const originalRoaster = this.state.originalRanking == '' ? [] : JSON.parse(this.state.originalRanking);
+      
+      if (this.state.playerRanking != null && this.state.playerRanking.length == originalRoaster.length) {
+        for (let i = 0; i < originalRoaster.length; i++) {
+          if (originalRoaster[i]._id !== this.state.playerRanking[i]._id) {
+            hasChanged = true;
+            break;
+          }
+        }
+      }
+    }
+
+    return hasChanged;
+  }
+
+  isSortingDisabled() {
+    let today = new Date();
+    let endDate = new Date(this.state.tournamentData.endDate);
+
+    if (today.getTime() >= endDate.getTime()) {
+      return true;
+    }
+
+    return false;
+  }
+
+   async initialRequest() {
     try {
       if(this.props.navigation.state.params.isOwner) {
         do {
@@ -314,7 +341,7 @@ export default class Group extends BaseComponent {
     this.getPricePerMovement();
   };
 
-  getPricePerMovement = async() => {
+  async getPricePerMovement() {
     await BaseModel.get('appSettings/findByCode/PPM').then((setting) => {
       this.state.pricePerMovement = JSON.parse(setting.value);
     }).catch((error) => {
@@ -322,7 +349,7 @@ export default class Group extends BaseComponent {
     })
   }
 
-  onPlayerRankingSaveAsync = async(data, method) => {
+  async onPlayerRankingSaveAsync(data, method) {
     let tournamentData = this.state.currentTournament;
     let nowDate = new Date();
     nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
@@ -375,7 +402,7 @@ export default class Group extends BaseComponent {
     }
   };
 
-  onGroupAsync = async(data) => {
+  async onGroupAsync(data) {
     let self = this;
     this.setState({loading: true});
     await BaseModel.get(`groups/group/${data}`).then((currentGroup) => {
@@ -441,7 +468,7 @@ export default class Group extends BaseComponent {
     });
   };
 
-  onRemoveGroupAsync = async(data) => {
+  async onRemoveGroupAsync(data) {
     this.setLoading(true);
     let endPoint;
     await BaseModel.delete(`groups/removeUser/${this.state.currentGroup._id}/${data._id}`).then(() => {
@@ -562,7 +589,7 @@ export default class Group extends BaseComponent {
                 <SortableListView
                   data={this.state.playerRanking}
                   order={this.state.order}
-                  disableSorting={this.state.diffDays == 0}
+                  disableSorting={this.isSortingDisabled()}
                   activeOpacity={1.0}
                   onMoveStart={() => { lockScrollTabView = true; }}
                   onMoveEnd={() => { lockScrollTabView = false; }}
@@ -581,7 +608,6 @@ export default class Group extends BaseComponent {
                       }
                     }
                     this.updatePlayerRankingList(playerRanking);
-                    this.checkChangesOnList(playerRanking);
                     this.forceUpdate();
                   }}
                   renderRow={(row, rowId, sectionId) => (
@@ -597,25 +623,13 @@ export default class Group extends BaseComponent {
                   )}>
                 </SortableListView>
 
-                { this.state.diffDays > 0 && this.state.diffDays <= this.state.tournamentData.rounds.length && this.state.showCheckout
-                  ? <View style={[{ width:'100%', height: '22.5%'}]}></View>
-                  : <View></View>
-                }
-
-                { this.state.diffDays > 0 && this.state.diffDays <= this.state.tournamentData.rounds.length && this.state.showCheckout
-                  ?
-                    <TouchableOpacity
-                      onPress={() => this.goToCheckout()}
-                      style={[{
-                        position: 'absolute',
-                        bottom: '2%',
-                        left: '10%',
-                        width: '80%'
-                      }, MainStyles.button, MainStyles.success]}>
+                {this.roasterHasChanged() ?
+                  <View style={[LocalStyles.checkoutButtonView]}>
+                    <TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
                       <Text style={MainStyles.buttonText}>Checkout</Text>
                     </TouchableOpacity>
-                  : <View></View>
-                }
+                  </View>
+                : null}
               </View>
             </ScrollableTabView>
           )}
