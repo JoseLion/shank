@@ -6,6 +6,7 @@ export const BACKGROUND_COLOR = '#FFFFFF';
 export const PRIMARY_COLOR = '#252D3B';
 export const TERTIARY_COLOR = '#FFFFFF';
 export const TERTIARY_COLOR_ALT = '#B6B6B5';
+export const SHANK_GREEN = "#516740";
 
 export const SUCCESS_COLOR = '#00B16A';
 export const ERROR_COLOR = '#ED2C3E';

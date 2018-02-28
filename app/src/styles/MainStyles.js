@@ -65,7 +65,7 @@ const MainStyles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: 5,
         marginBottom: Style.EM(0.5),
         marginTop: Style.EM(0.5),
         padding: Style.EM(1),
@@ -76,6 +76,7 @@ const MainStyles = StyleSheet.create({
         paddingTop: Style.EM(0.5)
     },
     buttonText: {
+        fontFamily: 'century-gothic',
         color: ShankConstants.TERTIARY_COLOR,
         fontSize: Style.EM(1)
     },
@@ -211,7 +212,7 @@ const MainStyles = StyleSheet.create({
         height: Style.iconXS,
     },
     shankGreen: {
-        color: '#556E3E',
+        color: '#516740',
     },
     centeredObject: {
         justifyContent: 'center',

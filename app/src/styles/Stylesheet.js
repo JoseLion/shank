@@ -64,7 +64,6 @@ const Style = {
     CARD_PADDING_X: em(1.875),
     CARD_PADDING_Y: em(1.25),
 
-
     //FONT_PIXEL_RATIO
 
     FONT_MINI: normalize(12),

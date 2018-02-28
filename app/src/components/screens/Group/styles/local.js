@@ -23,24 +23,109 @@ const LocalStyles = StyleSheet.create({
     },
     groupInformation: {
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingLeft: '5%',
+        paddingRight: '5%'
     },
-    tabsInformation: {
-        flex: 6
+    groupHeader: {
+        flex:3,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        paddingVertical: '5%',
+        paddingHorizontal: '2.5%'
     },
-    viewContent: {
+    groupNameText: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_18,
+        color: ShankConstants.PRIMARY_COLOR,
+        paddingBottom: '5%',
+        marginTop: '-4%'
+    },
+    tournamentNameText: {
+        fontFamily: 'century-gothic-bold',
+        fontSize: Style.FONT_16,
+        marginRight: '2%',
+        paddingTop: '5%'
+    },
+    prizeView: {
         flex: 1,
-        paddingBottom: Style.EM(0.75),
-        paddingLeft: Style.EM(1),
-        paddingRight: Style.EM(1),
-        paddingTop: Style.EM(0.75)
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingLeft: '5%',
+        paddingRight: '5%',
+        borderBottomWidth: 1,
+        borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT,
+        paddingBottom: '5%'
     },
+    prizeSubView: {
+        flex: 1,
+        flexDirection:'column',
+        paddingVertical: '5%',
+        paddingHorizontal: '2.5%'
+    },
+    prizeText: {
+        fontFamily: 'century-gothic-bold',
+        fontSize: Style.FONT_16,
+        marginBottom: '1%'
+    },
+    prizeDescription: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_16
+    },
+    groupStats: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: '5%',
+        paddingVertical: '2.5%'
+    },
+    statView: {
+        flex: 1,
+        flexDirection:'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    statNumber: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_22,
+        color: ShankConstants.SHANK_GREEN
+    },
+    statLabel: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_15,
+        color: ShankConstants.TERTIARY_COLOR_ALT
+    },
+    tabsView: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+        borderColor: '#B3BEC9'
+    },
+    tabButton: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: '5%',
+        paddingBottom: '3%'
+    },
+
+
+
+
+
+
     titleText: {
+        fontFamily: 'century-gothic-bold',
         fontSize: Style.EM(1),
-        fontWeight: '700',
         color: ShankConstants.PRIMARY_COLOR
     },
     titleTextNumber: {
+        fontFamily: 'century-gothic',
         fontSize: Style.EM(1.5)
     },
     subtitleText: {
@@ -51,10 +136,6 @@ const LocalStyles = StyleSheet.create({
     normalText: {
         fontSize: Style.EM(0.75),
         color: ShankConstants.PRIMARY_COLOR
-    },
-    infoText: {
-        fontSize: Style.EM(0.75),
-        color: ShankConstants.TERTIARY_COLOR_ALT
     },
     trashButton: {
         alignItems: 'center',
