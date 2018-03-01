@@ -41,7 +41,7 @@ const LocalStyles = StyleSheet.create({
         fontSize: Style.FONT_18,
         color: ShankConstants.PRIMARY_COLOR,
         paddingBottom: '5%',
-        marginTop: '-4%'
+        marginTop: '-5%'
     },
     tournamentNameText: {
         fontFamily: 'century-gothic-bold',
@@ -56,6 +56,7 @@ const LocalStyles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: '5%',
         paddingRight: '5%',
+        paddingTop: '5%',
         borderBottomWidth: 1,
         borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT,
         paddingBottom: '5%'
@@ -110,10 +111,53 @@ const LocalStyles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: '5%',
+        paddingTop: '8%',
         paddingBottom: '3%'
     },
-
+    rankColumnText: {
+        fontFamily: 'century-gothic-bold',
+        fontSize: Style.FONT_14,
+        color: ShankConstants.PRIMARY_COLOR,
+        paddingTop: '5%',
+        paddingBottom: 0,
+        paddingLeft: '10%'
+    },
+    leaderboardList: {
+        paddingTop: 0,
+        borderTopWidth: 0,
+        borderBottomWidth: 0
+    },
+    leaderboardRow: {
+        paddingVertical: '7.5%',
+        borderBottomWidth: 1,
+        borderColor: ShankConstants.TERTIARY_COLOR_ALT
+    },
+    leaderboardRowView: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    leaderboardRowText: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_16
+    },
+    leaderboardRowPts: {
+        fontFamily: 'century-gothic-bold',
+        fontSize: Style.FONT_15,
+        color: ShankConstants.TERTIARY_COLOR_ALT,
+        textAlign: 'right'
+    },
+    swipeButton: {
+        backgroundColor: '#252D3B',
+        height: '100%',
+        justifyContent: 'center'
+    },
+    swipeButtonText: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_17,
+        color: 'white',
+        marginHorizontal: '5%'
+    },
 
 
 
@@ -147,7 +191,6 @@ const LocalStyles = StyleSheet.create({
         paddingTop: 0,
         width: 75
     },
-
     roasterRowHighlight: {
         flex: 1,
         padding: 20,
@@ -469,7 +512,8 @@ const LocalStyles = StyleSheet.create({
     },
     slideBorderStyle: {
         backgroundColor: 'white',
-        height:'100%'
+        height:'100%',
+        width:'100%'
     },
     listContainer: {
         paddingHorizontal:'6%'

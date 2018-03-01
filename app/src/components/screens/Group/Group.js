@@ -47,7 +47,7 @@ class RoasterRow extends BaseComponent {
 					<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId)]}>
 						<View style={{flex: 1}}>
 							<Text style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>
-						</View>
+						</View>cellSubview
 
 						<View style={{flex: 2, marginRight: '2.5%'}}>
 							<Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
@@ -79,8 +79,11 @@ class RoasterRow extends BaseComponent {
 			);
 		} else {
 			return (
-				<TouchableHighlight underlayColor='#E4E4E4' onPress={this.addPlayer} style={[LocalStyles.roasterRowHighlight]}>
-					<Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>EMPTY SLOT</Text>
+				<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer}>
+					<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId), {textAlign: 'center'}]}>
+						<Text>{Number.parseInt(this.props.rowId) + 1}</Text>
+						<Text>EMPTY SLOT</Text>
+					</View>
 				</TouchableHighlight>
 			);
 		}
@@ -127,7 +130,7 @@ class GroupTabBar extends React.Component {
 		super(props);
 	}
 
-	render() { 
+	render() {
 		let tabs = this.props.tabs.map((name, page) => {
 			const bgColor = this.props.activeTab === page ? '#E6E7E8' : 'white';
 
@@ -144,6 +147,66 @@ class GroupTabBar extends React.Component {
 				<Animated.View style={{backgroundColor: '#E6E7E8'}} />
 			</View>
 		);
+	}
+}
+
+class LeaderboardRow extends React.Component {
+	constructor(props) {
+		super(props);
+		this.getLeaderboardRightButtons = this.getLeaderboardRightButtons.bind(this);
+		this.getLeaderboardRow = this.getLeaderboardRow.bind(this);
+
+		this.state = {
+			currentGroup: this.props.currentGroup,
+			item: this.props.item
+		}
+	}
+
+	getLeaderboardRightButtons(item) {
+		return [
+			<TouchableHighlight style={[LocalStyles.swipeButton]} onPress={()=> this.onRemoveGroupAsync(item)}>
+				<Text style={[LocalStyles.swipeButtonText]}>Remove</Text>
+			</TouchableHighlight>
+		];
+	}
+
+	getLeaderboardRow(item) {
+		let nameFont = item.fullName == 'Invite' ? 'century-gothic' : 'century-gothic-bold';
+		return (
+			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => { if (item._id < 0) this.inviteToJoin(); }}>
+				<View style={[LocalStyles.leaderboardRow]}><View style={[LocalStyles.leaderboardRowView]}>
+					<Text style={[LocalStyles.leaderboardRowText, {flex: 1}]}>{item.ranking == 0 || item.ranking == null ? '-' : item.ranking}</Text>
+					<Text style={[LocalStyles.leaderboardRowText, {flex: 6, fontFamily: nameFont}]}>{item.fullName}</Text>
+					<Text style={[LocalStyles.leaderboardRowPts, {flex: 3}]}>{`Pts: ${item.score || 0}`}</Text>
+				</View></View>
+			</TouchableHighlight>
+		);
+	}
+
+	async onRemoveGroupAsync(data) {
+		this.setLoading(true);
+		let endPoint;
+
+		await BaseModel.delete(`groups/removeUser/${this.state.currentGroup._id}/${data._id}`).then(() => {
+			this.handleRefresh();
+			this.setState({usersLength: this.state.usersLength - 1});
+		}).catch((error) => {
+			BarMessages.showError(error, this.validationMessage);
+		}).finally(() => {
+			this.setLoading(false);
+		});
+	};
+
+	render() {
+		//if (this.state.currentGroup.isOwner && this.state.item._id > 0 && this.state.item._id != this.state.currentGroup.owner) {
+			return (
+				<Swipeable rightButtons={this.getLeaderboardRightButtons(this.state.item)} rightButtonWidth={120}>
+					{this.getLeaderboardRow(this.state.item)}
+				</Swipeable>
+			);
+		/*} else {
+			return this.getLeaderboardRow(this.state.item);
+		}*/
 	}
 }
 
@@ -172,7 +235,6 @@ export default class Group extends BaseComponent {
 		this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
 		this.updatePlayerRankingList = this.updatePlayerRankingList.bind(this);
 		this.onGroupAsync = this.onGroupAsync.bind(this);
-		this.removeUser = this.removeUser.bind(this);
 		this.handleRefresh = this.handleRefresh.bind(this);
 		this.onPlayerRankingSaveAsync = this.onPlayerRankingSaveAsync.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
@@ -270,11 +332,7 @@ export default class Group extends BaseComponent {
 		this.setState({playerRanking: playerRanking, order: order});
 	}
 
-	removeUser(item) {
-		this.onRemoveGroupAsync(item);
-	}
-
-	handleRefresh = () => {
+	handleRefresh() {
 		this.setState({ refreshing: true }, () => { this.onGroupAsync(this.state.currentGroup._id); });
 	};
 
@@ -516,20 +574,6 @@ export default class Group extends BaseComponent {
 		});
 	};
 
-	async onRemoveGroupAsync(data) {
-		this.setLoading(true);
-		let endPoint;
-
-		await BaseModel.delete(`groups/removeUser/${this.state.currentGroup._id}/${data._id}`).then(() => {
-			this.handleRefresh();
-			this.setState({usersLength: this.state.usersLength - 1});
-		}).catch((error) => {
-			BarMessages.showError(error, this.validationMessage);
-		}).finally(() => {
-			this.setLoading(false);
-		});
-	};
-
 	render() {
 		let addPhoto = require('../../../../resources/add_edit_photo.png');
 		let navigation = this.props.navigation;
@@ -593,44 +637,16 @@ export default class Group extends BaseComponent {
 				</View>
 
 				<View style={{flex: 6, flexDirection: 'row'}}>
-					{(<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={ShankConstants.PRIMARY_COLOR} tabBarInactiveTextColor={ShankConstants.PRIMARY_COLOR} renderTabBar={() => <GroupTabBar></GroupTabBar>}>
-						<View tabLabel='Leaderboard' style={[{ width:'100%', paddingLeft: '10%', paddingRight: '10%' }, LocalStyles.slideBorderStyle]}>
-							<Text style={[LocalStyles.subtitleText, {paddingTop: 20, paddingBottom: 0}]}>Rank</Text>
+					{<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={ShankConstants.PRIMARY_COLOR} tabBarInactiveTextColor={ShankConstants.PRIMARY_COLOR} renderTabBar={() => <GroupTabBar />}>
+						<View tabLabel='Leaderboard' style={[LocalStyles.slideBorderStyle]}>
+							<Text style={[LocalStyles.rankColumnText]}>Rank</Text>
 							
-							<List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0, paddingTop: 5, marginTop: 0}}>
-								<FlatList data={this.state.currentTournament.users} keyExtractor={item => item._id} renderItem={({item}) => (
-									<Swipeable rightButtons={([(this.state.currentGroup.isOwner && item._id > 0 && item._id != this.state.currentGroup.owner) ?
-										<TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}  onPress={() => this.removeUser(item)}>
-											<FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
-										</TouchableHighlight>
-									: null])} rightButtonWidth={(!this.state.currentGroup.isOwner || item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
-										<TouchableHighlight style={[MainStyles.listItem, {paddingLeft: 0, paddingRight: 0}]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => { if (item._id < 0) this.inviteToJoin(); }}>
-											{item.fullName == 'Invite' ?
-												<View style={[MainStyles.viewFlexItemsR]}>
-													<View style={[MainStyles.viewFlexItemsC]}>
-														<Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
-													</View>
-												</View>
-											: <View style={[MainStyles.viewFlexItemsR]}>
-												<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
-													<Text style={[LocalStyles.titleText]}>{item.ranking == 0 ? ' ' : item.ranking}</Text>
-												</View>
-
-												<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
-													<Text style={[LocalStyles.titleText]}>{item.fullName}</Text>
-												</View>
-
-												<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd], {flex:1}}>
-													<Text style={[LocalStyles.subtitleText, {color: ShankConstants.TERTIARY_COLOR_ALT}]}>{item._id > 0 ? 'Pts: ' : ''}{item.score == 0 ? ' ' : item.score}</Text>
-												</View>
-											</View>}
-										</TouchableHighlight>
-									</Swipeable>
-								)} />
+							<List containerStyle={[LocalStyles.leaderboardList]}>
+								<FlatList data={this.state.currentTournament.users} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow currentGroup={this.state.currentGroup} item={item} />)} />
 							</List>
 						</View>
 
-						<View tabLabel='Roaster' style={[{width:'100%'}, LocalStyles.slideBorderStyle]}>
+						<View tabLabel='Roaster' style={[LocalStyles.slideBorderStyle]}>
 							<RoundLabels tournament={this.state.tournamentData}></RoundLabels>
 							
 							<SortableListView data={this.state.playerRanking} order={this.state.order} disableSorting={this.isSortingDisabled()} activeOpacity={1.0} onMoveStart={() => { lockScrollTabView = true; }}
@@ -644,7 +660,6 @@ export default class Group extends BaseComponent {
 									for (let idx = e.from + 1 ; idx > e.from && idx <= e.to ; idx++) {
 										playerRanking[idx].position = playerRanking[idx].position - 1;
 									}
-
 								} else if (e.to < e.from) {
 									for (let idx = e.to ; idx >= e.to && idx < e.from ; idx++) {
 										playerRanking[idx].position = playerRanking[idx].position + 1;
@@ -666,7 +681,7 @@ export default class Group extends BaseComponent {
 								</View>
 							: null}
 						</View>
-					</ScrollableTabView>)}
+					</ScrollableTabView>}
 				</View>
 
 				<DropdownAlert ref={ref => this.validationMessage = ref} />
