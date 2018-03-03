@@ -26,8 +26,8 @@ const LocalStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingLeft: '5%',
-        paddingRight: '5%'
+        paddingTop: '5%',
+        paddingHorizontal: '2.5%'
     },
     groupHeader: {
         flex:3,
@@ -54,12 +54,9 @@ const LocalStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingLeft: '5%',
-        paddingRight: '5%',
-        paddingTop: '5%',
+        padding: '2.5%',
         borderBottomWidth: 1,
         borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT,
-        paddingBottom: '5%'
     },
     prizeSubView: {
         flex: 1,
@@ -158,6 +155,76 @@ const LocalStyles = StyleSheet.create({
         color: 'white',
         marginHorizontal: '5%'
     },
+    roundLabelsView: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        margin: '3%'
+    },
+    roundsText: {
+        marginRight: '2%',
+        fontSize: Style.FONT_14
+    },
+    roundLabel: {
+        marginLeft: '1%',
+        marginRight: '1%',
+        paddingTop: '0.5%',
+        paddingBottom: '0.5%',
+        paddingLeft: '2%',
+        paddingRight: '2%',
+        borderWidth: 1,
+        borderRadius: 100
+    },
+    roundLabelText: {
+        color: 'white',
+        fontSize: Style.FONT_14
+    },
+    cellMainView: {
+        paddingLeft: '10%',
+        paddingRight: '10%',
+        paddingTop: '0%',
+        paddingBottom: '0%',
+        borderBottomWidth: 0,
+        backgroundColor: 'white'
+    },
+    cellSubview: {
+        borderColor: ShankConstants.TERTIARY_COLOR_ALT,
+        paddingVertical: '7.5%',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    roasterPosition: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_16,
+        color: ShankConstants.SHANK_GREEN
+    },
+    roasterEmpty: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_16,
+        color: ShankConstants.TERTIARY_COLOR_ALT,
+        textAlign: 'center'
+    },
+    roasterName: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_16,
+        color: ShankConstants.SHANK_GREEN,
+    },
+    roasterInfo: {
+        fontFamily: 'century-gothic-bold',
+        fontSize: Style.FONT_15,
+        color: ShankConstants.TERTIARY_COLOR_ALT
+    },
+
+
+
+
+
+
+
+
+
 
 
 
@@ -328,24 +395,6 @@ const LocalStyles = StyleSheet.create({
     },
     GroupList: {
         flex: 1,
-    },
-    cellMainView: {
-        paddingLeft: '10%',
-        paddingRight: '10%',
-        paddingTop: '0%',
-        paddingBottom: '0%',
-        borderBottomWidth: 0,
-        height: 90,
-        backgroundColor: 'white'
-    },
-    cellSubview: {
-        borderColor: ShankConstants.TERTIARY_COLOR_ALT,
-        paddingTop: '5%',
-        paddingBottom: '5%',
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
     },
     positionParticipants: {
         marginRight: '2%',
@@ -531,30 +580,6 @@ const LocalStyles = StyleSheet.create({
     },
     viewHeaderPlayerList: {
         backgroundColor: '#556E3E'
-    },
-    roundLabelsView: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        margin: '3%'
-    },
-    roundsText: {
-        marginRight: '2%',
-        fontSize: Style.FONT_16
-    },
-    roundLabel: {
-        marginLeft: '1%',
-        marginRight: '1%',
-        paddingTop: '0.5%',
-        paddingBottom: '0.5%',
-        paddingLeft: '2.5%',
-        paddingRight: '2.5%',
-        borderWidth: 1,
-        borderRadius: 100
-    },
-    roundLabelText: {
-        color: 'white',
-        fontSize: Style.FONT_16
     },
     checkoutButtonView: {
         paddingLeft: '10%',

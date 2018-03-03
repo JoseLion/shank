@@ -34,37 +34,38 @@ class RoasterRow extends BaseComponent {
 
 	getCellBorderStyle(index) {
 		if (index == 0) {
-			return {borderBottomWidth: 0.75};
+			return {borderBottomWidth: 0.5};
 		}
 
-		return {borderTopWidth: 0.75, borderBottomWidth: 0.75};
+		return {borderTopWidth: 0.5, borderBottomWidth: 0.5};
 	}
 
 	render() {
+		console.log("this.props.data: ", this.props.data);
 		if (this.props.data != null && this.props.data.playerId) {
 			return (
 				<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer} {...this.props.sortHandlers}>
-					<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId)]}>
+					<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
 						<View style={{flex: 1}}>
-							<Text style={[MainStyles.shankGreen, LocalStyles.positionParticipants]}>{this.props.data.position}</Text>
-						</View>cellSubview
+							<Text style={[LocalStyles.roasterPosition]}>{this.props.data.position}</Text>
+						</View>
 
 						<View style={{flex: 2, marginRight: '2.5%'}}>
 							<Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
 						</View>
 
-						<View style={{flex: 6, flexDirection: 'column', justifyContent: 'space-between'}}>
-							<View style={{flex: 1, marginTop: '2%'}}>
-								<Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.fullName}</Text>
+						<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
+							<View style={{flex: 1}}>
+								<Text style={[LocalStyles.roasterName]}>{this.props.data.fullName}</Text>
 							</View>
 
-							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: '2%'}}>
+							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
 								<View style={{flex: 1}}>
-									<Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`TR: 15`}</Text>
+									<Text style={[LocalStyles.roasterInfo]}>{`TR: ${this.props.data.tournamentPosition > 0 ? this.props.data.tournamentPosition : '-'}`}</Text>
 								</View>
 
 								<View style={{flex: 1}}>
-									<Text style={[MainStyles.shankGreen, LocalStyles.subtitleStyle]}>{`SCORE: ${this.props.data.score == null ? '-' : this.props.data.score}`}</Text>
+									<Text style={[LocalStyles.roasterInfo]}>{`Pts: ${this.props.data.score == null ? '-' : this.props.data.score}`}</Text>
 								</View>
 							</View>
 						</View>
@@ -80,9 +81,9 @@ class RoasterRow extends BaseComponent {
 		} else {
 			return (
 				<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer}>
-					<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId), {textAlign: 'center'}]}>
-						<Text>{Number.parseInt(this.props.rowId) + 1}</Text>
-						<Text>EMPTY SLOT</Text>
+					<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId)]}>
+						<Text style={[LocalStyles.roasterPosition, {flex: 1}]}>{Number.parseInt(this.props.rowId) + 1}</Text>
+						<Text style={[LocalStyles.roasterEmpty, {flex: 10}]}>Empty Slot</Text>
 					</View>
 				</TouchableHighlight>
 			);
@@ -91,6 +92,7 @@ class RoasterRow extends BaseComponent {
 }
 
 class RoundLabels extends React.Component {
+	
 	constructor(props) {
 		super(props);
 		this.getLabelColor = this.getLabelColor.bind(this);
@@ -104,7 +106,7 @@ class RoundLabels extends React.Component {
 			return {backgroundColor: '#252D3B', borderColor: '#252D3B'};
 		}
 
-		return {backgroundColor: '#BBBBBB', borderColor: '#BBBBBB'};
+		return {backgroundColor: '#B6B6B5', borderColor: '#B6B6B5'};
 	}
 
 	render() {
@@ -118,7 +120,7 @@ class RoundLabels extends React.Component {
 
 		return (
 			<View style={[LocalStyles.roundLabelsView]}>
-				<Text style={[LocalStyles.roundsText]}>{`ROUND`}</Text>
+				<Text style={[LocalStyles.roundsText]}>ROUND</Text>
 				{labels}
 			</View>
 		);
@@ -126,6 +128,7 @@ class RoundLabels extends React.Component {
 }
 
 class GroupTabBar extends React.Component {
+	
 	constructor(props) {
 		super(props);
 	}
@@ -151,6 +154,7 @@ class GroupTabBar extends React.Component {
 }
 
 class LeaderboardRow extends React.Component {
+	
 	constructor(props) {
 		super(props);
 		this.getLeaderboardRightButtons = this.getLeaderboardRightButtons.bind(this);
@@ -211,6 +215,7 @@ class LeaderboardRow extends React.Component {
 }
 
 export default class Group extends BaseComponent {
+	
 	static navigationOptions = ({navigation}) => ({
 		title: 'GROUP',
 		headerTintColor: ShankConstants.TERTIARY_COLOR,
@@ -583,7 +588,7 @@ export default class Group extends BaseComponent {
 				<Spinner visible={this.state.loading} animation='fade'></Spinner>
 				<ActionSheet ref={o => this.ActionSheet = o} options={this.state.tournamentsName} cancelButtonIndex={this.state.tournamentsName.length - 1} onPress={this.optionSelectedPressed}></ActionSheet>
 
-				<View style={[LocalStyles.groupInformation, {marginTop: '10%'}]}>
+				<View style={[LocalStyles.groupInformation]}>
 					<View>
 						{this.state.groupPhoto != null && this.state.groupPhoto != '' ?
 						<Avatar large rounded source={{uri: this.state.groupPhoto}}></Avatar>

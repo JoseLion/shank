@@ -7,6 +7,9 @@
     "sdkVersion": "21.0.0",
     "orientation": "portrait",
     "scheme": "shank",
+    "facebookScheme": "fb1840743005946613",
+    "facebookAppId": "1840743005946613",
+    "facebookDisplayName": "Shank",
     "ios": {
       "bundleIdentifier": "com.levelap.shank",
       "buildNumber" : "1.0.4"

@@ -16,7 +16,7 @@ export const FIRST_TIME = 'first-time';
 export const AUTH_TOKEN = "shank-auth-token";
 export const USER_PROFILE = 'shank-profile';
 export const TIME_OUT_NOTIFIER = 10000;
-export const APP_FB_ID = '520526514985916';
+export const APP_FB_ID = '1840743005946613';
 
 export const FANTASY_DATA_API_KEY_1 = '519f4de87ff044afb2796f57a6583a4d';
 export const FANTASY_DATA_API_KEY_2 = '05a7d256639b4059905a5fb8ffc5f68f';

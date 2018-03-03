@@ -83,11 +83,13 @@ export default class Register extends BaseComponent {
                 BarMessages.showError(error, this.validationMessage);
             });
     };
+
     facebookService = async() => {
         this.setLoading(true);
         let option = 'Signup';
         try {
             const {type, token} = await Facebook.logInWithReadPermissionsAsync(ShankConstants.APP_FB_ID, { permissions: ['public_profile', 'email'] });
+            
             switch (type) {
                 case 'success': {
                     // Get the user's name using Facebook's Graph API
