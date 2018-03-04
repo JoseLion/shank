@@ -5,67 +5,44 @@ import { Avatar } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview';
 import DropdownAlert from 'react-native-dropdownalert';
 
-// Shank components:
+// Shank components:cellSubview
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
-import LocalStyles from './styles/local';
+import ViewStyle from './styles/playerSelectionStyle';
 
 class PlayerRow extends React.Component {
 	
 	constructor(props) {
 		super(props);
-	}
-
-	render() {
-		return (
-			<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer} {...this.props.sortHandlers}>
-				<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
-					
-				</View>
-			</TouchableHighlight>
-		);
-	}
-}
-
-
-
-class PlayerRowOld extends BaseComponent {
-
-	constructor(props) {
-		super(props);
 		this.playerSelected = this.playerSelected.bind(this);
-		this.state = {checkIsSelected: this.props.data.isSelected ? LocalStyles.checkIsSelected : null};
+		this.state = {isSelected: false};
 	}
 
 	playerSelected(data) {
-		if (this.state.checkIsSelected != null) {
-			this.props.data.isSelected = false;
-			this.setState({checkIsSelected: null});
-		} else {
-			this.props.data.isSelected = true;
-			this.setState({checkIsSelected: LocalStyles.checkIsSelected});
-		}
-
-		this.props.setUpdateSelected(this.props.data);
+		this.setState({isSelected: !this.props.player.isSelected});
+		this.props.player.isSelected = !this.state.isSelected;
+		this.props.setUpdateSelected(this.props.player);
 	}
 
 	render() {
 		return (
-			<TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected(this.props.data)}>
-				<View style={[MainStyles.viewFlexItemsR]}>
-					<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
-						<Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
+			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected(this.props.player)}>
+				<View style={[ViewStyle.cellView]}>
+					<View style={{flex: 1}}>
+						<Avatar small rounded source={{uri: this.props.player.photoUrl}} />
 					</View>
 
-					<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 2}]}>
-						<Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.fullName}</Text>
+					<View style={{flex: 6}}>
+						<Text style={[ViewStyle.playerName]}>{this.props.player.fullName}</Text>
 					</View>
 
-					<View style={[MainStyles.viewFlexItemsC]}>
-						<Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>0 %</Text>
+					<View style={{flex: 2}}>
+						<Text style={[ViewStyle.pickRate]}>{this.props.player.pickRate != null ? this.props.player.pickRate : 0}{'%'}</Text>
 					</View>
 
-					<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd, {flex:2}]}>
-						<FontAwesome name='check' size={29} style={[LocalStyles.selectedCheck, this.state.checkIsSelected]}/>
+					<View style={{flex: 2, alignItems: 'center'}}>
+						<View style={[ViewStyle.checkView, (this.state.isSelected ? ViewStyle.selectedView : null)]}>
+							<FontAwesome name='check' size={23} style={[ViewStyle.check, (this.state.isSelected ? ViewStyle.selectedCheck : null)]} />
+						</View>
 					</View>
 				</View>
 			</TouchableHighlight>
@@ -102,7 +79,7 @@ export default class PlayerSelection extends BaseComponent {
 		this.state = {
 			isEmpty: this.props.navigation.state.params.isEmpty,
 			groupId: this.props.navigation.state.params.groupId,
-			tournamentId: this.props.navigation.state.params.tournamentId,
+			tournament: this.props.navigation.state.params.tournament,
 			actualPosition: this.props.navigation.state.params.actualPosition,
 			playerRanking: this.props.navigation.state.params.playerRanking,
 			playersSelected: [],
@@ -211,6 +188,7 @@ export default class PlayerSelection extends BaseComponent {
 	async initialRequest() {
 		this.setLoading(true);
 		BaseModel.post(`players/findPlayers`).then((players) => {
+			console.log("players: ", players);
 			let playersSelected = [];
 			this.state.playerRanking.forEach(player => {
 				if (player.playerId != null) {
@@ -232,15 +210,28 @@ export default class PlayerSelection extends BaseComponent {
 
 	render() {
 		return (
-			<View style={{flex:1, width:'100%', backgroundColor: ShankConstants.BACKGROUND_COLOR}} >
+			<View style={[ViewStyle.mainContainer]}>
 				<Spinner visible={this.state.loading} animation='fade' />
-				<SortableListView style={{flex: 1, marginBottom: '20%'}} data={this.state.players} renderRow= { (row) => (
-					<PlayerRow data={row} players={this.state.players} setUpdateSelected={this.setUpdateSelected} navigation={this.props.navigation} />
-				)} />
 
-				<TouchableOpacity onPress={() => this.updateLocalPlayerList()} style={[MainStyles.button, MainStyles.success, {position: 'absolute', bottom: '1%', left: '5%', width: '90%'}]}>
-					<Text style={MainStyles.buttonText}>Save</Text>
-				</TouchableOpacity>
+				<Text style={[ViewStyle.tournamentName]}>{this.state.tournament.tournamentName}</Text>
+
+				<View style={[ViewStyle.headerView]}>
+					<Text style={[ViewStyle.headerText, {flex: 7}]}>Players</Text>
+
+					<Text style={[ViewStyle.headerText, {flex: 2}]}>Pick %</Text>
+
+					<Text style={[ViewStyle.headerText, {flex: 2}]}>Select 5</Text>
+				</View>
+				
+				<SortableListView data={this.state.players} renderRow={(row) => (<PlayerRow player={row} setUpdateSelected={this.setUpdateSelected} />)} />
+
+				{this.state.playersSelected.length > 0 ?
+					<View style={[ViewStyle.saveView]}>
+						<TouchableOpacity onPress={() => this.updateLocalPlayerList()} style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
+							<Text style={[MainStyles.buttonText]}>Save</Text>
+						</TouchableOpacity>
+					</View>
+				: null}
 
 				<DropdownAlert ref={ref => this.validationMessage = ref} />
 			</View>

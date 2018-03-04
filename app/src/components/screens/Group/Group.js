@@ -26,7 +26,7 @@ class RoasterRow extends BaseComponent {
 			actualPosition: Number.parseInt(this.props.rowId) + 1,
 			isEmpty: this.props.data == null || this.props.data.playerId == null,
 			groupId: this.props.groupId,
-			tournamentId: this.props.tournamentId,
+			tournament: this.props.tournament,
 			playerRanking: this.props.playerRanking,
 			onPlayerRankingSaveAsync: this.props.onPlayerRankingSaveAsync
 		});
@@ -41,7 +41,6 @@ class RoasterRow extends BaseComponent {
 	}
 
 	render() {
-		console.log("this.props.data: ", this.props.data);
 		if (this.props.data != null && this.props.data.playerId) {
 			return (
 				<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer} {...this.props.sortHandlers}>
@@ -202,15 +201,15 @@ class LeaderboardRow extends React.Component {
 	};
 
 	render() {
-		//if (this.state.currentGroup.isOwner && this.state.item._id > 0 && this.state.item._id != this.state.currentGroup.owner) {
+		if (this.state.currentGroup.isOwner && this.state.item._id > 0 && this.state.item._id != this.state.currentGroup.owner) {
 			return (
 				<Swipeable rightButtons={this.getLeaderboardRightButtons(this.state.item)} rightButtonWidth={120}>
 					{this.getLeaderboardRow(this.state.item)}
 				</Swipeable>
 			);
-		/*} else {
+		} else {
 			return this.getLeaderboardRow(this.state.item);
-		}*/
+		}
 	}
 }
 
@@ -674,7 +673,7 @@ export default class Group extends BaseComponent {
 								this.updatePlayerRankingList(playerRanking);
 								this.forceUpdate();
 							}} renderRow={(row, rowId, sectionId) => (
-								<RoasterRow navigation={navigation} data={row} rowId={sectionId} groupId={this.state.currentGroup._id} tournamentId={this.state.currentTournament._id}
+								<RoasterRow navigation={navigation} data={row} rowId={sectionId} groupId={this.state.currentGroup._id} tournament={this.state.currentTournament}
 								playerRanking={this.state.playerRanking} onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync} hideSortBars={this.isSortingDisabled()}></RoasterRow>
 							)}></SortableListView>
 
