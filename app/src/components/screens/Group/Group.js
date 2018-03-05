@@ -19,6 +19,7 @@ class RoasterRow extends BaseComponent {
 		super(props);
 		this.addPlayer = this.addPlayer.bind(this);
 		this.getCellBorderStyle = this.getCellBorderStyle.bind(this);
+		this.getRoasterRightButtons = this.getRoasterRightButtons.bind(this);
 	}
 
 	addPlayer() {
@@ -40,42 +41,52 @@ class RoasterRow extends BaseComponent {
 		return {borderTopWidth: 0.5, borderBottomWidth: 0.5};
 	}
 
+	getRoasterRightButtons() {
+		return [
+			<TouchableHighlight style={[LocalStyles.swipeButton]} onPress={this.addPlayer}>
+				<Text style={[LocalStyles.swipeButtonText]}>Change</Text>
+			</TouchableHighlight>
+		];
+	}
+
 	render() {
 		if (this.props.data != null && this.props.data.playerId) {
 			return (
-				<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer} {...this.props.sortHandlers}>
-					<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
-						<View style={{flex: 1}}>
-							<Text style={[LocalStyles.roasterPosition]}>{this.props.data.position}</Text>
-						</View>
-
-						<View style={{flex: 2, marginRight: '2.5%'}}>
-							<Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
-						</View>
-
-						<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
+				<Swipeable rightButtons={this.getRoasterRightButtons()} rightButtonWidth={120}>
+					<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} {...this.props.sortHandlers}>
+						<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
 							<View style={{flex: 1}}>
-								<Text style={[LocalStyles.roasterName]}>{this.props.data.fullName}</Text>
+								<Text style={[LocalStyles.roasterPosition]}>{this.props.data.position}</Text>
 							</View>
 
-							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+							<View style={{flex: 2, marginRight: '2.5%'}}>
+								<Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
+							</View>
+
+							<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
 								<View style={{flex: 1}}>
-									<Text style={[LocalStyles.roasterInfo]}>{`TR: ${this.props.data.tournamentPosition > 0 ? this.props.data.tournamentPosition : '-'}`}</Text>
+									<Text style={[LocalStyles.roasterName]}>{this.props.data.fullName}</Text>
 								</View>
 
-								<View style={{flex: 1}}>
-									<Text style={[LocalStyles.roasterInfo]}>{`Pts: ${this.props.data.score == null ? '-' : this.props.data.score}`}</Text>
+								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+									<View style={{flex: 1}}>
+										<Text style={[LocalStyles.roasterInfo]}>{`TR: ${this.props.data.tournamentPosition > 0 ? this.props.data.tournamentPosition : '-'}`}</Text>
+									</View>
+
+									<View style={{flex: 1}}>
+										<Text style={[LocalStyles.roasterInfo]}>{`Pts: ${this.props.data.score == null ? '-' : this.props.data.score}`}</Text>
+									</View>
 								</View>
 							</View>
-						</View>
 
-						{!this.props.hideSortBars ?
-							<View style={{flex: 1}}>
-								<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} style={[{height: 15}]}></Image>
-							</View>
-						: null}
-					</View>
-				</TouchableHighlight>
+							{!this.props.hideSortBars ?
+								<View style={{flex: 1}}>
+									<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} style={[{height: 15}]}></Image>
+								</View>
+							: null}
+						</View>
+					</TouchableHighlight>
+				</Swipeable>
 			);
 		} else {
 			return (
@@ -109,20 +120,24 @@ class RoundLabels extends React.Component {
 	}
 
 	render() {
-		let labels = this.props.tournament.rounds.map((round) => {
+		if (this.props.tournament != null && this.props.tournament.rounds != null) {
+			let labels = this.props.tournament.rounds.map((round) => {
+				return (
+					<View key={round._id} style={[LocalStyles.roundLabel, this.getLabelColor(round)]}>
+						<Text style={[LocalStyles.roundLabelText]}>{round.number}</Text>
+					</View>
+				);
+			});
+
 			return (
-				<View key={round._id} style={[LocalStyles.roundLabel, this.getLabelColor(round)]}>
-					<Text style={[LocalStyles.roundLabelText]}>{round.number}</Text>
+				<View style={[LocalStyles.roundLabelsView]}>
+					<Text style={[LocalStyles.roundsText]}>ROUND</Text>
+					{labels}
 				</View>
 			);
-		});
-
-		return (
-			<View style={[LocalStyles.roundLabelsView]}>
-				<Text style={[LocalStyles.roundsText]}>ROUND</Text>
-				{labels}
-			</View>
-		);
+		} else {
+			return null;
+		}			
 	}
 }
 
