@@ -11,7 +11,6 @@ let requestServerError = 'No fue posible comunicar con el servidor.';
 let parsingResponseError = 'Error al analizar la respuesta del servidor.';
 
 let NoAuthModel = {
-
     async post(resource, params) {
         const data = JSON.stringify(params);
         let options = {
@@ -96,20 +95,7 @@ let NoAuthModel = {
         if (json.error !== '') throw json.error;
         else return json.response;
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     // TODO: REMOVE METHOD
     async create(resource, params) {
 

@@ -8,19 +8,7 @@ const isAndroid = Platform.OS == 'android' ? true : false;
 const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
 
-const LocalStyles = StyleSheet.create({
-    formContainer: {
-        width: '80%'
-    },
-    pickerHeight: {
-        height: Style.EM(2.5),
-        paddingLeft: Style.EM(0.75)
-    },
-    addPhotoLogo: {
-        alignItems: 'center',
-        marginBottom: Style.EM(1.5),
-        marginTop: Style.EM(2.5)
-    },
+export default ViewStyle = StyleSheet.create({
     groupInformation: {
         flex: 1,
         flexDirection: 'row',
@@ -190,7 +178,6 @@ const LocalStyles = StyleSheet.create({
     cellSubview: {
         borderColor: ShankConstants.TERTIARY_COLOR_ALT,
         paddingVertical: '7.5%',
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -216,98 +203,26 @@ const LocalStyles = StyleSheet.create({
         fontSize: Style.FONT_15,
         color: ShankConstants.TERTIARY_COLOR_ALT
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    titleText: {
-        fontFamily: 'century-gothic-bold',
-        fontSize: Style.EM(1),
-        color: ShankConstants.PRIMARY_COLOR
+    tabViewContainer: {
+        backgroundColor: 'white',
+        height:'100%',
+        width:'100%'
     },
-    titleTextNumber: {
-        fontFamily: 'century-gothic',
-        fontSize: Style.EM(1.5)
-    },
-    subtitleText: {
-        fontSize: Style.EM(0.75),
-        fontWeight: '700',
-        color: ShankConstants.PRIMARY_COLOR
-    },
-    normalText: {
-        fontSize: Style.EM(0.75),
-        color: ShankConstants.PRIMARY_COLOR
-    },
-    trashButton: {
-        alignItems: 'center',
-        height: '80%',
-        justifyContent: 'center',
-        paddingBottom: 0,
-        paddingLeft: 0,
-        paddingRight: 0,
-        paddingTop: 0,
-        width: 75
-    },
-    roasterRowHighlight: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#FFFFFF',
-        borderBottomWidth: 1.5,
-        borderColor: '#EEEEEE',
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    roasterRowView: {
-        flex: 1,
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    roasterRowPhoto: {
-        height: 30,
-        width: 30,
-        borderRadius: 15
-    },
-    table: {
-        backgroundColor: ShankConstants.BACKGROUND_COLOR
-    },
-    tableCols: {
-        backgroundColor: ShankConstants.BACKGROUND_COLOR,
-        height: Style.EM(2.5)
-    },
-    tableContent: {
-        paddingBottom: Style.EM(0.75),
-        paddingLeft: Style.EM(1),
-        paddingRight: Style.EM(1),
-        paddingTop: Style.EM(0.75)
-    },
-    selectedCheck: {
-        backgroundColor: ShankConstants.TERTIARY_COLOR,
-        borderWidth: 1,
-        borderRadius: 10,
-        borderColor: ShankConstants.SUCCESS_COLOR,
-        paddingLeft: Style.EM(1),
-        paddingRight: Style.EM(1),
-        color: ShankConstants.SUCCESS_COLOR
-    },
-    checkIsSelected: {
-        backgroundColor: ShankConstants.SUCCESS_COLOR,
-        color: ShankConstants.TERTIARY_COLOR
-    },
+    checkoutButtonView: {
+        paddingLeft: '10%',
+        paddingRight: '10%',
+        paddingBottom: '5%'
+    }
+
+
+
+
+
+
+
 
     //Modal
-    modalhead:{
+    /*modalhead:{
         backgroundColor: '#556E3E',
         width: '70%',
         height:'7%',
@@ -421,12 +336,6 @@ const LocalStyles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         backgroundColor: '#F5FCFF',
-    },
-    groupImage:{
-        width:  Style.iconMD,
-        height: Style.iconMD,
-        borderRadius: Style.iconMD / 2,
-        borderColor: '#A39534',
     },
     androidTournamentPicker: {
         height: '10%',
@@ -544,7 +453,7 @@ const LocalStyles = StyleSheet.create({
     singleGroupPrizeDescription: {
         fontSize: Style.FONT_14,
     },
-    singleGroupScoreTab: {
+    singleGroupScorealphabeticalTextTab: {
         fontSize: Style.FONT_15,
         fontWeight: 'bold'
     },
@@ -557,11 +466,6 @@ const LocalStyles = StyleSheet.create({
     },
     linearGradient: {
         height: '2%',
-        width:'100%'
-    },
-    slideBorderStyle: {
-        backgroundColor: 'white',
-        height:'100%',
         width:'100%'
     },
     listContainer: {
@@ -580,50 +484,5 @@ const LocalStyles = StyleSheet.create({
     },
     viewHeaderPlayerList: {
         backgroundColor: '#556E3E'
-    },
-    checkoutButtonView: {
-        paddingLeft: '10%',
-        paddingRight: '10%',
-        paddingBottom: '5%'
-    },
-    checkoutTitle: {
-        fontWeight: '700',
-        fontSize: 20,
-        textAlign: 'center',
-        paddingTop: 25,
-        paddingBottom: 25,
-        borderBottomWidth: 3,
-        borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT
-    },
-    checkoutRow: {
-        flexDirection: 'row',
-        flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingTop: '8%',
-        paddingBottom: '8%',
-        paddingLeft: '2%',
-        paddingRight: '2%',
-        borderBottomWidth: 1,
-        borderColor: ShankConstants.TERTIARY_COLOR_ALT
-    },
-    checkoutNum: {
-        fontSize: Style.FONT_15_5,
-        fontWeight: 'bold'
-    },
-    checkoutNames: {
-        fontSize: Style.FONT_15_5,
-        color: ShankConstants.TERTIARY_COLOR_ALT
-    },
-    checkoutCost: {
-        fontSize: Style.FONT_15_5,
-        fontWeight: 'bold',
-        textAlign: 'right'
-    },
-    exchangeIcon: {
-        fontSize: Style.FONT_15_5,
-        textAlign: 'center'
-    }
+    }*/
 });
-
-export default LocalStyles;

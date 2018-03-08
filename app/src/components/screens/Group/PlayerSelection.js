@@ -5,7 +5,7 @@ import { Avatar } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview';
 import DropdownAlert from 'react-native-dropdownalert';
 
-// Shank components:cellSubview
+// Shank components
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/playerSelectionStyle';
 
@@ -135,7 +135,7 @@ export default class PlayerSelection extends BaseComponent {
 		this.props.navigation.state.params.onPlayerRankingSaveAsync(playerRanking, this.playerGoBack);
 	}
 
-	playerGoBack() {
+	playerGoBack = () => {
 		this.props.navigation.goBack(null);
 	};
 
@@ -188,7 +188,6 @@ export default class PlayerSelection extends BaseComponent {
 	async initialRequest() {
 		this.setLoading(true);
 		BaseModel.post(`players/findPlayers`).then((players) => {
-			console.log("players: ", players);
 			let playersSelected = [];
 			this.state.playerRanking.forEach(player => {
 				if (player.playerId != null) {

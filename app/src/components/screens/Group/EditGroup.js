@@ -12,7 +12,7 @@ import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
-import LocalStyles from './styles/local'
+import ViewStyle from './styles/addGroupStyle'
 import { ClienHost } from '../../../config/variables';
 
 @connectActionSheet
@@ -215,14 +215,14 @@ export default class EditGroup extends BaseComponent {
           <View style={[MainStyles.container]} behavior='padding'>
             <Spinner visible={this.state.loading} animation='slide'/>
             <ActionSheet ref={o => this.ActionSheet = o} options={[ 'Open your gallery', 'Take a picture', 'Cancel']} cancelButtonIndex={2} onPress={this.optionSelectedPressed} />
-            <View style={[LocalStyles.formContainer]}>
+            <View style={[ViewStyle.formContainer]}>
 
-            <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
+            <TouchableOpacity style={[ViewStyle.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
               { this.state.currentGroup.photo != null && !groupPhoto
-                ? <Image source={{uri: this.state.currentGroup.photo.path}} style={LocalStyles.groupImage} />
+                ? <Image source={{uri: this.state.currentGroup.photo.path}} style={ViewStyle.groupImage} />
                 : groupPhoto
-                  ? <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage} />
-                  : <Image style={LocalStyles.groupImage} source={addPhoto} />
+                  ? <Image source={{uri: groupPhoto}} style={ViewStyle.groupImage} />
+                  : <Image style={ViewStyle.groupImage} source={addPhoto} />
               }
               <Text style={[MainStyles.centerText, MainStyles.placeholderText]}>{ !groupPhoto ? 'Add photo' : 'Change photo' }</Text>
             </TouchableOpacity>
@@ -248,21 +248,21 @@ export default class EditGroup extends BaseComponent {
               maxLength={50} />
 
               <Text style={[MainStyles.centerText, {marginTop: 15}]}>Tournaments</Text>
-              <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+              <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
                 <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem1} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[0], tValue, 0)} enabled={this.state.tournaments[0] != null && this.state.tournaments[0].tournamentId == null}>
                   <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[0] == null ? this.state.tName : this.state.tournaments[0].tournamentName} />
                   {tournamentItems}
                 </Picker>
               </View>
 
-              <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+              <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
                 <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem2} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[1], tValue, 1)} enabled={this.state.tournaments[0] != null && this.state.tournaments[1].tournamentId == null}>
                   <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[1] == null ? this.state.tName : this.state.tournaments[1].tournamentName} />
                   {tournamentItems}
                 </Picker>
               </View>
 
-              <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+              <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
                 <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem3} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[2], tValue, 2)} enabled={this.state.tournaments[0] != null && this.state.tournaments[2].tournamentId == null}>
                   <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[2] == null ? this.state.tName : this.state.tournaments[2].tournamentName} />
                   {tournamentItems}
@@ -275,7 +275,7 @@ export default class EditGroup extends BaseComponent {
                   <Swipeable rightButtons={[
                     (item._id > 0 && item._id != this.state.currentGroup.owner)
                       ? (
-                        <TouchableHighlight style={[MainStyles.button, MainStyles.error, LocalStyles.trashButton]}>
+                        <TouchableHighlight style={[MainStyles.button, MainStyles.error, ViewStyle.trashButton]}>
                           <FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
                         </TouchableHighlight>
                       )
@@ -290,7 +290,7 @@ export default class EditGroup extends BaseComponent {
                           }
                         </View>
                         <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:4}]}>
-                          <Text numberOfLines={1} style={[LocalStyles.titleText]}>{item.fullName}</Text>
+                          <Text numberOfLines={1} style={[ViewStyle.titleText]}>{item.fullName}</Text>
                         </View>
                       </View>
                     </TouchableHighlight>

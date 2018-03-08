@@ -1,6 +1,6 @@
 // React components:
 import React, {Component} from 'react';
-import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage, Animated } from 'react-native';
+import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage, Animated, Easing } from 'react-native';
 import { Avatar, List, ListItem } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
@@ -10,7 +10,7 @@ import ActionSheet from 'react-native-actionsheet'
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, isAndroid, Spinner } from '../BaseComponent';
-import LocalStyles from './styles/local';
+import ViewStyle from './styles/groupStyle';
 import { ClienHost } from '../../../config/variables';
 
 class RoasterRow extends BaseComponent {
@@ -20,6 +20,7 @@ class RoasterRow extends BaseComponent {
 		this.addPlayer = this.addPlayer.bind(this);
 		this.getCellBorderStyle = this.getCellBorderStyle.bind(this);
 		this.getRoasterRightButtons = this.getRoasterRightButtons.bind(this);
+		this.animateCell = this.animateCell.bind(this);
 	}
 
 	addPlayer() {
@@ -31,6 +32,30 @@ class RoasterRow extends BaseComponent {
 			playerRanking: this.props.playerRanking,
 			onPlayerRankingSaveAsync: this.props.onPlayerRankingSaveAsync
 		});
+
+		this.swipe.recenter();
+	}
+
+	animateCell() {
+		const {pan} = this.swipe.state;
+
+		this.setState({
+			lastOffset: {x: 0, y: 0},
+			leftActionActivated: false,
+			leftButtonsActivated: false,
+			leftButtonsOpen: false,
+			rightActionActivated: false,
+			rightButtonsActivated: false,
+			rightButtonsOpen: false
+		});
+
+		pan.flattenOffset();
+
+		Animated.timing(pan, {
+			toValue: {x: -60, y: 0},
+			duration: 250,
+			easing: Easing.elastic(0.5)
+		}).start(() => this.swipe.recenter());
 	}
 
 	getCellBorderStyle(index) {
@@ -43,8 +68,8 @@ class RoasterRow extends BaseComponent {
 
 	getRoasterRightButtons() {
 		return [
-			<TouchableHighlight style={[LocalStyles.swipeButton]} onPress={this.addPlayer}>
-				<Text style={[LocalStyles.swipeButtonText]}>Change</Text>
+			<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={this.addPlayer}>
+				<Text style={[ViewStyle.swipeButtonText]}>Change</Text>
 			</TouchableHighlight>
 		];
 	}
@@ -52,11 +77,11 @@ class RoasterRow extends BaseComponent {
 	render() {
 		if (this.props.data != null && this.props.data.playerId) {
 			return (
-				<Swipeable rightButtons={this.getRoasterRightButtons()} rightButtonWidth={120}>
-					<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} {...this.props.sortHandlers}>
-						<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
+				<Swipeable rightButtons={this.getRoasterRightButtons()} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
+					<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.animateCell} {...this.props.sortHandlers}>
+						<View style={[ViewStyle.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
 							<View style={{flex: 1}}>
-								<Text style={[LocalStyles.roasterPosition]}>{this.props.data.position}</Text>
+								<Text style={[ViewStyle.roasterPosition]}>{this.props.data.position}</Text>
 							</View>
 
 							<View style={{flex: 2, marginRight: '2.5%'}}>
@@ -65,16 +90,16 @@ class RoasterRow extends BaseComponent {
 
 							<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
 								<View style={{flex: 1}}>
-									<Text style={[LocalStyles.roasterName]}>{this.props.data.fullName}</Text>
+									<Text style={[ViewStyle.roasterName]}>{this.props.data.fullName}</Text>
 								</View>
 
 								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
 									<View style={{flex: 1}}>
-										<Text style={[LocalStyles.roasterInfo]}>{`TR: ${this.props.data.tournamentPosition > 0 ? this.props.data.tournamentPosition : '-'}`}</Text>
+										<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.props.data.tournamentPosition > 0 ? this.props.data.tournamentPosition : '-'}`}</Text>
 									</View>
 
 									<View style={{flex: 1}}>
-										<Text style={[LocalStyles.roasterInfo]}>{`Pts: ${this.props.data.score == null ? '-' : this.props.data.score}`}</Text>
+										<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.props.data.score == null ? '-' : this.props.data.score}`}</Text>
 									</View>
 								</View>
 							</View>
@@ -90,10 +115,10 @@ class RoasterRow extends BaseComponent {
 			);
 		} else {
 			return (
-				<TouchableHighlight style={[LocalStyles.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer}>
-					<View style={[LocalStyles.cellSubview, this.getCellBorderStyle(this.props.rowId)]}>
-						<Text style={[LocalStyles.roasterPosition, {flex: 1}]}>{Number.parseInt(this.props.rowId) + 1}</Text>
-						<Text style={[LocalStyles.roasterEmpty, {flex: 10}]}>Empty Slot</Text>
+				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer}>
+					<View style={[ViewStyle.cellSubview, this.getCellBorderStyle(this.props.rowId)]}>
+						<Text style={[ViewStyle.roasterPosition, {flex: 1}]}>{Number.parseInt(this.props.rowId) + 1}</Text>
+						<Text style={[ViewStyle.roasterEmpty, {flex: 10}]}>Empty Slot</Text>
 					</View>
 				</TouchableHighlight>
 			);
@@ -123,15 +148,15 @@ class RoundLabels extends React.Component {
 		if (this.props.tournament != null && this.props.tournament.rounds != null) {
 			let labels = this.props.tournament.rounds.map((round) => {
 				return (
-					<View key={round._id} style={[LocalStyles.roundLabel, this.getLabelColor(round)]}>
-						<Text style={[LocalStyles.roundLabelText]}>{round.number}</Text>
+					<View key={round._id} style={[ViewStyle.roundLabel, this.getLabelColor(round)]}>
+						<Text style={[ViewStyle.roundLabelText]}>{round.number}</Text>
 					</View>
 				);
 			});
 
 			return (
-				<View style={[LocalStyles.roundLabelsView]}>
-					<Text style={[LocalStyles.roundsText]}>ROUND</Text>
+				<View style={[ViewStyle.roundLabelsView]}>
+					<Text style={[ViewStyle.roundsText]}>ROUND</Text>
 					{labels}
 				</View>
 			);
@@ -152,14 +177,14 @@ class GroupTabBar extends React.Component {
 			const bgColor = this.props.activeTab === page ? '#E6E7E8' : 'white';
 
 			return (
-				<TouchableOpacity key={name} style={[LocalStyles.tabButton, {backgroundColor: bgColor}]} onPress={() => {this.props.goToPage(page)}}>
-					<Text style={[LocalStyles.groupNameText]}>{name}</Text>
+				<TouchableOpacity key={name} style={[ViewStyle.tabButton, {backgroundColor: bgColor}]} onPress={() => {this.props.goToPage(page)}}>
+					<Text style={[ViewStyle.groupNameText]}>{name}</Text>
 				</TouchableOpacity>
 			);
 		});
 
 		return (
-			<View style={[LocalStyles.tabsView]}>
+			<View style={[ViewStyle.tabsView]}>
 				{tabs}
 				<Animated.View style={{backgroundColor: '#E6E7E8'}} />
 			</View>
@@ -182,8 +207,8 @@ class LeaderboardRow extends React.Component {
 
 	getLeaderboardRightButtons(item) {
 		return [
-			<TouchableHighlight style={[LocalStyles.swipeButton]} onPress={()=> this.onRemoveGroupAsync(item)}>
-				<Text style={[LocalStyles.swipeButtonText]}>Remove</Text>
+			<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={()=> this.onRemoveGroupAsync(item)}>
+				<Text style={[ViewStyle.swipeButtonText]}>Remove</Text>
 			</TouchableHighlight>
 		];
 	}
@@ -191,11 +216,11 @@ class LeaderboardRow extends React.Component {
 	getLeaderboardRow(item) {
 		let nameFont = item.fullName == 'Invite' ? 'century-gothic' : 'century-gothic-bold';
 		return (
-			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => { if (item._id < 0) this.inviteToJoin(); }}>
-				<View style={[LocalStyles.leaderboardRow]}><View style={[LocalStyles.leaderboardRowView]}>
-					<Text style={[LocalStyles.leaderboardRowText, {flex: 1}]}>{item.ranking == 0 || item.ranking == null ? '-' : item.ranking}</Text>
-					<Text style={[LocalStyles.leaderboardRowText, {flex: 6, fontFamily: nameFont}]}>{item.fullName}</Text>
-					<Text style={[LocalStyles.leaderboardRowPts, {flex: 3}]}>{`Pts: ${item.score || 0}`}</Text>
+			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => { if (item._id < 0) this.props.inviteToJoin(); }}>
+				<View style={[ViewStyle.leaderboardRow]}><View style={[ViewStyle.leaderboardRowView]}>
+					<Text style={[ViewStyle.leaderboardRowText, {flex: 1}]}>{item.ranking == 0 || item.ranking == null ? '-' : item.ranking}</Text>
+					<Text style={[ViewStyle.leaderboardRowText, {flex: 6, fontFamily: nameFont}]}>{item.fullName}</Text>
+					<Text style={[ViewStyle.leaderboardRowPts, {flex: 3}]}>{`Pts: ${item.score || 0}`}</Text>
 				</View></View>
 			</TouchableHighlight>
 		);
@@ -602,21 +627,21 @@ export default class Group extends BaseComponent {
 				<Spinner visible={this.state.loading} animation='fade'></Spinner>
 				<ActionSheet ref={o => this.ActionSheet = o} options={this.state.tournamentsName} cancelButtonIndex={this.state.tournamentsName.length - 1} onPress={this.optionSelectedPressed}></ActionSheet>
 
-				<View style={[LocalStyles.groupInformation]}>
+				<View style={[ViewStyle.groupInformation]}>
 					<View>
 						{this.state.groupPhoto != null && this.state.groupPhoto != '' ?
 						<Avatar large rounded source={{uri: this.state.groupPhoto}}></Avatar>
 						: <Avatar large rounded source={addPhoto}></Avatar>}
 					</View>
 
-					<View style={[LocalStyles.groupHeader]}>
+					<View style={[ViewStyle.groupHeader]}>
 						<View>
-							<Text style={[LocalStyles.groupNameText]}>{this.state.currentGroup.name}</Text>
+							<Text style={[ViewStyle.groupNameText]}>{this.state.currentGroup.name}</Text>
 						</View>
 
 						<View style={{flexDirection: 'row', alignItems: 'center'}}>
 							<TouchableHighlight underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => navigation.state.params.actionSheet()}>
-								<Text style={[LocalStyles.tournamentNameText]}>{this.state.currentTournament.tournamentName ? this.state.currentTournament.tournamentName.toUpperCase() : null}</Text>
+								<Text style={[ViewStyle.tournamentNameText]}>{this.state.currentTournament.tournamentName ? this.state.currentTournament.tournamentName.toUpperCase() : null}</Text>
 							</TouchableHighlight>
 							<FontAwesome name="chevron-down"></FontAwesome>
 						</View>
@@ -631,41 +656,41 @@ export default class Group extends BaseComponent {
 					</View>
 				</View>
 
-				<View style={[LocalStyles.prizeView]}>
-					<View style={[LocalStyles.prizeSubView]}>
-						<View><Text style={[LocalStyles.prizeText]}>PRIZE</Text></View>
-						<View><Text style={[LocalStyles.prizeDescription]}>{this.state.currentGroup.bet}</Text></View>
+				<View style={[ViewStyle.prizeView]}>
+					<View style={[ViewStyle.prizeSubView]}>
+						<View><Text style={[ViewStyle.prizeText]}>PRIZE</Text></View>
+						<View><Text style={[ViewStyle.prizeDescription]}>{this.state.currentGroup.bet}</Text></View>
 					</View>
 				</View>
 
-				<View style={[LocalStyles.groupStats]}>
-					<View style={[LocalStyles.statView]}>
-						<View><Text style={[LocalStyles.statNumber]}>{this.state.currentTournament.myScore == 0 ? '-' : this.state.currentTournament.myScore}</Text></View>
-						<View><Text style={[LocalStyles.statLabel]}>Points</Text></View>
+				<View style={[ViewStyle.groupStats]}>
+					<View style={[ViewStyle.statView]}>
+						<View><Text style={[ViewStyle.statNumber]}>{this.state.currentTournament.myScore == 0 ? '-' : this.state.currentTournament.myScore}</Text></View>
+						<View><Text style={[ViewStyle.statLabel]}>Points</Text></View>
 					</View>
 					
-					<View style={[LocalStyles.statView]}>
-						<View><Text style={[LocalStyles.statNumber]}>{this.state.currentTournament.myRanking == 0 ? '-' : this.state.currentTournament.myRanking}/{this.state.usersLength}</Text></View>
-						<View><Text style={[LocalStyles.statLabel]}>Ranking</Text></View>
+					<View style={[ViewStyle.statView]}>
+						<View><Text style={[ViewStyle.statNumber]}>{this.state.currentTournament.myRanking == 0 ? '-' : this.state.currentTournament.myRanking}/{this.state.usersLength}</Text></View>
+						<View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
 					</View>
 
-					<View style={[LocalStyles.statView]}>
-						<View><Text style={[LocalStyles.statNumber]}>{this.state.diffDays}</Text></View>
-						<View><Text style={[LocalStyles.statLabel]}>Days Left</Text></View>
+					<View style={[ViewStyle.statView]}>
+						<View><Text style={[ViewStyle.statNumber]}>{this.state.diffDays}</Text></View>
+						<View><Text style={[ViewStyle.statLabel]}>Days Left</Text></View>
 					</View>
 				</View>
 
 				<View style={{flex: 6, flexDirection: 'row'}}>
 					{<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={ShankConstants.PRIMARY_COLOR} tabBarInactiveTextColor={ShankConstants.PRIMARY_COLOR} renderTabBar={() => <GroupTabBar />}>
-						<View tabLabel='Leaderboard' style={[LocalStyles.slideBorderStyle]}>
-							<Text style={[LocalStyles.rankColumnText]}>Rank</Text>
+						<View tabLabel='Leaderboard' style={[ViewStyle.tabViewContainer]}>
+							<Text style={[ViewStyle.rankColumnText]}>Rank</Text>
 							
-							<List containerStyle={[LocalStyles.leaderboardList]}>
-								<FlatList data={this.state.currentTournament.users} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow currentGroup={this.state.currentGroup} item={item} />)} />
+							<List containerStyle={[ViewStyle.leaderboardList]}>
+								<FlatList data={this.state.currentTournament.users} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow currentGroup={this.state.currentGroup} item={item} inviteToJoin={this.inviteToJoin}/>)} />
 							</List>
 						</View>
 
-						<View tabLabel='Roaster' style={[LocalStyles.slideBorderStyle]}>
+						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
 							<RoundLabels tournament={this.state.tournamentData}></RoundLabels>
 							
 							<SortableListView data={this.state.playerRanking} order={this.state.order} disableSorting={this.isSortingDisabled()} activeOpacity={1.0} onMoveStart={() => { lockScrollTabView = true; }}
@@ -693,7 +718,7 @@ export default class Group extends BaseComponent {
 							)}></SortableListView>
 
 							{this.roasterHasChanged() ?
-								<View style={[LocalStyles.checkoutButtonView]}>
+								<View style={[ViewStyle.checkoutButtonView]}>
 									<TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
 										<Text style={MainStyles.buttonText}>Checkout</Text>
 									</TouchableOpacity>

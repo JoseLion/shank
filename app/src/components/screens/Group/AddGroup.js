@@ -10,7 +10,7 @@ import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
-import LocalStyles from './styles/local'
+import ViewStyle from './styles/addGroupStyle'
 
 @connectActionSheet
 export default class AddGroup extends BaseComponent {
@@ -175,10 +175,10 @@ export default class AddGroup extends BaseComponent {
           <View style={[MainStyles.container]} behavior='padding'>
             <Spinner visible={this.state.loading} animation='slide'/>
             <ActionSheet ref={o => this.ActionSheet = o} options={[ 'Open your gallery', 'Take a picture', 'Cancel']} cancelButtonIndex={2} onPress={this.optionSelectedPressed} />
-            <View style={[LocalStyles.formContainer]}>
-              <TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
-                { groupPhoto && <Image source={{uri: groupPhoto}} style={LocalStyles.groupImage}/> }
-                {!groupPhoto && <Image style={LocalStyles.groupImage} source={addPhoto}></Image> }
+            <View style={[ViewStyle.formContainer]}>
+              <TouchableOpacity style={[ViewStyle.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
+                { groupPhoto && <Image source={{uri: groupPhoto}} style={ViewStyle.groupImage}/> }
+                {!groupPhoto && <Image style={ViewStyle.groupImage} source={addPhoto}></Image> }
                 <Text style={[MainStyles.centerText, MainStyles.placeholderText]}>
                   { !groupPhoto ? 'Add photo' : 'Change photo' }
                 </Text>
@@ -195,7 +195,7 @@ export default class AddGroup extends BaseComponent {
 
               { isAndroid
                 ?
-                  <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, LocalStyles.pickerHeight]}>
+                  <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
                     <Picker style={MainStyles.noMargin} selectedValue={this.state.selectTournament} onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
                       <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
                       {tournamentItems}

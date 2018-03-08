@@ -8,14 +8,14 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
-import LocalStyles from './styles/local';
+import ViewStyle from './styles/groupStyle';
 
 class PlayerRow extends BaseComponent {
 
   constructor(props) {
     super(props);
     this.playerSelected = this.playerSelected.bind(this);
-    this.state = { checkIsSelected: this.props.data.isSelected ? LocalStyles.checkIsSelected : null };
+    this.state = { checkIsSelected: this.props.data.isSelected ? ViewStyle.checkIsSelected : null };
   }
 
   playerSelected() {
@@ -24,7 +24,7 @@ class PlayerRow extends BaseComponent {
       this.setState({checkIsSelected: null});
     } else {
       this.props.data.isSelected = true;
-      this.setState({checkIsSelected: LocalStyles.checkIsSelected});
+      this.setState({checkIsSelected: ViewStyle.checkIsSelected});
 
     }
     this.props.setUpdateSelected(this.props.data);
@@ -38,13 +38,13 @@ class PlayerRow extends BaseComponent {
             <Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
           </View>
           <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 2}]}>
-            <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>{this.props.data.fullName}</Text>
+            <Text style={[MainStyles.shankGreen, ViewStyle.titleStyle]}>{this.props.data.fullName}</Text>
           </View>
           <View style={[MainStyles.viewFlexItemsC]}>
-            <Text style={[MainStyles.shankGreen, LocalStyles.titleStyle]}>0 %</Text>
+            <Text style={[MainStyles.shankGreen, ViewStyle.titleStyle]}>0 %</Text>
           </View>
           <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd, {flex:2}]}>
-            <FontAwesome name='check' size={29} style={[LocalStyles.selectedCheck, this.state.checkIsSelected]}/>
+            <FontAwesome name='check' size={29} style={[ViewStyle.selectedCheck, this.state.checkIsSelected]}/>
           </View>
         </View>
       </TouchableHighlight>
