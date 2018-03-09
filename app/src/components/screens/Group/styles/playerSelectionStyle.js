@@ -85,6 +85,33 @@ const ViewStyle = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: '2.5%',
 		paddingHorizontal: '7.5%'
+	},
+	searchInputView: {
+		width: (containerWidth * 0.80),
+		height: '100%',
+		justifyContent: 'center',
+		paddingHorizontal: (containerWidth * 0.02)
+	},
+	searchInput: {
+		fontFamily: 'century-gothic',
+		fontSize: Style.FONT_15,
+		color: 'white',
+		height: '70%',
+		backgroundColor: 'rgba(241, 242, 242, 0.2)',
+		borderRadius: 10
+	},
+
+
+	cancelSearchButton: {
+		width: (containerWidth * 0.2),
+		height: '100%',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	cancelSearchText: {
+		fontFamily: 'century-gothic',
+		fontSize: Style.FONT_15,
+		color: 'white'
 	}
 });
 

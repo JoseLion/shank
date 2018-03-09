@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableHighlight, TouchableOpacity, View, TextInput } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -52,22 +52,34 @@ class PlayerRow extends React.Component {
 
 export default class PlayerSelection extends BaseComponent {
 
-	static navigationOptions = ({navigation}) => ({
-		title: 'CHOOSE PLAYER',
-		headerTintColor: ShankConstants.TERTIARY_COLOR,
-		headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-		headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
-		headerLeft: (
-			<TouchableHighlight onPress={() => navigation.goBack(null)}>
-				<Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
-			</TouchableHighlight>
-		),
-		headerRight: (
-			<TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.state.params.searchPlayer()}>
-				<FontAwesome name='search' style={[MainStyles.headerIconButton]} />
-			</TouchableHighlight>
-		)
-	});
+	static navigationOptions = ({navigation}) => {
+		return {
+			title: !navigation.state.params.isSearching ? 'CHOOSE PLAYER' : null,
+			headerTintColor: ShankConstants.TERTIARY_COLOR,
+			headerTitleStyle: !navigation.state.params.isSearching ? {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR} : null,
+			headerStyle: {backgroundColor: ShankConstants.PRIMARY_COLOR},
+			headerLeft: (
+				!navigation.state.params.isSearching ?
+					<TouchableHighlight onPress={() => navigation.goBack(null)}>
+						<Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
+					</TouchableHighlight>
+				:
+					<View style={[ViewStyle.searchInputView]}>
+						<TextInput style={[ViewStyle.searchInput]} underlineColorAndroid="transparent" placeholderTextColor="#FFF" placeholder={'Search Players'}></TextInput>
+					</View>
+			),
+			headerRight: (
+				!navigation.state.params.isSearching ?
+					<TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.state.params.searchPlayer()}>
+						<FontAwesome name='search' style={[MainStyles.headerIconButton]} />
+					</TouchableHighlight>
+				:
+					<TouchableOpacity style={[ViewStyle.cancelSearchButton]} onPress={() => {navigation.setParams({isSearching: false});}}>
+						<Text style={[ViewStyle.cancelSearchText]}>Cancel</Text>
+					</TouchableOpacity>
+			)
+		};
+	}
 
 	constructor(props) {
 		super(props);
@@ -90,7 +102,7 @@ export default class PlayerSelection extends BaseComponent {
 	}
 
 	componentDidMount() {
-		this.props.navigation.setParams({ searchPlayer: this.searchPlayer });
+		this.props.navigation.setParams({searchPlayer: this.searchPlayer});
 		this.initialRequest();
 	}
 
@@ -161,8 +173,23 @@ export default class PlayerSelection extends BaseComponent {
 	}
 
 	searchPlayer() {
-		let players = this.state.players.filter(player => { return player.isSelected == null || !player.isSelected; });
-		super.navigateToScreen('PlayerSelectionSearch', { players: players, updateListSelected: this.updateListSelected });
+		this.props.navigation.setParams({isSearching: true});
+
+		/*this.props.navigation.setParams({
+			title: null,
+			headerTitleStyle: null,
+			headerLeft: (
+				<TextInput placeholder={'Search Players'}></TextInput>
+			),
+			headerRight: (
+				<TouchableHighlight>
+					<Text>Cancel</Text>
+				</TouchableHighlight>
+			)
+		});*/
+
+		/*let players = this.state.players.filter(player => { return player.isSelected == null || !player.isSelected; });
+		super.navigateToScreen('PlayerSelectionSearch', { players: players, updateListSelected: this.updateListSelected });*/
 	}
 
 	updateListSelected(playersSelected) {

@@ -57,7 +57,7 @@ class RoasterRow extends BaseComponent {
 			easing: Easing.elastic(0.5)
 		}).start(() => this.swipe.recenter());
 	}
-
+	
 	getCellBorderStyle(index) {
 		if (index == 0) {
 			return {borderBottomWidth: 0.5};

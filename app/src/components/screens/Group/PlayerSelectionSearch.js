@@ -8,7 +8,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
-import ViewStyle from './styles/groupStyle';
+import ViewStyle from './styles/playerSelectionSearchStyle';
 
 class PlayerRow extends BaseComponent {
 
