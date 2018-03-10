@@ -1,6 +1,6 @@
 // React components:
 import React, {Component} from 'react';
-import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, ActionSheetIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage, Animated, Easing } from 'react-native';
+import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage, Animated, Easing } from 'react-native';
 import { Avatar, List, ListItem } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
@@ -25,15 +25,23 @@ class RoasterRow extends BaseComponent {
 
 	addPlayer() {
 		super.navigateToScreen('PlayerSelection', {
-			actualPosition: Number.parseInt(this.props.rowId) + 1,
+			currentRoaster: this.props.currentRoaster.filter(player => player.playerId != null),
+			tournament: this.props.tournament
+
+
+
+
+			/*actualPosition: Number.parseInt(this.props.rowId) + 1,
 			isEmpty: this.props.data == null || this.props.data.playerId == null,
 			groupId: this.props.groupId,
 			tournament: this.props.tournament,
 			playerRanking: this.props.playerRanking,
-			onPlayerRankingSaveAsync: this.props.onPlayerRankingSaveAsync
+			onPlayerRankingSaveAsync: this.props.onPlayerRankingSaveAsync*/
 		});
 
-		this.swipe.recenter();
+		if (this.swipe != null) {
+			this.swipe.recenter()
+		}
 	}
 
 	animateCell() {
@@ -75,6 +83,7 @@ class RoasterRow extends BaseComponent {
 	}
 
 	render() {
+		console.log
 		if (this.props.data != null && this.props.data.playerId) {
 			return (
 				<Swipeable rightButtons={this.getRoasterRightButtons()} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
@@ -714,7 +723,7 @@ export default class Group extends BaseComponent {
 								this.forceUpdate();
 							}} renderRow={(row, rowId, sectionId) => (
 								<RoasterRow navigation={navigation} data={row} rowId={sectionId} groupId={this.state.currentGroup._id} tournament={this.state.currentTournament}
-								playerRanking={this.state.playerRanking} onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync} hideSortBars={this.isSortingDisabled()}></RoasterRow>
+								currentRoaster={this.state.playerRanking} onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync} hideSortBars={this.isSortingDisabled()}></RoasterRow>
 							)}></SortableListView>
 
 							{this.roasterHasChanged() ?

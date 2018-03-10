@@ -158,8 +158,8 @@ export default class AddGroup extends BaseComponent {
     let { groupPhoto } = this.state;
     let navigation = this.props.navigation;
     let addPhoto = require('../../../../resources/add_edit_photo.png');
-    let tournamentName = []
-    let tournamentKeys = []
+    let tournamentName = [];
+    let tournamentKeys = [];
 
     let tournamentItems = this.state.tournamentData.map((s, i) => {
       tournamentName[i] = s.tournamentName
@@ -203,7 +203,7 @@ export default class AddGroup extends BaseComponent {
                   </View>
                 :
                   <TouchableOpacity style={[MainStyles.formPicker, MainStyles.noMargin]} onPress={() => {
-                    ActionSheetIOS.showActionSheetWithOptions({ options: tournamentName, cancelButtonIndex: tournamentName.length - 1 },
+                    ActionSheetIOS.showActionSheetWithOptions({options: tournamentName, cancelButtonIndex: tournamentName.length - 1},
                     (buttonIndex) => {
                       if (tournamentKeys[buttonIndex] != 'none') {
                         this.setState({selectTournament: tournamentKeys[buttonIndex]})
