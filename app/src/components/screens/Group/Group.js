@@ -26,7 +26,9 @@ class RoasterRow extends BaseComponent {
 	addPlayer() {
 		super.navigateToScreen('PlayerSelection', {
 			currentRoaster: this.props.currentRoaster.filter(player => player.playerId != null),
-			tournament: this.props.tournament
+			currentPosition: this.props.data.playerId ? Number.parseInt(this.props.rowId) + 1 : null,
+			tournament: this.props.tournament,
+			onPlayerRankingSaveAsync: this.props.onPlayerRankingSaveAsync
 
 
 
@@ -486,14 +488,14 @@ export default class Group extends BaseComponent {
 	}
 
 	async onPlayerRankingSaveAsync(data, method) {
-		let tournamentData = this.state.currentTournament;
+		/*let tournamentData = this.state.currentTournament;
 		let nowDate = new Date();
 		nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
 		let tournamentDate = new Date(new Date(tournamentData.startDate).getFullYear(), new Date(tournamentData.startDate).getMonth(), new Date(tournamentData.startDate).getDate());
 		let diff = tournamentDate.getTime() - nowDate.getTime();
-		diff = Math.ceil(diff / (1000*3600*24));
+		diff = Math.ceil(diff / (1000*3600*24));*/
 
-		if (diff > 0) {
+		if (this.state.diffDays > 0) {
 			this.setLoading(true);
 
 			await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: data}).then((response) => {
@@ -505,7 +507,9 @@ export default class Group extends BaseComponent {
 					method();
 				}
 			}).catch((error) => {
+				console.log("error: ", error);
 				BarMessages.showError(error, this.validationMessage);
+				this.setLoading(false);
 			});
 		} else {
 			let original = JSON.parse(this.state.originalRanking);
@@ -533,7 +537,9 @@ export default class Group extends BaseComponent {
 						method();
 					}
 				}).catch((error) => {
+					console.log("error: ", error);
 					BarMessages.showError(error, this.validationMessage);
+					this.setLoading(false);
 				});
 			} else {
 				this.setState({showCheckout: showCheckout});

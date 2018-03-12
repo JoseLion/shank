@@ -14,22 +14,35 @@ class PlayerRow extends React.Component {
 	constructor(props) {
 		super(props);
 		this.isInRoaster = this.isInRoaster.bind(this);
-		this.state = {currentRoaster: this.props.currentRoaster};
+		this.state = {currentRoaster: this.props.currentRoaster, oneSelected: false};
 	}
 
 	isInRoaster(player) {
-		console.log("this.state: ", this.state);
 		return this.state.currentRoaster.indexOf(player) > -1;
 	}
 
 	playerSelected(player) {
-		const roaster = this.state.currentRoaster;
+		let roaster = this.state.currentRoaster;
 
-		if (this.isInRoaster(player)) {
-			let index = this.state.currentRoaster.indexOf(player);
-			roaster.splice(index, 1);
+		if (this.props.currentPosition) {
+			if (this.isInRoaster(player)) {
+				this.setState({oneSelected: false});
+				roaster.splice(this.props.currentPosition - 1, 1, null);
+			} else {
+				if (!this.state.oneSelected) {
+					this.setState({oneSelected: true});
+					roaster.splice(this.props.currentPosition - 1, 1, player);
+				}
+			}
 		} else {
-			roaster.push(player)
+			if (this.state.currentRoaster.length < this.props.maxSelection || this.isInRoaster(player)) {
+				if (this.isInRoaster(player)) {
+					let index = this.state.currentRoaster.indexOf(player);
+					roaster.splice(index, 1);
+				} else {
+					roaster.push(player)
+				}
+			}
 		}
 
 		this.setState({currentRoaster: roaster});
@@ -88,7 +101,10 @@ export default class PlayerSelection extends BaseComponent {
 						<FontAwesome name='search' style={[MainStyles.headerIconButton]} />
 					</TouchableHighlight>
 				:
-					<TouchableOpacity style={[ViewStyle.cancelSearchButton]} onPress={() => navigation.setParams({isSearching: false})}>
+					<TouchableOpacity style={[ViewStyle.cancelSearchButton]} onPress={() => {
+						navigation.state.params.searchChanged("");
+						navigation.setParams({isSearching: false});
+					}}>
 						<Text style={[ViewStyle.cancelSearchText]}>Cancel</Text>
 					</TouchableOpacity>
 			)
@@ -99,15 +115,19 @@ export default class PlayerSelection extends BaseComponent {
 		super(props);
 		/*this.setUpdateSelected = this.setUpdateSelected.bind(this);
 		this.updateLocalPlayerList = this.updateLocalPlayerList.bind(this);
-		this.searchChanged = this.searchChanged.bind(this);
 		this.initialRequest = this.initialRequest.bind(this);
 		this.updateListSelected = this.updateListSelected.bind(this);*/
 		this.setCurrentRoaster = this.setCurrentRoaster.bind(this);
+		this.searchChanged = this.searchChanged.bind(this);
+		this.save = this.save.bind(this);
 		this.state = {
 			currentRoaster: this.props.navigation.state.params.currentRoaster ? this.props.navigation.state.params.currentRoaster : [] ,
+			currentPosition: this.props.navigation.state.params.currentPosition,
 			maxSelection: (5 - this.props.navigation.state.params.currentRoaster.length),
 			tournament: this.props.navigation.state.params.tournament,
+			searchPlayers: [],
 			players: [],
+			loading: false
 
 			/*isEmpty: this.props.navigation.state.params.isEmpty,
 			groupId: this.props.navigation.state.params.groupId,
@@ -116,10 +136,7 @@ export default class PlayerSelection extends BaseComponent {
 			playerRanking: this.props.navigation.state.params.playerRanking,
 			playersSelected: [],
 			finalPlayers: [],
-			players: [],
-			originalPlayers: [],*/
-
-			loading: false
+			players: []*/
 		};
 	}
 
@@ -136,6 +153,41 @@ export default class PlayerSelection extends BaseComponent {
 	setCurrentRoaster(roaster) {
 		this.setState({currentRoaster: roaster});
 	}
+
+	searchChanged(name) {
+		this.setState({
+			players: this.state.searchPlayers.filter((player) => {
+				let regex = new RegExp(".*" + name.toUpperCase() + ".*", "g");
+				return regex.test(player.fullName.toUpperCase());
+			})
+		});
+	}
+
+	save() {
+		let currentRoaster = this.state.currentRoaster;
+
+		if (this.state.currentPosition) {
+			currentRoaster[0].position = this.state.currentPosition;
+		} else {
+			let pos = 0;
+
+			currentRoaster.forEach(player => {
+				if (player.position != null) {
+					pos = player.position;
+				} else {
+					pos++;
+					player.position = pos;
+				}
+			});
+		}
+
+		//this.setLoading(true);
+		this.props.navigation.state.params.onPlayerRankingSaveAsync(currentRoaster, this.playerGoBack);
+	}
+
+	playerGoBack = () => {
+		this.props.navigation.goBack(null);
+	};
 
 	/*updateLocalPlayerList() {
 		if (this.state.isEmpty) {
@@ -174,10 +226,6 @@ export default class PlayerSelection extends BaseComponent {
 		this.props.navigation.state.params.onPlayerRankingSaveAsync(playerRanking, this.playerGoBack);
 	}
 
-	playerGoBack = () => {
-		this.props.navigation.goBack(null);
-	};
-
 	setUpdateSelected(playerSelected) {
 		let players = this.state.finalPlayers;
 
@@ -197,15 +245,6 @@ export default class PlayerSelection extends BaseComponent {
 		}
 
 		this.setState({playersSelected: players});
-	}
-
-	searchChanged(name) {
-		this.setState({
-			players: this.state.originalPlayers.filter((player) => {
-				let regex = new RegExp(".*" + name.toUpperCase() + ".*", "g");
-				return regex.test(player.fullName.toUpperCase());
-			})
-		});
 	}
 
 	updateListSelected(playersSelected) {
@@ -232,7 +271,7 @@ export default class PlayerSelection extends BaseComponent {
 		this.setLoading(true);
 
 		BaseModel.post('players/findPlayers').then((data) => {
-			this.setState({players: data.filter(player => {
+			const players = data.filter(player => {
 				let inRoaster = false;
 
 				for (let i = 0; i < this.state.currentRoaster.length; i++) {
@@ -243,8 +282,9 @@ export default class PlayerSelection extends BaseComponent {
 				}
 
 				return !inRoaster;
-			})});
+			});
 
+			this.setState({players: players, searchPlayers: players});
 			this.setLoading(false);
 		}).catch((error) => {
 			console.log('ERROR! ', error);
@@ -267,11 +307,11 @@ export default class PlayerSelection extends BaseComponent {
 					<Text style={[ViewStyle.headerText, {flex: 2}]}>Max. {this.state.maxSelection > 0 ? this.state.maxSelection : '1'}</Text>
 				</View>
 				
-				<SortableListView data={this.state.players} renderRow={(row) => (<PlayerRow player={row} currentRoaster={this.state.currentRoaster} setCurrentRoaster={this.setCurrentRoaster} />)} />
+				<SortableListView data={this.state.players} renderRow={(row) => (<PlayerRow player={row} currentRoaster={this.state.currentRoaster} setCurrentRoaster={this.setCurrentRoaster} maxSelection={this.state.maxSelection} currentPosition={this.state.currentPosition} />)} />
 
 				{this.state.currentRoaster.length > 0 ?
 					<View style={[ViewStyle.saveView]}>
-						<TouchableOpacity onPress={() => this.updateLocalPlayerList()} style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
+						<TouchableOpacity onPress={this.save} style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
 							<Text style={[MainStyles.buttonText]}>Save</Text>
 						</TouchableOpacity>
 					</View>
