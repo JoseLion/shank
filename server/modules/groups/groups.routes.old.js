@@ -261,20 +261,31 @@ let prepareRouter = function (app) {
   })
   .put(`${path}/editMyPlayers/:groupId/:tournamentId`, auth, function(req, res) {
     try{
-      BettingGroup.findById(req.params.groupId)
-      .exec(function(err, group) {
-        if(!group) { res.ok({}, 'The group doesn\'t exist!'); return; }
+      BettingGroup.findById(req.params.groupId).exec(function(err, group) {
+        if (!group) {
+          res.ok({}, 'The group doesn\'t exist!');
+          return;
+        }
+
+        console.log("tournamentId: ", req.params.tournamentId);
+
         group.tournaments.forEach(function(tournament) {
-          if(tournament._id == req.params.tournamentId) {
+          if (tournament._id == req.params.tournamentId) {
+            console.log("tournament found");
             tournament.users.forEach(function(user) {
-              if(user._id.equals(req.payload._id)) {
+              if (user._id.equals(req.payload._id)) {
+                console.log("player found");
                 user.playerRanking = req.body.players;
                 return;
               }
             });
+
             return;
           }
         });
+
+        console.log("group: ", group);
+
         BettingGroup.findByIdAndUpdate(req.params.groupId, {$set: group}, {new: true}, function(errGU, finalGroup) {
           res.ok(finalGroup);
           return;
@@ -282,7 +293,8 @@ let prepareRouter = function (app) {
       });
     } catch(ex) {
       console.log('EX: ', ex);
-      res.serverError(); return;
+      res.serverError();
+      return;
     }
   });
 

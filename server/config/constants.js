@@ -1,6 +1,6 @@
 // shank.levelaptesting.com
 // 192.168.100.6
-let END_POINT = 'shank.levelaptesting.com'
+let END_POINT = '192.168.10.152'
 let HOST = `http://${END_POINT}:3000/`;
 let DOC_HOST = `http://docs.${END_POINT}/`;
 

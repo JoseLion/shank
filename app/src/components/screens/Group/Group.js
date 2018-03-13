@@ -27,18 +27,9 @@ class RoasterRow extends BaseComponent {
 		super.navigateToScreen('PlayerSelection', {
 			currentRoaster: this.props.currentRoaster.filter(player => player.playerId != null),
 			currentPosition: this.props.data.playerId ? Number.parseInt(this.props.rowId) + 1 : null,
+			group: this.props.group,
 			tournament: this.props.tournament,
-			onPlayerRankingSaveAsync: this.props.onPlayerRankingSaveAsync
-
-
-
-
-			/*actualPosition: Number.parseInt(this.props.rowId) + 1,
-			isEmpty: this.props.data == null || this.props.data.playerId == null,
-			groupId: this.props.groupId,
-			tournament: this.props.tournament,
-			playerRanking: this.props.playerRanking,
-			onPlayerRankingSaveAsync: this.props.onPlayerRankingSaveAsync*/
+			updateRoaster: this.props.updateRoaster
 		});
 
 		if (this.swipe != null) {
@@ -85,7 +76,6 @@ class RoasterRow extends BaseComponent {
 	}
 
 	render() {
-		console.log
 		if (this.props.data != null && this.props.data.playerId) {
 			return (
 				<Swipeable rightButtons={this.getRoasterRightButtons()} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
@@ -295,6 +285,7 @@ export default class Group extends BaseComponent {
 		this.goToCheckout = this.goToCheckout.bind(this);
 		this.roasterHasChanged = this.roasterHasChanged.bind(this);
 		this.isSortingDisabled = this.isSortingDisabled.bind(this);
+		this.updateRoaster = this.updateRoaster.bind(this);
 
 		this.state = {
 			currentGroup: {},
@@ -462,6 +453,16 @@ export default class Group extends BaseComponent {
 		}
 
 		return false;
+	}
+
+	updateRoaster(roaster) {
+		if (roaster.length < 5) {
+			for (let i = roaster.length; i < 5; i++) {
+				roaster.push({position: i + 1});
+			}
+		}
+
+		this.setState({playerRanking: roaster});
 	}
 
 	async initialRequest() {
@@ -728,8 +729,7 @@ export default class Group extends BaseComponent {
 								this.updatePlayerRankingList(playerRanking);
 								this.forceUpdate();
 							}} renderRow={(row, rowId, sectionId) => (
-								<RoasterRow navigation={navigation} data={row} rowId={sectionId} groupId={this.state.currentGroup._id} tournament={this.state.currentTournament}
-								currentRoaster={this.state.playerRanking} onPlayerRankingSaveAsync={this.onPlayerRankingSaveAsync} hideSortBars={this.isSortingDisabled()}></RoasterRow>
+								<RoasterRow navigation={navigation} data={row} rowId={sectionId} group={this.state.currentGroup} tournament={this.state.currentTournament} currentRoaster={this.state.playerRanking} updateRoaster={this.updateRoaster}/>
 							)}></SortableListView>
 
 							{this.roasterHasChanged() ?

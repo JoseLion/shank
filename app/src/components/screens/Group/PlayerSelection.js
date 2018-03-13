@@ -35,7 +35,7 @@ class PlayerRow extends React.Component {
 				}
 			}
 		} else {
-			if (this.state.currentRoaster.length < this.props.maxSelection || this.isInRoaster(player)) {
+			if (this.state.currentRoaster.length < 5 || this.isInRoaster(player)) {
 				if (this.isInRoaster(player)) {
 					let index = this.state.currentRoaster.indexOf(player);
 					roaster.splice(index, 1);
@@ -113,30 +113,18 @@ export default class PlayerSelection extends BaseComponent {
 
 	constructor(props) {
 		super(props);
-		/*this.setUpdateSelected = this.setUpdateSelected.bind(this);
-		this.updateLocalPlayerList = this.updateLocalPlayerList.bind(this);
-		this.initialRequest = this.initialRequest.bind(this);
-		this.updateListSelected = this.updateListSelected.bind(this);*/
 		this.setCurrentRoaster = this.setCurrentRoaster.bind(this);
 		this.searchChanged = this.searchChanged.bind(this);
 		this.save = this.save.bind(this);
 		this.state = {
 			currentRoaster: this.props.navigation.state.params.currentRoaster ? this.props.navigation.state.params.currentRoaster : [] ,
 			currentPosition: this.props.navigation.state.params.currentPosition,
-			maxSelection: (5 - this.props.navigation.state.params.currentRoaster.length),
+			group: this.props.navigation.state.params.group,
 			tournament: this.props.navigation.state.params.tournament,
+			updateRoaster: this.props.navigation.state.params.updateRoaster,
 			searchPlayers: [],
 			players: [],
 			loading: false
-
-			/*isEmpty: this.props.navigation.state.params.isEmpty,
-			groupId: this.props.navigation.state.params.groupId,
-			tournament: this.props.navigation.state.params.tournament,
-			actualPosition: this.props.navigation.state.params.actualPosition,
-			playerRanking: this.props.navigation.state.params.playerRanking,
-			playersSelected: [],
-			finalPlayers: [],
-			players: []*/
 		};
 	}
 
@@ -163,11 +151,11 @@ export default class PlayerSelection extends BaseComponent {
 		});
 	}
 
-	save() {
+	async save() {
 		let currentRoaster = this.state.currentRoaster;
 
 		if (this.state.currentPosition) {
-			currentRoaster[0].position = this.state.currentPosition;
+			currentRoaster[this.state.currentPosition - 1].position = this.state.currentPosition;
 		} else {
 			let pos = 0;
 
@@ -181,91 +169,39 @@ export default class PlayerSelection extends BaseComponent {
 			});
 		}
 
-		//this.setLoading(true);
-		this.props.navigation.state.params.onPlayerRankingSaveAsync(currentRoaster, this.playerGoBack);
+		if (this.hasTournamentBegan()) {
+			this.state.updateRoaster(currentRoaster);
+			this.props.navigation.goBack(null);
+		} else {
+			this.setLoading(true);
+
+			console.log("currentRoaster: ", currentRoaster);
+			await BaseModel.put(`groups/editMyPlayers/${this.state.group._id}/${this.state.tournament._id}`, {players: currentRoaster}).then(response => {
+				this.state.updateRoaster(currentRoaster);
+				this.setLoading(false);
+				this.props.navigation.goBack(null);
+			}).catch(error => {
+				console.log("error: ", error);
+				BarMessages.showError(error, this.validationMessage);
+				this.setLoading(false);
+			});
+		}
 	}
 
-	playerGoBack = () => {
+	playerGoBack() {
 		this.props.navigation.goBack(null);
-	};
-
-	/*updateLocalPlayerList() {
-		if (this.state.isEmpty) {
-			let quantityPlayersEmpty = 0;
-			this.state.playerRanking.forEach(player => { if (player.playerId == null) quantityPlayersEmpty++; });
-			
-			if (this.state.finalPlayers.length > quantityPlayersEmpty) {
-				let message = (quantityPlayersEmpty > 1) ? `You must select between 1 and ${quantityPlayersEmpty} players.` : 'You must select one player.';
-				BarMessages.showError(message, this.validationMessage);
-				return;
-			}
-		} else {
-			if (this.state.finalPlayers.length != 1) {
-				BarMessages.showError('You must select one player.', this.validationMessage);
-				return;
-			}
-		}
-
-		let playerRanking = this.state.playerRanking;
-		if (this.state.finalPlayers.length == 1) {
-			this.state.finalPlayers[0].position = this.state.actualPosition;
-			playerRanking[this.state.actualPosition - 1] = this.state.finalPlayers[0];
-		} else {
-			this.state.finalPlayers.forEach(player => {
-				for (let idx = 0 ; idx<5 ; idx++) {
-					if (playerRanking[idx].playerId == null) {
-						player.position = playerRanking[idx].position;
-						playerRanking[idx] = player;
-						break;
-					}
-				}
-			});
-		}
-
-		this.setLoading(true);
-		this.props.navigation.state.params.onPlayerRankingSaveAsync(playerRanking, this.playerGoBack);
 	}
 
-	setUpdateSelected(playerSelected) {
-		let players = this.state.finalPlayers;
+	hasTournamentBegan() {
+		let today = new Date();
+		let startDate = new Date(this.state.tournament.startDate);
 
-		if (playerSelected.isSelected) {
-			players.push({
-				playerId: playerSelected.playerId,
-				fullName: playerSelected.fullName,
-				photoUrl: playerSelected.photoUrl
-			});
-		} else {
-			for (let idx=0 ; idx<players.length ; idx++) {
-				if (players[idx].playerId == playerSelected.PlayerID) {
-					players.splice(idx, 1);
-					break;
-				}
-			}
+		if (today.getTime() >= startDate.getTime()) {
+			return true;
 		}
 
-		this.setState({playersSelected: players});
+		return false;
 	}
-
-	updateListSelected(playersSelected) {
-		let finalPlayers = this.state.finalPlayers;
-		let players = this.state.players;
-
-		playersSelected.forEach(player => {
-			if (player.playerId != null && finalPlayers.filter(found => { return found.playerId == player.playerId; }).length == 0) {
-				finalPlayers.push(player);
-			}
-
-			this.state.players.filter(found => {
-				return found.PlayerID == player.playerId;
-			}).map(found => {
-				found.isSelected = true;
-				return found;
-			});
-		});
-
-		this.setState({finalPlayers: finalPlayers});
-	}*/
 
 	async initialRequest() {
 		this.setLoading(true);
@@ -304,15 +240,15 @@ export default class PlayerSelection extends BaseComponent {
 
 					<Text style={[ViewStyle.headerText, {flex: 2}]}>Pick %</Text>
 
-					<Text style={[ViewStyle.headerText, {flex: 2}]}>Max. {this.state.maxSelection > 0 ? this.state.maxSelection : '1'}</Text>
+					<Text style={[ViewStyle.headerText, {flex: 2}]}>Select {this.state.currentPosition ? '1' : '5'}</Text>
 				</View>
 				
-				<SortableListView data={this.state.players} renderRow={(row) => (<PlayerRow player={row} currentRoaster={this.state.currentRoaster} setCurrentRoaster={this.setCurrentRoaster} maxSelection={this.state.maxSelection} currentPosition={this.state.currentPosition} />)} />
+				<SortableListView data={this.state.players} renderRow={(row) => (<PlayerRow player={row} currentRoaster={this.state.currentRoaster} setCurrentRoaster={this.setCurrentRoaster} currentPosition={this.state.currentPosition} />)} />
 
-				{this.state.currentRoaster.length > 0 ?
+				{this.state.currentRoaster.length == (this.state.currentPosition ? 1 : 5) ?
 					<View style={[ViewStyle.saveView]}>
 						<TouchableOpacity onPress={this.save} style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
-							<Text style={[MainStyles.buttonText]}>Save</Text>
+							<Text style={[MainStyles.buttonText]}>{this.hasTournamentBegan() ? 'Done' : 'Save'}</Text>
 						</TouchableOpacity>
 					</View>
 				: null}
