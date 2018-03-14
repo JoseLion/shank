@@ -9,9 +9,10 @@ let GroupSchema = new mongoose.Schema({
 		tournament: {type: mongoose.Schema.Types.ObjectId, ref: 'Tournament'},
 	}]
 }, {
+	collection: 'Group',
 	timestamps: {
-		creationDate: 'creationDate',
-		updateDate: 'updateDate'
+		createdAt: 'created_at',
+		updatedAt: 'updated_at'
 	}
 });
 

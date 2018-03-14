@@ -25,7 +25,7 @@ let UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Profile'
   },
-  bettingGroups: [ {type: mongoose.Schema.Types.ObjectId, ref: 'BettingGroup'} ],
+  groups: [ {type: mongoose.Schema.Types.ObjectId, ref: 'Group'} ],
   facebookId: String,
   hash: String,
   salt: String
@@ -81,7 +81,7 @@ UserSchema.methods.generateJwt = function (permissions) {
 };
 
 UserSchema.methods.addGroup = function (_id) {
-  this.bettingGroups.push(_id);
+  this.groups.push(_id);
 };
 
 mongoose.model('User', UserSchema);

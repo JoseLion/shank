@@ -16,10 +16,13 @@ let TournamentSchema = new mongoose.Schema({
 		day: Date
 	}]
 }, {
+	collection: 'Tournament',
 	timestamps: {
-		creationDate: 'creationDate',
-		updateDate: 'updateDate'
+		createdAt: 'created_at',
+		updatedAt: 'updated_at'
 	}
 });
+
+
 
 mongoose.model('Tournament', TournamentSchema);

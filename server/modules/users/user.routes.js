@@ -3,7 +3,6 @@ let multer = require('multer');
 let fs = require('fs-extra');
 
 let User = mongoose.model('User');
-let BettingGroup = mongoose.model('BettingGroup');
 let Profile = mongoose.model('Profile');
 let path = '/users';
 
@@ -145,7 +144,7 @@ let prepareRouter = function (app) {
   .get('/allUsers', function (req, res) {
     User
     .find()
-    .select('_id name surname email hash salt enabled type bettingGroups')
+    .select('_id name surname email hash salt enabled type group')
     .exec(function (err, user) {
       if (err) {
         res.ok({}, 'Al seleccionar usuarioss.');
