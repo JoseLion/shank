@@ -5,6 +5,38 @@ import * as ShankConstants from '../core/ShankConstants';
 const width = Dimensions.get('window').width;
 
 export default MainStyles = StyleSheet.create({
+    button: {
+        alignItems: 'center',
+        borderRadius: Style.EM(1.5),
+        marginBottom: Style.EM(0.5),
+        marginTop: Style.EM(0.5),
+        padding: Style.EM(1),
+        width: '100%'
+    },
+    buttonText: {
+        fontFamily: 'century-gothic',
+        color: ShankConstants.TERTIARY_COLOR,
+        fontSize: Style.EM(1)
+    },
+    primary: {
+        backgroundColor: ShankConstants.PRIMARY_COLOR
+    },
+    success: {
+        backgroundColor: ShankConstants.SUCCESS_COLOR
+    },
+    textSuccess: {
+        color: ShankConstants.SUCCESS_COLOR
+    },
+    error: {
+        backgroundColor: ShankConstants.ERROR_COLOR
+    },
+    textError: {
+        color: ShankConstants.ERROR_COLOR
+    },
+
+
+
+
     container: {
         flex: 1,
         justifyContent: 'center',

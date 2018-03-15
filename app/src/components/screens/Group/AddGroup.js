@@ -13,9 +13,6 @@ import LoadingIndicator from '../../common/LoadingIndicator';
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
 import ViewStyle from './styles/addGroupStyle'
 
-// DELETE
-import Style from '../../../styles/Stylesheet';
-
 @connectActionSheet
 export default class AddGroup extends BaseComponent {
 
@@ -24,7 +21,11 @@ export default class AddGroup extends BaseComponent {
 	constructor(props) {
 		super(props);
 		this.photoOptions = ['Open your gallery', 'Take a picture', 'Cancel'];
-		this.openActionSheet = this.openActionSheet.bind(this);
+		this.updateGroup = this.updateGroup.bind(this);
+		this.openTournamentsSheet = this.openTournamentsSheet.bind(this);
+		this.openImageSheet = this.openImageSheet.bind(this);
+		this.selectPicture = this.selectPicture.bind(this);
+		this.createGroup = this.createGroup.bind(this);
 		this.state = {
 			isLoading: false,
 			tournaments: [],
@@ -32,17 +33,52 @@ export default class AddGroup extends BaseComponent {
 		};
 	}
 
-	openActionSheet() {
+	updateGroup(key, value) {
+		let group = {...this.state.group};
+		group[key] = value;
+		this.setState({group: group});
+	}
+
+	openTournamentsSheet() {
 		const names = this.state.tournaments.map(tournament => tournament.name);
-		ActionSheetIOS.showActionSheetWithOptions({options: names, cancelButtonIndex: tournamentName.length - 1}, index => {
-			this.setState({group: {tournaments: [this.tournaments[index]]}});
+		names.push('Cancel');
+		ActionSheetIOS.showActionSheetWithOptions({options: names, cancelButtonIndex: names.length - 1}, index => {
+			if (index != names.length - 1) {
+				this.updateGroup('tournaments', [this.state.tournaments[index]]);
+			}
 		});
+	}
+
+	openImageSheet() {
+		if (isAndroid) {
+			this.actionSheet.show();
+		} else {
+			this.props.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
+		}
 	}
 
 	async getAllTournaments() {
 		this.setState({isLoading: true});
-		const tournaments = await BaseModel.get('tournament/findAll').catch(error => this.validationMessage = error);
-		this.setState({isLoading: false, tournaments: tournaments});
+		const tournamentsData = await BaseModel.get('tournament/findAll').catch(error => this.validationMessage = error);
+		this.setState({isLoading: false, tournaments: tournamentsData});
+	}
+
+	async selectPicture(index) {
+		let result;
+		let settings = {allowsEditing: true, aspect: [4, 4]};
+
+		switch (index) {
+			case 0: result = await ImagePicker.launchImageLibraryAsync(settings); break;
+			case 1: result = await ImagePicker.launchCameraAsync(settings); break;
+		}
+
+		if (result != null && !result.cancelled) {
+			this.updateGroup('photoUrl', result.uri);
+		}
+	}
+
+	createGroup() {
+		console.log("this.state.group: ", this.state.group);
 	}
 
 	componentDidMount() {
@@ -54,7 +90,7 @@ export default class AddGroup extends BaseComponent {
 
 		if (isAndroid) {
 			tournamentList = this.state.tournaments.map(tournament => {
-				return (<Picker.Item style={{}} key={tournament.tournamentID} value={tournament} label={tournament.name} />);
+				return (<Picker.Item style={[ViewStyle.pickerText]} key={tournament.tournamentID} value={tournament} label={tournament.name} />);
 			});
 		}
 
@@ -63,27 +99,35 @@ export default class AddGroup extends BaseComponent {
 		}
 
 		return (
-			<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' contentContainerStyle={{flex: 1, alignItems: 'center', paddingHorizontal: '10%'}}>
+			<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' contentContainerStyle={{flex: 1, alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
 				<Spinner visible={this.state.isLoading} animation='slide'/>
-				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.optionSelectedPressed} />
+				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.selectPicture} />
 
-				<TouchableOpacity style={{alignItems: 'center', paddingVertical: '10%'}}>
-					<Image source={require('../../../../resources/add_edit_photo.png')} resizeMode={'contain'} style={{marginBottom: '3%'}}></Image>
-					<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_14, color: ShankConstants.TERTIARY_COLOR_ALT}}>Add photo</Text>
+				<TouchableOpacity style={ViewStyle.imageButton} onPress={this.openImageSheet}>
+					<Image source={this.state.group.photoUrl ? {uri: this.state.group.photoUrl} : require('../../../../resources/add_edit_photo.png')} resizeMode={'contain'} style={ViewStyle.image}></Image>
+					<Text style={ViewStyle.imageText}>{this.state.group.photoUrl ? 'Change photo' : 'Add photo'}</Text>
 				</TouchableOpacity>
 
-				<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={{width: '100%', padding: '5%', borderWidth: 1, borderColor: ShankConstants.TERTIARY_COLOR_ALT, fontFamily: 'century-gothic', fontSize: Style.FONT_16}} onChangeText={name => this.setState({group: {name: name}})} value={this.state.group.name} placeholder={'Group name'} />
+				<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={ViewStyle.nameInput} onChangeText={name => this.updateGroup('name', name)} value={this.state.group.name} placeholder={'Group name'} />
 
 				{isAndroid ?
-					<Picker style={{}} selectedValue={this.state.group.tournaments[0]} onValueChange={(tournament, index) => this.setState({group: {tournaments: [tournament]}})}>
-						<Picker.Item style={{}} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
-						{tournamentList}
-					</Picker>
+					<View style={[ViewStyle.pickerView, ViewStyle.androidPicker]}>
+						<Picker itemStyle={[ViewStyle.pickerText]} selectedValue={this.state.group.tournaments[0]} onValueChange={tournament => this.updateGroup('tournaments', [tournament])}>
+							<Picker.Item color={ShankConstants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
+							{tournamentList}
+						</Picker>
+					</View>
 				:
-					<TouchableOpacity style={{}} onPress={() => this.openActionSheet()}>
-						<Text style={{}}>{this.state.group.tournaments[0] ? this.state.group.tournaments[0].name : 'Pick a tournament'}</Text>
+					<TouchableOpacity style={ViewStyle.pickerView} onPress={() => this.openTournamentsSheet()}>
+						<Text style={[ViewStyle.pickerText, !this.state.group.tournaments[0] ? {color: ShankConstants.TERTIARY_COLOR_ALT} : null]}>{this.state.group.tournaments[0] ? this.state.group.tournaments[0].name : 'Pick a tournament'}</Text>
 					</TouchableOpacity>
 				}
+
+				<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={ViewStyle.betInput} onChangeText={bet => this.updateGroup('bet', bet)} value={this.state.group.bet} placeholder={'Bet'} multiline={true} numberOfLines={3} />
+
+				<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={this.createGroup}>
+					<Text style={[MainStyles.buttonText]}>Create Group</Text>
+				</TouchableHighlight>
 			</KeyboardAwareScrollView>
 		);
 	}

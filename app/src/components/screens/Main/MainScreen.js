@@ -13,15 +13,23 @@ import qs from 'qs';
 export default class MainScreen extends BaseComponent {
 
 	static navigationOptions = ({navigation}) => {
+		let goToScreen = async (screen) => {
+			if (await AsyncStorage.getItem(ShankConstants.AUTH_TOKEN)) {
+				navigation.dispatch({type: screen});
+			} else {
+				navigation.dispatch({type: 'Login'});
+			}
+		}
+
 		return {
 			title: 'GROUPS',
 			headerLeft: (
-				<TouchableOpacity style={[ViewStyle.navButton]} onPress={() => navigation.dispatch({type: 'AddGroup'})}>
+				<TouchableOpacity style={[ViewStyle.navButton]} onPress={() => goToScreen('AddGroup')}>
 					<Image source={require('../../../../resources/plus-icon.png')} resizeMode={'contain'} style={[ViewStyle.navPlusIcon]}></Image>
 				</TouchableOpacity>
 			),
 			headerRight: (
-				<TouchableOpacity style={[ViewStyle.navButton]} onPress={() => navigation.dispatch({type: 'Settings'})}>
+				<TouchableOpacity style={[ViewStyle.navButton]} onPress={() => goToScreen('Settings')}>
 					<Image source={require('../../../../resources/user-icon.png')} resizeMode={'contain'} style={[ViewStyle.navUserIcon]}></Image>
 				</TouchableOpacity>
 			),
@@ -75,7 +83,7 @@ export default class MainScreen extends BaseComponent {
 		});
 	}
 
-	componentWillUnmount() {
+	componentWillUnmount() {tapCenterButton
 		Linking.removeEventListener('url', e => {});
 	}
 
