@@ -1,4 +1,4 @@
-let mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 let TournamentSchema = new mongoose.Schema({
 	status: {type: Boolean, default: true},
@@ -16,7 +16,7 @@ let TournamentSchema = new mongoose.Schema({
 		day: Date
 	}]
 }, {
-	collection: 'Tournament',
+	collection: 'tournaments',
 	timestamps: {
 		createdAt: 'created_at',
 		updatedAt: 'updated_at'

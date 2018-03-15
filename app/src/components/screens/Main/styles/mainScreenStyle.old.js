@@ -8,6 +8,34 @@ const containerWidth = width > 500 ? 500 : width;
 import Style from '../../../../styles/Stylesheet';
 
 const LocalStyles = StyleSheet.create({
+    navButton: {
+        height: '100%',
+        paddingHorizontal: (width * 0.05),
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    navPlusIcon: {
+        width: (width * 0.05),
+        height: (width * 0.05)
+    },
+    navUserIcon: {
+        width: (width * 0.06),
+        height: (width * 0.06)
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     headerButton: {
         paddingLeft: Style.EM(0.5),
         paddingRight: Style.EM(0.5)
@@ -33,17 +61,6 @@ const LocalStyles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center'
     },
-
-
-
-
-
-
-
-
-
-
-
     containerMain: {
         backgroundColor: '#fff',
         flex: 1

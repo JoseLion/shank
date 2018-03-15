@@ -1,8 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import Style from './Stylesheet';
 import * as ShankConstants from '../core/ShankConstants';
 
-const MainStyles = StyleSheet.create({
+const width = Dimensions.get('window').width;
+
+export default MainStyles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -327,5 +329,3 @@ const MainStyles = StyleSheet.create({
         marginHorizontal: '10%'
     }
 });
-
-export default MainStyles;

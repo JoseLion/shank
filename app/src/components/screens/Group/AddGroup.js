@@ -7,233 +7,278 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DropdownAlert from 'react-native-dropdownalert';
 import { ImagePicker } from 'expo';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
+import LoadingIndicator from '../../common/LoadingIndicator';
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
 import ViewStyle from './styles/addGroupStyle'
 
+// DELETE
+import Style from '../../../styles/Stylesheet';
+
 @connectActionSheet
 export default class AddGroup extends BaseComponent {
 
-  static navigationOptions = ({navigation}) => ({
-    title: 'CREATE GROUP',
-    headerTintColor: ShankConstants.TERTIARY_COLOR,
-    headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-    headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
-    headerLeft: (
-      <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
-        <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
-      </TouchableHighlight>
-    ),
-    headerRight: (<View></View>)
-  });
+	static navigationOptions = {title: 'CREATE GROUP'};
 
-  constructor(props) {
-    super(props);
-    this.onCreateGroupPressed = this.onCreateGroupPressed.bind(this);
-    this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
-    this.showActionSheet = this.showActionSheet.bind(this);
-    this.state = {
-      bet: '',
-      name: '',
-      selectTournament: '',
-      groupPhoto: null,
-      tournamentData: [],
-      tName: 'Pick a tournament',
-      loading: false,
-    };
-  }
+	constructor(props) {
+		super(props);
+		this.photoOptions = ['Open your gallery', 'Take a picture', 'Cancel'];
+		this.openActionSheet = this.openActionSheet.bind(this);
+		this.state = {
+			isLoading: false,
+			tournaments: [],
+			group: {tournaments: []}
+		};
+	}
 
-  componentDidMount() {
-    this.setLoading(true);
-    this.initialRequest();
-    this.props.navigation.setParams({
-      actionSheet: this.showActionSheet
-    });
-  }
+	openActionSheet() {
+		const names = this.state.tournaments.map(tournament => tournament.name);
+		ActionSheetIOS.showActionSheetWithOptions({options: names, cancelButtonIndex: tournamentName.length - 1}, index => {
+			this.setState({group: {tournaments: [this.tournaments[index]]}});
+		});
+	}
 
-  setLoading(loading) {
-    this.setState({loading: loading});
-  }
+	async getAllTournaments() {
+		this.setState({isLoading: true});
+		const tournaments = await BaseModel.get('tournament/findAll').catch(error => this.validationMessage = error);
+		this.setState({isLoading: false, tournaments: tournaments});
+	}
 
-  showActionSheet() {
-    if(isAndroid) {
-      this.ActionSheet.show();
-    } else {
-      this.props.showActionSheetWithOptions(
-        {
-          options: [ 'Open your gallery', 'Take a picture', 'Cancel' ],
-          cancelButtonIndex: 2
-        },
-        buttonIndex => this.optionSelectedPressed(buttonIndex)
-      );
-    }
-  }
+	componentDidMount() {
+		this.getAllTournaments();
+	}
 
-  optionSelectedPressed(actionIndex) {
-    this.pictureSelection(actionIndex);
-  }
+	render() {
+		let tournamentList;
 
-  onCreateGroupPressed() {
-    if (!this.state.groupPhoto) {
-      BarMessages.showError('Please enter a photo for the group.', this.validationMessage);
-      return;
-    }
+		if (isAndroid) {
+			tournamentList = this.state.tournaments.map(tournament => {
+				return (<Picker.Item style={{}} key={tournament.tournamentID} value={tournament} label={tournament.name} />);
+			});
+		}
 
-    if (!this.state.name) {
-      BarMessages.showError('Please enter a name for the group.', this.validationMessage);
-      return;
-    }
+		if (this.state.isLoading) {
+			return (<LoadingIndicator />);
+		}
 
-    if (!this.state.selectTournament) {
-      BarMessages.showError('Please select a tournament.', this.validationMessage);
-      return;
-    }
+		return (
+			<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' contentContainerStyle={{flex: 1, alignItems: 'center', paddingHorizontal: '10%'}}>
+				<Spinner visible={this.state.isLoading} animation='slide'/>
+				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.optionSelectedPressed} />
 
-    if (!this.state.bet) {
-      BarMessages.showError('Please enter a bet.', this.validationMessage);
-      return;
-    }
+				<TouchableOpacity style={{alignItems: 'center', paddingVertical: '10%'}}>
+					<Image source={require('../../../../resources/add_edit_photo.png')} resizeMode={'contain'} style={{marginBottom: '3%'}}></Image>
+					<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_14, color: ShankConstants.TERTIARY_COLOR_ALT}}>Add photo</Text>
+				</TouchableOpacity>
 
-    this.setLoading(true);
-    let formData = new FormData();
-    let data = {
-      name: this.state.name,
-      bet: this.state.bet,
-      tournamentId: this.state.selectTournament.tournamentId,
-      tournamentName: this.state.selectTournament.tournamentName,
-      tournamentStart: this.state.selectTournament.startDate
-    };
-    formData.append('groupInformation', JSON.stringify(data));
-    if (this.state.groupPhoto) {
-      let filename = this.state.groupPhoto;
-      filename = filename.split('/').pop();
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[1]}` : `image`;
-      formData.append('groupPhoto', {uri: this.state.groupPhoto, type: type, name: filename});
-    }
+				<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={{width: '100%', padding: '5%', borderWidth: 1, borderColor: ShankConstants.TERTIARY_COLOR_ALT, fontFamily: 'century-gothic', fontSize: Style.FONT_16}} onChangeText={name => this.setState({group: {name: name}})} value={this.state.group.name} placeholder={'Group name'} />
 
-    this.onCreateGroupPressedAsync(formData);
-  }
+				{isAndroid ?
+					<Picker style={{}} selectedValue={this.state.group.tournaments[0]} onValueChange={(tournament, index) => this.setState({group: {tournaments: [tournament]}})}>
+						<Picker.Item style={{}} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
+						{tournamentList}
+					</Picker>
+				:
+					<TouchableOpacity style={{}} onPress={() => this.openActionSheet()}>
+						<Text style={{}}>{this.state.group.tournaments[0] ? this.state.group.tournaments[0].name : 'Pick a tournament'}</Text>
+					</TouchableOpacity>
+				}
+			</KeyboardAwareScrollView>
+		);
+	}
 
-  // Async methods:
-  initialRequest = async () => {
-    this.setLoading(true);
-    BaseModel.post(`tournaments/findTournaments`).then((tournaments) => {
-      this.setState({tournamentData: tournaments});
-      this.setLoading(false);
-    }).catch((error) => {
-      console.log('ERROR! ', error);
-      this.setLoading(false);
-    });
-  };
+	/*constructor(props) {
+		super(props);
+		this.onCreateGroupPressed = this.onCreateGroupPressed.bind(this);
+		this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
+		this.showActionSheet = this.showActionSheet.bind(this);
+		this.state = {
+			bet: '',
+			name: '',
+			selectTournament: '',
+			groupPhoto: null,
+			tournamentData: [],
+			tName: 'Pick a tournament',
+			loading: false,
+		};
+	}
 
-  onCreateGroupPressedAsync = async(data) => {
-    await BaseModel.multipart('groups/create', data)
-    .then((response) => {
-      this.setLoading(false);
-      super.navigateToScreen('Group', {groupId: response._id, isOwner: true});
-    }).catch((error) => {
-      this.setLoading(false);
-      BarMessages.showError(error, this.validationMessage);
-    });
-  };
+	componentDidMount() {
+		this.setLoading(true);
+		this.initialRequest();
+		this.props.navigation.setParams({
+			actionSheet: this.showActionSheet
+		});
+	}
 
-  pictureSelection = async(option) => {
-    let settings = {
-      allowsEditing: true,
-      aspect: [4, 4],
-    };
-    let result;
-    switch (option) {
-      case 0: result = await ImagePicker.launchImageLibraryAsync(settings); break;
-      case 1: result = await ImagePicker.launchCameraAsync(settings); break;
-    }
-    if (result != null && !result.cancelled) {
-      this.setState({groupPhoto: result.uri});
-    }
-  };
+	setLoading(loading) {
+		this.setState({loading: loading});
+	}
 
-  render() {
-    let { groupPhoto } = this.state;
-    let navigation = this.props.navigation;
-    let addPhoto = require('../../../../resources/add_edit_photo.png');
-    let tournamentName = [];
-    let tournamentKeys = [];
+	showActionSheet() {
+		if(isAndroid) {
+			this.ActionSheet.show();
+		} else {
+			this.props.showActionSheetWithOptions(
+			{
+				options: [ 'Open your gallery', 'Take a picture', 'Cancel' ],
+				cancelButtonIndex: 2
+			},
+			buttonIndex => this.optionSelectedPressed(buttonIndex)
+			);
+		}
+	}
 
-    let tournamentItems = this.state.tournamentData.map((s, i) => {
-      tournamentName[i] = s.tournamentName
-      tournamentKeys[i] = s.tournamentId
-      return <Picker.Item style={[MainStyles.formPickerText]} key={i} value={s} label={s.tournamentName} />
-    });
-    tournamentName.push('Cancel');
-    tournamentKeys.push('none');
+	optionSelectedPressed(actionIndex) {
+		this.pictureSelection(actionIndex);
+	}
 
-    return (
-      <View style={{flex: 1}}>
-        <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={MainStyles.background}>
-          <View style={[MainStyles.container]} behavior='padding'>
-            <Spinner visible={this.state.loading} animation='slide'/>
-            <ActionSheet ref={o => this.ActionSheet = o} options={[ 'Open your gallery', 'Take a picture', 'Cancel']} cancelButtonIndex={2} onPress={this.optionSelectedPressed} />
-            <View style={[ViewStyle.formContainer]}>
-              <TouchableOpacity style={[ViewStyle.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
-                { groupPhoto && <Image source={{uri: groupPhoto}} style={ViewStyle.groupImage}/> }
-                {!groupPhoto && <Image style={ViewStyle.groupImage} source={addPhoto}></Image> }
-                <Text style={[MainStyles.centerText, MainStyles.placeholderText]}>
-                  { !groupPhoto ? 'Add photo' : 'Change photo' }
-                </Text>
-              </TouchableOpacity>
+	onCreateGroupPressed() {
+		if (!this.state.groupPhoto) {
+			BarMessages.showError('Please enter a photo for the group.', this.validationMessage);
+			return;
+		}
 
-              <TextInput
-                returnKeyType={'next'}
-                underlineColorAndroid='transparent'
-                style={[MainStyles.formInput, MainStyles.noMargin]}
-                onChangeText={(name) => this.setState({name})}
-                value={this.state.name}
-                placeholder={'Group name'}
-                maxLength={25} />
+		if (!this.state.name) {
+			BarMessages.showError('Please enter a name for the group.', this.validationMessage);
+			return;
+		}
 
-              { isAndroid
-                ?
-                  <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
-                    <Picker style={MainStyles.noMargin} selectedValue={this.state.selectTournament} onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                      <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
-                      {tournamentItems}
-                    </Picker>
-                  </View>
-                :
-                  <TouchableOpacity style={[MainStyles.formPicker, MainStyles.noMargin]} onPress={() => {
-                    ActionSheetIOS.showActionSheetWithOptions({options: tournamentName, cancelButtonIndex: tournamentName.length - 1},
-                    (buttonIndex) => {
-                      if (tournamentKeys[buttonIndex] != 'none') {
-                        this.setState({selectTournament: tournamentKeys[buttonIndex]})
-                      }
-                    })
-                  }}>
-                    <Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.tName}</Text>
-                  </TouchableOpacity>
-              }
+		if (!this.state.selectTournament) {
+			BarMessages.showError('Please select a tournament.', this.validationMessage);
+			return;
+		}
 
-              <TextInput
-                returnKeyType={'next'}
-                underlineColorAndroid='transparent'
-                style={[MainStyles.formInput, MainStyles.noMargin]}
-                onChangeText={(bet) => this.setState({bet})}
-                value={this.state.bet}
-                multiline={true}
-                numberOfLines={3}
-                placeholder={'Bet'}
-                maxLength={50} />
+		if (!this.state.bet) {
+			BarMessages.showError('Please enter a bet.', this.validationMessage);
+			return;
+		}
 
-              <TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this.onCreateGroupPressed}>
-                <Text style={MainStyles.buttonText}>Create a Group</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </KeyboardAwareScrollView>
-        <DropdownAlert ref={ref => this.validationMessage = ref} />
-      </View>
-    );
-  }
+		this.setLoading(true);
+		let formData = new FormData();
+		let data = {
+			name: this.state.name,
+			bet: this.state.bet,
+			tournamentId: this.state.selectTournament.tournamentId,
+			tournamentName: this.state.selectTournament.tournamentName,
+			tournamentStart: this.state.selectTournament.startDate
+		};
+		formData.append('groupInformation', JSON.stringify(data));
+		if (this.state.groupPhoto) {
+			let filename = this.state.groupPhoto;
+			filename = filename.split('/').pop();
+			let match = /\.(\w+)$/.exec(filename);
+			let type = match ? `image/${match[1]}` : `image`;
+			formData.append('groupPhoto', {uri: this.state.groupPhoto, type: type, name: filename});
+		}
 
+		this.onCreateGroupPressedAsync(formData);
+	}
+
+	async initialRequest() {
+		this.setLoading(true);
+		BaseModel.post(`tournaments/findTournaments`).then((tournaments) => {
+			this.setState({tournamentData: tournaments});
+			this.setLoading(false);
+		}).catch((error) => {
+			console.log('ERROR! ', error);
+			this.setLoading(false);
+		});
+	};
+
+	async onCreateGroupPressedAsync(data) {
+		await BaseModel.multipart('groups/create', data)
+		.then((response) => {
+			this.setLoading(false);
+			super.navigateToScreen('Group', {groupId: response._id, isOwner: true});
+		}).catch((error) => {
+			this.setLoading(false);
+			BarMessages.showError(error, this.validationMessage);
+		});
+	};
+
+	async pictureSelection(option) {
+		let settings = {
+			allowsEditing: true,
+			aspect: [4, 4],
+		};
+		let result;
+		switch (option) {
+			case 0: result = await ImagePicker.launchImageLibraryAsync(settings); break;
+			case 1: result = await ImagePicker.launchCameraAsync(settings); break;
+		}
+		if (result != null && !result.cancelled) {
+			this.setState({groupPhoto: result.uri});
+		}
+	};
+
+	render() {
+		let { groupPhoto } = this.state;
+		let navigation = this.props.navigation;
+		let addPhoto = require('../../../../resources/add_edit_photo.png');
+		let tournamentName = [];
+		let tournamentKeys = [];
+
+		let tournamentItems = this.state.tournamentData.map((s, i) => {
+			tournamentName[i] = s.tournamentName
+			tournamentKeys[i] = s.tournamentId
+			return <Picker.Item style={[MainStyles.formPickerText]} key={i} value={s} label={s.tournamentName} />
+		});
+		tournamentName.push('Cancel');
+		tournamentKeys.push('none');
+
+		return (
+			<View style={{flex: 1}}>
+				<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={MainStyles.background}>
+					<View style={[MainStyles.container]} behavior='padding'>
+						<Spinner visible={this.state.loading} animation='slide'/>
+						<ActionSheet ref={o => this.ActionSheet = o} options={[ 'Open your gallery', 'Take a picture', 'Cancel']} cancelButtonIndex={2} onPress={this.optionSelectedPressed} />
+						
+						<View style={[ViewStyle.formContainer]}>
+							<TouchableOpacity style={[ViewStyle.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => { navigation.state.params.actionSheet(); }}>
+								{groupPhoto && <Image source={{uri: groupPhoto}} style={ViewStyle.groupImage}/>}
+								{!groupPhoto && <Image style={ViewStyle.groupImage} source={addPhoto}></Image>}
+								
+								<Text style={[MainStyles.centerText, MainStyles.placeholderText]}>
+									{!groupPhoto ? 'Add photo' : 'Change photo'}
+								</Text>
+							</TouchableOpacity>
+
+							<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={[MainStyles.formInput, MainStyles.noMargin]} onChangeText={(name) => this.setState({name})}
+							value={this.state.name} placeholder={'Group name'} maxLength={25} />
+
+							{isAndroid ?
+								<View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
+									<Picker style={MainStyles.noMargin} selectedValue={this.state.selectTournament} onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
+										<Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
+										{tournamentItems}
+									</Picker>
+								</View>
+							:
+								<TouchableOpacity style={[MainStyles.formPicker, MainStyles.noMargin]} onPress={() => {
+									ActionSheetIOS.showActionSheetWithOptions({options: tournamentName, cancelButtonIndex: tournamentName.length - 1}, buttonIndex => {
+										if (tournamentKeys[buttonIndex] != 'none') {
+											this.setState({selectTournament: tournamentKeys[buttonIndex]})
+										}
+									});
+								}}>
+									<Text style={[MainStyles.formPickerText, MainStyles.noMargin]} numberOfLines={1}>{this.state.tName}</Text>
+								</TouchableOpacity>
+							}
+
+							<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={[MainStyles.formInput, MainStyles.noMargin]} onChangeText={(bet) => this.setState({bet})}
+							value={this.state.bet} multiline={true} numberOfLines={3} placeholder={'Bet'} maxLength={50} />
+
+							<TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this.onCreateGroupPressed}>
+								<Text style={MainStyles.buttonText}>Create a Group</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</KeyboardAwareScrollView>
+				
+				<DropdownAlert ref={ref => this.validationMessage = ref} />
+			</View>
+		);
+	}*/
 }

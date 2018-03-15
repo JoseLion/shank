@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import {Dimensions, Platform, PixelRatio} from 'react-native';
 
@@ -41,7 +39,7 @@ function normalize(size) {
 }
 
 // Then we set our styles with the help of the em() function
-const Style = {
+export default Style = {
 
     // EM FUNCTION
     EM: function(value) {return em(value); },
@@ -142,5 +140,3 @@ const Style = {
     INPUT_INSIDE_BUBBLE: em(3),
     INPUT_MULTILINE_INSIDE_BUBBLE: Platform.OS == 'android' ? em(5) : em(3),
 };
-
-export default Style;

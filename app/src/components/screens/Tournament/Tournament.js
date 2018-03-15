@@ -47,7 +47,7 @@ export default class TournamentsScreen extends Component {
 
     componentDidMount() {
 
-        return fetch('https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey=' + ShankConstants.APIKEYNEWS)
+        /*return fetch('https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey=' + ShankConstants.APIKEYNEWS)
             .then((response) => response.json())
             .then((responseJson) => {
                 let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -62,7 +62,7 @@ export default class TournamentsScreen extends Component {
             })
             .catch((error) => {
                 console.error(error);
-            });
+            });*/
     }
 
 

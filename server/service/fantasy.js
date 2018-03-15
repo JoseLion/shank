@@ -3,44 +3,32 @@ import fetch from 'node-fetch';
 
 export default {
 	updateTournaments: function() {
+		console.log("Fetching tournaments from fantasydata.net...");
+
 		const Tournament = mongoose.model('Tournament');
 		const today = new Date();
 		const options = {
 			method: 'GET',
-			headers: {
-				'Ocp-Apim-Subscription-Key': '519f4de87ff044afb2796f57a6583a4d'
-			}
+			headers: {'Ocp-Apim-Subscription-Key': '519f4de87ff044afb2796f57a6583a4d'}
 		};
 
-		console.log("Fetching tournaments from fantasydata.net...");
-
-		return fetch(`https://api.fantasydata.net/golf/v2/JSON/Tournaments/${today.getFullYear()}`, options).then(response => response.json()).then(json => {
+		return fetch(`https://api.fantasydata.net/golf/v2/JSON/Tournaments/${today.getFullYear()}`, options).then(async response => {
+			let json = await response.json().catch(error => handleError(error));
 			json = normalizeKeys(json);
-			let ids = json .map(tournament => tournament.tournamentID);
 
-			return Promise.all([
-				json,
-				Tournament.find({tournamentID: {$in: ids}})
-			]);
-		}).then(([json, tournaments]) => {
-			let tournamentsById = tournaments
-
-			let promises = json.map(tournament => {
-				let found = tournaments.find((_tournament) => {
-					return _tournament.tournamentID === tournament.tournaments;
-				});
+			json.forEach(async tournament => {
+				let found = await Tournament.findOne({tournamentID: tournament.tournamentID}).catch(error => handleError(error));
 
 				if (found) {
 					found.set(tournament);
-					return found.save();
+					await found.save().catch(error => handleError(error));
 				} else {
-					return Tournament.create(tournament);
+					await Tournament.create(tournament).catch(error => hendleError(error));
 				}
 			});
 
-			return Promise.all(promises);
-		})
-		.catch(error => console.log("Error fetching: ", error));
+			return json;
+		});
 	}
 }
 

@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "babel-preset-stage-3": "^6.24.1",
     "eslint-config-react-native": "^1.6.0",
     "jest-expo": "~20.0.0",
     "react-native-scripts": "1.3.1",

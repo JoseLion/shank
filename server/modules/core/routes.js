@@ -1,10 +1,9 @@
-let express = require('express');
-let router = express.Router();
+import express from 'express';
+import jwt from 'express-jwt';
+import jwtConfig from '../../config/jwt';
 
-let jwt = require('express-jwt');
-let jwtConfig = require('../../config/jwt');
-
-let auth = jwt({
+const router = express.Router();
+const auth = jwt({
 	secret: jwtConfig.TOKEN_SECRET,
 	userProperty: 'payload'
 });
@@ -15,6 +14,7 @@ module.exports = function (model, path) {
 	.post(function (req, res) {
 		let data = req.body;
 		let currentModel = new model(data);
+		
 		currentModel.save(function (err, res_data) {
 			if (err) {
 				res.ok({}, 'data not created.');
@@ -23,6 +23,7 @@ module.exports = function (model, path) {
 			}
 		});
 	})
+
 	.get(auth, function (req, res) {
 		model.find(function (err, data) {
 			if (err) {
@@ -42,6 +43,7 @@ module.exports = function (model, path) {
 			}
 		});
 	})
+
 	.get(function (req, res) {
 		model.findById(req.params, function (err, data) {
 			if (err) {
@@ -51,6 +53,7 @@ module.exports = function (model, path) {
 			}
 		});
 	})
+
 	.delete(auth, function (req, res) {
 		model.remove(req.params, function (err, data) {
 			if (err) {
@@ -62,4 +65,4 @@ module.exports = function (model, path) {
 	});
 
 	return router;
-};
+}
