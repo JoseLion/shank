@@ -9,7 +9,6 @@ const router = express.Router();
 export default function(app) {
 	router.get(`${basePath}/download/:id`, async (request, response) => {
 		let archive = await Archive.findOne({_id: request.params.id}).catch(handleMongoError);
-		console.log("archive: ", archive);
 
 		response.set({
 			'Content-Type': archive.type,

@@ -6,9 +6,12 @@ import { Avatar, List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
-import { BarMessages, BaseComponent, BaseModel, ApiHost, ShankConstants, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
+import { BarMessages, BaseComponent, BaseModel, FileHost, ShankConstants, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
+
+// DELETE
+import Style from '../../../styles/Stylesheet';
 
 export default class MainScreen extends BaseComponent {
 
@@ -42,6 +45,7 @@ export default class MainScreen extends BaseComponent {
 	constructor(props) {
 		super(props);
 		this.getGroups = this.getGroups.bind(this);
+		this.getOwnerStat = this.getOwnerStat.bind(this);
 
 		this.handleRefresh = this.handleRefresh.bind(this);
 		this.removeGroup = this.removeGroup.bind(this);
@@ -63,12 +67,25 @@ export default class MainScreen extends BaseComponent {
 
 	async getGroups() {
 		this.setState({isLoading: true});
-		const groups = await BaseModel.get('group/findMyGroups').catch(error => this.validationMessage = error);
+		const groups = await BaseModel.get('group/findMyGroups').catch(error => this.toasterMsg = error);
 		this.setState({isLoading: false, groups: groups});
 	}
 
+	getOwnerStat(group, key) {
+		let stat;
+
+		group.tournaments[0].leaderboard.forEach(cross => {
+			if (cross.user == group.owner) {
+				stat = cross[key];
+				return;
+			}
+		});
+
+		return stat;
+	}
+
 	async componentDidMount() {
-		const authToken = await AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).catch(error => this.validationMessage = error);
+		const authToken = await AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).catch(error => this.toasterMsg = error);
 		this.setState({auth: authToken});
 		this.props.navigation.addListener('didFocus', payload => this.getGroups());
 
@@ -125,7 +142,7 @@ export default class MainScreen extends BaseComponent {
 				this.getGroupList();
 			}).catch(error => {
 				this.setLoading(false);
-				BarMessages.showError(error, this.validationMessage);
+				BarMessages.showError(error, this.toasterMsg);
 			});
 		});
 	}
@@ -169,7 +186,7 @@ export default class MainScreen extends BaseComponent {
 				}
 			} else {
 				console.log('ERROR: ', error);
-				BarMessages.showError(error, this.validationMessage);
+				BarMessages.showError(error, this.toasterMsg);
 			}
 		});
 	}
@@ -190,7 +207,7 @@ export default class MainScreen extends BaseComponent {
 		}).catch(error => {
 			this.setLoading(false);
 			console.log('ERROR! ', error);
-			BarMessages.showError(error, this.validationMessage);
+			BarMessages.showError(error, this.toasterMsg);
 		});
 	}
 
@@ -198,28 +215,51 @@ export default class MainScreen extends BaseComponent {
 		if (this.state.groups.length > 0) {
 			return (
 				<View style={{flex: 1, width: '100%', height: '100%'}}>
+					<Spinner visible={this.state.isLoading} animation='fade' />
+
 					<FlatList data={this.state.groups} keyExtractor={item => item._id} renderItem={({item}) => (
-						<TouchableHighlight style={{width: '100%'}}>
-							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '5%'}}>
-								<Image source={{uri: ApiHost + 'archive/download/' + item.photo}} resizeMode={'contain'} style={{flex: 2, height: '100%'}} />
-
-								<View style={{flex: 5, flexDirection: 'column', justifyContent: 'space-between', height: '50%', paddingHorizontal: '2%'}}>
-									<Text style={{flex: 1, fontFamily: 'century-gothic'}}>{item.name}</Text>
-									<Text style={{flex: 1, fontFamily: 'century-gothic-bold'}}>{item.tournaments[0].name}</Text>
-									<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-										<Text style={{flex: 1, fontFamily: 'century-gothic-bold'}}>Score 0</Text>
-										<Text style={{flex: 1, fontFamily: 'century-gothic-bold'}}>Rank 1/5</Text>
+						<TouchableHighlight style={{width: '100%'}} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => {}}>
+							<View style={{width: '100%', paddingHorizontal: '5%'}}>
+								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', borderBottomWidth: 1, borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT, paddingVertical: '5%'}}>
+									<View style={{flex: 2}}>
+										<Image source={{uri: FileHost + item.photo}} resizeMode={'contain'} style={{width: Style.EM(4), height: Style.EM(4), borderRadius: Style.EM(4) / 2.0}} />
 									</View>
-								</View>
 
-								<Image source={require('../../../../resources/right-caret-icon.png')} resizeMode={'contain'} style={{flex: 1, height: '25%'}} />
+									<View style={{flex: 5, flexDirection: 'column', justifyContent: 'center', paddingHorizontal: '2%', height: '100%'}}>
+										<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_17, color: ShankConstants.SHANK_GREEN, letterSpacing: Style.EM(0.25)}}>{item.name.toUpperCase()}</Text>
+										<Text style={{fontFamily: 'century-gothic-bold', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT}}>{item.tournaments[0].tournament.name}</Text>
+										<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>
+											<View style={{flex: 1, flexDirection: 'row', alignItems: 'baseline'}}>
+												<Text style={{fontFamily: 'century-gothic-bold', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT, marginRight: '3%'}}>Score:</Text>
+												<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT}}>{this.getOwnerStat(item, 'score')}</Text>
+											</View>
+
+											<View style={{flex: 1, flexDirection: 'row', alignItems: 'baseline'}}>
+												<Text style={{fontFamily: 'century-gothic-bold', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT, marginRight: '3%'}}>Rank:</Text>
+												<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT}}>{this.getOwnerStat(item, 'rank')}/5</Text>
+											</View>
+										</View>
+									</View>
+
+									<Image source={require('../../../../resources/right-caret-icon.png')} resizeMode={'contain'} style={{flex: 1, height: '25%'}} />
+								</View>
 							</View>
 						</TouchableHighlight>
 					)} />
+
+					<DropdownAlert ref={ref => this.toasterMsg = ref} />
 				</View>
 			);
 		} else {
-			return null;
+			return (
+				<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
+					<Spinner visible={this.state.isLoading} animation='fade' />
+					
+					<Text style={{fontFamily: 'century-gothic-bold', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT, textAlign: 'center'}}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
+
+					<DropdownAlert ref={ref => this.toasterMsg = ref} />
+				</View>
+			);
 		}
 
 
@@ -268,7 +308,7 @@ export default class MainScreen extends BaseComponent {
 						</List>
 					</View>
 
-					<DropdownAlert ref={ref => this.validationMessage = ref} />
+					<DropdownAlert ref={ref => this.toasterMsg = ref} />
 				</View>
 			);
 		} else {
@@ -278,7 +318,7 @@ export default class MainScreen extends BaseComponent {
 					
 					<Text style={[MainStyles.withoutGroups]}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
 
-					<DropdownAlert ref={ref => this.validationMessage = ref} />
+					<DropdownAlert ref={ref => this.toasterMsg = ref} />
 				</View>
 			);
 		}*/

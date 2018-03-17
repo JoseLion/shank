@@ -73,9 +73,9 @@ export const AppNavigator = StackNavigator({
 	}
 });
 
-const AppWithNavigationStateCopy = ({dispatch, nav, auth}) => (
+/*const AppWithNavigationStateCopy = ({dispatch, nav, auth}) => (
 	<AppNavigator navigation={addNavigationHelpers({dispatch, state: nav, authState: auth})}/>
-);
+);*/
 
 const mapStateToProps = state => ({
 	nav: state.nav,
@@ -83,12 +83,10 @@ const mapStateToProps = state => ({
 });
 
 export class AppWithNavigationState extends Component {
-	// TODO: Set the back button press action ###
 	render() {
 		const { dispatch, nav } = this.props;
 		
 		return (
-			//<AppNavigator navigation={addNavigationHelpers({dispatch, state: nav})} />
 			<AppNavigator />
 		);
 	}

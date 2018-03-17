@@ -10,7 +10,8 @@ const GroupSchema = new mongoose.Schema({
 		tournament: {type: mongoose.Schema.Types.ObjectId, ref: 'Tournament'},
 		leaderboard: [{
 			user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-			points: Number
+			score: {type: Number, default: 0},
+			rank: {type: Number, default: 0}
 		}]
 	}]
 }, {
@@ -22,12 +23,9 @@ const GroupSchema = new mongoose.Schema({
 });
 
 GroupSchema.pre('save', function(next) {
-	if (this.status == null) {
-		this.status = true;
-	}
-
 	this.name = this.name.trim();
 	this.bet = this.bet.trim();
+
 	next();
 });
 

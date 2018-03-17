@@ -12,7 +12,7 @@ const router = express.Router();
 
 export default function(app) {
 	router.get(`${basePath}/findMyGroups`, auth, async (request, response) => {
-		const groups = await Group.find({status: true, owner: request.payload._id}).catch(handleMongoError);
+		const groups = await Group.find({status: true, owner: request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
 		response.ok(groups);
 	});
 
@@ -26,8 +26,9 @@ export default function(app) {
 			data: request.file.buffer
 		}).catch(handleMongoError);
 
-		group.owner = owner._id;
-		group.photo = archive._id;
+		group.owner = owner;
+		group.tournaments[0].leaderboard = [{user: owner}];
+		group.photo = archive;
 		group = await Group.create(group).catch(handleMongoError);
 		
 		if (!group) {

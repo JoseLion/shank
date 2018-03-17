@@ -23,6 +23,4 @@ let TournamentSchema = new mongoose.Schema({
 	}
 });
 
-
-
 mongoose.model('Tournament', TournamentSchema);

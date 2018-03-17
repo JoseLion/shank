@@ -9,7 +9,7 @@ import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';
 
 import NoAuthModel from '../../core/NoAuthModel';
 import BaseModel from '../../core/BaseModel';
-import { ApiHost } from '../../config/variables';
+import { FileHost } from '../../config/variables';
 import GolfApiModel from '../../core/GolfApiModel';
 import MainStyles from '../../styles/MainStyles';
 import * as ShankConstants from '../../core/ShankConstants';
@@ -75,7 +75,7 @@ export {
     BarMessages,
     BaseComponent,
     BaseModel,
-    ApiHost,
+    FileHost,
     ShankConstants,
     GolfApiModel,
     isAndroid,
