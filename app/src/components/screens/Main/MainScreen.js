@@ -10,9 +10,6 @@ import { BarMessages, BaseComponent, BaseModel, FileHost, ShankConstants, Dropdo
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
 
-// DELETE
-import Style from '../../../styles/Stylesheet';
-
 export default class MainScreen extends BaseComponent {
 
 	static navigationOptions = ({navigation}) => {
@@ -148,7 +145,7 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	setLoading(loading) {
-		this.setState({loading: loading});
+		this.setState({isLoading: loading});
 	}
 
 	removeGroup(item) {
@@ -214,34 +211,34 @@ export default class MainScreen extends BaseComponent {
 	render() {
 		if (this.state.groups.length > 0) {
 			return (
-				<View style={{flex: 1, width: '100%', height: '100%'}}>
+				<View style={ViewStyle.mainContainer}>
 					<Spinner visible={this.state.isLoading} animation='fade' />
 
 					<FlatList data={this.state.groups} keyExtractor={item => item._id} renderItem={({item}) => (
-						<TouchableHighlight style={{width: '100%'}} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => {}}>
-							<View style={{width: '100%', paddingHorizontal: '5%'}}>
-								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', borderBottomWidth: 1, borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT, paddingVertical: '5%'}}>
+						<TouchableHighlight style={ViewStyle.rowButton} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => {}}>
+							<View style={ViewStyle.rowContainer}>
+								<View style={ViewStyle.rowSubView}>
 									<View style={{flex: 2}}>
-										<Image source={{uri: FileHost + item.photo}} resizeMode={'contain'} style={{width: Style.EM(4), height: Style.EM(4), borderRadius: Style.EM(4) / 2.0}} />
+										<Image source={{uri: FileHost + item.photo}} resizeMode={'contain'} style={ViewStyle.groupImage} />
 									</View>
 
-									<View style={{flex: 5, flexDirection: 'column', justifyContent: 'center', paddingHorizontal: '2%', height: '100%'}}>
-										<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_17, color: ShankConstants.SHANK_GREEN, letterSpacing: Style.EM(0.25)}}>{item.name.toUpperCase()}</Text>
-										<Text style={{fontFamily: 'century-gothic-bold', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT}}>{item.tournaments[0].tournament.name}</Text>
-										<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>
-											<View style={{flex: 1, flexDirection: 'row', alignItems: 'baseline'}}>
-												<Text style={{fontFamily: 'century-gothic-bold', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT, marginRight: '3%'}}>Score:</Text>
-												<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT}}>{this.getOwnerStat(item, 'score')}</Text>
+									<View style={ViewStyle.grupInfoView}>
+										<Text style={ViewStyle.groupName}>{item.name.toUpperCase()}</Text>
+										<Text style={ViewStyle.groupTournament}>{item.tournaments[0].tournament.name}</Text>
+										<View style={ViewStyle.groupStatsView}>
+											<View style={ViewStyle.groupStatsSubView}>
+												<Text style={ViewStyle.groupStatsLabel}>Score:</Text>
+												<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'score')}</Text>
 											</View>
 
-											<View style={{flex: 1, flexDirection: 'row', alignItems: 'baseline'}}>
-												<Text style={{fontFamily: 'century-gothic-bold', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT, marginRight: '3%'}}>Rank:</Text>
-												<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT}}>{this.getOwnerStat(item, 'rank')}/5</Text>
+											<View style={ViewStyle.groupStatsSubView}>
+												<Text style={ViewStyle.groupStatsLabel}>Rank:</Text>
+												<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'rank')}/5</Text>
 											</View>
 										</View>
 									</View>
 
-									<Image source={require('../../../../resources/right-caret-icon.png')} resizeMode={'contain'} style={{flex: 1, height: '25%'}} />
+									<Image source={require('../../../../resources/right-caret-icon.png')} resizeMode={'contain'} style={ViewStyle.caretIcon} />
 								</View>
 							</View>
 						</TouchableHighlight>
@@ -252,75 +249,14 @@ export default class MainScreen extends BaseComponent {
 			);
 		} else {
 			return (
-				<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
+				<View style={ViewStyle.noDataContainer}>
 					<Spinner visible={this.state.isLoading} animation='fade' />
 					
-					<Text style={{fontFamily: 'century-gothic-bold', fontSize: Style.FONT_16, color: ShankConstants.TERTIARY_COLOR_ALT, textAlign: 'center'}}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
+					<Text style={ViewStyle.noDataText}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
 
 					<DropdownAlert ref={ref => this.toasterMsg = ref} />
 				</View>
 			);
 		}
-
-
-		/*let addPhoto = require('../../../../resources/add_edit_photo.png');
-
-		if (this.state.auth && this.state.data.length > 0) {
-			return (
-				<View style={[MainStyles.container]}>
-					<Spinner visible={this.state.isLoading} animation='fade'/>
-					
-					<View style={[MainStyles.viewFlexItems]}>
-						<List containerStyle={[MainStyles.noBorder, {height:'100%'}]}>
-							<FlatList data={this.state.groups} renderItem={({item}) => (
-								<Swipeable rightButtons={[(
-									<TouchableHighlight style={[MainStyles.button, MainStyles.error, ViewStyle.trashButton]} onPress={() => this.removeGroup(item)}>
-										<FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
-									</TouchableHighlight>
-								)]}>
-
-									<TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => super.navigateToScreen('Group', {groupId: item._id, isOwner: item.isOwner})}>
-										<View style={[MainStyles.viewFlexItemsR]}>
-											<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
-												{item.photo != null ?
-													<Avatar medium rounded source={{uri: item.photo.path}} />
-												:
-													<Avatar medium rounded source={addPhoto} />
-												}
-											</View>
-
-											<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex:3}]}>
-												<Text numberOfLines={1} style={[ViewStyle.titleText]}>{item.name}</Text>
-												<Text numberOfLines={1} style={[MainStyles.shankGreen, ViewStyle.subtitleText]}>{item.myTournament}</Text>
-												<Text numberOfLines={1} style={[MainStyles.shankGreen, ViewStyle.subtitleText]}>
-													{`Score: ${item.myScore}     Rank: ${item.myRanking}/${item.users.length}`}
-												</Text>
-											</View>
-
-											<View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd]}>
-												<FontAwesome name='chevron-right' size={29} color={ShankConstants.TERTIARY_COLOR_ALT}/>
-											</View>
-
-										</View>
-									</TouchableHighlight>
-								</Swipeable>
-							)} keyExtractor={item => item._id} onRefresh={this.handleRefresh} refreshing={this.state.refreshing} onEndReachedThreshold={1} />
-						</List>
-					</View>
-
-					<DropdownAlert ref={ref => this.toasterMsg = ref} />
-				</View>
-			);
-		} else {
-			return (
-				<View style={[MainStyles.mainContainer, ViewStyle.noneButtonView]}>
-					<Spinner visible={this.state.loading} animation='fade' />
-					
-					<Text style={[MainStyles.withoutGroups]}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
-
-					<DropdownAlert ref={ref => this.toasterMsg = ref} />
-				</View>
-			);
-		}*/
 	}
 }

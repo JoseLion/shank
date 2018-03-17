@@ -19,93 +19,87 @@ export default StyleSheet.create({
 		width: Style.EM(1.5),
 		height: Style.EM(1.5)
 	},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	headerButton: {
-		paddingLeft: Style.EM(0.5),
-		paddingRight: Style.EM(0.5)
-	},
-	titleText: {
-		color: ShankConstants.PRIMARY_COLOR,
-		fontSize: Style.EM(1),
-		fontWeight: '700'
-	},
-	subtitleText: {
-		color: ShankConstants.TERTIARY_COLOR_ALT,
-		fontSize: Style.EM(0.75),
-		fontWeight: '700'
-	},
-	trashButton: {
-		width: 75,
-		paddingLeft: 0,
-		paddingRight: 0
-	},
-	noneButtonView: {
-		flex: 2,
-		alignItems: 'center',
-		flexDirection: 'column',
-		justifyContent: 'center'
-	},
-	containerMain: {
-		backgroundColor: '#fff',
-		flex: 1
-	},
-	avatarList: {
-		width: Style.MD,
-		height: Style.MD,
-		borderRadius: Style.MD / 2
-	},
-	roundAvatar: {
-		width: Style.iconSM,
-		height: Style.iconSM,
-		borderRadius: Style.iconSM / 2,
-	},
-	touchableUserIcon: {
-		alignItems: 'center',
-		height: '100%',
-		padding: Style.ICON_PADDING,
-	},
-	containerRoundAvatar: {
-		height: Style.iconSM,
-		width: Style.iconSM,
-		borderRadius: Style.iconSM / 2,
-		marginVertical: '10%'
-	},
-	overlayRoundAvatar: {
-		backgroundColor: 'transparent',
-	},
-	containerList: {
-		height: Style.INPUT_INSIDE_BUBBLE,
-	},
-	titleMainList: {
-		fontSize: Style.FONT_XLARGE,
-		color: "#556E3E",
-	},
-	subTitleMainList: {
-		fontSize: Style.FONT_MEDIUM,
-		color: "#BFBFBF",
-		marginLeft: '2.5%'
-	},
-	buttonStart: {
+	mainContainer: {
+		flex: 1,
 		width: '100%',
-		paddingBottom: 12,
-		paddingTop: 12,
-		borderWidth: 2,
-		borderColor: '#c2c2c2',
-		borderRadius: 10,
-		alignItems: 'center',
+		height: '100%'
 	},
+	rowButton: {
+		width: '100%'
+	},
+	rowContainer: {
+		width: '100%',
+		paddingHorizontal: '5%'
+	},
+	rowSubView: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		width: '100%',
+		borderBottomWidth: 1,
+		borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT,
+		paddingVertical: '5%'
+	},
+	groupImage: {
+		width: Style.EM(4),
+		height: Style.EM(4),
+		borderRadius: Style.EM(4) / 2.0
+	},
+	grupInfoView: {
+		flex: 5,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		paddingHorizontal: '2%',
+		height: '100%'
+	},
+	groupName: {
+		fontFamily: 'century-gothic',
+		fontSize: Style.FONT_17,
+		color: ShankConstants.SHANK_GREEN,
+		letterSpacing: Style.EM(0.25)
+	},
+	groupTournament: {
+		fontFamily: 'century-gothic-bold',
+		fontSize: Style.FONT_16,
+		color: ShankConstants.TERTIARY_COLOR_ALT
+	},
+	groupStatsView: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'baseline'
+	},
+	groupStatsSubView: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'baseline'
+	},
+	groupStatsLabel: {
+		fontFamily: 'century-gothic-bold',
+		fontSize: Style.FONT_16,
+		color: ShankConstants.TERTIARY_COLOR_ALT,
+		marginRight: '3%'
+	},
+	groupStatsValue: {
+		fontFamily: 'century-gothic',
+		fontSize: Style.FONT_16,
+		color: ShankConstants.TERTIARY_COLOR_ALT
+	},
+	caretIcon: {
+		flex: 1,
+		height: '25%'
+	},
+	noDataContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '100%',
+		height: '100%'
+	},
+	noDataText: {
+		fontFamily: 'century-gothic-bold',
+		fontSize: Style.FONT_16,
+		color: ShankConstants.TERTIARY_COLOR_ALT,
+		textAlign: 'center'
+	}
 });
