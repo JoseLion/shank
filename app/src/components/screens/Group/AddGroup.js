@@ -7,10 +7,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DropdownAlert from 'react-native-dropdownalert';
 import { ImagePicker } from 'expo';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
-import LoadingIndicator from '../../common/LoadingIndicator';
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
+import { ApiHost } from '../../../config/variables';
 import ViewStyle from './styles/addGroupStyle'
 
 @connectActionSheet
@@ -25,6 +25,7 @@ export default class AddGroup extends BaseComponent {
 		this.openTournamentsSheet = this.openTournamentsSheet.bind(this);
 		this.openImageSheet = this.openImageSheet.bind(this);
 		this.selectPicture = this.selectPicture.bind(this);
+		this.getPhotoSource = this.getPhotoSource.bind(this);
 		this.createGroup = this.createGroup.bind(this);
 		this.state = {
 			isLoading: false,
@@ -73,12 +74,35 @@ export default class AddGroup extends BaseComponent {
 		}
 
 		if (result != null && !result.cancelled) {
-			this.updateGroup('photoUrl', result.uri);
+			this.setState({photoUri: result.uri});
 		}
 	}
 
-	createGroup() {
-		console.log("this.state.group: ", this.state.group);
+	getPhotoSource() {
+		if (this.state.group.photo) {
+			return {uri: ApiHost + 'archive/download/' + this.state.group.photo};
+		} else {
+			if (this.state.photoUri) {
+				return {uri: this.state.photoUri};
+			} else {
+				return require('../../../../resources/add_edit_photo.png');
+			}
+		}
+	}
+
+	async createGroup() {
+		let formData = new FormData();
+		let filename = this.state.photoUri.split('/').pop();
+		let match = /\.(\w+)$/.exec(filename);
+		let type = match ? `image/${match[1]}` : 'image';
+
+		formData.append('group', JSON.stringify(this.state.group));
+		formData.append('file', {uri: this.state.photoUri, type: type, name: filename});
+
+		this.setState({isLoading: true});
+		let group = await BaseModel.multipart('group/create', formData).catch(error => this.validationMessage = error);
+		this.setState({isLoading: false});
+		this.props.navigation.goBack(null);
 	}
 
 	componentDidMount() {
@@ -94,18 +118,14 @@ export default class AddGroup extends BaseComponent {
 			});
 		}
 
-		if (this.state.isLoading) {
-			return (<LoadingIndicator />);
-		}
-
 		return (
 			<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' contentContainerStyle={{flex: 1, alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
-				<Spinner visible={this.state.isLoading} animation='slide'/>
+				<Spinner visible={this.state.isLoading} animation='fade'/>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.selectPicture} />
 
 				<TouchableOpacity style={ViewStyle.imageButton} onPress={this.openImageSheet}>
-					<Image source={this.state.group.photoUrl ? {uri: this.state.group.photoUrl} : require('../../../../resources/add_edit_photo.png')} resizeMode={'contain'} style={ViewStyle.image}></Image>
-					<Text style={ViewStyle.imageText}>{this.state.group.photoUrl ? 'Change photo' : 'Add photo'}</Text>
+					<Image source={this.getPhotoSource()} resizeMode={'contain'} style={ViewStyle.image}></Image>
+					<Text style={ViewStyle.imageText}>{this.state.group.photo || this.state.photoUri ? 'Change photo' : 'Add photo'}</Text>
 				</TouchableOpacity>
 
 				<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={ViewStyle.nameInput} onChangeText={name => this.updateGroup('name', name)} value={this.state.group.name} placeholder={'Group name'} />
@@ -123,11 +143,13 @@ export default class AddGroup extends BaseComponent {
 					</TouchableOpacity>
 				}
 
-				<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={ViewStyle.betInput} onChangeText={bet => this.updateGroup('bet', bet)} value={this.state.group.bet} placeholder={'Bet'} multiline={true} numberOfLines={3} />
+				<TextInput underlineColorAndroid='transparent' style={ViewStyle.betInput} onChangeText={bet => this.updateGroup('bet', bet)} value={this.state.group.bet} placeholder={'Bet'} multiline={true} numberOfLines={3} />
 
 				<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={this.createGroup}>
 					<Text style={[MainStyles.buttonText]}>Create Group</Text>
 				</TouchableHighlight>
+
+				<DropdownAlert ref={ref => this.validationMessage = ref} />
 			</KeyboardAwareScrollView>
 		);
 	}

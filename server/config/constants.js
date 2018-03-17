@@ -6,7 +6,7 @@ const HOST = `http://${END_POINT}:3000/`;
 const DOC_HOST = `http://docs.${END_POINT}/`;
 
 export default {
-	filesPath: './public/storage',
+	uploadsPath: 'public/uploads',
 	photoPath: '/development/shank/', //SHOULD BE DELETED
 	docHost: DOC_HOST,
 	user: {

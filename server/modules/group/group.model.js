@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
-let GroupSchema = new mongoose.Schema({
+const GroupSchema = new mongoose.Schema({
 	status: {type: Boolean, default: true},
 	owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
 	name: String,
 	bet: String,
-	photoUrl: String,
+	photo: {type: mongoose.Schema.Types.ObjectId, ref: 'Archive'},
 	tournaments: [{
 		tournament: {type: mongoose.Schema.Types.ObjectId, ref: 'Tournament'},
 		leaderboard: [{
@@ -21,7 +21,11 @@ let GroupSchema = new mongoose.Schema({
 	}
 });
 
-GroupSchema.pre('save', next => {
+GroupSchema.pre('save', function(next) {
+	if (this.status == null) {
+		this.status = true;
+	}
+
 	this.name = this.name.trim();
 	this.bet = this.bet.trim();
 	next();

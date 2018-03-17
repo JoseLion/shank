@@ -53,18 +53,7 @@ class RowComponent extends React.Component {
 export default class Settings extends Component {
 
     static propTypes = { navigation: PropTypes.object.isRequired };
-    static navigationOptions = ({navigation}) => ({
-        title: 'SETTINGS',
-        headerTintColor: ShankConstants.TERTIARY_COLOR,
-        headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-        headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
-        headerLeft: (
-            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
-                <FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
-            </TouchableHighlight>
-        ),
-        headerRight: (<View></View>)
-    });
+    static navigationOptions = ({navigation}) => ({title: 'SETTINGS'});
 
     constructor(props) {
         super(props);

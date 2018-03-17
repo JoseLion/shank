@@ -88,7 +88,8 @@ export class AppWithNavigationState extends Component {
 		const { dispatch, nav } = this.props;
 		
 		return (
-			<AppNavigator navigation={addNavigationHelpers({dispatch, state: nav})} />
+			//<AppNavigator navigation={addNavigationHelpers({dispatch, state: nav})} />
+			<AppNavigator />
 		);
 	}
 }

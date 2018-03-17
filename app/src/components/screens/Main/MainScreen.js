@@ -6,7 +6,7 @@ import { Avatar, List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
-import { BarMessages, BaseComponent, BaseModel, ShankConstants, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
+import { BarMessages, BaseComponent, BaseModel, ApiHost, ShankConstants, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
 
@@ -15,9 +15,9 @@ export default class MainScreen extends BaseComponent {
 	static navigationOptions = ({navigation}) => {
 		let goToScreen = async (screen) => {
 			if (await AsyncStorage.getItem(ShankConstants.AUTH_TOKEN)) {
-				navigation.dispatch({type: screen});
+				navigation.navigate(screen);
 			} else {
-				navigation.dispatch({type: 'Login'});
+				navigation.navigate('Login');
 			}
 		}
 
@@ -41,13 +41,17 @@ export default class MainScreen extends BaseComponent {
 
 	constructor(props) {
 		super(props);
+		this.getGroups = this.getGroups.bind(this);
+
 		this.handleRefresh = this.handleRefresh.bind(this);
-		this.tapCenterButton = this.tapCenterButton.bind(this);
 		this.removeGroup = this.removeGroup.bind(this);
 		this.onListGroupAsync = this.onListGroupAsync.bind(this);
 		this.getGroupList = this.getGroupList.bind(this);
 		this.state = {
-			loading: false,
+			isLoading: false,
+			groups: [],
+
+
 			data: [],
 			page: 1,
 			seed: 1,
@@ -57,33 +61,42 @@ export default class MainScreen extends BaseComponent {
 		};
 	}
 
-	componentDidMount() {
-		this.props.navigation.setParams({tapCenterButton: this.tapCenterButton});
-
-		AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).then(authToken => {
-			this.setState({auth: authToken});
-			//this.getGroupList();
-
-			if (authToken) {
-				Linking.addEventListener('url', this.handleOpenURL);
-				Linking.getInitialURL().then((url) => {
-					if (url) {
-						let queryString = url.replace(Constants.linkingUri, '');
-						
-						if (queryString) {
-							let data = qs.parse(queryString);
-							
-							if (data.group) {
-								this.addToGroup(data);
-							}
-						}
-					}
-				}).catch(err => console.error('An error occurred', err));
-			}
-		});
+	async getGroups() {
+		this.setState({isLoading: true});
+		const groups = await BaseModel.get('group/findMyGroups').catch(error => this.validationMessage = error);
+		this.setState({isLoading: false, groups: groups});
 	}
 
-	componentWillUnmount() {tapCenterButton
+	async componentDidMount() {
+		const authToken = await AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).catch(error => this.validationMessage = error);
+		this.setState({auth: authToken});
+		this.props.navigation.addListener('didFocus', payload => this.getGroups());
+
+		if (authToken) {
+			Linking.addEventListener('url', this.handleOpenURL);
+			Linking.getInitialURL().then((url) => {
+				if (url) {
+					let queryString = url.replace(Constants.linkingUri, '');
+					
+					if (queryString) {
+						let data = qs.parse(queryString);
+						
+						if (data.group) {
+							this.addToGroup(data);
+						}
+					}
+				}
+			}).catch(err => console.error('An error occurred', err));
+		}
+	}
+
+
+
+
+
+
+
+	componentWillUnmount() {
 		Linking.removeEventListener('url', e => {});
 	}
 
@@ -119,14 +132,6 @@ export default class MainScreen extends BaseComponent {
 
 	setLoading(loading) {
 		this.setState({loading: loading});
-	};
-
-	tapCenterButton(onLogin) {
-		if (this.state.auth) {
-			super.navigateToScreen(onLogin);
-		} else {
-			super.navigateToScreen('Login');
-		}
 	}
 
 	removeGroup(item) {
@@ -190,16 +195,44 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	render() {
-		let addPhoto = require('../../../../resources/add_edit_photo.png');
+		if (this.state.groups.length > 0) {
+			return (
+				<View style={{flex: 1, width: '100%', height: '100%'}}>
+					<FlatList data={this.state.groups} keyExtractor={item => item._id} renderItem={({item}) => (
+						<TouchableHighlight style={{width: '100%'}}>
+							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '5%'}}>
+								<Image source={{uri: ApiHost + 'archive/download/' + item.photo}} resizeMode={'contain'} style={{flex: 2, height: '100%'}} />
+
+								<View style={{flex: 5, flexDirection: 'column', justifyContent: 'space-between', height: '50%', paddingHorizontal: '2%'}}>
+									<Text style={{flex: 1, fontFamily: 'century-gothic'}}>{item.name}</Text>
+									<Text style={{flex: 1, fontFamily: 'century-gothic-bold'}}>{item.tournaments[0].name}</Text>
+									<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+										<Text style={{flex: 1, fontFamily: 'century-gothic-bold'}}>Score 0</Text>
+										<Text style={{flex: 1, fontFamily: 'century-gothic-bold'}}>Rank 1/5</Text>
+									</View>
+								</View>
+
+								<Image source={require('../../../../resources/right-caret-icon.png')} resizeMode={'contain'} style={{flex: 1, height: '25%'}} />
+							</View>
+						</TouchableHighlight>
+					)} />
+				</View>
+			);
+		} else {
+			return null;
+		}
+
+
+		/*let addPhoto = require('../../../../resources/add_edit_photo.png');
 
 		if (this.state.auth && this.state.data.length > 0) {
 			return (
 				<View style={[MainStyles.container]}>
-					<Spinner visible={this.state.loading} animation='fade'/>
+					<Spinner visible={this.state.isLoading} animation='fade'/>
 					
 					<View style={[MainStyles.viewFlexItems]}>
 						<List containerStyle={[MainStyles.noBorder, {height:'100%'}]}>
-							<FlatList data={this.state.data} renderItem={({item}) => (
+							<FlatList data={this.state.groups} renderItem={({item}) => (
 								<Swipeable rightButtons={[(
 									<TouchableHighlight style={[MainStyles.button, MainStyles.error, ViewStyle.trashButton]} onPress={() => this.removeGroup(item)}>
 										<FontAwesome name='trash-o' style={MainStyles.headerIconButton} />
@@ -243,12 +276,11 @@ export default class MainScreen extends BaseComponent {
 				<View style={[MainStyles.mainContainer, ViewStyle.noneButtonView]}>
 					<Spinner visible={this.state.loading} animation='fade' />
 					
-					<TouchableOpacity onPress={() => {this.tapCenterButton('AddGroup')}}>
-						<Text style={[MainStyles.withoutGroups]}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
-					</TouchableOpacity>
+					<Text style={[MainStyles.withoutGroups]}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
+
 					<DropdownAlert ref={ref => this.validationMessage = ref} />
 				</View>
 			);
-		}
+		}*/
 	}
 }
