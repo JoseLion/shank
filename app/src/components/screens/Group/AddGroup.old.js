@@ -9,7 +9,7 @@ import { ImagePicker } from 'expo';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, Entypo, isAndroid } from '../BaseComponent';
 import ViewStyle from './styles/addGroupStyle'
 
 @connectActionSheet
@@ -186,7 +186,7 @@ export default class AddGroup extends BaseComponent {
                 ?
                   <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
                     <Picker style={MainStyles.noMargin} selectedValue={this.state.selectTournament} onValueChange={(tValue, itemIndex) => this.setState({selectTournament: tValue})}>
-                      <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
+                      <Picker.Item style={[MainStyles.formPickerText]} color={AppConst.COLOR_GRAY} value='' label='Pick a tournament' />
                       {tournamentItems}
                     </Picker>
                   </View>

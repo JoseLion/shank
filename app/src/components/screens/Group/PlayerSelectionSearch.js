@@ -7,7 +7,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/playerSelectionSearchStyle';
 
 class PlayerRow extends BaseComponent {
@@ -32,7 +32,7 @@ class PlayerRow extends BaseComponent {
 
   render() {
     return (
-      <TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected()}>
+      <TouchableHighlight style={[MainStyles.listItem]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.playerSelected()}>
         <View style={[MainStyles.viewFlexItemsR]}>
           <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
             <Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
@@ -104,10 +104,10 @@ export default class PlayerSelectionSearch extends BaseComponent {
 
   render() {
     return (
-      <View style={{flex:1, width:'100%', backgroundColor: ShankConstants.BACKGROUND_COLOR}} >
+      <View style={{flex:1, width:'100%'}} >
         <Spinner visible={this.state.loading} animation='fade' />
         <KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={MainStyles.background}>
-          <View style={[MainStyles.viewFlexItemsR, { backgroundColor: ShankConstants.PRIMARY_COLOR }]}>
+          <View style={[MainStyles.viewFlexItemsR, { backgroundColor: AppConst.COLOR_BLUE }]}>
             <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart, {flex: 4}]}>
               <TextInput
                 underlineColorAndroid='transparent'

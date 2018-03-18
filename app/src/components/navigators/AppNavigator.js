@@ -5,7 +5,7 @@ import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions }
 import { Entypo, FontAwesome } from '@expo/vector-icons';
 import { BackHandler, TouchableOpacity, Image, Text } from 'react-native';
 
-import * as ShankConstants from '../../core/ShankConstants';
+import * as AppConst from '../../core/AppConst';
 
 import Splash from '../screens/Splash/Splash';
 import Slider from '../screens/Splash/Slider';
@@ -29,19 +29,19 @@ export const TabNav = TabNavigator({
 	tabBarPosition: 'bottom',
 	swipeEnabled: false,
 	tabBarOptions: {
-		activeTintColor: ShankConstants.TERTIARY_COLOR,
-		activeBackgroundColor: ShankConstants.PRIMARY_COLOR,
-		inactiveTintColor: ShankConstants.PRIMARY_COLOR,
-		inactiveBackgroundColor: ShankConstants.TERTIARY_COLOR_ALT,
+		activeTintColor: AppConst.COLOR_WHITE,
+		activeBackgroundColor: AppConst.COLOR_BLUE,
+		inactiveTintColor: AppConst.COLOR_BLUE,
+		inactiveBackgroundColor: AppConst.COLOR_GRAY,
 		showIcon: true,
 		showLabel: true,
 		upperCaseLabel: false,
 		indicatorStyle: {
-			backgroundColor: ShankConstants.PRIMARY_COLOR,
+			backgroundColor: AppConst.COLOR_BLUE,
 			height: '100%'
 		},
 		style: {
-			backgroundColor: ShankConstants.TERTIARY_COLOR_ALT
+			backgroundColor: AppConst.COLOR_GRAY
 		},
 		labelStyle: {
 			fontWeight: 'bold'
@@ -66,9 +66,9 @@ export const AppNavigator = StackNavigator({
 }, {
 	initialRouteName: 'Splash',
 	navigationOptions: {
-		headerTintColor: ShankConstants.TERTIARY_COLOR,
-		headerTitleStyle: {fontFamily: 'century-gothic', alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-		headerStyle: {backgroundColor: ShankConstants.PRIMARY_COLOR},
+		headerTintColor: AppConst.COLOR_WHITE,
+		headerTitleStyle: {fontFamily: 'century-gothic', alignSelf: 'center', color: AppConst.COLOR_WHITE},
+		headerStyle: {backgroundColor: AppConst.COLOR_BLUE},
 		headerBackTitle: 'Back'
 	}
 });

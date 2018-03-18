@@ -9,7 +9,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import ActionSheet from 'react-native-actionsheet'
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, isAndroid, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, isAndroid, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/groupStyle';
 import { ClienHost } from '../../../config/variables';
 
@@ -79,7 +79,7 @@ class RoasterRow extends BaseComponent {
 		if (this.props.data != null && this.props.data.playerId) {
 			return (
 				<Swipeable rightButtons={this.getRoasterRightButtons()} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
-					<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.animateCell} {...this.props.sortHandlers}>
+					<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} {...this.props.sortHandlers}>
 						<View style={[ViewStyle.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
 							<View style={{flex: 1}}>
 								<Text style={[ViewStyle.roasterPosition]}>{this.props.data.position}</Text>
@@ -116,7 +116,7 @@ class RoasterRow extends BaseComponent {
 			);
 		} else {
 			return (
-				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={this.addPlayer}>
+				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.addPlayer}>
 					<View style={[ViewStyle.cellSubview, this.getCellBorderStyle(this.props.rowId)]}>
 						<Text style={[ViewStyle.roasterPosition, {flex: 1}]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 						<Text style={[ViewStyle.roasterEmpty, {flex: 10}]}>Empty Slot</Text>
@@ -217,7 +217,7 @@ class LeaderboardRow extends React.Component {
 	getLeaderboardRow(item) {
 		let nameFont = item.fullName == 'Invite' ? 'century-gothic' : 'century-gothic-bold';
 		return (
-			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => { if (item._id < 0) this.props.inviteToJoin(); }}>
+			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => { if (item._id < 0) this.props.inviteToJoin(); }}>
 				<View style={[ViewStyle.leaderboardRow]}><View style={[ViewStyle.leaderboardRowView]}>
 					<Text style={[ViewStyle.leaderboardRowText, {flex: 1}]}>{item.ranking == 0 || item.ranking == null ? '-' : item.ranking}</Text>
 					<Text style={[ViewStyle.leaderboardRowText, {flex: 6, fontFamily: nameFont}]}>{item.fullName}</Text>
@@ -258,14 +258,6 @@ export default class Group extends BaseComponent {
 	
 	static navigationOptions = ({navigation}) => ({
 		title: 'GROUP',
-		headerTintColor: ShankConstants.TERTIARY_COLOR,
-		headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-		headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
-		headerLeft: (
-			<TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
-				<Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
-			</TouchableHighlight>
-		),
 		headerRight: navigation.state.params.isOwner ? (
 			<TouchableHighlight onPress={() => navigation.navigate('EditGroup', navigation.state.params)}>
 				<Entypo name='user' style={[MainStyles.headerIconButton]} />
@@ -310,7 +302,7 @@ export default class Group extends BaseComponent {
 
 	componentDidMount() {
 		this.props.navigation.setParams({ actionSheet: this.showActionSheet });
-		AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => { this.setState({currentUser: JSON.parse(user)}); });
+		AsyncStorage.getItem(AppConst.USER_PROFILE).then(user => { this.setState({currentUser: JSON.parse(user)}); });
 		this.onGroupAsync(this.props.navigation.state.params.groupId);
 	}
 
@@ -656,7 +648,7 @@ export default class Group extends BaseComponent {
 						</View>
 
 						<View style={{flexDirection: 'row', alignItems: 'center'}}>
-							<TouchableHighlight underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => navigation.state.params.actionSheet()}>
+							<TouchableHighlight underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => navigation.state.params.actionSheet()}>
 								<Text style={[ViewStyle.tournamentNameText]}>{this.state.currentTournament.tournamentName ? this.state.currentTournament.tournamentName.toUpperCase() : null}</Text>
 							</TouchableHighlight>
 							<FontAwesome name="chevron-down"></FontAwesome>
@@ -697,7 +689,7 @@ export default class Group extends BaseComponent {
 				</View>
 
 				<View style={{flex: 6, flexDirection: 'row'}}>
-					{<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={ShankConstants.PRIMARY_COLOR} tabBarInactiveTextColor={ShankConstants.PRIMARY_COLOR} renderTabBar={() => <GroupTabBar />}>
+					{<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={AppConst.COLOR_BLUE} tabBarInactiveTextColor={AppConst.COLOR_BLUE} renderTabBar={() => <GroupTabBar />}>
 						<View tabLabel='Leaderboard' style={[ViewStyle.tabViewContainer]}>
 							<Text style={[ViewStyle.rankColumnText]}>Rank</Text>
 							

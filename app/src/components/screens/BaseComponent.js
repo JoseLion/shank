@@ -12,7 +12,7 @@ import BaseModel from '../../core/BaseModel';
 import { FileHost } from '../../config/variables';
 import GolfApiModel from '../../core/GolfApiModel';
 import MainStyles from '../../styles/MainStyles';
-import * as ShankConstants from '../../core/ShankConstants';
+import * as AppConst from '../../core/AppConst';
 import * as BarMessages from '../../core/BarMessages';
 import Style from '../../styles/Stylesheet';
 
@@ -76,7 +76,7 @@ export {
     BaseComponent,
     BaseModel,
     FileHost,
-    ShankConstants,
+    AppConst,
     GolfApiModel,
     isAndroid,
     MainStyles,

@@ -12,7 +12,7 @@ import {
 import { Constants } from 'expo';
 
 // Shank components:
-import { BaseComponent, MainStyles, ShankConstants } from '../BaseComponent';
+import { BaseComponent, MainStyles, AppConst } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 import BackgroundSolid from '../../../../resources/shank_logo.png';
@@ -43,12 +43,12 @@ export default class SplashScreen extends BaseComponent {
         this.setState({imageSource: BackgroundTransparent});
         Animated.timing(this.state.fadeAnim, { toValue: 1, duration: 2500 }).start(() => {
           Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 2000 }).start(() => {
-            AsyncStorage.getItem(ShankConstants.FIRST_TIME).then(firstTime => {
+            AsyncStorage.getItem(AppConst.FIRST_TIME).then(firstTime => {
               if (firstTime) {
                 this.props.navigation.navigate('Main', {auth: true});
               }
               else {
-                AsyncStorage.setItem(ShankConstants.FIRST_TIME, 'no');
+                AsyncStorage.setItem(AppConst.FIRST_TIME, 'no');
                 this.props.navigation.navigate('Slider', {auth: false})
               }
             });

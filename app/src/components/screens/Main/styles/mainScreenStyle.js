@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import * as ShankConstants from '../../../../core/ShankConstants';
+import * as AppConst from '../../../../core/AppConst';
 import Style from '../../../../styles/Stylesheet';
 
 const width = Dimensions.get('window').width;
@@ -38,7 +38,7 @@ export default StyleSheet.create({
 		alignItems: 'center',
 		width: '100%',
 		borderBottomWidth: 1,
-		borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT,
+		borderBottomColor: AppConst.COLOR_GRAY,
 		paddingVertical: '5%'
 	},
 	groupImage: {
@@ -56,13 +56,13 @@ export default StyleSheet.create({
 	groupName: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_17,
-		color: ShankConstants.SHANK_GREEN,
+		color: AppConst.COLOR_GREEN,
 		letterSpacing: Style.EM(0.25)
 	},
 	groupTournament: {
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_16,
-		color: ShankConstants.TERTIARY_COLOR_ALT
+		color: AppConst.COLOR_GRAY
 	},
 	groupStatsView: {
 		flexDirection: 'row',
@@ -77,13 +77,13 @@ export default StyleSheet.create({
 	groupStatsLabel: {
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_16,
-		color: ShankConstants.TERTIARY_COLOR_ALT,
+		color: AppConst.COLOR_GRAY,
 		marginRight: '3%'
 	},
 	groupStatsValue: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_16,
-		color: ShankConstants.TERTIARY_COLOR_ALT
+		color: AppConst.COLOR_GRAY
 	},
 	caretIcon: {
 		flex: 1,
@@ -99,7 +99,7 @@ export default StyleSheet.create({
 	noDataText: {
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_16,
-		color: ShankConstants.TERTIARY_COLOR_ALT,
+		color: AppConst.COLOR_GRAY,
 		textAlign: 'center'
 	}
 });

@@ -6,7 +6,7 @@ import { Avatar, List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
-import { BarMessages, BaseComponent, BaseModel, FileHost, ShankConstants, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
+import { BarMessages, BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
 
@@ -14,7 +14,7 @@ export default class MainScreen extends BaseComponent {
 
 	static navigationOptions = ({navigation}) => {
 		let goToScreen = async (screen) => {
-			if (await AsyncStorage.getItem(ShankConstants.AUTH_TOKEN)) {
+			if (await AsyncStorage.getItem(AppConst.AUTH_TOKEN)) {
 				navigation.navigate(screen);
 			} else {
 				navigation.navigate('Login');
@@ -43,6 +43,9 @@ export default class MainScreen extends BaseComponent {
 		super(props);
 		this.getGroups = this.getGroups.bind(this);
 		this.getOwnerStat = this.getOwnerStat.bind(this);
+		this.getRemoveButton = this.getRemoveButton.bind(this);
+		this.removeGroup = this.removeGroup.bind(this);
+		this.goToGroup = this.goToGroup.bind(this);
 
 		this.handleRefresh = this.handleRefresh.bind(this);
 		this.removeGroup = this.removeGroup.bind(this);
@@ -81,8 +84,26 @@ export default class MainScreen extends BaseComponent {
 		return stat;
 	}
 
+	getRemoveButton(group) {
+		return [(
+			<TouchableHighlight style={{backgroundColor: AppConst.COLOR_RED, height: '100%', justifyContent: 'center'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.removeGroup(group)}>
+				<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_17, color: AppConst.COLOR_WHITE, marginHorizontal: '5%'}}>Remove</Text>
+			</TouchableHighlight>
+		)];
+	}
+
+	removeGroup(group) {
+		if (this.swipe) {
+			this.swipe.recenter();
+		}
+	}
+
+	goToGroup(group) {
+		this.props.navigation.navigate('Group', { group });
+	}
+
 	async componentDidMount() {
-		const authToken = await AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).catch(error => this.toasterMsg = error);
+		const authToken = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(error => this.toasterMsg = error);
 		this.setState({auth: authToken});
 		this.props.navigation.addListener('didFocus', payload => this.getGroups());
 
@@ -115,7 +136,7 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	async getGroupList() {
-		let user = await AsyncStorage.getItem(ShankConstants.USER_PROFILE);
+		let user = await AsyncStorage.getItem(AppConst.USER_PROFILE);
 		this.setState({currentUser: JSON.parse(user)})
 		this.onListGroupAsync();
 	}
@@ -131,7 +152,7 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	async addToGroup(data) {
-		AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(profile => {
+		AsyncStorage.getItem(AppConst.USER_PROFILE).then(profile => {
 			profile = JSON.parse(profile);
 			this.setLoading(true);
 
@@ -146,10 +167,6 @@ export default class MainScreen extends BaseComponent {
 
 	setLoading(loading) {
 		this.setState({isLoading: loading});
-	}
-
-	removeGroup(item) {
-		this.onRemoveGroupAsync(item);
 	}
 
 	handleRefresh() {
@@ -177,7 +194,7 @@ export default class MainScreen extends BaseComponent {
 
 			if (error === 401) {
 				try {
-					AsyncStorage.removeItem(ShankConstants.AUTH_TOKEN);
+					AsyncStorage.removeItem(AppConst.AUTH_TOKEN);
 				} catch (error) {
 					console.log('ERROR ON REMOVING TOKEN: ', error);
 				}
@@ -215,33 +232,35 @@ export default class MainScreen extends BaseComponent {
 					<Spinner visible={this.state.isLoading} animation='fade' />
 
 					<FlatList data={this.state.groups} keyExtractor={item => item._id} renderItem={({item}) => (
-						<TouchableHighlight style={ViewStyle.rowButton} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => {}}>
-							<View style={ViewStyle.rowContainer}>
-								<View style={ViewStyle.rowSubView}>
-									<View style={{flex: 2}}>
-										<Image source={{uri: FileHost + item.photo}} resizeMode={'contain'} style={ViewStyle.groupImage} />
-									</View>
+						<Swipeable rightButtons={this.getRemoveButton(item)} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
+							<TouchableHighlight style={ViewStyle.rowButton} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.goToGroup(item)}>
+								<View style={ViewStyle.rowContainer}>
+									<View style={ViewStyle.rowSubView}>
+										<View style={{flex: 2}}>
+											<Image source={{uri: FileHost + item.photo}} resizeMode={'contain'} style={ViewStyle.groupImage} />
+										</View>
 
-									<View style={ViewStyle.grupInfoView}>
-										<Text style={ViewStyle.groupName}>{item.name.toUpperCase()}</Text>
-										<Text style={ViewStyle.groupTournament}>{item.tournaments[0].tournament.name}</Text>
-										<View style={ViewStyle.groupStatsView}>
-											<View style={ViewStyle.groupStatsSubView}>
-												<Text style={ViewStyle.groupStatsLabel}>Score:</Text>
-												<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'score')}</Text>
-											</View>
+										<View style={ViewStyle.grupInfoView}>
+											<Text style={ViewStyle.groupName}>{item.name.toUpperCase()}</Text>
+											<Text style={ViewStyle.groupTournament}>{item.tournaments[0].tournament.name}</Text>
+											<View style={ViewStyle.groupStatsView}>
+												<View style={ViewStyle.groupStatsSubView}>
+													<Text style={ViewStyle.groupStatsLabel}>Score:</Text>
+													<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'score')}</Text>
+												</View>
 
-											<View style={ViewStyle.groupStatsSubView}>
-												<Text style={ViewStyle.groupStatsLabel}>Rank:</Text>
-												<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'rank')}/5</Text>
+												<View style={ViewStyle.groupStatsSubView}>
+													<Text style={ViewStyle.groupStatsLabel}>Rank:</Text>
+													<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'rank')}/5</Text>
+												</View>
 											</View>
 										</View>
-									</View>
 
-									<Image source={require('../../../../resources/right-caret-icon.png')} resizeMode={'contain'} style={ViewStyle.caretIcon} />
+										<Image source={require('../../../../resources/right-caret-icon.png')} resizeMode={'contain'} style={ViewStyle.caretIcon} />
+									</View>
 								</View>
-							</View>
-						</TouchableHighlight>
+							</TouchableHighlight>
+						</Swipeable>
 					)} />
 
 					<DropdownAlert ref={ref => this.toasterMsg = ref} />

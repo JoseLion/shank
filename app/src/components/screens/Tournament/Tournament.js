@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {ActivityIndicator, ListView, Text, View, Image, Dimensions, ScrollView,Linking} from 'react-native';
 import MainStyles from '../../../styles/MainStyles';
 import LocalStyles from './styles/local';
-import * as ShankConstants from '../../../core/ShankConstants';
+import * as AppConst from '../../../core/AppConst';
 import ProgressBar from '../../../global/ProgressBar';
 import {FontAwesome,Ionicons} from '@expo/vector-icons';
 import {Container, Content, Card, CardItem, Left, Right, Body, Thumbnail, Spinner, Icon, CardImage} from 'native-base';
@@ -13,9 +13,9 @@ export default class TournamentsScreen extends Component {
     static navigationOptions = {
         title: 'TOURNAMENTS',
         showIcon: true,
-        headerTintColor: ShankConstants.TERTIARY_COLOR,
-        headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-        headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
+        headerTintColor: AppConst.COLOR_WHITE,
+        headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
+        headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
         headerLeft: null,
         tabBarIcon: ({tintColor}) => {
             return (
@@ -47,7 +47,7 @@ export default class TournamentsScreen extends Component {
 
     componentDidMount() {
 
-        /*return fetch('https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey=' + ShankConstants.APIKEYNEWS)
+        /*return fetch('https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey=' + AppConst.APIKEYNEWS)
             .then((response) => response.json())
             .then((responseJson) => {
                 let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});

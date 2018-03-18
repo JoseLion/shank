@@ -1,6 +1,6 @@
 'use strict';
 import React, { Component } from 'react';
-import * as ShankConstants from './ShankConstants';
+import * as AppConst from './AppConst';
 import { GolfApiHost } from '../config/variables';
 
 let internetError = 'No fue posible acceder al internet de su teléfono.';
@@ -14,7 +14,7 @@ function request(method, resource, params) {
     let options = {
         method: method,
         headers: {
-            'Ocp-Apim-Subscription-Key': `${ShankConstants.FANTASY_DATA_API_KEY}`
+            'Ocp-Apim-Subscription-Key': `${AppConst.FANTASY_DATA_API_KEY}`
         }
     };
     if(method === 'POST') { options.body = json; }

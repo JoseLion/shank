@@ -6,16 +6,16 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components:
-import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Facebook } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, Facebook } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class Login extends BaseComponent {
 
     static navigationOptions = ({navigation}) => ({
         title: 'LOG IN',
-        headerTintColor: ShankConstants.TERTIARY_COLOR,
-        headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-        headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
+        headerTintColor: AppConst.COLOR_WHITE,
+        headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
+        headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
         headerLeft: (
             <TouchableHighlight onPress={() => navigation.dispatch({type: 'Main'})}>
                 <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
@@ -62,8 +62,8 @@ export default class Login extends BaseComponent {
         await NoAuthModel.post('login', data)
             .then((login) => {
                 this.setLoading(false);
-                AsyncStorage.setItem(ShankConstants.AUTH_TOKEN, login.token);
-                AsyncStorage.setItem(ShankConstants.USER_PROFILE, JSON.stringify(login.user));
+                AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
+                AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(login.user));
                 super.navigateDispatchToScreen('Main');
             }).catch((error) => {
                 this.setLoading(false);
@@ -74,7 +74,7 @@ export default class Login extends BaseComponent {
         this.setLoading(true);
         let option = 'Signin';
         try {
-            const {type, token} = await Facebook.logInWithReadPermissionsAsync(ShankConstants.APP_FB_ID, { permissions: ['public_profile', 'email', 'user_friends'] });
+            const {type, token} = await Facebook.logInWithReadPermissionsAsync(AppConst.APP_FB_ID, { permissions: ['public_profile', 'email', 'user_friends'] });
             switch (type) {
                 case 'success': {
                     // Get the user's name using Facebook's Graph API
@@ -95,8 +95,8 @@ export default class Login extends BaseComponent {
                         await NoAuthModel.post('users/facebookSignin', data)
                             .then((userInfo) => {
                                 this.setLoading(false);
-                                AsyncStorage.setItem(ShankConstants.AUTH_TOKEN, userInfo.token);
-                                AsyncStorage.setItem(ShankConstants.USER_PROFILE, JSON.stringify(userInfo.user));
+                                AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
+                                AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
                                 super.navigateDispatchToScreen('Main');
                             }).catch((error) => {
                                 this.setLoading(false);

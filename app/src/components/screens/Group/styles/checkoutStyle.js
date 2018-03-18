@@ -1,7 +1,7 @@
 import { Dimensions, Platform, StyleSheet } from 'react-native';
 import Style from '../../../../styles/Stylesheet';
 
-import * as ShankConstants from '../../../../core/ShankConstants';
+import * as AppConst from '../../../../core/AppConst';
 
 
 const isAndroid = Platform.OS == 'android' ? true : false;
@@ -21,12 +21,12 @@ const ViewStyle = StyleSheet.create({
 		borderBottomWidth: 2.5,
 		width: '100%',
 		paddingVertical: '2.5%',
-		borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT
+		borderBottomColor: AppConst.COLOR_GRAY
 	},
 	titleText: {
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_17,
-		color: ShankConstants.PRIMARY_COLOR,
+		color: AppConst.COLOR_BLUE,
 		textAlign: 'center'
 	},
 	rowView: {
@@ -36,27 +36,27 @@ const ViewStyle = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: '8%',
 		borderBottomWidth: 1,
-		borderColor: ShankConstants.TERTIARY_COLOR_ALT
+		borderColor: AppConst.COLOR_GRAY
 	},
 	rowNum: {
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_15,
-		color: ShankConstants.PRIMARY_COLOR
+		color: AppConst.COLOR_BLUE
 	},
 	rowName: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_15,
-		color: ShankConstants.TERTIARY_COLOR_ALT
+		color: AppConst.COLOR_GRAY
 	},
 	exchangeIcon: {
 		fontSize: Style.FONT_15,
 		textAlign: 'center',
-		color: ShankConstants.TERTIARY_COLOR_ALT
+		color: AppConst.COLOR_GRAY
 	},
 	rowPrice: {
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_15,
-		color: ShankConstants.PRIMARY_COLOR,
+		color: AppConst.COLOR_BLUE,
 		textAlign: 'right'
 	},
 	totalView: {
@@ -68,13 +68,13 @@ const ViewStyle = StyleSheet.create({
 		flex: 4,
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_16,
-		color: ShankConstants.PRIMARY_COLOR
+		color: AppConst.COLOR_BLUE
 	},
 	totalValue: {
 		flex: 1,
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_18,
-		color: ShankConstants.SUCCESS_COLOR
+		color: AppConst.COLOR_SUCCESS
 	},
 	buttonsView: {
 		flexDirection: 'row',

@@ -3,7 +3,7 @@
 import React from 'react';
 
 import * as ApiUtils from './ApiUtils';
-import * as ShankConstants from './ShankConstants';
+import * as AppConst from './AppConst';
 import { Host, ApiHost, AuthToken, ApiKey, version } from '../config/variables';
 
 let internetError = 'No fue posible acceder al internet de su teléfono.';

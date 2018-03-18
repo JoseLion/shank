@@ -12,10 +12,10 @@ import { FontAwesome } from '@expo/vector-icons';
 import NoAuthModel from '../../../core/NoAuthModel';
 import MainStyles from '../../../styles/MainStyles';
 import LocalStyles from './styles/local';
-import * as ShankConstants from '../../../core/ShankConstants';
+import * as AppConst from '../../../core/AppConst';
 import * as BarMessages from '../../../core/BarMessages';
 
-const DismissKeyboardView = ShankConstants.DismissKeyboardHOC(View);
+const DismissKeyboardView = AppConst.DismissKeyboardHOC(View);
 
 class RowComponent extends React.Component {
 
@@ -68,7 +68,7 @@ export default class Settings extends Component {
                     name: 'Edit Profile',
                     action: function() {
                         //self.setLoading(true);
-                        AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(user => {
+                        AsyncStorage.getItem(AppConst.USER_PROFILE).then(user => {
                             self.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)})
                             //self.setLoading(false);
                         });
@@ -101,7 +101,7 @@ export default class Settings extends Component {
 
     async _removeStorage() {
         try {
-            let token = await AsyncStorage.removeItem(ShankConstants.AUTH_TOKEN);
+            let token = await AsyncStorage.removeItem(AppConst.AUTH_TOKEN);
             this.props.navigation.dispatch({type: 'Main'})
         } catch (error) {
             console.log('error on :Token removed from disk.');

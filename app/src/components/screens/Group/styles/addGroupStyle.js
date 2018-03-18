@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import Style from '../../../../styles/Stylesheet';
-import * as ShankConstants from '../../../../core/ShankConstants';
+import * as AppConst from '../../../../core/AppConst';
 
 export default StyleSheet.create({
 	mainContainer: {
@@ -21,13 +21,13 @@ export default StyleSheet.create({
 	imageText: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_14,
-		color: ShankConstants.TERTIARY_COLOR_ALT
+		color: AppConst.COLOR_GRAY
 	},
 	nameInput: {
 		width: '100%',
 		padding: Style.EM(1),
 		borderWidth: 1,
-		borderColor: ShankConstants.TERTIARY_COLOR_ALT,
+		borderColor: AppConst.COLOR_GRAY,
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_16
 	},
@@ -35,7 +35,7 @@ export default StyleSheet.create({
 		width: '100%',
 		padding: Style.EM(1),
 		borderWidth: 1,
-		borderColor: ShankConstants.TERTIARY_COLOR_ALT,
+		borderColor: AppConst.COLOR_GRAY,
 		borderTopWidth: 0
 	},
 	androidPicker: {
@@ -51,7 +51,7 @@ export default StyleSheet.create({
 		padding: Style.EM(1),
 		marginBottom: Style.EM(1),
 		borderWidth: 1,
-		borderColor: ShankConstants.TERTIARY_COLOR_ALT,
+		borderColor: AppConst.COLOR_GRAY,
 		borderTopWidth: 0,
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_16

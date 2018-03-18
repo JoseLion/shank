@@ -6,7 +6,7 @@ import SortableListView from 'react-native-sortable-listview';
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/playerSelectionStyle';
 
 class PlayerRow extends React.Component {
@@ -51,7 +51,7 @@ class PlayerRow extends React.Component {
 
 	render() {
 		return (
-			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={() => this.playerSelected(this.props.player)}>
+			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.playerSelected(this.props.player)}>
 				<View style={[ViewStyle.cellView]}>
 					<View style={{flex: 1}}>
 						<Avatar small rounded source={{uri: this.props.player.photoUrl}} />
@@ -81,9 +81,9 @@ export default class PlayerSelection extends BaseComponent {
 	static navigationOptions = ({navigation}) => {
 		return {
 			title: !navigation.state.params.isSearching ? 'CHOOSE PLAYER' : null,
-			headerTintColor: ShankConstants.TERTIARY_COLOR,
-			headerTitleStyle: !navigation.state.params.isSearching ? {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR} : null,
-			headerStyle: {backgroundColor: ShankConstants.PRIMARY_COLOR},
+			headerTintColor: AppConst.COLOR_WHITE,
+			headerTitleStyle: !navigation.state.params.isSearching ? {alignSelf: 'center', color: AppConst.COLOR_WHITE} : null,
+			headerStyle: {backgroundColor: AppConst.COLOR_BLUE},
 			headerLeft: (
 				!navigation.state.params.isSearching ?
 					<TouchableHighlight onPress={() => navigation.goBack(null)}>

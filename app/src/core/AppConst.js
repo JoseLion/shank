@@ -1,16 +1,13 @@
 import React from 'react';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
-// export const BACKGROUND_COLOR = '#F5FCFF';
-export const BACKGROUND_COLOR = '#FFFFFF';
-export const PRIMARY_COLOR = '#252D3B';
-export const TERTIARY_COLOR = '#FFFFFF';
-export const TERTIARY_COLOR_ALT = '#B6B6B5';
-export const SHANK_GREEN = "#516740";
-
-export const SUCCESS_COLOR = '#00B16A';
-export const ERROR_COLOR = '#ED2C3E';
-export const HIGHLIGHT_COLOR = '#E4E4E4';
+export const COLOR_BLUE = '#252D3B';
+export const COLOR_WHITE = '#FFFFFF';
+export const COLOR_GRAY = '#B6B6B5';
+export const COLOR_GREEN = "#516740";
+export const COLOR_SUCCESS = '#00B16A';
+export const COLOR_RED = '#ED2C3E';
+export const COLOR_HIGHLIGHT = '#E6E7E8';
 
 export const FIRST_TIME = 'first-time';
 export const AUTH_TOKEN = "shank-auth-token";
@@ -29,8 +26,8 @@ export const SPORT_RADAR_GET_TOURNAMENTS = 'http://api.sportradar.us/golf-t2/sch
 export const DismissKeyboardHOC = (Comp) => {
     return ({ children, ...props }) => (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <Comp {...props}>
-                {children}
+            <Comp { ...props }>
+                { children }
             </Comp>
         </TouchableWithoutFeedback>
     );

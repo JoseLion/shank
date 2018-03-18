@@ -11,7 +11,7 @@ import Swipeable from 'react-native-swipeable';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, isAndroid } from '../BaseComponent';
 import ViewStyle from './styles/addGroupStyle'
 import { ClienHost } from '../../../config/variables';
 
@@ -20,9 +20,9 @@ export default class EditGroup extends BaseComponent {
 
   static navigationOptions = ({navigation}) => ({
     title: 'EDIT GROUP',
-    headerTintColor: ShankConstants.TERTIARY_COLOR,
-    headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-    headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
+    headerTintColor: AppConst.COLOR_WHITE,
+    headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
+    headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
     headerLeft: (
       <TouchableHighlight onPress={() => navigation.navigate('Group', navigation.state.params)}>
         <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
@@ -250,21 +250,21 @@ export default class EditGroup extends BaseComponent {
               <Text style={[MainStyles.centerText, {marginTop: 15}]}>Tournaments</Text>
               <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
                 <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem1} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[0], tValue, 0)} enabled={this.state.tournaments[0] != null && this.state.tournaments[0].tournamentId == null}>
-                  <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[0] == null ? this.state.tName : this.state.tournaments[0].tournamentName} />
+                  <Picker.Item style={[MainStyles.formPickerText]} color={AppConst.COLOR_GRAY} value='' label={this.state.tournaments[0] == null ? this.state.tName : this.state.tournaments[0].tournamentName} />
                   {tournamentItems}
                 </Picker>
               </View>
 
               <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
                 <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem2} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[1], tValue, 1)} enabled={this.state.tournaments[0] != null && this.state.tournaments[1].tournamentId == null}>
-                  <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[1] == null ? this.state.tName : this.state.tournaments[1].tournamentName} />
+                  <Picker.Item style={[MainStyles.formPickerText]} color={AppConst.COLOR_GRAY} value='' label={this.state.tournaments[1] == null ? this.state.tName : this.state.tournaments[1].tournamentName} />
                   {tournamentItems}
                 </Picker>
               </View>
 
               <View style={[MainStyles.formPicker, MainStyles.noMargin, MainStyles.noPadding, ViewStyle.pickerHeight]}>
                 <Picker style={MainStyles.noMargin} selectedValue={this.state.selectedItem3} onValueChange={(tValue) => this.setTournamentSelection(this.state.tournaments[2], tValue, 2)} enabled={this.state.tournaments[0] != null && this.state.tournaments[2].tournamentId == null}>
-                  <Picker.Item style={[MainStyles.formPickerText]} color={ShankConstants.TERTIARY_COLOR_ALT} value='' label={this.state.tournaments[2] == null ? this.state.tName : this.state.tournaments[2].tournamentName} />
+                  <Picker.Item style={[MainStyles.formPickerText]} color={AppConst.COLOR_GRAY} value='' label={this.state.tournaments[2] == null ? this.state.tName : this.state.tournaments[2].tournamentName} />
                   {tournamentItems}
                 </Picker>
               </View>
@@ -281,7 +281,7 @@ export default class EditGroup extends BaseComponent {
                       )
                       : ( <View></View> ) ]}
                     rightButtonWidth={(item._id < 0 || item._id == this.state.currentGroup.owner) ? 0 : 75}>
-                    <TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR} onPress={ () => {if(item._id < 0) this.inviteToJoin()} }>
+                    <TouchableHighlight style={[MainStyles.listItem]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={ () => {if(item._id < 0) this.inviteToJoin()} }>
                       <View style={[MainStyles.viewFlexItemsR]}>
                         <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
                           { item.photo != null

@@ -1,7 +1,7 @@
 import { Dimensions, Platform, StyleSheet } from 'react-native';
 import Style from '../../../../styles/Stylesheet';
 
-import * as ShankConstants from '../../../../core/ShankConstants';
+import * as AppConst from '../../../../core/AppConst';
 
 
 const isAndroid = Platform.OS == 'android' ? true : false;
@@ -21,44 +21,43 @@ const ViewStyle = StyleSheet.create({
 		paddingVertical: '1%',
 		borderTopWidth: 0.5,
 		borderBottomWidth: 0.5,
-		borderColor: ShankConstants.TERTIARY_COLOR_ALT
+		borderColor: AppConst.COLOR_GRAY
 	},
 	playerName: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_15_5,
-		color: ShankConstants.SHANK_GREEN,
+		color: AppConst.COLOR_GREEN,
 		paddingHorizontal: '5%'
 	},
 	pickRate: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_15_5,
-		color: ShankConstants.SHANK_GREEN
+		color: AppConst.COLOR_GREEN
 	},
 	checkView: {
 		justifyContent: 'center',
-		backgroundColor: ShankConstants.TERTIARY_COLOR,
+		backgroundColor: AppConst.COLOR_WHITE,
 		borderWidth: 1.5,
-		borderColor: ShankConstants.SUCCESS_COLOR,
+		borderColor: AppConst.COLOR_SUCCESS,
 		borderRadius: 17.5,
 		height: '100%',
 		paddingVertical: '10%'
 	},
 	check: {
-		color: ShankConstants.SUCCESS_COLOR,
+		color: AppConst.COLOR_SUCCESS,
 		paddingHorizontal: '30%'
 	},
 	selectedView: {
-		backgroundColor: ShankConstants.SUCCESS_COLOR
+		backgroundColor: AppConst.COLOR_SUCCESS
 	},
 	selectedCheck: {
-		color: ShankConstants.TERTIARY_COLOR
+		color: AppConst.COLOR_WHITE
 	},
 
 
 	mainContainer: {
 		flex:1,
-		width:'100%',
-		backgroundColor: ShankConstants.BACKGROUND_COLOR
+		width:'100%'
 	},
 	tournamentName: {
 		fontFamily: 'century-gothic-bold',
@@ -73,7 +72,7 @@ const ViewStyle = StyleSheet.create({
 		marginTop: '2%',
 		paddingBottom: '2%',
 		borderBottomWidth: 0.5,
-		borderColor: ShankConstants.TERTIARY_COLOR_ALT,
+		borderColor: AppConst.COLOR_GRAY,
 		paddingHorizontal: widthSpace
 	},
 	headerText: {

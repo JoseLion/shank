@@ -1,7 +1,7 @@
 import { Dimensions, Platform, StyleSheet } from 'react-native';
 import Style from '../../../../styles/Stylesheet';
 
-import * as ShankConstants from '../../../../core/ShankConstants';
+import * as AppConst from '../../../../core/AppConst';
 
 
 const isAndroid = Platform.OS == 'android' ? true : false;
@@ -27,7 +27,7 @@ export default ViewStyle = StyleSheet.create({
     groupNameText: {
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_18,
-        color: ShankConstants.PRIMARY_COLOR,
+        color: AppConst.COLOR_BLUE,
         paddingBottom: '5%',
         marginTop: '-5%'
     },
@@ -44,7 +44,7 @@ export default ViewStyle = StyleSheet.create({
         alignItems: 'center',
         padding: '2.5%',
         borderBottomWidth: 1,
-        borderBottomColor: ShankConstants.TERTIARY_COLOR_ALT,
+        borderBottomColor: AppConst.COLOR_GRAY,
     },
     prizeSubView: {
         flex: 1,
@@ -78,12 +78,12 @@ export default ViewStyle = StyleSheet.create({
     statNumber: {
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_22,
-        color: ShankConstants.SHANK_GREEN
+        color: AppConst.COLOR_GREEN
     },
     statLabel: {
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_15,
-        color: ShankConstants.TERTIARY_COLOR_ALT
+        color: AppConst.COLOR_GRAY
     },
     tabsView: {
         flexDirection: 'row',
@@ -102,7 +102,7 @@ export default ViewStyle = StyleSheet.create({
     rankColumnText: {
         fontFamily: 'century-gothic-bold',
         fontSize: Style.FONT_14,
-        color: ShankConstants.PRIMARY_COLOR,
+        color: AppConst.COLOR_BLUE,
         paddingTop: '5%',
         paddingBottom: 0,
         paddingLeft: '10%'
@@ -115,7 +115,7 @@ export default ViewStyle = StyleSheet.create({
     leaderboardRow: {
         paddingVertical: '7.5%',
         borderBottomWidth: 1,
-        borderColor: ShankConstants.TERTIARY_COLOR_ALT
+        borderColor: AppConst.COLOR_GRAY
     },
     leaderboardRowView: {
         flexDirection: 'row',
@@ -129,18 +129,18 @@ export default ViewStyle = StyleSheet.create({
     leaderboardRowPts: {
         fontFamily: 'century-gothic-bold',
         fontSize: Style.FONT_15,
-        color: ShankConstants.TERTIARY_COLOR_ALT,
+        color: AppConst.COLOR_GRAY,
         textAlign: 'right'
     },
     swipeButton: {
-        backgroundColor: '#252D3B',
+        backgroundColor: AppConst.COLOR_RED,
         height: '100%',
         justifyContent: 'center'
     },
     swipeButtonText: {
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_17,
-        color: 'white',
+        color: AppConst.COLOR_WHITE,
         marginHorizontal: '5%'
     },
     roundLabelsView: {
@@ -176,7 +176,7 @@ export default ViewStyle = StyleSheet.create({
         backgroundColor: 'white'
     },
     cellSubview: {
-        borderColor: ShankConstants.TERTIARY_COLOR_ALT,
+        borderColor: AppConst.COLOR_GRAY,
         paddingVertical: '7.5%',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -185,23 +185,23 @@ export default ViewStyle = StyleSheet.create({
     roasterPosition: {
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_16,
-        color: ShankConstants.SHANK_GREEN
+        color: AppConst.COLOR_GREEN
     },
     roasterEmpty: {
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_16,
-        color: ShankConstants.TERTIARY_COLOR_ALT,
+        color: AppConst.COLOR_GRAY,
         textAlign: 'center'
     },
     roasterName: {
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_16,
-        color: ShankConstants.SHANK_GREEN,
+        color: AppConst.COLOR_GREEN,
     },
     roasterInfo: {
         fontFamily: 'century-gothic-bold',
         fontSize: Style.FONT_15,
-        color: ShankConstants.TERTIARY_COLOR_ALT
+        color: AppConst.COLOR_GRAY
     },
     tabViewContainer: {
         backgroundColor: 'white',

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import * as ShankConstants from '../../core/ShankConstants';
+import * as AppConst from '../../core/AppConst';
 
 class LoadingIndicator extends Component {
   render () {
     return (
       <View style={{flex: 1}}>
-        <View style={{flex: 1, backgroundColor: ShankConstants.TERTIARY_COLOR_ALT}}>
+        <View style={{flex: 1, backgroundColor: AppConst.COLOR_GRAY}}>
           <ActivityIndicator
             color={'#fff'}
             style={{paddingTop: 100}}

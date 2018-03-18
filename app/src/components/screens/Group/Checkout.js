@@ -6,16 +6,16 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components:
-import { BaseComponent, BaseModel, MainStyles, ShankConstants, BarMessages, Entypo, FontAwesome } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, Entypo, FontAwesome } from '../BaseComponent';
 import ViewStyle from './styles/checkoutStyle'
 
 export default class Checkout extends BaseComponent {
 
 	static navigationOptions = ({navigation}) => ({
 		title: 'CHECKOUT',
-		headerTintColor: ShankConstants.TERTIARY_COLOR,
-		headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-		headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
+		headerTintColor: AppConst.COLOR_WHITE,
+		headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
+		headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
 		headerLeft: (
 			<TouchableHighlight onPress={() => navigation.goBack(null)}>
 				<Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />

@@ -1,8 +1,8 @@
-import { Dimensions, Platform, StyleSheet, ShankConstants, Style } from '../../BaseComponent';
+import { Dimensions, Platform, StyleSheet, AppConst, Style } from '../../BaseComponent';
 
 const LocalStyles = StyleSheet.create({
     contentColor: {
-        color: ShankConstants.PRIMARY_COLOR
+        color: AppConst.COLOR_BLUE
     },
     subtitlePage: {
         fontSize: Style.EM(1.5),
@@ -18,7 +18,7 @@ const LocalStyles = StyleSheet.create({
         width: '80%'
     },
     buttonLinkText: {
-        color: ShankConstants.TERTIARY_COLOR_ALT,
+        color: AppConst.COLOR_GRAY,
     }
 });
 

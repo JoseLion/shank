@@ -9,7 +9,7 @@ import { ImagePicker } from 'expo';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, ShankConstants, BarMessages, Entypo, isAndroid } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, Entypo, isAndroid } from '../BaseComponent';
 import { ApiHost } from '../../../config/variables';
 import ViewStyle from './styles/addGroupStyle'
 
@@ -133,13 +133,13 @@ export default class AddGroup extends BaseComponent {
 				{isAndroid ?
 					<View style={[ViewStyle.pickerView, ViewStyle.androidPicker]}>
 						<Picker itemStyle={[ViewStyle.pickerText]} selectedValue={this.state.group.tournaments[0].tournament} onValueChange={tournament => this.updateGroup('tournaments', [{ tournament }])}>
-							<Picker.Item color={ShankConstants.TERTIARY_COLOR_ALT} value='' label='Pick a tournament' />
+							<Picker.Item color={AppConst.COLOR_GRAY} value='' label='Pick a tournament' />
 							{tournamentList}
 						</Picker>
 					</View>
 				:
 					<TouchableOpacity style={ViewStyle.pickerView} onPress={() => this.openTournamentsSheet()}>
-						<Text style={[ViewStyle.pickerText, !this.state.group.tournaments[0] ? {color: ShankConstants.TERTIARY_COLOR_ALT} : null]}>{this.state.group.tournaments[0] ? this.state.group.tournaments[0].tournament.name : 'Pick a tournament'}</Text>
+						<Text style={[ViewStyle.pickerText, !this.state.group.tournaments[0] ? {color: AppConst.COLOR_GRAY} : null]}>{this.state.group.tournaments[0] ? this.state.group.tournaments[0].tournament.name : 'Pick a tournament'}</Text>
 					</TouchableOpacity>
 				}
 

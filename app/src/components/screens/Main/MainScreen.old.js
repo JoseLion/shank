@@ -15,7 +15,7 @@ import { Avatar, List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
-import { BarMessages, BaseComponent, BaseModel, ShankConstants, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
+import { BarMessages, BaseComponent, BaseModel, AppConst, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 var qs = require('qs');
@@ -25,9 +25,9 @@ export default class MainScreenOld extends BaseComponent {
   static navigationOptions = ({navigation}) => ({
     title: 'GROUPS',
     showIcon: true,
-    headerTintColor: ShankConstants.TERTIARY_COLOR,
-    headerTitleStyle: {alignSelf: 'center', color: ShankConstants.TERTIARY_COLOR},
-    headerStyle: { backgroundColor: ShankConstants.PRIMARY_COLOR },
+    headerTintColor: AppConst.COLOR_WHITE,
+    headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
+    headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
     headerLeft: (
       <TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.state.params.tapCenterButton('AddGroup')}>
         <Entypo name='plus' style={[MainStyles.headerIconButton]} />
@@ -66,7 +66,7 @@ export default class MainScreenOld extends BaseComponent {
     this.props.navigation.setParams({
       tapCenterButton: this.tapCenterButton
     });
-    AsyncStorage.getItem(ShankConstants.AUTH_TOKEN).then(authToken => {
+    AsyncStorage.getItem(AppConst.AUTH_TOKEN).then(authToken => {
       this.setState({auth: authToken});
       this.getGroupList();
       if (authToken) {
@@ -93,7 +93,7 @@ export default class MainScreenOld extends BaseComponent {
   }
 
   async getGroupList() {
-    let user = await AsyncStorage.getItem(ShankConstants.USER_PROFILE);
+    let user = await AsyncStorage.getItem(AppConst.USER_PROFILE);
     this.setState({currentUser: JSON.parse(user)})
     this.onListGroupAsync();
   }
@@ -109,7 +109,7 @@ export default class MainScreenOld extends BaseComponent {
   }
 
   addToGroup = async(data) => {
-    AsyncStorage.getItem(ShankConstants.USER_PROFILE).then(profile => {
+    AsyncStorage.getItem(AppConst.USER_PROFILE).then(profile => {
       profile = JSON.parse(profile);
       this.setLoading(true);
       BaseModel.put(`groups/addUser/${data.group}/${profile._id}`).then((groups) => {
@@ -161,7 +161,7 @@ export default class MainScreenOld extends BaseComponent {
       this.setLoading(false);
       if (error === 401) {
         try {
-          AsyncStorage.removeItem(ShankConstants.AUTH_TOKEN);
+          AsyncStorage.removeItem(AppConst.AUTH_TOKEN);
         } catch (error) {
           console.log('ERROR ON REMOVING TOKEN: ', error);
         }
@@ -207,7 +207,7 @@ export default class MainScreenOld extends BaseComponent {
                   </TouchableHighlight>
                 )]}>
 
-                  <TouchableHighlight style={[MainStyles.listItem]} underlayColor={ShankConstants.HIGHLIGHT_COLOR}
+                  <TouchableHighlight style={[MainStyles.listItem]} underlayColor={AppConst.COLOR_HIGHLIGHT}
                     onPress={() => super.navigateToScreen('Group', {groupId: item._id, isOwner: item.isOwner})}>
                     <View style={[MainStyles.viewFlexItemsR]}>
                       <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsStart]}>
@@ -225,7 +225,7 @@ export default class MainScreenOld extends BaseComponent {
                         </Text>
                       </View>
                       <View style={[MainStyles.viewFlexItemsC, MainStyles.viewFlexItemsEnd]}>
-                        <FontAwesome name='chevron-right' size={29} color={ShankConstants.TERTIARY_COLOR_ALT}/>
+                        <FontAwesome name='chevron-right' size={29} color={AppConst.COLOR_GRAY}/>
                       </View>
                     </View>
                   </TouchableHighlight>
