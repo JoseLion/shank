@@ -99,7 +99,7 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	goToGroup(group) {
-		this.props.navigation.navigate('Group', { group });
+		this.props.navigation.navigate('Group', {groupId: group._id});
 	}
 
 	async componentDidMount() {

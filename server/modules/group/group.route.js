@@ -38,5 +38,10 @@ export default function(app) {
 		response.ok(group);
 	});
 
+	router.get(`${basePath}/findOne/:id`, auth, async (request, response) => {
+		const group = await Group.findOne({_id: request.params.id}).populate('tournaments.tournament').populate('tournaments.leaderboard.user').catch(handleMongoError);
+		response.ok(group);
+	});
+
 	return router;
 }
