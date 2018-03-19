@@ -43,5 +43,25 @@ export default function(app) {
 		response.ok(group);
 	});
 
+	router.get(`${basePath}/removeUserFromGroup/:userId/:groupId`, async (request, response) => {
+		let group = await Group.findOne({_id: request.params.groupId}).catch(handleMongoError);
+
+		group.tournaments.forEach(cross => {
+			let index;
+
+			cross.leaderboard.forEach((obj, i) => {
+				if (obj.user == request.params.userId) {
+					index = i;
+					return;
+				}
+			});
+
+			cross.leaderboard.splice(index, 1);
+		});
+
+		group = await group.save().catch(handleMongoError);
+		response.ok(group);
+	});
+
 	return router;
 }

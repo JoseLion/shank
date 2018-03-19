@@ -27,15 +27,12 @@ export default ViewStyle = StyleSheet.create({
     groupNameText: {
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_18,
-        color: AppConst.COLOR_BLUE,
-        paddingBottom: '5%',
-        marginTop: '-5%'
+        color: AppConst.COLOR_BLUE
     },
     tournamentNameText: {
         fontFamily: 'century-gothic-bold',
         fontSize: Style.FONT_16,
-        marginRight: '2%',
-        paddingTop: '5%'
+        marginRight: '2%'
     },
     prizeView: {
         flex: 1,
@@ -94,10 +91,9 @@ export default ViewStyle = StyleSheet.create({
     },
     tabButton: {
         flex: 1,
+        paddingVertical: '5%',
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: '8%',
-        paddingBottom: '3%'
+        justifyContent: 'center'
     },
     rankColumnText: {
         fontFamily: 'century-gothic-bold',

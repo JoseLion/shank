@@ -1,6 +1,6 @@
 // React components:
 import React, {Component} from 'react';
-import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, Picker, ActivityIndicator, Alert, Platform, PickerIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage, Animated, Easing } from 'react-native';
+import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, ActivityIndicator, Alert, Platform, PickerIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage, Animated, Easing } from 'react-native';
 import { Avatar, List, ListItem } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
@@ -175,7 +175,7 @@ class GroupTabBar extends React.Component {
 
 	render() {
 		let tabs = this.props.tabs.map((name, page) => {
-			const bgColor = this.props.activeTab === page ? '#E6E7E8' : 'white';
+			const bgColor = this.props.activeTab === page ? AppConst.COLOR_HIGHLIGHT : AppConst.COLOR_WHITE;
 
 			return (
 				<TouchableOpacity key={name} style={[ViewStyle.tabButton, {backgroundColor: bgColor}]} onPress={() => {this.props.goToPage(page)}}>
@@ -197,54 +197,36 @@ class LeaderboardRow extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.getLeaderboardRightButtons = this.getLeaderboardRightButtons.bind(this);
-		this.getLeaderboardRow = this.getLeaderboardRow.bind(this);
-
 		this.state = {
-			currentGroup: this.props.currentGroup,
+			group: this.props.group,
+			currentUser: this.props.currentUser,
 			item: this.props.item
 		}
 	}
 
-	getLeaderboardRightButtons(item) {
-		return [
-			<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={()=> this.onRemoveGroupAsync(item)}>
-				<Text style={[ViewStyle.swipeButtonText]}>Remove</Text>
-			</TouchableHighlight>
-		];
-	}
-
 	getLeaderboardRow(item) {
-		let nameFont = item.fullName == 'Invite' ? 'century-gothic' : 'century-gothic-bold';
+		let nameFont = item.user ? 'century-gothic-bold' : 'century-gothic';
 		return (
-			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => { if (item._id < 0) this.props.inviteToJoin(); }}>
+			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => { if (!item.user) this.props.inviteToJoin(); }}>
 				<View style={[ViewStyle.leaderboardRow]}><View style={[ViewStyle.leaderboardRowView]}>
-					<Text style={[ViewStyle.leaderboardRowText, {flex: 1}]}>{item.ranking == 0 || item.ranking == null ? '-' : item.ranking}</Text>
-					<Text style={[ViewStyle.leaderboardRowText, {flex: 6, fontFamily: nameFont}]}>{item.fullName}</Text>
-					<Text style={[ViewStyle.leaderboardRowPts, {flex: 3}]}>{`Pts: ${item.score || 0}`}</Text>
+					<Text style={[ViewStyle.leaderboardRowText, {flex: 1}]}>{item.rank > 0 ? item.ranking : '-'}</Text>
+					<Text style={[ViewStyle.leaderboardRowText, {flex: 6, fontFamily: nameFont}]}>{item.user ? item.user.fullName : 'Invite'}</Text>
+					<Text style={[ViewStyle.leaderboardRowPts, {flex: 3}]}>Pts: {item.score ? item.score : '0'}</Text>
 				</View></View>
 			</TouchableHighlight>
 		);
 	}
 
-	async onRemoveGroupAsync(data) {
-		this.setLoading(true);
-		let endPoint;
-
-		await BaseModel.delete(`groups/removeUser/${this.state.currentGroup._id}/${data._id}`).then(() => {
-			this.handleRefresh();
-			this.setState({usersLength: this.state.usersLength - 1});
-		}).catch((error) => {
-			BarMessages.showError(error, this.toasterMsg);
-		}).finally(() => {
-			this.setLoading(false);
-		});
-	};
-
 	render() {
-		if (this.state.currentGroup.isOwner && this.state.item._id > 0 && this.state.item._id != this.state.currentGroup.owner) {
+		if (this.state.item.user && this.state.group.owner == this.state.currentUser._id && this.state.group.owner != this.state.item.user._id) {
+			const removeButton = [
+				<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={()=> this.props.onRemove(this.state.item)}>
+					<Text style={[ViewStyle.swipeButtonText]}>Remove</Text>
+				</TouchableHighlight>
+			];
+
 			return (
-				<Swipeable rightButtons={this.getLeaderboardRightButtons(this.state.item)} rightButtonWidth={120}>
+				<Swipeable rightButtons={removeButton} rightButtonWidth={120}>
 					{this.getLeaderboardRow(this.state.item)}
 				</Swipeable>
 			);
@@ -268,10 +250,13 @@ export default class Group extends BaseComponent {
 	constructor(props) {
 		super(props);
 		this.getCurrentUserStat = this.getCurrentUserStat.bind(this);
+		this.getDaysLeft = this.getDaysLeft.bind(this);
+		this.showActionSheet = this.showActionSheet.bind(this);
+		this.tournamentSelected = this.tournamentSelected.bind(this);
+		this.removeUserFromGroup = this.removeUserFromGroup.bind(this);
 
 
 		this.inviteToJoin = this.inviteToJoin.bind(this);
-		this.showActionSheet = this.showActionSheet.bind(this);
 		this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
 		this.updatePlayerRankingList = this.updatePlayerRankingList.bind(this);
 		this.onGroupAsync = this.onGroupAsync.bind(this);
@@ -286,6 +271,8 @@ export default class Group extends BaseComponent {
 			isLoading: false,
 			group: {},
 			currentUser: {},
+			sheetNames: ['Cancel'],
+			tournamentIndex: 0,
 
 
 			currentGroup: {},
@@ -308,12 +295,19 @@ export default class Group extends BaseComponent {
 		};
 	}
 
+	setGroupData(group) {
+		const sheetNames = group.tournaments.map(cross => cross.tournament.name);
+		sheetNames.push('Cancel');
+		group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
+		this.setState({ group, sheetNames });
+	}
+
 	getCurrentUserStat(key) {
-		let stat = '-';
+		let stat = 0;
 
 		if (this.state.group.tournaments) {
-			this.state.group.tournaments[0].leaderboard.forEach(cross => {
-				if (cross.user._id == this.state.currentUser._id) {
+			this.state.group.tournaments[this.state.tournamentIndex].leaderboard.forEach(cross => {
+				if (cross.user && cross.user._id == this.state.currentUser._id) {
 					stat = cross[key];
 					return;
 				}
@@ -323,27 +317,63 @@ export default class Group extends BaseComponent {
 		return stat;
 	}
 
-	async getGroupData() {
+	getDaysLeft() {
+		let days = 0;
+
+		if (this.state.group.tournaments) {
+			let today = new Date();
+			let startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+			let endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
+			
+			if (today.getTime() < startDate.getTime() || today.getTime() > endDate.getTime()) {
+				return '-';
+			}
+
+			return Math.ceil((endDate.getTime() - today.getTime()) / 1000.0 / 60.0 / 60.0 / 24.0);
+
+		}
+	}
+
+	showActionSheet() {
+		if (this.state.group.tournaments) {
+			if (isAndroid) {
+				this.actionSheet.show();
+			} else {
+				ActionSheetIOS.showActionSheetWithOptions({options: this.state.sheetNames, cancelButtonIndex: this.state.sheetNames.length}, this.tournamentSelected);
+			}
+		}
+	}
+
+	tournamentSelected(index) {
+		if (index != this.state.sheetNames.length - 1) {
+			this.setState({tournamentIndex: index});
+		}
+	}
+
+	async removeUserFromGroup(cross) {
 		this.setState({isLoading: true});
-		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => {
-			this.setState({isLoading: false});
-			this.toasterMsg = error;
-
-		});
-
-		this.setState({isLoading: false, group: group});
+		const group = await BaseModel.delete(`group/removeUserFromGroup/${this.state.item.user._id}/${this.state.group._id}`).catch(error => this.toasterMsg = error);
+		this.setGroupData(group);
+		this.setState({isLoading: false});
 	}
 
 	async componentDidMount() {
-		this.getGroupData();
+		this.setState({isLoading: true});
+
+		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => this.toasterMsg = error);
 		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(error => this.toasterMsg = error);
-		this.setState({ currentUser })
+		this.setGroupData(group);
 
-
-		/*this.props.navigation.setParams({actionSheet: this.showActionSheet});
-		AsyncStorage.getItem(AppConst.USER_PROFILE).then(user => { this.setState({currentUser: JSON.parse(user)}); });
-		this.onGroupAsync(this.props.navigation.state.params.groupId);*/
+		this.setState({isLoading: false, currentUser: JSON.parse(currentUser)});
 	}
+
+
+
+
+
+
+
+
 
 	optionSelectedPressed(actionIndex) {
 		if (actionIndex == (this.state.tournamentsName.length - 1)) {
@@ -388,24 +418,8 @@ export default class Group extends BaseComponent {
 		});
 	}
 
-	showActionSheet() {
-		if (this.state.group.tournaments) {
-			if (isAndroid) {
-				this.ActionSheet.show();
-			} else {
-				const names = this.state.group.tournaments.map(cross => cross.tournament.name);
-				name.push('Cancel');
-
-				this.props.showActionSheetWithOptions({
-					options: names,
-					cancelButtonIndex: names.length
-				}, buttonIndex => this.optionSelectedPressed(buttonIndex));
-			}
-		}
-	}
-
 	setLoading(loading) {
-		this.setState({loading: loading});
+		this.setState({isLoading: loading});
 	}
 
 	updatePlayerRankingList(playerRanking) {
@@ -419,10 +433,11 @@ export default class Group extends BaseComponent {
 	};
 
 	inviteToJoin() {
+		const url = `http://${ClienHost}#/invite/${this.state.group._id}`;
 		Share.share({
-			message: `Join to our group '${this.state.currentGroup.name}' at http://${ClienHost}#/invite/${this.state.currentGroup.groupToken}`,
+			message: `Join to our group '${this.state.currentGroup.name}' at ${url}`,
 			title: 'Shank Group Invitation',
-			url: `http://${ClienHost}#/invite/${this.state.currentGroup.groupToken}`
+			url: `${url}`
 		}, {
 			subject: 'Shank Group Invitation',
 			dialogTitle: 'Shank Group Invitation',
@@ -430,7 +445,7 @@ export default class Group extends BaseComponent {
 				'com.apple.UIKit.activity.PostToTwitter',
 				'com.apple.uikit.activity.mail'
 			],
-			tintColor: 'green'
+			tintColor: AppConst.COLOR_GREEN
 		}).then(this._showResult).catch(err => console.log(err));
 	}
 
@@ -677,7 +692,7 @@ export default class Group extends BaseComponent {
 		return (
 			<View style={[MainStyles.container]}>
 				<Spinner visible={this.state.isLoading} animation='fade'></Spinner>
-				{this.state.group.tournaments && <ActionSheet ref={o => this.ActionSheet = o} options={this.state.group.tournaments} cancelButtonIndex={this.state.tournamentsName.length - 1} onPress={this.optionSelectedPressed}></ActionSheet>}
+				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.state.sheetNames} cancelButtonIndex={this.state.sheetNames.length} onPress={this.tournamentSelected} />
 
 				<View style={[ViewStyle.groupInformation]}>
 					<View>
@@ -690,8 +705,8 @@ export default class Group extends BaseComponent {
 						</View>
 
 						<View style={{flexDirection: 'row', alignItems: 'center'}}>
-							<TouchableHighlight underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => navigation.state.params.actionSheet()}>
-								<Text style={[ViewStyle.tournamentNameText]}>{this.state.group.tournaments && this.state.group.tournaments[0].tournament.name}</Text>
+							<TouchableHighlight underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
+								<Text style={[ViewStyle.tournamentNameText]}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
 							</TouchableHighlight>
 							<FontAwesome name="chevron-down"></FontAwesome>
 						</View>
@@ -720,23 +735,23 @@ export default class Group extends BaseComponent {
 					</View>
 					
 					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank') == 0 ? '-' : this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[0].leaderboard.length}</Text></View>
+						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank') == 0 ? '-' : this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length}</Text></View>
 						<View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
 					</View>
 
 					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>?</Text></View>
+						<View><Text style={[ViewStyle.statNumber]}>{this.getDaysLeft()}</Text></View>
 						<View><Text style={[ViewStyle.statLabel]}>Days Left</Text></View>
 					</View>
 				</View>
 
 				<View style={{flex: 6, flexDirection: 'row'}}>
-					{<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={AppConst.COLOR_BLUE} tabBarInactiveTextColor={AppConst.COLOR_BLUE} renderTabBar={() => <GroupTabBar />}>
+					<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={AppConst.COLOR_BLUE} tabBarInactiveTextColor={AppConst.COLOR_BLUE} renderTabBar={() => <GroupTabBar />}>
 						<View tabLabel='Leaderboard' style={[ViewStyle.tabViewContainer]}>
 							<Text style={[ViewStyle.rankColumnText]}>Rank</Text>
 							
 							<List containerStyle={[ViewStyle.leaderboardList]}>
-								<FlatList data={this.state.group.tournaments && this.state.group.tournaments[0].leaderboard} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow currentGroup={this.state.group} item={item} inviteToJoin={this.inviteToJoin}/>)} />
+								<FlatList data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow item={item} group={this.state.group} currentUser={this.state.currentUser} inviteToJoin={this.inviteToJoin} onRemove={this.removeUserFromGroup} />)} />
 							</List>
 						</View>
 
@@ -774,7 +789,7 @@ export default class Group extends BaseComponent {
 								</View>
 							: null}
 						</View>
-					</ScrollableTabView>}
+					</ScrollableTabView>
 				</View>
 
 				<DropdownAlert ref={ref => this.toasterMsg = ref} />
