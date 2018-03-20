@@ -168,6 +168,7 @@ export default ViewStyle = StyleSheet.create({
         paddingHorizontal: '10%'
     },
     cellSubview: {
+        opacity: 1.0,
         borderWidth: 0,
         borderColor: 'white',
         borderBottomWidth: 1,

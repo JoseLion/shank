@@ -237,7 +237,7 @@ export default class MainScreen extends BaseComponent {
 								<View style={ViewStyle.rowContainer}>
 									<View style={ViewStyle.rowSubView}>
 										<View style={{flex: 2}}>
-											<Image source={{uri: FileHost + item.photo}} resizeMode={'contain'} style={ViewStyle.groupImage} />
+											<Image source={{uri: FileHost + item.photo}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.groupImage} />
 										</View>
 
 										<View style={ViewStyle.grupInfoView}>
