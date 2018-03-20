@@ -11,7 +11,8 @@ const GroupSchema = new mongoose.Schema({
 		leaderboard: [{
 			user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
 			score: {type: Number, default: 0},
-			rank: {type: Number, default: 0}
+			rank: {type: Number, default: 0},
+			roaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}]
 		}]
 	}]
 }, {

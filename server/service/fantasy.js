@@ -13,21 +13,83 @@ export default {
 		};
 
 		return fetch(`https://api.fantasydata.net/golf/v2/JSON/Tournaments/${today.getFullYear()}`, options).then(async response => {
-			let json = await response.json().catch(error => handleError(error));
+			let json = await response.json().catch(handleError);
 			json = normalizeKeys(json);
 
 			json.forEach(async tournament => {
-				let found = await Tournament.findOne({tournamentID: tournament.tournamentID}).catch(error => handleError(error));
+				let found = await Tournament.findOne({tournamentID: tournament.tournamentID}).catch(handleError);
 
 				if (found) {
 					found.set(tournament);
-					await found.save().catch(error => handleError(error));
+					await found.save().catch(handleError);
 				} else {
-					await Tournament.create(tournament).catch(error => hendleError(error));
+					await Tournament.create(tournament).catch(handleError);
 				}
 			});
 
 			return json;
+		});
+	},
+
+	updatePlayers: function() {
+		console.log("Fetching players from fantasydata.net...");
+
+		const Player = mongoose.model('Player');
+		const options = {
+			method: 'GET',
+			headers: {'Ocp-Apim-Subscription-Key': '519f4de87ff044afb2796f57a6583a4d'}
+		};
+
+		return fetch('https://api.fantasydata.net/golf/v2/JSON/Players', options).then(async response => {
+			let json = await response.json().catch(handleError);
+			json = normalizeKeys(json);
+
+			json.forEach(async player => {
+				let found = await Player.findOne({playerID: player.playerID}).catch(handleError);
+
+				if (found) {
+					found.set(player);
+					await found.save().catch(handleError);
+				} else {
+					await Player.create(player).catch(handleError);
+				}
+			});
+
+			return json;
+		});
+	},
+
+	updateLeaderboard: function(tournamentId) {
+		console.log("Fetching leaderboard of tournament " + tournamentId + " from fantasydata.net...");
+
+		const Leaderboard = mongoose.model('Leaderboard');
+		const Tournament = mongoose.model('Tournament');
+		const Player = mongoose.model('Player');
+		const options = {
+			method: 'GET',
+			headers: {'Ocp-Apim-Subscription-Key': '519f4de87ff044afb2796f57a6583a4d'}
+		};
+
+		return fetch(`https://api.fantasydata.net/golf/v2/JSON/Leaderboard/${tournamentId}`, options).then(async response => {
+			let json = await response.json().catch(handleError);
+			json = normalizeKeys(json);
+			const tournament = await Tournament.findOne({tournamentID: json.tournament.tournamentID}).catch(handleError);
+
+			json.players.forEach(async cross => {
+				cross.tournament = tournament;
+				cross.player = await Player.findOne({playerID: cross.playerID}).catch(handleError);
+
+				let found = await Leaderboard.findOne({playerTournamentID: cross.playerTournamentID}).catch(handleError);
+
+				if (found) {
+					found.set(cross);
+					await found.save().catch(handleError);
+				} else {
+					await Leaderboard.create(cross).catch(handleError);
+				}
+			});
+
+			return json.players;
 		});
 	}
 }

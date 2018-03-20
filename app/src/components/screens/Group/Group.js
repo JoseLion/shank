@@ -19,7 +19,6 @@ class RoasterRow extends BaseComponent {
 		super(props);
 		this.addPlayer = this.addPlayer.bind(this);
 		this.getCellBorderStyle = this.getCellBorderStyle.bind(this);
-		this.getRoasterRightButtons = this.getRoasterRightButtons.bind(this);
 		this.animateCell = this.animateCell.bind(this);
 	}
 
@@ -67,22 +66,20 @@ class RoasterRow extends BaseComponent {
 		return {borderTopWidth: 0.5, borderBottomWidth: 0.5};
 	}
 
-	getRoasterRightButtons() {
-		return [
-			<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={this.addPlayer}>
-				<Text style={[ViewStyle.swipeButtonText]}>Change</Text>
-			</TouchableHighlight>
-		];
-	}
-
 	render() {
-		if (this.props.data != null && this.props.data.playerId) {
+		if (this.props.data != null && this.props.data._id > 0) {
+			const changeButton = [
+				<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={this.addPlayer}>
+					<Text style={[ViewStyle.swipeButtonText]}>Change</Text>
+				</TouchableHighlight>
+			];
+
 			return (
-				<Swipeable rightButtons={this.getRoasterRightButtons()} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
+				<Swipeable rightButtons={changeButton} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
 					<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} {...this.props.sortHandlers}>
 						<View style={[ViewStyle.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
 							<View style={{flex: 1}}>
-								<Text style={[ViewStyle.roasterPosition]}>{this.props.data.position}</Text>
+								<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 							</View>
 
 							<View style={{flex: 2, marginRight: '2.5%'}}>
@@ -91,7 +88,7 @@ class RoasterRow extends BaseComponent {
 
 							<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
 								<View style={{flex: 1}}>
-									<Text style={[ViewStyle.roasterName]}>{this.props.data.fullName}</Text>
+									<Text style={[ViewStyle.roasterName]}>{this.props.data.firstName} {this.props.data.lastName}</Text>
 								</View>
 
 								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -273,6 +270,7 @@ export default class Group extends BaseComponent {
 			currentUser: {},
 			sheetNames: ['Cancel'],
 			tournamentIndex: 0,
+			currentUserIndex: 0,
 
 
 			currentGroup: {},
@@ -298,6 +296,19 @@ export default class Group extends BaseComponent {
 	setGroupData(group) {
 		const sheetNames = group.tournaments.map(cross => cross.tournament.name);
 		sheetNames.push('Cancel');
+
+		group.tournaments[this.state.tournamentIndex].leaderboard.forEach((cross, i) => {
+			if (cross.roaster.length == 0) {
+				for (let i = -1; i >= -5; i--) {
+					cross.roaster.push({_id: i});
+				}
+			}
+
+			if (cross.user._id == this.state.currentUser._id) {
+				this.setState({currentUserIndex: i});
+			}
+		});
+
 		group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
 		this.setState({ group, sheetNames });
 	}
@@ -362,9 +373,10 @@ export default class Group extends BaseComponent {
 
 		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => this.toasterMsg = error);
 		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(error => this.toasterMsg = error);
+		this.setState({currentUser: JSON.parse(currentUser)});
 		this.setGroupData(group);
 
-		this.setState({isLoading: false, currentUser: JSON.parse(currentUser)});
+		this.setState({isLoading: false});
 	}
 
 
@@ -446,7 +458,7 @@ export default class Group extends BaseComponent {
 				'com.apple.uikit.activity.mail'
 			],
 			tintColor: AppConst.COLOR_GREEN
-		}).then(this._showResult).catch(err => console.log(err));
+		}).catch(err => console.log(err));
 	}
 
 	goToCheckout() {
@@ -690,7 +702,7 @@ export default class Group extends BaseComponent {
 		let navigation = this.props.navigation;
 
 		return (
-			<View style={[MainStyles.container]}>
+			<View style={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}}>
 				<Spinner visible={this.state.isLoading} animation='fade'></Spinner>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.state.sheetNames} cancelButtonIndex={this.state.sheetNames.length} onPress={this.tournamentSelected} />
 
@@ -735,7 +747,7 @@ export default class Group extends BaseComponent {
 					</View>
 					
 					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank') == 0 ? '-' : this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length}</Text></View>
+						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank') == 0 ? '-' : this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length - 1}</Text></View>
 						<View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
 					</View>
 
@@ -758,28 +770,9 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
 							<RoundLabels tournament={this.state.tournamentData}></RoundLabels>
 							
-							<SortableListView data={this.state.playerRanking} order={this.state.order} disableSorting={this.isSortingDisabled()} activeOpacity={1.0} onMoveStart={() => { lockScrollTabView = true; }}
-							onMoveEnd={() => { lockScrollTabView = false; }} onRowMoved={e => {
-								this.state.order.splice(e.to, 0, this.state.order.splice(e.from, 1)[0]);
-								let playerRanking = [];
-								Object.assign(playerRanking, this.state.playerRanking);
-								playerRanking[e.from].position = (e.to + 1);
-						
-								if (e.to > e.from) {
-									for (let idx = e.from + 1 ; idx > e.from && idx <= e.to ; idx++) {
-										playerRanking[idx].position = playerRanking[idx].position - 1;
-									}
-								} else if (e.to < e.from) {
-									for (let idx = e.to ; idx >= e.to && idx < e.from ; idx++) {
-										playerRanking[idx].position = playerRanking[idx].position + 1;
-									}
-								}
-
-								this.updatePlayerRankingList(playerRanking);
-								this.forceUpdate();
-							}} renderRow={(row, rowId, sectionId) => (
-								<RoasterRow navigation={navigation} data={row} rowId={sectionId} group={this.state.currentGroup} tournament={this.state.currentTournament} currentRoaster={this.state.playerRanking} updateRoaster={this.updateRoaster}/>
-							)}></SortableListView>
+							<SortableListView data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster} disableSorting={this.isSortingDisabled()} activeOpacity={1.0} onMoveStart={() => lockScrollTabView = true} renderRow={(row, rowId, sectionId) => (
+								<RoasterRow navigation={navigation} data={row} rowId={sectionId} group={this.state.group} tournament={this.state.currentTournament} currentRoaster={this.state.playerRanking} updateRoaster={this.updateRoaster}/>
+							)} />
 
 							{this.roasterHasChanged() ?
 								<View style={[ViewStyle.checkoutButtonView]}>

@@ -164,19 +164,18 @@ export default ViewStyle = StyleSheet.create({
         fontSize: Style.FONT_14
     },
     cellMainView: {
-        paddingLeft: '10%',
-        paddingRight: '10%',
-        paddingTop: '0%',
-        paddingBottom: '0%',
-        borderBottomWidth: 0,
-        backgroundColor: 'white'
+        flex: 1,
+        paddingHorizontal: '10%'
     },
     cellSubview: {
-        borderColor: AppConst.COLOR_GRAY,
+        borderWidth: 0,
+        borderColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: AppConst.COLOR_GRAY,
         paddingVertical: '7.5%',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     roasterPosition: {
         fontFamily: 'century-gothic',
@@ -200,7 +199,7 @@ export default ViewStyle = StyleSheet.create({
         color: AppConst.COLOR_GRAY
     },
     tabViewContainer: {
-        backgroundColor: 'white',
+        backgroundColor: AppConst.COLOR_WHITE,
         height:'100%',
         width:'100%'
     },
