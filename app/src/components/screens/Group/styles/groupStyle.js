@@ -21,8 +21,8 @@ export default ViewStyle = StyleSheet.create({
         flex:3,
         flexDirection: 'column',
         justifyContent: 'space-around',
-        paddingVertical: '5%',
-        paddingHorizontal: '2.5%'
+        marginLeft: '2%',
+        paddingRight: '5%'
     },
     groupNameText: {
         fontFamily: 'century-gothic',
@@ -168,9 +168,6 @@ export default ViewStyle = StyleSheet.create({
         paddingHorizontal: '10%'
     },
     cellSubview: {
-        opacity: 1.0,
-        borderWidth: 0,
-        borderColor: 'white',
         borderBottomWidth: 1,
         borderBottomColor: AppConst.COLOR_GRAY,
         paddingVertical: '7.5%',
@@ -182,6 +179,11 @@ export default ViewStyle = StyleSheet.create({
         fontFamily: 'century-gothic',
         fontSize: Style.FONT_16,
         color: AppConst.COLOR_GREEN
+    },
+    roasterImage: {
+        width: Style.EM(3),
+        height: Style.EM(3),
+        borderRadius: Style.EM(3) / 2
     },
     roasterEmpty: {
         fontFamily: 'century-gothic',

@@ -132,7 +132,7 @@ export default class AddGroup extends BaseComponent {
 
 				{isAndroid ?
 					<View style={[ViewStyle.pickerView, ViewStyle.androidPicker]}>
-						<Picker itemStyle={[ViewStyle.pickerText]} selectedValue={this.state.group.tournaments[0].tournament} onValueChange={tournament => this.updateGroup('tournaments', [{ tournament }])}>
+						<Picker itemStyle={[ViewStyle.pickerText]} selectedValue={this.state.group.tournaments[0] && this.state.group.tournaments[0].tournament} onValueChange={tournament => this.updateGroup('tournaments', [{ tournament }])}>
 							<Picker.Item color={AppConst.COLOR_GRAY} value='' label='Pick a tournament' />
 							{tournamentList}
 						</Picker>

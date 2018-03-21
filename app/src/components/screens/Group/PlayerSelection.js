@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { Text, TouchableHighlight, TouchableOpacity, View, TextInput, Image } from 'react-native';
+import { Text, TouchableHighlight, TouchableOpacity, View, TextInput, Image, FlatList } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import SortableListView from 'react-native-sortable-listview';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -13,11 +13,14 @@ class PlayerRow extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.isInRoaster = this.isInRoaster.bind(this);
-		this.state = {currentRoaster: this.props.currentRoaster, oneSelected: false};
+		//this.isInRoaster = this.isInRoaster.bind(this);
+		this.state = {
+			cross: this.props.cross,
+			maxReached: this.props.maxReached
+		};
 	}
 
-	isInRoaster(player) {
+	/*isInRoaster(player) {
 		return this.state.currentRoaster.indexOf(player) > -1;
 	}
 
@@ -47,28 +50,31 @@ class PlayerRow extends React.Component {
 
 		this.setState({currentRoaster: roaster});
 		this.props.setCurrentRoaster(this.state.currentRoaster);
-	}
+	}*/
 
 	render() {
 		return (
-			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.playerSelected(this.props.player)}>
+			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.props.onPress}>
 				<View style={[ViewStyle.cellView]}>
 					<View style={{flex: 1}}>
-						<Avatar small rounded source={{uri: this.props.player.photoUrl}} />
+						<Image source={{uri: this.state.cross.player && this.state.cross.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.playerImage} />
 					</View>
 
 					<View style={{flex: 6}}>
-						<Text style={[ViewStyle.playerName]}>{this.props.player.fullName}</Text>
+						<Text style={[ViewStyle.playerName]}>{this.state.cross.player && (this.state.cross.player.firstName + ' ' + this.state.cross.player.lastName)}</Text>
 					</View>
 
 					<View style={{flex: 2}}>
-						<Text style={[ViewStyle.pickRate]}>{this.props.player.pickRate != null ? this.props.player.pickRate : 0}{'%'}</Text>
+						<Text style={[ViewStyle.pickRate]}>0%</Text>
 					</View>
 
 					<View style={{flex: 2, alignItems: 'center'}}>
-						<View style={[ViewStyle.checkView, (this.isInRoaster(this.props.player) ? ViewStyle.selectedView : null)]}>
-							<FontAwesome name='check' size={23} style={[ViewStyle.check, (this.isInRoaster(this.props.player) ? ViewStyle.selectedCheck : null)]} />
-						</View>
+						{this.state.cross.isSelected || !this.state.maxReached ?
+							<View style={[ViewStyle.checkView, (this.state.cross.isSelected ? ViewStyle.selectedView : null)]}>
+								<FontAwesome name='check' size={23} style={[ViewStyle.check, (this.state.cross.isSelected ? ViewStyle.selectedCheck : null)]} />
+							</View>
+						: null}
+							
 					</View>
 				</View>
 			</TouchableHighlight>
@@ -79,60 +85,86 @@ class PlayerRow extends React.Component {
 export default class PlayerSelection extends BaseComponent {
 
 	static navigationOptions = ({navigation}) => {
-		return {
-			title: !navigation.state.params.isSearching ? 'CHOOSE PLAYER' : null,
-			headerTintColor: AppConst.COLOR_WHITE,
-			headerTitleStyle: !navigation.state.params.isSearching ? {alignSelf: 'center', color: AppConst.COLOR_WHITE} : null,
-			headerStyle: {backgroundColor: AppConst.COLOR_BLUE},
-			headerLeft: (
-				!navigation.state.params.isSearching ?
-					<TouchableHighlight onPress={() => navigation.goBack(null)}>
-						<Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
-					</TouchableHighlight>
-				:
+		/*if (navigation.state.params.isSearching) {
+			return {
+				title: null,
+				headerTitleStyle: null,
+				headerLeft: (
 					<View style={[ViewStyle.searchInputView]}>
 						<Image source={require('../../../../resources/search-icon.png')} resizeMode="contain" style={[ViewStyle.searchIcon]}></Image>
 						<TextInput style={[ViewStyle.searchInput]} underlineColorAndroid="transparent" placeholderTextColor="#FFF" placeholder={'Search Players'} clearButtonMode="always" onChangeText={navigation.state.params.searchChanged}></TextInput>
 					</View>
-			),
-			headerRight: (
-				!navigation.state.params.isSearching ?
-					<TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.setParams({isSearching: true})}>
-						<FontAwesome name='search' style={[MainStyles.headerIconButton]} />
-					</TouchableHighlight>
-				:
+				),
+				headerRight: (
 					<TouchableOpacity style={[ViewStyle.cancelSearchButton]} onPress={() => {
 						navigation.state.params.searchChanged("");
 						navigation.setParams({isSearching: false});
 					}}>
 						<Text style={[ViewStyle.cancelSearchText]}>Cancel</Text>
 					</TouchableOpacity>
-			)
-		};
+				)
+			};
+		} else {*/
+			return {
+				title: 'CHOOSE PLAYER',
+				headerRight: (
+					<TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.setParams({isSearching: true})}>
+						<FontAwesome name='search' style={[MainStyles.headerIconButton]} />
+					</TouchableHighlight>
+				)
+			};
+		//}
 	}
 
 	constructor(props) {
 		super(props);
+		this.playerSelected = this.playerSelected.bind(this);
+
 		this.setCurrentRoaster = this.setCurrentRoaster.bind(this);
 		this.searchChanged = this.searchChanged.bind(this);
 		this.save = this.save.bind(this);
 		this.state = {
-			currentRoaster: this.props.navigation.state.params.currentRoaster ? this.props.navigation.state.params.currentRoaster : [] ,
-			currentPosition: this.props.navigation.state.params.currentPosition,
+			isLoading: false,
+			selectCount: 0,
+			roaster: this.props.navigation.state.params.roaster ? this.props.navigation.state.params.roaster : [] ,
+			position: this.props.navigation.state.params.position,
 			group: this.props.navigation.state.params.group,
-			tournament: this.props.navigation.state.params.tournament,
-			updateRoaster: this.props.navigation.state.params.updateRoaster,
+			tournamentIndex: this.props.navigation.state.params.tournamentIndex,
+			currentUserIndex: this.props.navigation.state.params.currentUserIndex,
 			searchPlayers: [],
-			players: [],
+			leaderboard: [],
 			loading: false
 		};
 	}
 
-	componentDidMount() {
-		this.props.navigation.setParams({searchPlayer: this.searchPlayer});
-		this.props.navigation.setParams({searchChanged: this.searchChanged});
-		this.initialRequest();
+	playerSelected(cross) {
+		let selectCount = this.state.selectCount;
+		const leaderboard = [...this.state.leaderboard];
+		const index = leaderboard.indexOf(cross);
+
+		if (leaderboard[index].isSelected) {
+			leaderboard[index].isSelected = false;
+			selectCount--;
+		} else {
+			leaderboard[index].isSelected = true;
+			selectCount++;
+		}
+
+		this.setState({ leaderboard, selectCount });
 	}
+
+	async componentDidMount() {
+		//this.props.navigation.setParams({searchPlayer: this.searchPlayer});
+		this.props.navigation.setParams({searchChanged: this.searchChanged});
+
+		this.setState({isLoading: true});
+		let leaderboard = await BaseModel.get('leaderboard/findByTournament/' + this.state.group.tournaments[this.state.tournamentIndex].tournament._id).catch(error => this.toasterMsg = error);
+		this.setState({/*leaderboard: leaderboard, */isLoading: false});
+	}
+
+
+
+
 
 	setLoading(loading) {
 		this.setState({loading: loading});
@@ -182,7 +214,7 @@ export default class PlayerSelection extends BaseComponent {
 				this.props.navigation.goBack(null);
 			}).catch(error => {
 				console.log("error: ", error);
-				BarMessages.showError(error, this.validationMessage);
+				BarMessages.showError(error, this.toasterMsg);
 				this.setLoading(false);
 			});
 		}
@@ -231,21 +263,23 @@ export default class PlayerSelection extends BaseComponent {
 	render() {
 		return (
 			<View style={[ViewStyle.mainContainer]}>
-				<Spinner visible={this.state.loading} animation='fade' />
+				<Spinner visible={this.state.isLoading} animation='fade' />
 
-				<Text style={[ViewStyle.tournamentName]}>{this.state.tournament.tournamentName}</Text>
+				<Text style={[ViewStyle.tournamentName]}>{this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
 
 				<View style={[ViewStyle.headerView]}>
 					<Text style={[ViewStyle.headerText, {flex: 7}]}>Players</Text>
 
 					<Text style={[ViewStyle.headerText, {flex: 2}]}>Pick %</Text>
 
-					<Text style={[ViewStyle.headerText, {flex: 2}]}>Select {this.state.currentPosition ? '1' : '5'}</Text>
+					<Text style={[ViewStyle.headerText, {flex: 2}]}>Select {this.state.position ? '1' : '5'}</Text>
 				</View>
 				
-				<SortableListView data={this.state.players} renderRow={(row) => (<PlayerRow player={row} currentRoaster={this.state.currentRoaster} setCurrentRoaster={this.setCurrentRoaster} currentPosition={this.state.currentPosition} />)} />
+				<FlatList data={this.state.leaderboard} keyExtractor={item => item._id} renderItem={({item}) => (
+					<PlayerRow cross={item} maxReached={this.state.selectCount == (this.state.position ? 1 : 5)} onPress={() => this.playerSelected(item)} />
+				)} />
 
-				{this.state.currentRoaster.length == (this.state.currentPosition ? 1 : 5) ?
+				{this.state.selectCount == (this.state.currentPosition ? 1 : 5) ?
 					<View style={[ViewStyle.saveView]}>
 						<TouchableOpacity onPress={this.save} style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
 							<Text style={[MainStyles.buttonText]}>{this.hasTournamentBegan() ? 'Done' : 'Save'}</Text>
@@ -253,7 +287,7 @@ export default class PlayerSelection extends BaseComponent {
 					</View>
 				: null}
 
-				<DropdownAlert ref={ref => this.validationMessage = ref} />
+				<DropdownAlert ref={ref => this.toasterMsg = ref} />
 			</View>
 		);
 	}

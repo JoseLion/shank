@@ -13,16 +13,16 @@ import { BaseComponent, BaseModel, FileHost, GolfApiModel, MainStyles, AppConst,
 import ViewStyle from './styles/groupStyle';
 import { ClienHost } from '../../../config/variables';
 
-class RoasterRow extends BaseComponent {
+class RoasterRow extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.addPlayer = this.addPlayer.bind(this);
-		this.getCellBorderStyle = this.getCellBorderStyle.bind(this);
+		//this.addPlayer = this.addPlayer.bind(this);
 		this.animateCell = this.animateCell.bind(this);
+		this.onPress = this.onPress.bind(this);
 	}
 
-	addPlayer() {
+	/*addPlayer() {
 		super.navigateToScreen('PlayerSelection', {
 			currentRoaster: this.props.currentRoaster.filter(player => player.playerId != null),
 			currentPosition: this.props.data.playerId ? Number.parseInt(this.props.rowId) + 1 : null,
@@ -34,7 +34,7 @@ class RoasterRow extends BaseComponent {
 		if (this.swipe != null) {
 			this.swipe.recenter()
 		}
-	}
+	}*/
 
 	animateCell() {
 		const {pan} = this.swipe.state;
@@ -57,19 +57,19 @@ class RoasterRow extends BaseComponent {
 			easing: Easing.elastic(0.5)
 		}).start(() => this.swipe.recenter());
 	}
-	
-	getCellBorderStyle(index) {
-		if (index == 0) {
-			return {borderBottomWidth: 0.5};
-		}
 
-		return {borderTopWidth: 0.5, borderBottomWidth: 0.5};
+	onPress() {
+		this.props.onPress();
+
+		if (this.swipe != null) {
+			this.swipe.recenter()
+		}
 	}
 
 	render() {
-		if (this.props.data != null && this.props.data._id > 0) {
+		if (this.props.roaster != null && this.props.roaster._id > 0) {
 			const changeButton = [
-				<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={this.addPlayer}>
+				<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={this.onPress}>
 					<Text style={[ViewStyle.swipeButtonText]}>Change</Text>
 				</TouchableHighlight>
 			];
@@ -77,27 +77,27 @@ class RoasterRow extends BaseComponent {
 			return (
 				<Swipeable rightButtons={changeButton} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
 					<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} {...this.props.sortHandlers}>
-						<View style={[ViewStyle.cellSubview, this.getCellBorderStyle(this.props.rowId), {paddingVertical: '5%'}]}>
+						<View style={[ViewStyle.cellSubview, {paddingVertical: '5%'}]}>
 							<View style={{flex: 1}}>
 								<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 							</View>
 
 							<View style={{flex: 2, marginRight: '2.5%'}}>
-								<Avatar medium rounded source={{uri: this.props.data.photoUrl}} />
+								<Image source={{uri: this.props.roaster.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.roasterImage} />
 							</View>
 
 							<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
 								<View style={{flex: 1}}>
-									<Text style={[ViewStyle.roasterName]}>{this.props.data.firstName} {this.props.data.lastName}</Text>
+									<Text style={[ViewStyle.roasterName]}>{this.props.roaster.player.firstName} {this.props.roaster.player.lastName}</Text>
 								</View>
 
 								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
 									<View style={{flex: 1}}>
-										<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.props.data.tournamentPosition > 0 ? this.props.data.tournamentPosition : '-'}`}</Text>
+										<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.props.roaster.rank > 0 ? this.props.roaster.rank : '-'}`}</Text>
 									</View>
 
 									<View style={{flex: 1}}>
-										<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.props.data.score == null ? '-' : this.props.data.score}`}</Text>
+										<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.props.roaster.totalScore == null ? '-' : this.props.roaster.totalScore}`}</Text>
 									</View>
 								</View>
 							</View>
@@ -113,8 +113,8 @@ class RoasterRow extends BaseComponent {
 			);
 		} else {
 			return (
-				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.addPlayer}>
-					<View style={[ViewStyle.cellSubview, this.getCellBorderStyle(this.props.rowId)]}>
+				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.onPress}>
+					<View style={[ViewStyle.cellSubview]}>
 						<Text style={[ViewStyle.roasterPosition, {flex: 1}]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 						<Text style={[ViewStyle.roasterEmpty, {flex: 10}]}>Empty Slot</Text>
 					</View>
@@ -251,6 +251,7 @@ export default class Group extends BaseComponent {
 		this.showActionSheet = this.showActionSheet.bind(this);
 		this.tournamentSelected = this.tournamentSelected.bind(this);
 		this.removeUserFromGroup = this.removeUserFromGroup.bind(this);
+		this.managePlayers = this.managePlayers.bind(this);
 
 
 		this.inviteToJoin = this.inviteToJoin.bind(this);
@@ -366,6 +367,16 @@ export default class Group extends BaseComponent {
 		const group = await BaseModel.delete(`group/removeUserFromGroup/${this.state.item.user._id}/${this.state.group._id}`).catch(error => this.toasterMsg = error);
 		this.setGroupData(group);
 		this.setState({isLoading: false});
+	}
+
+	managePlayers(row, index) {
+		this.props.navigation.navigate('PlayerSelection', {
+			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster.filter(cross => cross.player != null),
+			position: row.player ? Number.parseInt(index) : null,
+			group: this.state.group,
+			tournamentIndex: this.state.tournamentIndex,
+			currentUserIndex: this.state.currentUserIndex
+		});
 	}
 
 	async componentDidMount() {
@@ -716,12 +727,13 @@ export default class Group extends BaseComponent {
 							<Text style={[ViewStyle.groupNameText]}>{this.state.group.name}</Text>
 						</View>
 
-						<View style={{flexDirection: 'row', alignItems: 'center'}}>
-							<TouchableHighlight underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
-								<Text style={[ViewStyle.tournamentNameText]}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
-							</TouchableHighlight>
-							<FontAwesome name="chevron-down"></FontAwesome>
-						</View>
+						
+						<TouchableOpacity underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
+							<View style={{flexDirection: 'row', alignItems: 'center'}}>
+								<Text style={[ViewStyle.tournamentNameText]} numberOfLines={1}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
+								<FontAwesome name="chevron-down" />
+							</View>
+						</TouchableOpacity>
 					</View>
 
 					<View style={{flex:2}}>
@@ -770,8 +782,8 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
 							<RoundLabels tournament={this.state.tournamentData}></RoundLabels>
 							
-							<SortableListView data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster} disableSorting={this.isSortingDisabled()} activeOpacity={1.0} onMoveStart={() => lockScrollTabView = true} renderRow={(row, rowId, sectionId) => (
-								<RoasterRow navigation={navigation} data={row} rowId={sectionId} group={this.state.group} tournament={this.state.currentTournament} currentRoaster={this.state.playerRanking} updateRoaster={this.updateRoaster}/>
+							<SortableListView data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster} disableSorting={this.isSortingDisabled()} renderRow={(row, sectionId, index) => (
+								<RoasterRow roaster={row} rowId={index} onPress={() => this.managePlayers(row, index)} />
 							)} />
 
 							{this.roasterHasChanged() ?

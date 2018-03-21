@@ -12,10 +12,12 @@ import appSettingModel from './app_settings/appSetting.model';
 import playerModel from './player/player.model';
 
 
+
 import authRoute from './auth/auth.route';
 import groupRoute from './group/group.route';
 import tournamentRoute from './tournament/tournament.route';
 import archiveRoute from './archive/archive.route';
+import leaderboardRoute from './leaderboard/leaderboard.route';
 
 import profileRoute from './profiles/profile.routes';
 import userRoute from './users/user.routes';
@@ -27,6 +29,7 @@ export default function(app) {
 	app.use('/api', groupRoute(app));
 	app.use('/api', tournamentRoute(app));
 	app.use('/api', archiveRoute(app));
+	app.use('/api', leaderboardRoute(app));
 
 	app.use('/api', profileRoute(app));
 	app.use('/api', userRoute(app));

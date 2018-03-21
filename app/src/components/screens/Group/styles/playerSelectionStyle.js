@@ -23,6 +23,11 @@ const ViewStyle = StyleSheet.create({
 		borderBottomWidth: 0.5,
 		borderColor: AppConst.COLOR_GRAY
 	},
+	playerImage: {
+		width: Style.EM(2),
+		height: Style.EM(2),
+		borderRadius: Style.EM(2) / 2.0
+	},
 	playerName: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_15_5,

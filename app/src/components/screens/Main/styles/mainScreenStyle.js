@@ -22,7 +22,8 @@ export default StyleSheet.create({
 	mainContainer: {
 		flex: 1,
 		width: '100%',
-		height: '100%'
+		height: '100%',
+		backgroundColor: AppConst.COLOR_WHITE
 	},
 	rowButton: {
 		width: '100%'

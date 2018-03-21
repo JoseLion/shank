@@ -63,5 +63,19 @@ export default function(app) {
 		response.ok(group);
 	});
 
+	router.get(`${basePath}/addUserToGroup/:groupId`, async (request, response) => {
+		let user = await User.findOne({_id: request.payload._id}).catch(handleMongoError);
+		let group = await Group.findOne({_id: request.params.groupId}).catch(handleMongoError);
+
+		group.tournaments.forEach(tournament => {
+			tournament.leaderboard.push({ user });
+		});
+
+		await group.save().catch(handleMongoError);
+		let userGroups = await Group.find({status: true, owner: request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+
+		response.ok(userGroups);
+	});
+
 	return router;
 }

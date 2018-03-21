@@ -102,6 +102,24 @@ export default class MainScreen extends BaseComponent {
 		this.props.navigation.navigate('Group', {groupId: group._id});
 	}
 
+	handleOpenURL(url) {
+		let queryString = url.url.replace(Constants.linkingUri, '');
+
+		if (queryString) {
+			let data = qs.parse(queryString);
+			
+			if (data.group) {
+				this.addToGroup(data);
+			}
+		}
+	}
+
+	async addToGroup(data) {
+		this.setState({isLoading: true});
+		const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(error => this.toasterMsg = error);
+		this.setState({isLoading: false, groups: groups});
+	}
+
 	async componentDidMount() {
 		const authToken = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(error => this.toasterMsg = error);
 		this.setState({auth: authToken});
@@ -125,44 +143,19 @@ export default class MainScreen extends BaseComponent {
 		}
 	}
 
-
-
-
-
-
-
 	componentWillUnmount() {
 		Linking.removeEventListener('url', e => {});
 	}
+
+
+
+
+
 
 	async getGroupList() {
 		let user = await AsyncStorage.getItem(AppConst.USER_PROFILE);
 		this.setState({currentUser: JSON.parse(user)})
 		this.onListGroupAsync();
-	}
-
-	handleOpenURL(url) {
-		let queryString = url.url.replace(Constants.linkingUri, '');
-		if (queryString) {
-			let data = qs.parse(queryString);
-			if (data.group) {
-				this.addToGroup(data);
-			}
-		}
-	}
-
-	async addToGroup(data) {
-		AsyncStorage.getItem(AppConst.USER_PROFILE).then(profile => {
-			profile = JSON.parse(profile);
-			this.setLoading(true);
-
-			BaseModel.put(`groups/addUser/${data.group}/${profile._id}`).then((groups) => {
-				this.getGroupList();
-			}).catch(error => {
-				this.setLoading(false);
-				BarMessages.showError(error, this.toasterMsg);
-			});
-		});
 	}
 
 	setLoading(loading) {
