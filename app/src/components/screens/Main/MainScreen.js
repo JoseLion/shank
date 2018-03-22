@@ -72,7 +72,7 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	getOwnerStat(group, key) {
-		let stat;
+		let stat = 0;
 
 		group.tournaments[0].leaderboard.forEach(cross => {
 			if (cross.user == group.owner) {
@@ -81,7 +81,7 @@ export default class MainScreen extends BaseComponent {
 			}
 		});
 
-		return stat;
+		return (stat > 0 ? stat : '-');
 	}
 
 	getRemoveButton(group) {
@@ -92,14 +92,27 @@ export default class MainScreen extends BaseComponent {
 		)];
 	}
 
-	removeGroup(group) {
+	async removeGroup(group) {
 		if (this.swipe) {
 			this.swipe.recenter();
 		}
+
+		this.setState({isLoading: true});
+		await BaseModel.delete('group/delete/' + group._id).catch(error => this.toasterMsg = error);
+
+		let index = this.state.groups.indexOf(group);
+		let groups = [...this.state.groups];
+		groups.splice(index, 1);
+
+		this.setState({groups: groups, isLoading: false});
 	}
 
 	goToGroup(group) {
 		this.props.navigation.navigate('Group', {groupId: group._id});
+
+		if (this.swipe) {
+			this.swipe.recenter();
+		}
 	}
 
 	handleOpenURL(url) {
@@ -234,8 +247,8 @@ export default class MainScreen extends BaseComponent {
 										</View>
 
 										<View style={ViewStyle.grupInfoView}>
-											<Text style={ViewStyle.groupName}>{item.name.toUpperCase()}</Text>
-											<Text style={ViewStyle.groupTournament}>{item.tournaments[0].tournament.name}</Text>
+											<Text style={ViewStyle.groupName} numberOfLines={1}>{item.name.toUpperCase()}</Text>
+											<Text style={ViewStyle.groupTournament} numberOfLines={1}>{item.tournaments[0].tournament.name}</Text>
 											<View style={ViewStyle.groupStatsView}>
 												<View style={ViewStyle.groupStatsSubView}>
 													<Text style={ViewStyle.groupStatsLabel}>Score:</Text>
@@ -244,7 +257,7 @@ export default class MainScreen extends BaseComponent {
 
 												<View style={ViewStyle.groupStatsSubView}>
 													<Text style={ViewStyle.groupStatsLabel}>Rank:</Text>
-													<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'rank')}/5</Text>
+													<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'rank')}/{item.tournaments[0].leaderboard.length}</Text>
 												</View>
 											</View>
 										</View>

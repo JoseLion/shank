@@ -11,7 +11,8 @@ const widthSpace = '3%';
 
 const ViewStyle = StyleSheet.create({
 	rowCell: {
-		paddingHorizontal: widthSpace
+		paddingHorizontal: widthSpace,
+		backgroundColor: AppConst.COLOR_WHITE
 	},
 	cellView: {
 		flex: 1,
@@ -19,8 +20,7 @@ const ViewStyle = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingVertical: '1%',
-		borderTopWidth: 0.5,
-		borderBottomWidth: 0.5,
+		borderBottomWidth: 1,
 		borderColor: AppConst.COLOR_GRAY
 	},
 	playerImage: {
@@ -41,28 +41,27 @@ const ViewStyle = StyleSheet.create({
 	},
 	checkView: {
 		justifyContent: 'center',
-		backgroundColor: AppConst.COLOR_WHITE,
-		borderWidth: 1.5,
+		alignItems: 'center',
+		borderWidth: 1,
 		borderColor: AppConst.COLOR_SUCCESS,
 		borderRadius: 17.5,
 		height: '100%',
-		paddingVertical: '10%'
-	},
-	check: {
-		color: AppConst.COLOR_SUCCESS,
+		paddingVertical: '10%',
 		paddingHorizontal: '30%'
+	},
+	checkImage: {
+		width: Style.EM(1),
+		height: Style.EM(1)
 	},
 	selectedView: {
 		backgroundColor: AppConst.COLOR_SUCCESS
-	},
-	selectedCheck: {
-		color: AppConst.COLOR_WHITE
 	},
 
 
 	mainContainer: {
 		flex:1,
-		width:'100%'
+		width:'100%',
+		backgroundColor: AppConst.COLOR_WHITE
 	},
 	tournamentName: {
 		fontFamily: 'century-gothic-bold',

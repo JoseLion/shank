@@ -17,24 +17,9 @@ class RoasterRow extends React.Component {
 
 	constructor(props) {
 		super(props);
-		//this.addPlayer = this.addPlayer.bind(this);
 		this.animateCell = this.animateCell.bind(this);
 		this.onPress = this.onPress.bind(this);
 	}
-
-	/*addPlayer() {
-		super.navigateToScreen('PlayerSelection', {
-			currentRoaster: this.props.currentRoaster.filter(player => player.playerId != null),
-			currentPosition: this.props.data.playerId ? Number.parseInt(this.props.rowId) + 1 : null,
-			group: this.props.group,
-			tournament: this.props.tournament,
-			updateRoaster: this.props.updateRoaster
-		});
-
-		if (this.swipe != null) {
-			this.swipe.recenter()
-		}
-	}*/
 
 	animateCell() {
 		const {pan} = this.swipe.state;

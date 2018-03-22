@@ -13,48 +13,30 @@ class PlayerRow extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		//this.isInRoaster = this.isInRoaster.bind(this);
+		this.onPress = this.onPress.bind(this);
 		this.state = {
 			cross: this.props.cross,
-			maxReached: this.props.maxReached
+			count: this.props.count,
+			checkGreen: require('../../../../resources/check-green-icon.png'),
+			checkWhite: require('../../../../resources/check-white-icon.png')
 		};
 	}
 
-	/*isInRoaster(player) {
-		return this.state.currentRoaster.indexOf(player) > -1;
-	}
+	onPress() {
+		if (this.props.count < this.props.max || this.state.cross.isSelected) {
+			this.setState(state => {
+				const cross = Object.assign({}, state.cross);
+				cross.isSelected = !state.cross.isSelected;
+				return { cross };
+			});
 
-	playerSelected(player) {
-		let roaster = this.state.currentRoaster;
-
-		if (this.props.currentPosition) {
-			if (this.isInRoaster(player)) {
-				this.setState({oneSelected: false});
-				roaster.splice(this.props.currentPosition - 1, 1, null);
-			} else {
-				if (!this.state.oneSelected) {
-					this.setState({oneSelected: true});
-					roaster.splice(this.props.currentPosition - 1, 1, player);
-				}
-			}
-		} else {
-			if (this.state.currentRoaster.length < 5 || this.isInRoaster(player)) {
-				if (this.isInRoaster(player)) {
-					let index = this.state.currentRoaster.indexOf(player);
-					roaster.splice(index, 1);
-				} else {
-					roaster.push(player)
-				}
-			}
+			this.props.onPressItem();
 		}
-
-		this.setState({currentRoaster: roaster});
-		this.props.setCurrentRoaster(this.state.currentRoaster);
-	}*/
+	}
 
 	render() {
 		return (
-			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.props.onPress}>
+			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.onPress}>
 				<View style={[ViewStyle.cellView]}>
 					<View style={{flex: 1}}>
 						<Image source={{uri: this.state.cross.player && this.state.cross.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.playerImage} />
@@ -69,12 +51,9 @@ class PlayerRow extends React.Component {
 					</View>
 
 					<View style={{flex: 2, alignItems: 'center'}}>
-						{this.state.cross.isSelected || !this.state.maxReached ?
-							<View style={[ViewStyle.checkView, (this.state.cross.isSelected ? ViewStyle.selectedView : null)]}>
-								<FontAwesome name='check' size={23} style={[ViewStyle.check, (this.state.cross.isSelected ? ViewStyle.selectedCheck : null)]} />
-							</View>
-						: null}
-							
+						<View style={[ViewStyle.checkView, (this.state.cross.isSelected ? ViewStyle.selectedView : null)]}>
+							<Image source={this.state.cross.isSelected ? this.state.checkWhite : this.state.checkGreen} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.checkImage} />
+						</View>
 					</View>
 				</View>
 			</TouchableHighlight>
@@ -85,7 +64,7 @@ class PlayerRow extends React.Component {
 export default class PlayerSelection extends BaseComponent {
 
 	static navigationOptions = ({navigation}) => {
-		/*if (navigation.state.params.isSearching) {
+		if (navigation.state.params.isSearching) {
 			return {
 				title: null,
 				headerTitleStyle: null,
@@ -104,16 +83,16 @@ export default class PlayerSelection extends BaseComponent {
 					</TouchableOpacity>
 				)
 			};
-		} else {*/
+		} else {
 			return {
 				title: 'CHOOSE PLAYER',
 				headerRight: (
-					<TouchableHighlight style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.setParams({isSearching: true})}>
+					<TouchableOpacity style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.setParams({isSearching: true})}>
 						<FontAwesome name='search' style={[MainStyles.headerIconButton]} />
-					</TouchableHighlight>
+					</TouchableOpacity>
 				)
 			};
-		//}
+		}
 	}
 
 	constructor(props) {
@@ -138,19 +117,30 @@ export default class PlayerSelection extends BaseComponent {
 	}
 
 	playerSelected(cross) {
+		let roaster = [...this.state.roaster];
 		let selectCount = this.state.selectCount;
-		const leaderboard = [...this.state.leaderboard];
-		const index = leaderboard.indexOf(cross);
 
-		if (leaderboard[index].isSelected) {
-			leaderboard[index].isSelected = false;
-			selectCount--;
+		if (this.state.position) {
+			if (roaster[position] == cross) {
+				selectCount = 0;
+				roaster[position] = {};
+			} else {
+				selectCount = 1;
+				roaster[position] = cross;
+			}
 		} else {
-			leaderboard[index].isSelected = true;
-			selectCount++;
+			let index = roaster.indexOf(cross);
+
+			if (index > -1) {
+				roaster.splice(index, 1);
+				selectCount--;
+			} else {
+				roaster.push(cross);
+				selectCount++;
+			}
 		}
 
-		this.setState({ leaderboard, selectCount });
+		this.setState({ roaster, selectCount });
 	}
 
 	async componentDidMount() {
@@ -159,7 +149,7 @@ export default class PlayerSelection extends BaseComponent {
 
 		this.setState({isLoading: true});
 		let leaderboard = await BaseModel.get('leaderboard/findByTournament/' + this.state.group.tournaments[this.state.tournamentIndex].tournament._id).catch(error => this.toasterMsg = error);
-		this.setState({/*leaderboard: leaderboard, */isLoading: false});
+		this.setState({leaderboard: leaderboard, isLoading: false});
 	}
 
 
@@ -226,7 +216,7 @@ export default class PlayerSelection extends BaseComponent {
 
 	hasTournamentBegan() {
 		let today = new Date();
-		let startDate = new Date(this.state.tournament.startDate);
+		let startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
 
 		if (today.getTime() >= startDate.getTime()) {
 			return true;
@@ -275,8 +265,8 @@ export default class PlayerSelection extends BaseComponent {
 					<Text style={[ViewStyle.headerText, {flex: 2}]}>Select {this.state.position ? '1' : '5'}</Text>
 				</View>
 				
-				<FlatList data={this.state.leaderboard} keyExtractor={item => item._id} renderItem={({item}) => (
-					<PlayerRow cross={item} maxReached={this.state.selectCount == (this.state.position ? 1 : 5)} onPress={() => this.playerSelected(item)} />
+				<FlatList data={this.state.leaderboard} keyExtractor={item => item._id} extraData={this.state.selectCount} renderItem={({item}) => (
+					<PlayerRow cross={item} count={this.state.selectCount} max={this.state.position ? 1 : 5} onPressItem={() => this.playerSelected(item)} />
 				)} />
 
 				{this.state.selectCount == (this.state.currentPosition ? 1 : 5) ?

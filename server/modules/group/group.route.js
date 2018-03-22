@@ -63,9 +63,9 @@ export default function(app) {
 		response.ok(group);
 	});
 
-	router.get(`${basePath}/addUserToGroup/:groupId`, async (request, response) => {
+	router.get(`${basePath}/addUserToGroup/:id`, async (request, response) => {
 		let user = await User.findOne({_id: request.payload._id}).catch(handleMongoError);
-		let group = await Group.findOne({_id: request.params.groupId}).catch(handleMongoError);
+		let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
 		group.tournaments.forEach(tournament => {
 			tournament.leaderboard.push({ user });
@@ -75,6 +75,11 @@ export default function(app) {
 		let userGroups = await Group.find({status: true, owner: request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
 
 		response.ok(userGroups);
+	});
+
+	router.delete(`${basePath}/delete/:id`, async (request, response) => {
+		await Group.findOneAndRemove({_id: request.params.id}).catch(handleMongoError);
+		response.ok();
 	});
 
 	return router;

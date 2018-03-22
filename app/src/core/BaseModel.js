@@ -120,7 +120,7 @@ let BaseModel = {
 
 
 
-    // REMOVE ALL ABOVE
+    // REMOVE ALL BELLOW
 
     async createPhoto(resource, params) {
         let token = await AsyncStorage.getItem(AuthToken);

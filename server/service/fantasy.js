@@ -1,85 +1,77 @@
 import mongoose from 'mongoose';
 import fetch from 'node-fetch';
+import AppConst from '../config/constants';
+
+const options = {method: 'GET',headers: {}};
+options.headers[AppConst.FANTASY_HEADER] = AppConst.FANTASY_KEY;
 
 export default {
-	updateTournaments: function() {
+	updateTournaments: async function() {
 		console.log("Fetching tournaments from fantasydata.net...");
 
 		const Tournament = mongoose.model('Tournament');
 		const today = new Date();
-		const options = {
-			method: 'GET',
-			headers: {'Ocp-Apim-Subscription-Key': '519f4de87ff044afb2796f57a6583a4d'}
-		};
 
-		return fetch(`https://api.fantasydata.net/golf/v2/JSON/Tournaments/${today.getFullYear()}`, options).then(async response => {
-			let json = await response.json().catch(handleError);
-			json = normalizeKeys(json);
+		const response = await fetch(`https://api.fantasydata.net/golf/v2/JSON/Tournaments/${today.getFullYear()}`, options).catch(handleError);
+		let json = await response.json().catch(handleError);
+		json = normalizeKeys(json);
 
-			json.forEach(async tournament => {
-				let found = await Tournament.findOne({tournamentID: tournament.tournamentID}).catch(handleError);
+		json.asyncForEach(async tournament => {
+			let found = await Tournament.findOne({tournamentID: tournament.tournamentID}).catch(handleError);
 
-				if (found) {
-					found.set(tournament);
-					await found.save().catch(handleError);
-				} else {
-					await Tournament.create(tournament).catch(handleError);
-				}
-			});
-
-			return json;
+			if (found) {
+				found.set(tournament);
+				await found.save().catch(handleError);
+			} else {
+				await Tournament.create(tournament).catch(handleError);
+			}
 		});
+
+		return json;
 	},
 
-	updatePlayers: function() {
+	updatePlayers: async function() {
 		console.log("Fetching players from fantasydata.net...");
 
 		const Player = mongoose.model('Player');
-		const options = {
-			method: 'GET',
-			headers: {'Ocp-Apim-Subscription-Key': '519f4de87ff044afb2796f57a6583a4d'}
-		};
 
-		return fetch('https://api.fantasydata.net/golf/v2/JSON/Players', options).then(async response => {
-			let json = await response.json().catch(handleError);
-			json = normalizeKeys(json);
+		const response = await fetch('https://api.fantasydata.net/golf/v2/JSON/Players', options).catch(handleError);
+		let json = await response.json().catch(handleError);
+		json = normalizeKeys(json);
 
-			json.forEach(async player => {
-				let found = await Player.findOne({playerID: player.playerID}).catch(handleError);
+		json.asyncForEach(async player => {
+			let found = await Player.findOne({playerID: player.playerID}).catch(handleError);
 
-				if (found) {
-					found.set(player);
-					await found.save().catch(handleError);
-				} else {
-					await Player.create(player).catch(handleError);
-				}
-			});
-
-			return json;
+			if (found) {
+				found.set(player);
+				await found.save().catch(handleError);
+			} else {
+				await Player.create(player).catch(handleError);
+			}
 		});
+
+		return json;
 	},
 
-	updateLeaderboard: function(tournamentId) {
-		console.log("Fetching leaderboard of tournament " + tournamentId + " from fantasydata.net...");
-
+	updateLeaderboard: async function() {
 		const Leaderboard = mongoose.model('Leaderboard');
 		const Tournament = mongoose.model('Tournament');
 		const Player = mongoose.model('Player');
-		const options = {
-			method: 'GET',
-			headers: {'Ocp-Apim-Subscription-Key': '519f4de87ff044afb2796f57a6583a4d'}
-		};
 
-		return fetch(`https://api.fantasydata.net/golf/v2/JSON/Leaderboard/${tournamentId}`, options).then(async response => {
+		const tournaments = await Tournament.find({}).catch(handleError);
+		let count = 0;
+
+		await tournaments.asyncForEach(async tournament => {
+			console.log("Fetching leaderboard of tournament " + tournament.tournamentID + " from fantasydata.net...");
+
+			const response = await fetch(`https://api.fantasydata.net/golf/v2/JSON/Leaderboard/${tournament.tournamentID}`, options).catch(handleError);
 			let json = await response.json().catch(handleError);
 			json = normalizeKeys(json);
-			const tournament = await Tournament.findOne({tournamentID: json.tournament.tournamentID}).catch(handleError);
 
-			json.players.forEach(async cross => {
+			await json.players.asyncForEach(async cross => {
+				let found = await Leaderboard.findOne({playerTournamentID: cross.playerTournamentID}).catch(handleError);
 				cross.tournament = tournament;
 				cross.player = await Player.findOne({playerID: cross.playerID}).catch(handleError);
-
-				let found = await Leaderboard.findOne({playerTournamentID: cross.playerTournamentID}).catch(handleError);
 
 				if (found) {
 					found.set(cross);
@@ -89,8 +81,11 @@ export default {
 				}
 			});
 
-			return json.players;
+			count += json.players.length;
 		});
+
+		
+		return count;
 	}
 }
 
