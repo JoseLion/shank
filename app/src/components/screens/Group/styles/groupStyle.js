@@ -129,7 +129,7 @@ export default ViewStyle = StyleSheet.create({
         textAlign: 'right'
     },
     swipeButton: {
-        backgroundColor: AppConst.COLOR_RED,
+        backgroundColor: AppConst.COLOR_BLUE,
         height: '100%',
         justifyContent: 'center'
     },
@@ -143,29 +143,33 @@ export default ViewStyle = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        margin: '3%'
+        marginTop: '1%',
+        marginBottom: '2%',
+        marginRight: '10%'
     },
     roundsText: {
-        marginRight: '2%',
-        fontSize: Style.FONT_14
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_14,
+        marginRight: '2%'
     },
     roundLabel: {
-        marginLeft: '1%',
-        marginRight: '1%',
-        paddingTop: '0.5%',
-        paddingBottom: '0.5%',
-        paddingLeft: '2%',
-        paddingRight: '2%',
-        borderWidth: 1,
-        borderRadius: 100
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: Style.EM(1.25),
+        height: Style.EM(1.25),
+        borderRadius: Style.EM(1.25) / 2,
+        marginLeft: '1%'
     },
     roundLabelText: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_15,
         color: 'white',
-        fontSize: Style.FONT_14
+        backgroundColor: 'transparent'
     },
     cellMainView: {
         flex: 1,
-        paddingHorizontal: '10%'
+        paddingHorizontal: '10%',
+        backgroundColor: AppConst.COLOR_WHITE
     },
     cellSubview: {
         borderBottomWidth: 1,
@@ -181,9 +185,9 @@ export default ViewStyle = StyleSheet.create({
         color: AppConst.COLOR_GREEN
     },
     roasterImage: {
-        width: Style.EM(3),
-        height: Style.EM(3),
-        borderRadius: Style.EM(3) / 2
+        width: Style.EM(2.5),
+        height: Style.EM(2.5),
+        borderRadius: Style.EM(2.5) / 2
     },
     roasterEmpty: {
         fontFamily: 'century-gothic',
@@ -200,6 +204,10 @@ export default ViewStyle = StyleSheet.create({
         fontFamily: 'century-gothic-bold',
         fontSize: Style.FONT_15,
         color: AppConst.COLOR_GRAY
+    },
+    sortImage: {
+        width: Style.EM(1.5),
+        height: Style.EM(1.5)
     },
     tabViewContainer: {
         backgroundColor: AppConst.COLOR_WHITE,

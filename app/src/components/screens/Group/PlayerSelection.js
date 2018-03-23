@@ -13,13 +13,10 @@ class PlayerRow extends React.Component {
 	
 	constructor(props) {
 		super(props);
+		this.checkWhite = require('../../../../resources/check-white-icon.png');
+		this.checkGreen = require('../../../../resources/check-green-icon.png');
 		this.onPress = this.onPress.bind(this);
-		this.state = {
-			cross: this.props.cross,
-			count: this.props.count,
-			checkGreen: require('../../../../resources/check-green-icon.png'),
-			checkWhite: require('../../../../resources/check-white-icon.png')
-		};
+		this.state = {cross: this.props.cross};
 	}
 
 	onPress() {
@@ -32,6 +29,14 @@ class PlayerRow extends React.Component {
 
 			this.props.onPressItem();
 		}
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		if (this.state != nextState) {
+			return true;
+		}
+
+		return false;
 	}
 
 	render() {
@@ -52,7 +57,11 @@ class PlayerRow extends React.Component {
 
 					<View style={{flex: 2, alignItems: 'center'}}>
 						<View style={[ViewStyle.checkView, (this.state.cross.isSelected ? ViewStyle.selectedView : null)]}>
-							<Image source={this.state.cross.isSelected ? this.state.checkWhite : this.state.checkGreen} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.checkImage} />
+							{this.state.cross.isSelected ? 
+								<Image source={this.checkWhite} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.checkImage} />
+							:
+								<Image source={this.checkGreen} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.checkImage} />
+							}
 						</View>
 					</View>
 				</View>
@@ -70,7 +79,7 @@ export default class PlayerSelection extends BaseComponent {
 				headerTitleStyle: null,
 				headerLeft: (
 					<View style={[ViewStyle.searchInputView]}>
-						<Image source={require('../../../../resources/search-icon.png')} resizeMode="contain" style={[ViewStyle.searchIcon]}></Image>
+						<Image source={require('../../../../resources/search-icon.png')} resizeMode="contain" resizeMethod={'resize'} style={[ViewStyle.searchIcon]}></Image>
 						<TextInput style={[ViewStyle.searchInput]} underlineColorAndroid="transparent" placeholderTextColor="#FFF" placeholder={'Search Players'} clearButtonMode="always" onChangeText={navigation.state.params.searchChanged}></TextInput>
 					</View>
 				),
@@ -97,81 +106,90 @@ export default class PlayerSelection extends BaseComponent {
 
 	constructor(props) {
 		super(props);
+		this.roaster = this.props.navigation.state.params.roaster ? this.props.navigation.state.params.roaster : [];
+		this.searchList = [];
 		this.playerSelected = this.playerSelected.bind(this);
-
-		this.setCurrentRoaster = this.setCurrentRoaster.bind(this);
 		this.searchChanged = this.searchChanged.bind(this);
-		this.save = this.save.bind(this);
+		this.done = this.done.bind(this);
 		this.state = {
 			isLoading: false,
 			selectCount: 0,
-			roaster: this.props.navigation.state.params.roaster ? this.props.navigation.state.params.roaster : [] ,
 			position: this.props.navigation.state.params.position,
 			group: this.props.navigation.state.params.group,
 			tournamentIndex: this.props.navigation.state.params.tournamentIndex,
 			currentUserIndex: this.props.navigation.state.params.currentUserIndex,
-			searchPlayers: [],
-			leaderboard: [],
-			loading: false
+			leaderboard: []
 		};
 	}
 
 	playerSelected(cross) {
-		let roaster = [...this.state.roaster];
 		let selectCount = this.state.selectCount;
 
 		if (this.state.position) {
-			if (roaster[position] == cross) {
+			if (this.roaster[position] == cross) {
 				selectCount = 0;
-				roaster[position] = {};
+				this.roaster[position] = {};
 			} else {
 				selectCount = 1;
-				roaster[position] = cross;
+				this.roaster[position] = cross;
 			}
 		} else {
-			let index = roaster.indexOf(cross);
+			let index = this.roaster.indexOf(cross);
 
 			if (index > -1) {
-				roaster.splice(index, 1);
+				this.roaster.splice(index, 1);
 				selectCount--;
 			} else {
-				roaster.push(cross);
+				this.roaster.push(cross);
 				selectCount++;
 			}
 		}
 
-		this.setState({ roaster, selectCount });
+		this.setState({ selectCount });
+	}
+
+	searchChanged(name) {
+		this.setState({
+			leaderboard: this.searchList.filter((cross) => {
+				let regex = new RegExp(".*" + name.toUpperCase() + ".*", "g");
+				return regex.test(cross.player.firstName.toUpperCase() + " " + cross.player.lastName.toUpperCase());
+			})
+		});
+	}
+
+	done() {
+		if (this.hasTournamentBegan()) {
+			this.props.navigation.state.params.managePlayersCallback(this.roaster);
+			this.props.navigation.goBack(null);
+		} else {
+
+		}
+	}
+
+	hasTournamentBegan() {
+		const today = new Date();
+		const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+
+		if (today.getTime() >= startDate.getTime()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	async componentDidMount() {
-		//this.props.navigation.setParams({searchPlayer: this.searchPlayer});
 		this.props.navigation.setParams({searchChanged: this.searchChanged});
 
 		this.setState({isLoading: true});
 		let leaderboard = await BaseModel.get('leaderboard/findByTournament/' + this.state.group.tournaments[this.state.tournamentIndex].tournament._id).catch(error => this.toasterMsg = error);
 		this.setState({leaderboard: leaderboard, isLoading: false});
+		this.searchList = [...this.state.leaderboard];
 	}
 
 
 
 
-
-	setLoading(loading) {
-		this.setState({loading: loading});
-	}
-
-	setCurrentRoaster(roaster) {
-		this.setState({currentRoaster: roaster});
-	}
-
-	searchChanged(name) {
-		this.setState({
-			players: this.state.searchPlayers.filter((player) => {
-				let regex = new RegExp(".*" + name.toUpperCase() + ".*", "g");
-				return regex.test(player.fullName.toUpperCase());
-			})
-		});
-	}
+	
 
 	async save() {
 		let currentRoaster = this.state.currentRoaster;
@@ -210,46 +228,6 @@ export default class PlayerSelection extends BaseComponent {
 		}
 	}
 
-	playerGoBack() {
-		this.props.navigation.goBack(null);
-	}
-
-	hasTournamentBegan() {
-		let today = new Date();
-		let startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
-
-		if (today.getTime() >= startDate.getTime()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	async initialRequest() {
-		this.setLoading(true);
-
-		BaseModel.post('players/findPlayers').then((data) => {
-			const players = data.filter(player => {
-				let inRoaster = false;
-
-				for (let i = 0; i < this.state.currentRoaster.length; i++) {
-					if (player.playerId == this.state.currentRoaster[i].playerId) {
-						inRoaster = true;
-						break;
-					}
-				}
-
-				return !inRoaster;
-			});
-
-			this.setState({players: players, searchPlayers: players});
-			this.setLoading(false);
-		}).catch((error) => {
-			console.log('ERROR! ', error);
-			this.setLoading(false);
-		});
-	};
-
 	render() {
 		return (
 			<View style={[ViewStyle.mainContainer]}>
@@ -271,7 +249,7 @@ export default class PlayerSelection extends BaseComponent {
 
 				{this.state.selectCount == (this.state.currentPosition ? 1 : 5) ?
 					<View style={[ViewStyle.saveView]}>
-						<TouchableOpacity onPress={this.save} style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
+						<TouchableOpacity onPress={this.done} style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
 							<Text style={[MainStyles.buttonText]}>{this.hasTournamentBegan() ? 'Done' : 'Save'}</Text>
 						</TouchableOpacity>
 					</View>

@@ -6,7 +6,8 @@ import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
-import ActionSheet from 'react-native-actionsheet'
+import ActionSheet from 'react-native-actionsheet';
+import SortableList from 'react-native-sortable-list';
 
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, isAndroid, Spinner } from '../BaseComponent';
@@ -19,6 +20,7 @@ class RoasterRow extends React.Component {
 		super(props);
 		this.animateCell = this.animateCell.bind(this);
 		this.onPress = this.onPress.bind(this);
+		this.state = {roaster: this.props.roaster};
 	}
 
 	animateCell() {
@@ -52,7 +54,7 @@ class RoasterRow extends React.Component {
 	}
 
 	render() {
-		if (this.props.roaster != null && this.props.roaster._id > 0) {
+		if (this.state.roaster && this.state.roaster.playerTournamentID) {
 			const changeButton = [
 				<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={this.onPress}>
 					<Text style={[ViewStyle.swipeButtonText]}>Change</Text>
@@ -61,35 +63,35 @@ class RoasterRow extends React.Component {
 
 			return (
 				<Swipeable rightButtons={changeButton} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
-					<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} {...this.props.sortHandlers}>
-						<View style={[ViewStyle.cellSubview, {paddingVertical: '5%'}]}>
+					<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} onLongPress={this.props.toggleRowActive} {...this.props.sortHandlers}>
+						<View style={[ViewStyle.cellSubview, {paddingVertical: '3%'}]}>
 							<View style={{flex: 1}}>
 								<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 							</View>
 
-							<View style={{flex: 2, marginRight: '2.5%'}}>
-								<Image source={{uri: this.props.roaster.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.roasterImage} />
+							<View style={{flex: 2, marginRight: '2%'}}>
+								<Image source={{uri: this.state.roaster.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.roasterImage} />
 							</View>
 
 							<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
 								<View style={{flex: 1}}>
-									<Text style={[ViewStyle.roasterName]}>{this.props.roaster.player.firstName} {this.props.roaster.player.lastName}</Text>
+									<Text style={[ViewStyle.roasterName]}>{this.state.roaster.player.firstName} {this.state.roaster.player.lastName}</Text>
 								</View>
 
 								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
 									<View style={{flex: 1}}>
-										<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.props.roaster.rank > 0 ? this.props.roaster.rank : '-'}`}</Text>
+										<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.state.roaster.rank > 0 ? this.state.roaster.rank : '-'}`}</Text>
 									</View>
 
 									<View style={{flex: 1}}>
-										<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.props.roaster.totalScore == null ? '-' : this.props.roaster.totalScore}`}</Text>
+										<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.state.roaster.totalScore == null ? '-' : this.state.roaster.totalScore}`}</Text>
 									</View>
 								</View>
 							</View>
 
 							{!this.props.hideSortBars ?
 								<View style={{flex: 1}}>
-									<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} style={[{height: 15}]}></Image>
+									<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
 								</View>
 							: null}
 						</View>
@@ -98,7 +100,7 @@ class RoasterRow extends React.Component {
 			);
 		} else {
 			return (
-				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.onPress}>
+				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.onPress} {...this.props.sortHandlers}>
 					<View style={[ViewStyle.cellSubview]}>
 						<Text style={[ViewStyle.roasterPosition, {flex: 1}]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 						<Text style={[ViewStyle.roasterEmpty, {flex: 10}]}>Empty Slot</Text>
@@ -121,10 +123,10 @@ class RoundLabels extends React.Component {
 		const day = new Date(round.day);
 
 		if (today.getFullYear() == day.getFullYear() && today.getMonth() == day.getMonth() && today.getDate() == day.getDate()) {
-			return {backgroundColor: '#252D3B', borderColor: '#252D3B'};
+			return {backgroundColor: AppConst.COLOR_BLUE};
 		}
 
-		return {backgroundColor: '#B6B6B5', borderColor: '#B6B6B5'};
+		return {backgroundColor: AppConst.COLOR_GRAY};
 	}
 
 	render() {
@@ -232,11 +234,13 @@ export default class Group extends BaseComponent {
 	constructor(props) {
 		super(props);
 		this.getCurrentUserStat = this.getCurrentUserStat.bind(this);
-		this.getDaysLeft = this.getDaysLeft.bind(this);
+		this.getDaysObj = this.getDaysObj.bind(this);
 		this.showActionSheet = this.showActionSheet.bind(this);
 		this.tournamentSelected = this.tournamentSelected.bind(this);
 		this.removeUserFromGroup = this.removeUserFromGroup.bind(this);
 		this.managePlayers = this.managePlayers.bind(this);
+		this.managePlayersCallback = this.managePlayersCallback.bind(this);
+		this.shouldShowCheckout = this.shouldShowCheckout.bind(this);
 
 
 		this.inviteToJoin = this.inviteToJoin.bind(this);
@@ -246,7 +250,7 @@ export default class Group extends BaseComponent {
 		this.handleRefresh = this.handleRefresh.bind(this);
 		this.onPlayerRankingSaveAsync = this.onPlayerRankingSaveAsync.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
-		this.roasterHasChanged = this.roasterHasChanged.bind(this);
+		
 		this.isSortingDisabled = this.isSortingDisabled.bind(this);
 		this.updateRoaster = this.updateRoaster.bind(this);
 
@@ -273,7 +277,6 @@ export default class Group extends BaseComponent {
 			playerRanking: [],
 			order: [],
 			originalRanking: '',
-			showCheckout: false,
 			movementsDone: 0,
 			pricePerMovement: 0
 		};
@@ -296,7 +299,8 @@ export default class Group extends BaseComponent {
 		});
 
 		group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
-		this.setState({ group, sheetNames });
+		const userRoaster = group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster;
+		this.setState({ group, sheetNames, userRoaster });
 	}
 
 	getCurrentUserStat(key) {
@@ -314,21 +318,30 @@ export default class Group extends BaseComponent {
 		return stat;
 	}
 
-	getDaysLeft() {
-		let days = 0;
-
+	getDaysObj() {
 		if (this.state.group.tournaments) {
 			let today = new Date();
 			let startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
 			let endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
 			
-			if (today.getTime() < startDate.getTime() || today.getTime() > endDate.getTime()) {
-				return '-';
+			if (today.getTime() < startDate.getTime()) {
+				return {
+					days: Math.ceil((startDate.getTime() - today.getTime()) / 1000.0 / 60.0 / 60.0 / 24.0),
+					label: 'Days to begin'
+				};
 			}
 
-			return Math.ceil((endDate.getTime() - today.getTime()) / 1000.0 / 60.0 / 60.0 / 24.0);
+			if (today.getTime() > endDate.getTime()) {
+				return {days: '-', labal: 'Days left'};
+			}
 
+			return {
+				days: Math.ceil((endDate.getTime() - today.getTime()) / 1000.0 / 60.0 / 60.0 / 24.0),
+				label: 'Days left'
+			};
 		}
+
+		return {};
 	}
 
 	showActionSheet() {
@@ -360,8 +373,37 @@ export default class Group extends BaseComponent {
 			position: row.player ? Number.parseInt(index) : null,
 			group: this.state.group,
 			tournamentIndex: this.state.tournamentIndex,
-			currentUserIndex: this.state.currentUserIndex
+			currentUserIndex: this.state.currentUserIndex,
+			onPlayesrsManaged: this.onPlayesrsManaged,
+			managePlayersCallback: this.managePlayersCallback
 		});
+	}
+
+	managePlayersCallback(data) {
+		let group = Object.assign({}, this.state.group);
+		group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster = data;
+		this.setState({ group });
+	}
+
+	shouldShowCheckout() {
+		let hasChanged = false;
+
+		if (this.state.group.tournaments) {
+			const today = new Date();
+			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
+
+			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime()) {
+				for (let i = 0; i < this.state.userRoaster.length; i++) {
+					if (this.state.userRoaster[i]._id != this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[i]._id) {
+						hasChanged = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return hasChanged;
 	}
 
 	async componentDidMount() {
@@ -383,12 +425,19 @@ export default class Group extends BaseComponent {
 
 
 
+
+
+
+
+
+
+
 	optionSelectedPressed(actionIndex) {
 		if (actionIndex == (this.state.tournamentsName.length - 1)) {
 			return;
 		}
 
-		this.setState({currentTournament: this.state.currentGroup.tournaments[actionIndex], showCheckout: false, loading: true});
+		this.setState({currentTournament: this.state.currentGroup.tournaments[actionIndex], shouldShowCheckout: false, loading: true});
 		this.state.currentGroup.tournaments[actionIndex].users.forEach((user) => {
 			if (user._id == this.state.currentUser._id) {
 				let playerRanking = (user.playerRanking == null || user.playerRanking.length == 0) ? [
@@ -461,8 +510,8 @@ export default class Group extends BaseComponent {
 		let today = new Date();
 		let round = 0;
 
-		for (let i = 0; i < this.state.tournamentData.rounds.length; i++) {
-			let day = new Date(this.state.tournamentData.rounds[i].day);
+		for (let i = 0; i < this.state.group.tournaments[this.state.tournamentIndex].tournament.rounds.length; i++) {
+			let day = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.rounds[i].day);
 
 			if (today.getFullYear() == day.getFullYear() && today.getMonth() == day.getMonth() && today.getDate() == day.getDate()) {
 				round = i + 1;
@@ -471,36 +520,15 @@ export default class Group extends BaseComponent {
 		}
 
 		let params = {
-			groupId: this.state.currentGroup._id,
-			isOwner: this.props.navigation.state.params.isOwner,
+			groupId: this.state.group._id,
+			isOwner: this.state.group.owner == this.state.currentUser._id,
 			tournamentId: this.state.currentTournament._id,
-			originalRanking: JSON.parse(this.state.originalRanking),
-			playerRanking: this.state.playerRanking,
+			originalRanking: this.state.userRoaster,
+			playerRanking: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster,
 			round: round
 		};
+
 		this.props.navigation.navigate('Checkout', params);
-	}
-
-	roasterHasChanged() {
-		let hasChanged = false;
-		let today = new Date();
-		let startDate = new Date(this.state.tournamentData.startDate);
-		let endDate = new Date(this.state.tournamentData.endDate);
-
-		if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime()) {
-			const originalRoaster = this.state.originalRanking == '' ? [] : JSON.parse(this.state.originalRanking);
-
-			if (this.state.playerRanking != null && this.state.playerRanking.length == originalRoaster.length) {
-				for (let i = 0; i < originalRoaster.length; i++) {
-					if (originalRoaster[i]._id !== this.state.playerRanking[i]._id) {
-						hasChanged = true;
-						break;
-					}
-				}
-			}
-		}
-
-		return hasChanged;
 	}
 
 	isSortingDisabled() {
@@ -574,7 +602,7 @@ export default class Group extends BaseComponent {
 		} else {
 			let original = JSON.parse(this.state.originalRanking);
 			let updated = false;
-			let showCheckout = false;
+			let shouldShowCheckout = false;
 			
 			for (let i=0 ; i<original.length ; i++) {
 				let dataChanged = data.filter(ranking => { return ranking.position == original[i].position})[0];
@@ -583,7 +611,7 @@ export default class Group extends BaseComponent {
 					original[i] = dataChanged;
 					updated = true;
 				} else if (original[i].playerId != dataChanged.playerId) {
-					showCheckout = true;
+					shouldShowCheckout = true;
 				}
 			}
 
@@ -602,7 +630,7 @@ export default class Group extends BaseComponent {
 					this.setLoading(false);
 				});
 			} else {
-				this.setState({showCheckout: showCheckout});
+				this.setState({shouldShowCheckout: shouldShowCheckout});
 				this.updatePlayerRankingList(data);
 				
 				if (method != null) {
@@ -645,7 +673,7 @@ export default class Group extends BaseComponent {
 						{position: 4},
 						{position: 5}
 					] : user.playerRanking;
-					let showCheckout = false;
+					let shouldShowCheckout = false;
 
 					if (self.state.originalRanking != '') {
 						let original = JSON.parse(self.state.originalRanking);
@@ -654,12 +682,12 @@ export default class Group extends BaseComponent {
 							let dataChanged = self.state.playerRanking.filter(ranking => { return ranking.position == original[i].position; })[0];
 							
 							if (original[i].playerId != dataChanged.playerId) {
-								showCheckout = true;
+								shouldShowCheckout = true;
 							}
 						}
 					}
 
-					self.setState({originalRanking: JSON.stringify(playerRanking), showCheckout: showCheckout});
+					self.setState({originalRanking: JSON.stringify(playerRanking), shouldShowCheckout: shouldShowCheckout});
 					self.updatePlayerRankingList(playerRanking);
 					return;
 				}
@@ -694,9 +722,6 @@ export default class Group extends BaseComponent {
 	};
 
 	render() {
-		let addPhoto = require('../../../../resources/add_edit_photo.png');
-		let navigation = this.props.navigation;
-
 		return (
 			<View style={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}}>
 				<Spinner visible={this.state.isLoading} animation='fade'></Spinner>
@@ -749,8 +774,8 @@ export default class Group extends BaseComponent {
 					</View>
 
 					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>{this.getDaysLeft()}</Text></View>
-						<View><Text style={[ViewStyle.statLabel]}>Days Left</Text></View>
+						<View><Text style={[ViewStyle.statNumber]}>{this.getDaysObj().days}</Text></View>
+						<View><Text style={[ViewStyle.statLabel]}>{this.getDaysObj().label}</Text></View>
 					</View>
 				</View>
 
@@ -765,14 +790,14 @@ export default class Group extends BaseComponent {
 						</View>
 
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
-							<RoundLabels tournament={this.state.tournamentData}></RoundLabels>
-							
-							<SortableListView data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster} disableSorting={this.isSortingDisabled()} renderRow={(row, sectionId, index) => (
-								<RoasterRow roaster={row} rowId={index} onPress={() => this.managePlayers(row, index)} />
+							<RoundLabels tournament={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament} />
+
+							<SortableList style={{flex: 1}} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []}  renderRow={({data, index}) => (
+								<RoasterRow roaster={data} rowId={index} onPress={() => this.managePlayers(data, index)} />
 							)} />
 
-							{this.roasterHasChanged() ?
-								<View style={[ViewStyle.checkoutButtonView]}>
+							{this.shouldShowCheckout() ?
+								<View style={ViewStyle.checkoutButtonView}>
 									<TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
 										<Text style={MainStyles.buttonText}>Checkout</Text>
 									</TouchableOpacity>

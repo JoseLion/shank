@@ -98,7 +98,7 @@ const ViewStyle = StyleSheet.create({
 	searchIcon: {
 		height: '40%',
 		position: 'absolute',
-		left: '-22.5%'
+		left: Style.EM(-4)
 	},
 	searchInput: {
 		fontFamily: 'century-gothic',
@@ -107,7 +107,7 @@ const ViewStyle = StyleSheet.create({
 		height: '70%',
 		backgroundColor: 'rgba(241, 242, 242, 0.2)',
 		borderRadius: 10,
-		paddingLeft: '12.5%'
+		paddingLeft: (containerWidth * 0.125)
 	},
 
 
