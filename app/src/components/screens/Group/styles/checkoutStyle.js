@@ -1,20 +1,14 @@
-import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Style from '../../../../styles/Stylesheet';
-
 import * as AppConst from '../../../../core/AppConst';
 
-
-const isAndroid = Platform.OS == 'android' ? true : false;
-const {width, height} = Dimensions.get('window');
-const containerWidth = width > 500 ? 500 : width;
-const widthSpace = '3%';
-
-const ViewStyle = StyleSheet.create({
+export default StyleSheet.create({
 	container: {
-		flex: 1, justifyContent: 'space-between',
-		alignItems: 'center',
+		flex: 1,
+		width: '100%',
+		height: '100%',
 		paddingHorizontal: '5%',
-		backgroundColor: 'white'
+		backgroundColor: AppConst.COLOR_WHITE
 	},
 	titleView: {
 		justifyContent: 'center',
@@ -30,11 +24,11 @@ const ViewStyle = StyleSheet.create({
 		textAlign: 'center'
 	},
 	rowView: {
-		flexDirection: 'row',
 		flex: 1,
+		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: '8%',
+		paddingVertical: Style.EM(2),
 		borderBottomWidth: 1,
 		borderColor: AppConst.COLOR_GRAY
 	},
@@ -46,41 +40,42 @@ const ViewStyle = StyleSheet.create({
 	rowName: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_15,
-		color: AppConst.COLOR_GRAY
+		color: AppConst.COLOR_GRAY,
+		paddingHorizontal: Style.EM(0.25)
 	},
 	exchangeIcon: {
-		fontSize: Style.FONT_15,
-		textAlign: 'center',
-		color: AppConst.COLOR_GRAY
+		width: Style.EM(0.8),
+		height: Style.EM(0.8),
 	},
 	rowPrice: {
 		fontFamily: 'century-gothic-bold',
-		fontSize: Style.FONT_15,
+		fontSize: Style.FONT_15_5,
 		color: AppConst.COLOR_BLUE,
 		textAlign: 'right'
 	},
 	totalView: {
+		width: '100%',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'flex-start'
+		alignItems: 'baseline',
+		marginTop: Style.EM(1)
 	},
 	totalLabel: {
-		flex: 4,
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_BLUE
 	},
 	totalValue: {
-		flex: 1,
 		fontFamily: 'century-gothic-bold',
 		fontSize: Style.FONT_18,
-		color: AppConst.COLOR_SUCCESS
+		color: AppConst.COLOR_SUCCESS,
+		alignSelf: 'flex-end'
 	},
 	buttonsView: {
+		width: '100%',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		marginTop: Style.EM(2)
 	}
 });
-
-export default ViewStyle;

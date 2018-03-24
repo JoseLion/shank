@@ -27,7 +27,7 @@ export default function(app) {
 		}).catch(handleMongoError);
 
 		group.owner = owner;
-		group.tournaments[0].leaderboard = [{user: owner}];
+		group.tournaments[0].leaderboard = [{user: owner, rank: 1}];
 		group.photo = archive;
 		group = await Group.create(group).catch(handleMongoError);
 		
@@ -39,7 +39,11 @@ export default function(app) {
 	});
 
 	router.get(`${basePath}/findOne/:id`, auth, async (request, response) => {
-		const group = await Group.findOne({_id: request.params.id}).populate('tournaments.tournament').populate('tournaments.leaderboard.user').catch(handleMongoError);
+		const group = await Group.findOne({_id: request.params.id})
+			.populate('tournaments.tournament')
+			.populate('tournaments.leaderboard.user')
+			.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
+		.catch(handleMongoError);
 		response.ok(group);
 	});
 
@@ -68,7 +72,8 @@ export default function(app) {
 		let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
 		group.tournaments.forEach(tournament => {
-			tournament.leaderboard.push({ user });
+			const rank = tournament.leaderboard.length + 1;
+			tournament.leaderboard.push({ user, rank });
 		});
 
 		await group.save().catch(handleMongoError);
@@ -80,6 +85,28 @@ export default function(app) {
 	router.delete(`${basePath}/delete/:id`, async (request, response) => {
 		await Group.findOneAndRemove({_id: request.params.id}).catch(handleMongoError);
 		response.ok();
+	});
+
+	router.post(`${basePath}/updateMyRoaster/:groupId/:tournamentId`, auth, async (request, response) => {
+		let group = await Group.findById(request.params.groupId).catch(handleMongoError);
+
+		group.tournaments.forEach(cross => {
+			if (cross.tournament == request.params.tournamentId) {
+				cross.leaderboard.forEach(obj => {
+					if (obj.user == request.payload._id) {
+						obj.roaster = request.body.roaster;
+					}
+				});
+			}
+		});
+
+		group = await group.save().catch(handleMongoError);
+		group = await Group.findOne({_id: group._id})
+			.populate('tournaments.tournament')
+			.populate('tournaments.leaderboard.user')
+			.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
+		.catch(handleMongoError);
+		response.ok(group);
 	});
 
 	return router;

@@ -1,42 +1,30 @@
 // React components:
 import React from 'react';
-import { FlatList, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, Image } from 'react-native';
 import { List } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components:
-import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, Entypo, FontAwesome } from '../BaseComponent';
-import ViewStyle from './styles/checkoutStyle'
+import { BaseComponent, BaseModel, MainStyles, AppConst } from '../BaseComponent';
+import ViewStyle from './styles/checkoutStyle';
+
+// Images
+import ExchangeIcon from '../../../../resources/exchange-icon.png';
 
 export default class Checkout extends BaseComponent {
 
-	static navigationOptions = ({navigation}) => ({
-		title: 'CHECKOUT',
-		headerTintColor: AppConst.COLOR_WHITE,
-		headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
-		headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
-		headerLeft: (
-			<TouchableHighlight onPress={() => navigation.goBack(null)}>
-				<Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
-			</TouchableHighlight>
-		),
-		headerRight: (<View></View>)
-	});
+	static navigationOptions = ({navigation}) => ({title: 'CHECKOUT'});
 
 	constructor(props) {
 		super(props);
-		this.playerChanged = this.playerChanged.bind(this);
+		this.playerWasChanged = this.playerWasChanged.bind(this);
 		this.saveAndPay = this.saveAndPay.bind(this);
+		this.handleError = this.handleError.bind(this);
 		this.state = {
-			loading: false,
-			changes: [],
-			groupId: this.props.navigation.state.params.groupId,
-			isOwner: this.props.navigation.state.params.isOwner,
-			tournamentId: this.props.navigation.state.params.tournamentId,
-			currentRoaster: this.props.navigation.state.params.playerRanking,
-			originalRoaster: this.props.navigation.state.params.originalRanking,
-			pricePerMovement: 0,
+			isLoading: false,
+			roaster: this.props.navigation.state.params.roaster,
+			originalRoaster: this.props.navigation.state.params.originalRoaster,
 			total: 0
 		};
 	}
@@ -44,8 +32,8 @@ export default class Checkout extends BaseComponent {
 	componentDidMount() {
 		let finalCost = 0.0;
 
-		for (let i = 0; i < this.state.currentRoaster.length; i++) {
-			if (this.playerChanged(i)) {
+		for (let i = 0; i < this.state.roaster.length; i++) {
+			if (this.playerWasChanged(i)) {
 				finalCost += 1.99;
 			}
 		}
@@ -53,8 +41,8 @@ export default class Checkout extends BaseComponent {
 		this.setState({total: finalCost});
 	}
 
-	playerChanged(index) {
-		if (this.state.currentRoaster[index]._id == this.state.originalRoaster[index]._id) {
+	playerWasChanged(index) {
+		if (this.state.roaster[index].player._id == this.state.originalRoaster[index].player._id) {
 			return false;
 		}
 
@@ -62,69 +50,63 @@ export default class Checkout extends BaseComponent {
 	}
 
 	async saveAndPay() {
-		this.setState({loading: true});
+		this.setState({isLoading: true});
+		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, {roaster: this.state.roaster}).catch(this.handleError);
 
-		await BaseModel.put(`groups/editMyPlayers/${this.state.groupId}/${this.state.tournamentId}`, {players: this.state.currentRoaster}).then((response) => {
-			super.navigateToScreen('Group', {groupId: this.state.groupId, isOwner: this.state.isOwner})
-		}).catch((error) => {
-			BarMessages.showError(error, this.validationMessage);
-		}).finally(() => {
-			this.setState({loading: false});
-		});
+		this.props.navigation.state.params.managePlayersCallback(group, false);
+		this.setState({isLoading: false});
+		this.props.navigation.goBack();
+	}
+
+	handleError(error) {
+		this.setState({isLoading: false});
+		this.toasterMsg = error;
 	}
 
 	render() {
 		return (
-			<View style={[ViewStyle.container]}>
-				<Spinner visible={this.state.loading} animation='fade'/>
+			<View style={ViewStyle.container}>
+				<ScrollView contentContainerStyle={{width: '100%', alignItems: 'center', backgroundColor: AppConst.COLOR_WHITE}}>
+					<Spinner visible={this.state.isLoading} animation='fade'/>
 
-				<View style={[ViewStyle.titleView, {flex: 1}]}>
-					<Text style={[ViewStyle.titleText]}>Round {this.props.navigation.state.params.round} Changes Summary</Text>
-				</View>
+					<View style={[ViewStyle.titleView]}>
+						<Text style={[ViewStyle.titleText]}>Round {this.props.navigation.state.params.round} Changes Summary</Text>
+					</View>
 
-				<View style={{flex: 7, width: '100%'}}>
-					<FlatList data={this.state.currentRoaster} keyExtractor={item => item._id} renderItem={({item, index}) => (
-						<View style={[ViewStyle.rowView]}>
-							<View style={{flex: 1}}>
-								<Text style={[ViewStyle.rowNum]}>{index + 1}</Text>
+					{this.state.roaster.map((item, index) => {
+						return (
+							<View key={item._id} style={[ViewStyle.rowView]}>
+								<Text style={[ViewStyle.rowNum, {flex: 1}]} numberOfLines={1}>{index + 1}</Text>
+
+								<Text style={[ViewStyle.rowName, {flex: 6}]} numberOfLines={1}>{item.player.firstName + ' ' + item.player.lastName}</Text>
+
+								<Image style={[ViewStyle.exchangeIcon, {flex: 1.5}]} source={ExchangeIcon} resizeMode={'contain'} resizeMethod={'resize'} />
+
+								<Text style={[ViewStyle.rowName, {flex: 6}]} numberOfLines={1}>{this.state.originalRoaster[index].player.firstName + ' ' + this.state.originalRoaster[index].player.lastName}</Text>
+
+								<Text style={[ViewStyle.rowPrice, {flex: 2.5}]} numberOfLines={1}>{this.playerWasChanged(index) ? '$1.99' : null}</Text>
 							</View>
-
-							<View style={{flex: 6}}>
-								<Text style={[ViewStyle.rowName]}>{item.fullName}</Text>
-							</View>
-
-							<View style={{flex: 3}}>
-								<FontAwesome style={[ViewStyle.exchangeIcon]} name='exchange' />
-							</View>
-
-							<View style={{flex: 6}}>
-								<Text style={[ViewStyle.rowName, {textAlign: 'right'}]}>{this.state.originalRoaster[index].fullName}</Text>
-							</View>
-
-							<View style={{flex: 3}}>
-								{this.playerChanged(index) ? (<Text style={[ViewStyle.rowPrice]}>{`$1.99`}</Text>) : null}
-							</View>
-						</View>
-					)} />
+						);
+					})}
 
 					<View style={[ViewStyle.totalView]}>
 						<Text style={[ViewStyle.totalLabel]}>Total</Text>
 
 						<Text style={[ViewStyle.totalValue]}>${this.state.total.toFixed(2)}</Text>
 					</View>
-				</View>
 
-				<View style={[ViewStyle.buttonsView, {flex: 2}]}>
-					<TouchableOpacity style={[MainStyles.button, MainStyles.primary, {flex: 1, marginRight: '1%'}]} onPress={() => { this.props.navigation.goBack(null); }}>
-						<Text style={MainStyles.buttonText}>Keep Changing</Text>
-					</TouchableOpacity>
+					<View style={[ViewStyle.buttonsView]}>
+						<TouchableOpacity style={[MainStyles.button, MainStyles.primary, {flex: 1, marginRight: '1%'}]} onPress={() => { this.props.navigation.goBack(null); }}>
+							<Text style={MainStyles.buttonText}>Keep Changing</Text>
+						</TouchableOpacity>
 
-					<TouchableOpacity style={[MainStyles.button, MainStyles.success, {flex: 1, marginLeft: '1%'}]} onPress={this.saveAndPay}>
-						<Text style={MainStyles.buttonText}>Confirm</Text>
-					</TouchableOpacity>
-				</View>
+						<TouchableOpacity style={[MainStyles.button, MainStyles.success, {flex: 1, marginLeft: '1%'}]} onPress={this.saveAndPay}>
+							<Text style={MainStyles.buttonText}>Confirm</Text>
+						</TouchableOpacity>
+					</View>
 
-				<DropdownAlert ref={ref => this.validationMessage = ref} />
+					<DropdownAlert ref={ref => this.toasterMsg = ref} />
+				</ScrollView>
 			</View>
 		);
 	}

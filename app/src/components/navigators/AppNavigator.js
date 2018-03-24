@@ -73,10 +73,6 @@ export const AppNavigator = StackNavigator({
 	}
 });
 
-/*const AppWithNavigationStateCopy = ({dispatch, nav, auth}) => (
-	<AppNavigator navigation={addNavigationHelpers({dispatch, state: nav, authState: auth})}/>
-);*/
-
 const mapStateToProps = state => ({
 	nav: state.nav,
 	auth: state.auth

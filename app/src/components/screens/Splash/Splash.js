@@ -1,76 +1,61 @@
 // React components:
 import React from 'react';
-import {
-  Animated,
-  AsyncStorage,
-  Image,
-  Linking,
-  StatusBar,
-  View
-} from 'react-native';
-
+import { Animated, AsyncStorage, Image, View } from 'react-native';
 import { Constants } from 'expo';
 
 // Shank components:
-import { BaseComponent, MainStyles, AppConst } from '../BaseComponent';
-import LocalStyles from './styles/local';
+import { BaseComponent, AppConst } from '../BaseComponent';
+import ViewStyle from './styles/splashStyle';
 
-import BackgroundSolid from '../../../../resources/shank_logo.png';
-import BackgroundTransparent from '../../../../resources/shank_fade_out.png';
-
-var qs = require('qs');
+import ShankLogo from '../../../../resources/shank-logo.png';
+import ShankWiredLogo from '../../../../resources/shank-wired-logo.png';
 
 export default class SplashScreen extends BaseComponent {
 
-  static navigationOptions = ({navigation}) => ({
-    title: 'Splash',
-    header: null,
-    imageSource: null
-  });
+	static navigationOptions = ({navigation}) => ({
+		title: 'Splash',
+		header: null
+	});
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      fadeAnim: new Animated.Value(0)
-    };
-  };
+	constructor(props) {
+		super(props);
+		this.state = {
+			fade: new Animated.Value(0),
+			wiredOpacity: 0
+		};
+	}
 
-  componentDidMount() {
-    this.setState({imageSource: BackgroundSolid});
+	sleep(timeMs) {
+		return new Promise(resolve => setTimeout(resolve, timeMs));
+	}
 
-    Animated.timing(this.state.fadeAnim, { toValue: 1, duration: 2500 }).start(() => {
-      Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 500 }).start(() => {
-        this.setState({imageSource: BackgroundTransparent});
-        Animated.timing(this.state.fadeAnim, { toValue: 1, duration: 2500 }).start(() => {
-          Animated.timing(this.state.fadeAnim, { toValue: 0, duration: 2000 }).start(() => {
-            AsyncStorage.getItem(AppConst.FIRST_TIME).then(firstTime => {
-              if (firstTime) {
-                this.props.navigation.navigate('Main', {auth: true});
-              }
-              else {
-                AsyncStorage.setItem(AppConst.FIRST_TIME, 'no');
-                this.props.navigation.navigate('Slider', {auth: false})
-              }
-            });
-          });
-        });
-      });
-    });
-  };
+	async componentDidMount() {
+		await this.sleep(500);
 
-  componentWillUnmount() {
-    clearTimeout(this.timeoutHandle);
-  };
+		Animated.timing(this.state.fade, {toValue: 1, duration: 750}).start(async () => {
+			await this.sleep(500);
 
-  render() {
-    let { fadeAnim } = this.state;
-    return (
-      <View style={[MainStyles.container, LocalStyles.container]}>
-        <StatusBar hidden={false}/>
-        <Animated.View style={{opacity: fadeAnim}}>
-          <Image source={this.state.imageSource} style={[MainStyles.iconXLG]}/>
-        </Animated.View>
-      </View>
-    );
-  }
+			this.setState({wiredOpacity: 1});
+			Animated.timing(this.state.fade, {toValue: 0, duration: 1000}).start(async () => {
+				await this.sleep(500);
+				const isFisrtOpen = await AsyncStorage.getItem(AppConst.FIRST_TIME);
+
+				if (isFisrtOpen) {
+					this.props.navigation.navigate('Main', {auth: true});
+				} else {
+					await AsyncStorage.setItem(AppConst.FIRST_TIME, 'no');
+					this.props.navigation.navigate('Slider', {auth: false});
+				}
+			});
+		});
+	}
+
+	render() {
+		return (
+			<View style={ViewStyle.mainContainer}>
+				<Image source={ShankWiredLogo} resizeMode={'contain'} resizeMethod={'resize'} style={[ViewStyle.wiredLogo, {opacity: this.state.wiredOpacity}]} />
+				<Animated.Image source={ShankLogo} resizeMode={'contain'} resizeMethod={'resize'} style={[ViewStyle.logo, {opacity: this.state.fade}]} />
+			</View>
+		);
+	}
 }

@@ -17,6 +17,11 @@ export default ViewStyle = StyleSheet.create({
         paddingTop: '5%',
         paddingHorizontal: '2.5%'
     },
+    groupImage: {
+        width: Style.EM(4),
+        height: Style.EM(4),
+        borderRadius: Style.EM(4) / 2.0
+    },
     groupHeader: {
         flex:3,
         flexDirection: 'column',

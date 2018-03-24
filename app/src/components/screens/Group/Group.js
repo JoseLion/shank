@@ -1,20 +1,19 @@
 // React components:
-import React, {Component} from 'react';
-import { Modal, Text, View, TextInput, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, ActivityIndicator, Alert, Platform, PickerIOS, Share, TouchableWithoutFeedback, KeyboardAvoidingView, AsyncStorage, Animated, Easing } from 'react-native';
-import { Avatar, List, ListItem } from 'react-native-elements';
+import React, { Component } from 'react';
+import { Text, View, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, Share, AsyncStorage, Animated, Easing } from 'react-native';
 import SortableListView from 'react-native-sortable-listview'
-import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
 import ActionSheet from 'react-native-actionsheet';
 import SortableList from 'react-native-sortable-list';
 
 // Shank components:
-import { BaseComponent, BaseModel, FileHost, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, isAndroid, Spinner } from '../BaseComponent';
-import ViewStyle from './styles/groupStyle';
+import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, FontAwesome, isAndroid, Spinner } from '../BaseComponent';
 import { ClienHost } from '../../../config/variables';
+import ViewStyle from './styles/groupStyle';
 
-class RoasterRow extends React.Component {
+class RoasterRow extends Component {
 
 	constructor(props) {
 		super(props);
@@ -111,7 +110,7 @@ class RoasterRow extends React.Component {
 	}
 }
 
-class RoundLabels extends React.Component {
+class RoundLabels extends Component {
 	
 	constructor(props) {
 		super(props);
@@ -151,7 +150,7 @@ class RoundLabels extends React.Component {
 	}
 }
 
-class GroupTabBar extends React.Component {
+class GroupTabBar extends Component {
 	
 	constructor(props) {
 		super(props);
@@ -177,7 +176,7 @@ class GroupTabBar extends React.Component {
 	}
 }
 
-class LeaderboardRow extends React.Component {
+class LeaderboardRow extends Component {
 	
 	constructor(props) {
 		super(props);
@@ -223,12 +222,7 @@ class LeaderboardRow extends React.Component {
 export default class Group extends BaseComponent {
 	
 	static navigationOptions = ({navigation}) => ({
-		title: 'GROUP',
-		headerRight: navigation.state.params.isOwner ? (
-			<TouchableHighlight onPress={() => navigation.navigate('EditGroup', navigation.state.params)}>
-				<Entypo name='user' style={[MainStyles.headerIconButton]} />
-			</TouchableHighlight> )
-		: null
+		title: 'GROUP'
 	});
 
 	constructor(props) {
@@ -237,70 +231,46 @@ export default class Group extends BaseComponent {
 		this.getDaysObj = this.getDaysObj.bind(this);
 		this.showActionSheet = this.showActionSheet.bind(this);
 		this.tournamentSelected = this.tournamentSelected.bind(this);
+		this.inviteToJoin = this.inviteToJoin.bind(this);
 		this.removeUserFromGroup = this.removeUserFromGroup.bind(this);
 		this.managePlayers = this.managePlayers.bind(this);
 		this.managePlayersCallback = this.managePlayersCallback.bind(this);
 		this.shouldShowCheckout = this.shouldShowCheckout.bind(this);
-
-
-		this.inviteToJoin = this.inviteToJoin.bind(this);
-		this.optionSelectedPressed = this.optionSelectedPressed.bind(this);
-		this.updatePlayerRankingList = this.updatePlayerRankingList.bind(this);
-		this.onGroupAsync = this.onGroupAsync.bind(this);
-		this.handleRefresh = this.handleRefresh.bind(this);
-		this.onPlayerRankingSaveAsync = this.onPlayerRankingSaveAsync.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
-		
-		this.isSortingDisabled = this.isSortingDisabled.bind(this);
-		this.updateRoaster = this.updateRoaster.bind(this);
-
+		this.handleError = this.handleError.bind(this);
 		this.state = {
 			isLoading: false,
 			group: {},
 			currentUser: {},
 			sheetNames: ['Cancel'],
 			tournamentIndex: 0,
-			currentUserIndex: 0,
-
-
-			currentGroup: {},
-			groupPhoto: null,
-			currentTournament: {},
-			tournamentData: {},
-			diffDays: 0,
-			tournaments: [],
-			tournamentsName: [],
-			playersLeaderboard: [],
-			usersLength: 1,
-			score: 0,
-			ranking: 0,
-			playerRanking: [],
-			order: [],
-			originalRanking: '',
-			movementsDone: 0,
-			pricePerMovement: 0
+			currentUserIndex: 0
 		};
 	}
 
 	setGroupData(group) {
-		const sheetNames = group.tournaments.map(cross => cross.tournament.name);
-		sheetNames.push('Cancel');
+		try {
+			const sheetNames = group.tournaments.map(cross => cross.tournament.name);
+			sheetNames.push('Cancel');
 
-		group.tournaments[this.state.tournamentIndex].leaderboard.forEach((cross, i) => {
-			if (cross.roaster.length == 0) {
-				for (let i = -1; i >= -5; i--) {
-					cross.roaster.push({_id: i});
+			group.tournaments[this.state.tournamentIndex].leaderboard.forEach((cross, i) => {
+				if (cross.roaster.length == 0) {
+					for (let i = -1; i >= -5; i--) {
+						cross.roaster.push({_id: i});
+					}
 				}
-			}
 
-			if (cross.user._id == this.state.currentUser._id) {
-				this.setState({currentUserIndex: i});
-			}
-		});
+				if (cross.user._id == this.state.currentUser._id) {
+					this.setState({currentUserIndex: i});
+				}
+			});
 
-		group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
-		const userRoaster = group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster;
-		this.setState({ group, sheetNames, userRoaster });
+			group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
+			const userRoaster = group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster;
+			this.setState({ group, sheetNames, userRoaster });
+		} catch(error) {
+			this.handleError(error);
+		}
 	}
 
 	getCurrentUserStat(key) {
@@ -360,9 +330,27 @@ export default class Group extends BaseComponent {
 		}
 	}
 
+	inviteToJoin() {
+		const url = `http://${ClienHost}#/invite/${this.state.group._id}`;
+
+		Share.share({
+			message: `Join to our group '${this.state.group.name}' at ${url}`,
+			title: 'Shank Group Invitation',
+			url: url,
+		}, {
+			subject: 'Shank Group Invitation',
+			dialogTitle: 'Shank Group Invitation',
+			excludedActivityTypes: [
+				'com.apple.UIKit.activity.PostToTwitter',
+				'com.apple.uikit.activity.mail'
+			],
+			tintColor: AppConst.COLOR_GREEN
+		}).catch(this.handleError);
+	}
+
 	async removeUserFromGroup(cross) {
 		this.setState({isLoading: true});
-		const group = await BaseModel.delete(`group/removeUserFromGroup/${this.state.item.user._id}/${this.state.group._id}`).catch(error => this.toasterMsg = error);
+		const group = await BaseModel.delete(`group/removeUserFromGroup/${this.state.item.user._id}/${this.state.group._id}`).catch(this.handleError);
 		this.setGroupData(group);
 		this.setState({isLoading: false});
 	}
@@ -370,7 +358,7 @@ export default class Group extends BaseComponent {
 	managePlayers(row, index) {
 		this.props.navigation.navigate('PlayerSelection', {
 			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster.filter(cross => cross.player != null),
-			position: row.player ? Number.parseInt(index) : null,
+			position: row.player ? index : null,
 			group: this.state.group,
 			tournamentIndex: this.state.tournamentIndex,
 			currentUserIndex: this.state.currentUserIndex,
@@ -379,10 +367,14 @@ export default class Group extends BaseComponent {
 		});
 	}
 
-	managePlayersCallback(data) {
-		let group = Object.assign({}, this.state.group);
-		group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster = data;
-		this.setState({ group });
+	managePlayersCallback(data, shouldCheckout) {
+		if (shouldCheckout) {
+			let group = Object.assign({}, this.state.group);
+			group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster = data;
+			this.setState({ group });
+		} else {
+			this.setGroupData(data);
+		}
 	}
 
 	shouldShowCheckout() {
@@ -406,106 +398,6 @@ export default class Group extends BaseComponent {
 		return hasChanged;
 	}
 
-	async componentDidMount() {
-		this.setState({isLoading: true});
-
-		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => this.toasterMsg = error);
-		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(error => this.toasterMsg = error);
-		this.setState({currentUser: JSON.parse(currentUser)});
-		this.setGroupData(group);
-
-		this.setState({isLoading: false});
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	optionSelectedPressed(actionIndex) {
-		if (actionIndex == (this.state.tournamentsName.length - 1)) {
-			return;
-		}
-
-		this.setState({currentTournament: this.state.currentGroup.tournaments[actionIndex], shouldShowCheckout: false, loading: true});
-		this.state.currentGroup.tournaments[actionIndex].users.forEach((user) => {
-			if (user._id == this.state.currentUser._id) {
-				let playerRanking = (user.playerRanking == null || user.playerRanking.length == 0) ? [
-					{position: 1},
-					{position: 2},
-					{position: 3},
-					{position: 4},
-					{position: 5}
-				] : user.playerRanking;
-				this.setState({originalRanking: JSON.stringify(playerRanking)});
-				this.updatePlayerRankingList(playerRanking);
-				return;
-			}
-		});
-
-		BaseModel.get(`tournaments/getTournament/${this.state.currentGroup.tournaments[actionIndex].tournamentId}`).then((tournamentData) => {
-			let nowDate = new Date();
-			nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-			let diff = new Date(tournamentData.endDate).getTime() - nowDate.getTime();
-
-			if (diff > 0) {
-				diff = Math.ceil(diff / (1000*3600*24));
-			} else {
-				diff = 0;
-			}
-
-			this.setState({
-				tournamentData: tournamentData,
-				playersLeaderboard: [],
-				diffDays: diff
-			});
-			this.setLoading(false);
-		}).catch((error) => {
-			this.setLoading(false);
-		});
-	}
-
-	setLoading(loading) {
-		this.setState({isLoading: loading});
-	}
-
-	updatePlayerRankingList(playerRanking) {
-		playerRanking = playerRanking.sort(function(a, b) { return a.position - b.position; });
-		let order = Object.keys(playerRanking);
-		this.setState({playerRanking: playerRanking, order: order});
-	}
-
-	handleRefresh() {
-		this.setState({ refreshing: true }, () => { this.onGroupAsync(this.state.currentGroup._id); });
-	};
-
-	inviteToJoin() {
-		const url = `http://${ClienHost}#/invite/${this.state.group._id}`;
-		Share.share({
-			message: `Join to our group '${this.state.currentGroup.name}' at ${url}`,
-			title: 'Shank Group Invitation',
-			url: `${url}`
-		}, {
-			subject: 'Shank Group Invitation',
-			dialogTitle: 'Shank Group Invitation',
-			excludedActivityTypes: [
-				'com.apple.UIKit.activity.PostToTwitter',
-				'com.apple.uikit.activity.mail'
-			],
-			tintColor: AppConst.COLOR_GREEN
-		}).catch(err => console.log(err));
-	}
-
 	goToCheckout() {
 		let today = new Date();
 		let round = 0;
@@ -519,207 +411,31 @@ export default class Group extends BaseComponent {
 			}
 		}
 
-		let params = {
+		this.props.navigation.navigate('Checkout', {
 			groupId: this.state.group._id,
-			isOwner: this.state.group.owner == this.state.currentUser._id,
-			tournamentId: this.state.currentTournament._id,
-			originalRanking: this.state.userRoaster,
-			playerRanking: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster,
-			round: round
-		};
-
-		this.props.navigation.navigate('Checkout', params);
-	}
-
-	isSortingDisabled() {
-		let today = new Date();
-		let endDate = new Date(this.state.tournamentData.endDate);
-
-		if (today.getTime() >= endDate.getTime()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	updateRoaster(roaster) {
-		if (roaster.length < 5) {
-			for (let i = roaster.length; i < 5; i++) {
-				roaster.push({position: i + 1});
-			}
-		}
-
-		this.setState({playerRanking: roaster});
-	}
-
-	async initialRequest() {
-		try {
-			if (this.props.navigation.state.params.isOwner) {
-				do {
-					this.state.currentTournament.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
-				} while (this.state.currentTournament.users.length < 5);
-
-				this.state.currentGroup.users.push({fullName: 'Invite', _id: (Math.random() * -1000)});
-			}
-		} catch (error) {
-			console.log('ERROR! ', error);
-		}
-		this.getPricePerMovement();
-	};
-
-	async getPricePerMovement() {
-		await BaseModel.get('appSettings/findByCode/PPM').then((setting) => {
-			this.state.pricePerMovement = JSON.parse(setting.value);
-		}).catch((error) => {
-			this.setLoading(false);
+			tournamentId: this.state.group.tournaments[this.state.tournamentIndex].tournament._id,
+			originalRoaster: this.state.userRoaster,
+			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster,
+			round: round,
+			managePlayersCallback: this.managePlayersCallback
 		});
 	}
 
-	async onPlayerRankingSaveAsync(data, method) {
-		/*let tournamentData = this.state.currentTournament;
-		let nowDate = new Date();
-		nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-		let tournamentDate = new Date(new Date(tournamentData.startDate).getFullYear(), new Date(tournamentData.startDate).getMonth(), new Date(tournamentData.startDate).getDate());
-		let diff = tournamentDate.getTime() - nowDate.getTime();
-		diff = Math.ceil(diff / (1000*3600*24));*/
+	handleError(error) {
+		this.setState({isLoading: false});
+		this.toasterMsg = error;
+	}
 
-		if (this.state.diffDays > 0) {
-			this.setLoading(true);
+	async componentDidMount() {
+		this.setState({isLoading: true});
 
-			await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: data}).then((response) => {
-				this.setLoading(false);
-				this.updatePlayerRankingList(data);
-				this.setState({originalRanking: JSON.stringify(data)});
-				
-				if (method != null) {
-					method();
-				}
-			}).catch((error) => {
-				console.log("error: ", error);
-				BarMessages.showError(error, this.toasterMsg);
-				this.setLoading(false);
-			});
-		} else {
-			let original = JSON.parse(this.state.originalRanking);
-			let updated = false;
-			let shouldShowCheckout = false;
-			
-			for (let i=0 ; i<original.length ; i++) {
-				let dataChanged = data.filter(ranking => { return ranking.position == original[i].position})[0];
-				
-				if (original[i].playerId == null && dataChanged.playerId != null) {
-					original[i] = dataChanged;
-					updated = true;
-				} else if (original[i].playerId != dataChanged.playerId) {
-					shouldShowCheckout = true;
-				}
-			}
+		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(this.handleError);
+		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(this.handleError);
+		this.setState({currentUser: JSON.parse(currentUser)});
+		this.setGroupData(group);
 
-			if (updated) {
-				await BaseModel.put(`groups/editMyPlayers/${this.state.currentGroup._id}/${this.state.currentTournament._id}`, {players: original}).then((response) => {
-					this.setLoading(false);
-					this.updatePlayerRankingList(original);
-					this.setState({originalRanking: JSON.stringify(original)});
-					
-					if (method != null) {
-						method();
-					}
-				}).catch((error) => {
-					console.log("error: ", error);
-					BarMessages.showError(error, this.toasterMsg);
-					this.setLoading(false);
-				});
-			} else {
-				this.setState({shouldShowCheckout: shouldShowCheckout});
-				this.updatePlayerRankingList(data);
-				
-				if (method != null) {
-					method();
-				}
-			}
-		}
-	};
-
-	async onGroupAsync(data) {
-		let self = this;
-		this.setState({loading: true});
-
-		await BaseModel.get(`groups/group/${data}`).then((currentGroup) => {
-			let tournaments = [];
-			let tournamentsName = [];
-
-			currentGroup.tournaments.forEach(function(tournament) {
-				tournaments.push(tournament);
-				tournamentsName.push(tournament.tournamentName);
-			});
-
-			tournamentsName.push('Cancel');
-			this.setState({
-				currentGroup: currentGroup,
-				groupPhoto: currentGroup.photo.path,
-				currentTournament: currentGroup.tournaments[0],
-				tournaments: tournaments,
-				tournamentsName: tournamentsName,
-				usersLength: currentGroup.users.length,
-				loading: false
-			});
-
-			currentGroup.tournaments[0].users.forEach(function(user) {
-				if (user._id == self.state.currentUser._id) {
-					let playerRanking = (user.playerRanking == null || user.playerRanking.length == 0) ? [
-						{position: 1},
-						{position: 2},
-						{position: 3},
-						{position: 4},
-						{position: 5}
-					] : user.playerRanking;
-					let shouldShowCheckout = false;
-
-					if (self.state.originalRanking != '') {
-						let original = JSON.parse(self.state.originalRanking);
-
-						for (let i=0; i < original.length; i++) {
-							let dataChanged = self.state.playerRanking.filter(ranking => { return ranking.position == original[i].position; })[0];
-							
-							if (original[i].playerId != dataChanged.playerId) {
-								shouldShowCheckout = true;
-							}
-						}
-					}
-
-					self.setState({originalRanking: JSON.stringify(playerRanking), shouldShowCheckout: shouldShowCheckout});
-					self.updatePlayerRankingList(playerRanking);
-					return;
-				}
-			});
-
-			this.props.navigation.setParams({currentGroup: currentGroup});
-			BaseModel.get(`tournaments/getTournament/${currentGroup.tournaments[0].tournamentId}`).then((tournamentData) => {
-				let nowDate = new Date();
-				nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-				let diff = new Date(tournamentData.endDate).getTime() - nowDate.getTime();
-				
-				if (diff > 0) {
-					diff = Math.ceil(diff / (1000*3600*24));
-				} else {
-					diff = 0;
-				}
-
-				this.setState({
-					tournamentData: tournamentData,
-					playersLeaderboard: [],
-					diffDays: diff
-				});
-				this.setLoading(false);
-			}).catch((error) => {
-				this.setLoading(false);
-			});
-			this.initialRequest();
-		}).catch((error) => {
-			this.setLoading(false);
-			BarMessages.showError(error, this.toasterMsg);
-		});
-	};
+		this.setState({isLoading: false});
+	}
 
 	render() {
 		return (
@@ -728,9 +444,7 @@ export default class Group extends BaseComponent {
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.state.sheetNames} cancelButtonIndex={this.state.sheetNames.length} onPress={this.tournamentSelected} />
 
 				<View style={[ViewStyle.groupInformation]}>
-					<View>
-						<Avatar large rounded source={{uri: FileHost + this.state.group.photo}}></Avatar>
-					</View>
+					<Image source={{uri: FileHost + this.state.group.photo}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.groupImage} />
 
 					<View style={[ViewStyle.groupHeader]}>
 						<View>
@@ -764,12 +478,12 @@ export default class Group extends BaseComponent {
 
 				<View style={[ViewStyle.groupStats]}>
 					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('score') == 0 ? '-' : this.getCurrentUserStat('score')}</Text></View>
+						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('score')}</Text></View>
 						<View><Text style={[ViewStyle.statLabel]}>Points</Text></View>
 					</View>
 					
 					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank') == 0 ? '-' : this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length - 1}</Text></View>
+						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length - 1}</Text></View>
 						<View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
 					</View>
 
@@ -784,9 +498,7 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Leaderboard' style={[ViewStyle.tabViewContainer]}>
 							<Text style={[ViewStyle.rankColumnText]}>Rank</Text>
 							
-							<List containerStyle={[ViewStyle.leaderboardList]}>
-								<FlatList data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow item={item} group={this.state.group} currentUser={this.state.currentUser} inviteToJoin={this.inviteToJoin} onRemove={this.removeUserFromGroup} />)} />
-							</List>
+							<FlatList data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow item={item} group={this.state.group} currentUser={this.state.currentUser} inviteToJoin={this.inviteToJoin} onRemove={this.removeUserFromGroup} />)} />
 						</View>
 
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
@@ -794,7 +506,18 @@ export default class Group extends BaseComponent {
 
 							<SortableList style={{flex: 1}} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []}  renderRow={({data, index}) => (
 								<RoasterRow roaster={data} rowId={index} onPress={() => this.managePlayers(data, index)} />
-							)} />
+							)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
+								if (this.nextOrder) {
+									let roaster = [];
+									this.nextOrder.forEach(order => {
+										roaster.push(this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[order]);
+									});
+
+									let group = Object.assign({}, this.state.group);
+									group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster = roaster;
+									this.setState({ group });
+								}
+							}} />
 
 							{this.shouldShowCheckout() ?
 								<View style={ViewStyle.checkoutButtonView}>

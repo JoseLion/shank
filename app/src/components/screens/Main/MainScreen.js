@@ -10,6 +10,8 @@ import { BarMessages, BaseComponent, BaseModel, FileHost, AppConst, DropdownAler
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
 
+import RightCaretIcon from '../../../../resources/right-caret-icon.png';
+
 export default class MainScreen extends BaseComponent {
 
 	static navigationOptions = ({navigation}) => {
@@ -46,6 +48,8 @@ export default class MainScreen extends BaseComponent {
 		this.getRemoveButton = this.getRemoveButton.bind(this);
 		this.removeGroup = this.removeGroup.bind(this);
 		this.goToGroup = this.goToGroup.bind(this);
+		this.refreshGroups = this.refreshGroups.bind(this);
+		this.handleError = this.handleError.bind(this);
 
 		this.handleRefresh = this.handleRefresh.bind(this);
 		this.removeGroup = this.removeGroup.bind(this);
@@ -53,6 +57,7 @@ export default class MainScreen extends BaseComponent {
 		this.getGroupList = this.getGroupList.bind(this);
 		this.state = {
 			isLoading: false,
+			groupsRefreshing: false,
 			groups: [],
 
 
@@ -67,7 +72,7 @@ export default class MainScreen extends BaseComponent {
 
 	async getGroups() {
 		this.setState({isLoading: true});
-		const groups = await BaseModel.get('group/findMyGroups').catch(error => this.toasterMsg = error);
+		const groups = await BaseModel.get('group/findMyGroups').catch(this.handleError);
 		this.setState({isLoading: false, groups: groups});
 	}
 
@@ -81,7 +86,7 @@ export default class MainScreen extends BaseComponent {
 			}
 		});
 
-		return (stat > 0 ? stat : '-');
+		return stat;
 	}
 
 	getRemoveButton(group) {
@@ -98,7 +103,7 @@ export default class MainScreen extends BaseComponent {
 		}
 
 		this.setState({isLoading: true});
-		await BaseModel.delete('group/delete/' + group._id).catch(error => this.toasterMsg = error);
+		await BaseModel.delete('group/delete/' + group._id).catch(this.handleError);
 
 		let index = this.state.groups.indexOf(group);
 		let groups = [...this.state.groups];
@@ -129,12 +134,26 @@ export default class MainScreen extends BaseComponent {
 
 	async addToGroup(data) {
 		this.setState({isLoading: true});
-		const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(error => this.toasterMsg = error);
+		const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(this.handleError);
 		this.setState({isLoading: false, groups: groups});
 	}
 
+	async refreshGroups() {
+		this.setState({groupsRefreshing: true});
+		const groups = await BaseModel.get('group/findMyGroups').catch(error => {
+			this.setState({groupsRefreshing: false});
+			this.toasterMsg = error
+		});
+		this.setState({groupsRefreshing: false, groups: groups});
+	}
+
+	handleError(error) {
+		this.setState({isLoading: false});
+		this.toasterMsg = error;
+	}
+
 	async componentDidMount() {
-		const authToken = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(error => this.toasterMsg = error);
+		const authToken = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 		this.setState({auth: authToken});
 		this.props.navigation.addListener('didFocus', payload => this.getGroups());
 
@@ -262,12 +281,12 @@ export default class MainScreen extends BaseComponent {
 											</View>
 										</View>
 
-										<Image source={require('../../../../resources/right-caret-icon.png')} resizeMode={'contain'} style={ViewStyle.caretIcon} />
+										<Image source={RightCaretIcon} resizeMode={'contain'} style={ViewStyle.caretIcon} />
 									</View>
 								</View>
 							</TouchableHighlight>
 						</Swipeable>
-					)} />
+					)} refreshing={this.state.groupsRefreshing} onRefresh={this.refreshGroups} />
 
 					<DropdownAlert ref={ref => this.toasterMsg = ref} />
 				</View>

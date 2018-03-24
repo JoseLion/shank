@@ -92,25 +92,30 @@ const ViewStyle = StyleSheet.create({
 	searchInputView: {
 		width: (containerWidth * 0.80),
 		height: '100%',
-		justifyContent: 'center',
-		paddingHorizontal: (containerWidth * 0.02)
+		paddingHorizontal: (containerWidth * 0.02),
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingVertical: Style.EM(0.375)
 	},
 	searchIcon: {
-		height: '40%',
+		width: Style.EM(1.125),
+		height: '80%',
 		position: 'absolute',
-		left: Style.EM(-4)
+		left: '5%'
 	},
 	searchInput: {
+		flex: 1,
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_15,
-		color: 'white',
-		height: '70%',
-		backgroundColor: 'rgba(241, 242, 242, 0.2)',
-		borderRadius: 10,
-		paddingLeft: (containerWidth * 0.125)
+		color: AppConst.COLOR_WHITE,
+		height: '100%',
+		backgroundColor: '#323d50',
+		borderRadius: Style.EM(0.5),
+		paddingLeft: '10%',
+		paddingRight: '2%',
+		zIndex: -1
 	},
-
-
 	cancelSearchButton: {
 		width: (containerWidth * 0.2),
 		height: '100%',
@@ -120,7 +125,7 @@ const ViewStyle = StyleSheet.create({
 	cancelSearchText: {
 		fontFamily: 'century-gothic',
 		fontSize: Style.FONT_15,
-		color: 'white'
+		color: AppConst.COLOR_WHITE
 	}
 });
 
