@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { ScrollView, Text, TouchableOpacity, View, Image } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, Image, Platform } from 'react-native';
 import { List } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -18,6 +18,10 @@ export default class Checkout extends BaseComponent {
 
 	constructor(props) {
 		super(props);
+		this.itemSkus = Platform.select({
+			ios: ['com.levelap.shank'],
+			android: ['']
+		});
 		this.playerWasChanged = this.playerWasChanged.bind(this);
 		this.saveAndPay = this.saveAndPay.bind(this);
 		this.handleError = this.handleError.bind(this);
@@ -27,18 +31,6 @@ export default class Checkout extends BaseComponent {
 			originalRoaster: this.props.navigation.state.params.originalRoaster,
 			total: 0
 		};
-	}
-	
-	componentDidMount() {
-		let finalCost = 0.0;
-
-		for (let i = 0; i < this.state.roaster.length; i++) {
-			if (this.playerWasChanged(i)) {
-				finalCost += 1.99;
-			}
-		}
-
-		this.setState({total: finalCost});
 	}
 
 	playerWasChanged(index) {
@@ -63,6 +55,25 @@ export default class Checkout extends BaseComponent {
 		this.toasterMsg = error;
 	}
 
+	async componentDidMount() {
+		this.setState({isLoading: true});
+		console.log("RNIap: ", RNIap);
+		await RNIap.prepare().catch(this.handleError);
+		const products = await RNIap.getProducts(this.itemSkus);
+		console.log("products: ", products);
+		this.setState({isLoading: false});
+
+		let finalCost = 0.0;
+
+		for (let i = 0; i < this.state.roaster.length; i++) {
+			if (this.playerWasChanged(i)) {
+				finalCost += 1.99;
+			}
+		}
+
+		this.setState({total: finalCost});
+	}
+
 	render() {
 		return (
 			<View style={ViewStyle.container}>
@@ -78,7 +89,7 @@ export default class Checkout extends BaseComponent {
 							<View key={item._id} style={[ViewStyle.rowView]}>
 								<Text style={[ViewStyle.rowNum, {flex: 1}]} numberOfLines={1}>{index + 1}</Text>
 
-								<Text style={[ViewStyle.rowName, {flex: 6}]} numberOfLines={1}>{item.player.firstName + ' ' + item.player.lastName}</Text>
+								<Text style={[ViewStyle.rowName, {flex: 6, textAlign: 'right'}]} numberOfLines={1}>{item.player.firstName + ' ' + item.player.lastName}</Text>
 
 								<Image style={[ViewStyle.exchangeIcon, {flex: 1.5}]} source={ExchangeIcon} resizeMode={'contain'} resizeMethod={'resize'} />
 

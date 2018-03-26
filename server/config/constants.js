@@ -1,5 +1,5 @@
 // shank.levelaptesting.com
-// 192.168.100.6
+// 192.168.10.152
 
 const END_POINT = '192.168.10.152';
 const HOST = `http://${END_POINT}:3000/`;

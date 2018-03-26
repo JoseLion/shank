@@ -153,11 +153,24 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	async componentDidMount() {
-		const authToken = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
-		this.setState({auth: authToken});
-		this.props.navigation.addListener('didFocus', payload => this.getGroups());
+		const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
+		this.setState({ auth });
+		this.props.navigation.addListener('didFocus', async payload => {
+			if (this.state.auth) {
+				this.getGroups();
+			} else {
+				const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 
-		if (authToken) {
+				if (auth) {
+					this.setState({ auth });
+					this.getGroups();
+				} else {
+					this.props.navigation.navigate('Login');
+				}
+			}
+		});
+
+		if (this.state.auth) {
 			Linking.addEventListener('url', this.handleOpenURL);
 			Linking.getInitialURL().then((url) => {
 				if (url) {
@@ -172,6 +185,8 @@ export default class MainScreen extends BaseComponent {
 					}
 				}
 			}).catch(err => console.error('An error occurred', err));
+		} else {
+			this.props.navigation.navigate('Login');
 		}
 	}
 

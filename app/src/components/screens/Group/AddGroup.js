@@ -51,11 +51,12 @@ export default class AddGroup extends BaseComponent {
 	}
 
 	openImageSheet() {
-		if (isAndroid) {
+		this.validationMessage = "Testing the massage";
+		/*if (isAndroid) {
 			this.actionSheet.show();
 		} else {
 			this.props.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
-		}
+		}*/
 	}
 
 	async getAllTournaments() {

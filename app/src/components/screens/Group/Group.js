@@ -237,6 +237,7 @@ export default class Group extends BaseComponent {
 		this.managePlayersCallback = this.managePlayersCallback.bind(this);
 		this.shouldShowCheckout = this.shouldShowCheckout.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
+		this.isOnCourse = this.isOnCourse.bind(this);
 		this.handleError = this.handleError.bind(this);
 		this.state = {
 			isLoading: false,
@@ -421,6 +422,20 @@ export default class Group extends BaseComponent {
 		});
 	}
 
+	isOnCourse() {
+		if (this.state.group && this.state.group.tournaments) {
+			const today = new Date();
+			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
+
+			if (today.getTime() >= startDate.getTime() && today.getTime() <= endDate.getTime()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	handleError(error) {
 		this.setState({isLoading: false});
 		this.toasterMsg = error;
@@ -504,8 +519,8 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
 							<RoundLabels tournament={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament} />
 
-							<SortableList style={{flex: 1}} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []}  renderRow={({data, index}) => (
-								<RoasterRow roaster={data} rowId={index} onPress={() => this.managePlayers(data, index)} />
+							<SortableList style={{flex: 1}} sortingEnabled={this.isOnCourse()} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []} renderRow={({data, index}) => (
+								<RoasterRow roaster={data} rowId={index} hideSortBars={!this.isOnCourse()} onPress={() => this.managePlayers(data, index)} />
 							)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
 								if (this.nextOrder) {
 									let roaster = [];
