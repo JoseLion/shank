@@ -27,10 +27,12 @@ export default class AddGroup extends BaseComponent {
 		this.selectPicture = this.selectPicture.bind(this);
 		this.getPhotoSource = this.getPhotoSource.bind(this);
 		this.createGroup = this.createGroup.bind(this);
+		this.handleError = this.handleError.bind(this);
 		this.state = {
 			isLoading: false,
 			tournaments: [],
-			group: {tournaments: []}
+			group: this.props.navigation.state.params && this.props.navigation.state.params.group ? this.props.navigation.state.params.group : {tournaments: []},
+			isEditing: this.props.navigation.state.params && this.props.navigation.state.params.group
 		};
 	}
 
@@ -51,17 +53,16 @@ export default class AddGroup extends BaseComponent {
 	}
 
 	openImageSheet() {
-		this.validationMessage = "Testing the massage";
-		/*if (isAndroid) {
+		if (isAndroid) {
 			this.actionSheet.show();
 		} else {
 			this.props.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
-		}*/
+		}
 	}
 
 	async getAllTournaments() {
 		this.setState({isLoading: true});
-		const tournamentsData = await BaseModel.get('tournament/findAll').catch(error => this.validationMessage = error);
+		const tournamentsData = await BaseModel.get('tournament/findAll').catch(this.handleError);
 		this.setState({isLoading: false, tournaments: tournamentsData});
 	}
 
@@ -92,6 +93,26 @@ export default class AddGroup extends BaseComponent {
 	}
 
 	async createGroup() {
+		if (!this.state.photoUri) {
+			this.handleError("Group photo is required!");
+			return;
+		}
+
+		if (!this.state.group.name) {
+			this.handleError("Group name is required!");
+			return;
+		}
+
+		if (!this.state.group.tournaments[0]) {
+			this.handleError("Group tournament is required!");
+			return;
+		}
+
+		if (!this.state.group.bet) {
+			this.handleError("Group bet is required!");
+			return;
+		}
+
 		let formData = new FormData();
 		let filename = this.state.photoUri.split('/').pop();
 		let match = /\.(\w+)$/.exec(filename);
@@ -101,9 +122,14 @@ export default class AddGroup extends BaseComponent {
 		formData.append('file', {uri: this.state.photoUri, type: type, name: filename});
 
 		this.setState({isLoading: true});
-		let group = await BaseModel.multipart('group/create', formData).catch(error => this.validationMessage = error);
+		let group = await BaseModel.multipart('group/create', formData).catch(this.handleError);
 		this.setState({isLoading: false});
 		this.props.navigation.goBack(null);
+	}
+
+	handleError(error) {
+		this.setState({isLoading: false});
+		this.dropDown.alertWithType('error', "Error", error);
 	}
 
 	componentDidMount() {
@@ -150,7 +176,7 @@ export default class AddGroup extends BaseComponent {
 					<Text style={[MainStyles.buttonText]}>Create Group</Text>
 				</TouchableHighlight>
 
-				<DropdownAlert ref={ref => this.validationMessage = ref} />
+				<DropdownAlert ref={ref => this.dropDown = ref} />
 			</KeyboardAwareScrollView>
 		);
 	}

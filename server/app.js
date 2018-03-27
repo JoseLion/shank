@@ -13,6 +13,10 @@ import loadModules from './modules/load.modules';
 import fantasy from './service/fantasy';
 import setPassport from './config/passport';
 
+import { CronJob } from 'cron';
+import handleMongoError from './service/handleMongoError';
+import AssignPoints from './service/assignpoints';
+
 /**
 * Custom prototypes
 */
@@ -103,5 +107,29 @@ app.use(function (err, req, res, next) {
 		error: {}
 	});
 });
+
+/** THIS CODE SHOUD CHANGE, THIS IS A BURNT VERSION OF WHAT SHOULD BE DONE WHEN A TOURNAMENT IS ADDED TO THE DB **/
+
+async function createCrons(id) {
+	const Tournament = mongoose.model('Tournament');
+	const tournament = await Tournament.findById(id).catch(handleMongoError);
+
+	tournament.rounds.forEach(round => {
+		new CronJob({
+			cronTime: `0 30 19 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
+			onTick: () => {
+				AssignPoints(tournament._id, round.number);
+				this.stop();
+			},
+			start: true,
+			timeZone: 'America/Guayaquil'
+		});
+	});
+}
+
+createCrons("5aba80adda048b2aa431dacb");
+
+/** ----------------------------------------------------------------------------------------------------------- **/
+
 
 module.exports = app;

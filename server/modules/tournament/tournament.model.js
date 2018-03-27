@@ -13,7 +13,8 @@ let TournamentSchema = new mongoose.Schema({
 	rounds: [{
 		roundID: Number,
 		number: Number,
-		day: Date
+		day: Date,
+		pointsGiven: {type: Boolean, default: false}
 	}]
 }, {
 	collection: 'tournaments',

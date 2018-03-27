@@ -222,7 +222,12 @@ class LeaderboardRow extends Component {
 export default class Group extends BaseComponent {
 	
 	static navigationOptions = ({navigation}) => ({
-		title: 'GROUP'
+		title: 'GROUP'/*,
+		headerRight: (
+			<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
+				<Text style={ViewStyle.editButtonText}>Edit</Text>
+			</TouchableOpacity>
+		)*/
 	});
 
 	constructor(props) {
@@ -448,6 +453,9 @@ export default class Group extends BaseComponent {
 		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(this.handleError);
 		this.setState({currentUser: JSON.parse(currentUser)});
 		this.setGroupData(group);
+		this.props.navigation.setParams({editGroup: () => {
+			this.props.navigation.navigate('AddGroup', {group: this.state.group});
+		}});
 
 		this.setState({isLoading: false});
 	}

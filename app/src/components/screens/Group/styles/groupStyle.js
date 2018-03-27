@@ -9,6 +9,17 @@ const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
 
 export default ViewStyle = StyleSheet.create({
+    editButton: {
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingRight: Style.EM(1)
+    },
+    editButtonText: {
+        fontFamily: 'century-gothic',
+        fontSize: Style.FONT_16,
+        color: AppConst.COLOR_WHITE
+    },
     groupInformation: {
         flex: 1,
         flexDirection: 'row',

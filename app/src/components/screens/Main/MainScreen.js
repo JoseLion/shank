@@ -142,28 +142,31 @@ export default class MainScreen extends BaseComponent {
 		this.setState({groupsRefreshing: true});
 		const groups = await BaseModel.get('group/findMyGroups').catch(error => {
 			this.setState({groupsRefreshing: false});
-			this.toasterMsg = error
+			this.dropDown.alertWithType('error', "Error", error);
 		});
 		this.setState({groupsRefreshing: false, groups: groups});
 	}
 
 	handleError(error) {
 		this.setState({isLoading: false});
-		this.toasterMsg = error;
+		this.dropDown.alertWithType('error', "Error", error);
 	}
 
 	async componentDidMount() {
 		const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 		this.setState({ auth });
+		
 		this.props.navigation.addListener('didFocus', async payload => {
 			if (this.state.auth) {
 				this.getGroups();
 			} else {
 				const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
+				this.setState({ auth });
 
-				if (auth) {
-					this.setState({ auth });
+				if (this.state.auth) {
+					//console.log("PASS");
 					this.getGroups();
+					this.setState({isLoading: false});
 				} else {
 					this.props.navigation.navigate('Login');
 				}
@@ -240,7 +243,7 @@ export default class MainScreen extends BaseComponent {
 				}
 			} else {
 				console.log('ERROR: ', error);
-				BarMessages.showError(error, this.toasterMsg);
+				this.dropDown.alertWithType('error', "Error", error);
 			}
 		});
 	}
@@ -261,7 +264,7 @@ export default class MainScreen extends BaseComponent {
 		}).catch(error => {
 			this.setLoading(false);
 			console.log('ERROR! ', error);
-			BarMessages.showError(error, this.toasterMsg);
+			this.dropDown.alertWithType('error', "Error", error);
 		});
 	}
 
@@ -303,7 +306,7 @@ export default class MainScreen extends BaseComponent {
 						</Swipeable>
 					)} refreshing={this.state.groupsRefreshing} onRefresh={this.refreshGroups} />
 
-					<DropdownAlert ref={ref => this.toasterMsg = ref} />
+					<DropdownAlert ref={ref => this.dropDown = ref} />
 				</View>
 			);
 		} else {
@@ -313,7 +316,7 @@ export default class MainScreen extends BaseComponent {
 					
 					<Text style={ViewStyle.noDataText}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
 
-					<DropdownAlert ref={ref => this.toasterMsg = ref} />
+					<DropdownAlert ref={ref => this.dropDown = ref} />
 				</View>
 			);
 		}
