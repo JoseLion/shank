@@ -15,7 +15,8 @@ import setPassport from './config/passport';
 
 import { CronJob } from 'cron';
 import handleMongoError from './service/handleMongoError';
-import AssignPoints from './service/assignpoints';
+import AssignPoints from './service/assignPoints';
+
 
 /**
 * Custom prototypes
