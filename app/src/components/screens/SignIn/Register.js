@@ -17,7 +17,7 @@ export default class Register extends BaseComponent {
         headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
         headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
         headerLeft: (
-            <TouchableHighlight onPress={() => navigation.dispatch({type: 'Login'})}>
+            <TouchableHighlight onPress={() => navigation.navigate('Login')}>
                 <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
             </TouchableHighlight>
         ),
@@ -77,7 +77,7 @@ export default class Register extends BaseComponent {
                 this.setLoading(false);
                 AsyncStorage.setItem(AppConst.AUTH_TOKEN, response.token);
                 AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(response.user));
-                super.navigateDispatchToScreen('Main');
+                this.props.navigation.navigate('Main');
             }).catch((error) => {
                 this.setLoading(false);
                 BarMessages.showError(error, this.validationMessage);
@@ -112,7 +112,7 @@ export default class Register extends BaseComponent {
                                 this.setLoading(false);
                                 AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
                                 AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
-                                this.props.navigation.dispatch({type: 'Main'});
+                                this.props.navigation.navigate('Main');
                             }).catch((error) => {
                                 this.setLoading(false);
                                 BarMessages.showError(error, this.validationMessage);

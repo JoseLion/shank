@@ -28,7 +28,7 @@ let UserSchema = new mongoose.Schema({
 	}
 });
 
-UserSchema.pre('save', async next => {
+UserSchema.pre('save', async function(next) {
 	const Profile = mongoose.model('Profile');
 	this.fullName = this.fullName.trim();
 	this.email = this.email.trim();

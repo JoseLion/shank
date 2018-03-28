@@ -65,13 +65,13 @@ let prepareRouter = function (app) {
   .post(`${path}/register`, function (req, res) {
     User.findOne({email: req.body.email})
     .exec((err, user) => {
-      if(err) { res.serverError(); return; }
+      if(err) { res.serverError(); console.log("Error 1: ", err); return; }
       if(user) { res.ok({}, 'The email entered is already used.'); return; }
 
       let userModel = new User(req.body);
       userModel.setPassword(req.body.password);
       userModel.save((err, userFinal) => {
-        if(err) { res.serverError(); return; }
+        if(err) { res.serverError(); console.log("Error 2: ", err); return; }
         res.ok({user: userFinal, token: userFinal.generateJwt([])});
         return;
       });
