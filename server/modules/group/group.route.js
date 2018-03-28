@@ -95,6 +95,10 @@ export default function(app) {
 				cross.leaderboard.forEach(obj => {
 					if (obj.user == request.payload._id) {
 						obj.roaster = request.body.roaster;
+						obj.checkouts.push({
+							payment: request.body.payment,
+							movements: request.body.movements
+						});
 					}
 				});
 			}

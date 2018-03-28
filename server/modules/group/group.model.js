@@ -13,7 +13,11 @@ const GroupSchema = new mongoose.Schema({
 			score: {type: Number, default: 0},
 			rank: {type: Number, default: 0},
 			roaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}],
-			lastRoaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}]
+			lastRoaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}],
+			checkouts: [{
+				payment: {type: Number, default: 0},
+				movements: {type: Number, default: 0}
+			}]
 		}]
 	}]
 }, {

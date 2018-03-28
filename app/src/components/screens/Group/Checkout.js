@@ -22,6 +22,7 @@ export default class Checkout extends BaseComponent {
 			ios: ['com.levelap.shank'],
 			android: ['']
 		});
+		this.movements = 0;
 		this.playerWasChanged = this.playerWasChanged.bind(this);
 		this.saveAndPay = this.saveAndPay.bind(this);
 		this.handleError = this.handleError.bind(this);
@@ -43,7 +44,7 @@ export default class Checkout extends BaseComponent {
 
 	async saveAndPay() {
 		this.setState({isLoading: true});
-		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, {roaster: this.state.roaster}).catch(this.handleError);
+		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, {roaster: this.state.roaster, payment: this.state.total, movements: this.movements}).catch(this.handleError);
 
 		this.props.navigation.state.params.managePlayersCallback(group, false);
 		this.setState({isLoading: false});
@@ -67,6 +68,7 @@ export default class Checkout extends BaseComponent {
 
 		for (let i = 0; i < this.state.roaster.length; i++) {
 			if (this.playerWasChanged(i)) {
+				this.movements++;
 				finalCost += 1.99;
 			}
 		}
