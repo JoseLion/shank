@@ -28,7 +28,7 @@ export default StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: Style.EM(2),
+		paddingVertical: Style.EM(1.8),
 		borderBottomWidth: 1,
 		borderColor: AppConst.COLOR_GRAY
 	},

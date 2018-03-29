@@ -61,7 +61,7 @@ export default class Login extends BaseComponent {
 		await AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
 		await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(login.user));
 		this.setLoading(false);
-		this.props.navigation.goBack();
+		this.props.navigation.navigate('Main');
 	}
 
 	async facebookService() {

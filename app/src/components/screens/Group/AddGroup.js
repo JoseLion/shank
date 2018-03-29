@@ -13,7 +13,6 @@ import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessag
 import { ApiHost } from '../../../config/variables';
 import ViewStyle from './styles/addGroupStyle'
 
-@connectActionSheet
 export default class AddGroup extends BaseComponent {
 
 	static navigationOptions = {title: 'CREATE GROUP'};

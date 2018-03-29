@@ -43,8 +43,9 @@ export default class MainScreen extends BaseComponent {
 
 	constructor(props) {
 		super(props);
+		this.currentUser = {};
 		this.getGroups = this.getGroups.bind(this);
-		this.getOwnerStat = this.getOwnerStat.bind(this);
+		this.getGroupUserStat = this.getGroupUserStat.bind(this);
 		this.getRemoveButton = this.getRemoveButton.bind(this);
 		this.removeGroup = this.removeGroup.bind(this);
 		this.goToGroup = this.goToGroup.bind(this);
@@ -76,11 +77,11 @@ export default class MainScreen extends BaseComponent {
 		this.setState({isLoading: false, groups: groups});
 	}
 
-	getOwnerStat(group, key) {
+	getGroupUserStat(group, key) {
 		let stat = 0;
 
 		group.tournaments[0].leaderboard.forEach(cross => {
-			if (cross.user == group.owner) {
+			if (cross.user == this.currentUser._id) {
 				stat = cross[key];
 				return;
 			}
@@ -159,12 +160,12 @@ export default class MainScreen extends BaseComponent {
 		this.props.navigation.addListener('didFocus', async payload => {
 			if (this.state.auth) {
 				this.getGroups();
+				this.setState({isLoading: false});
 			} else {
 				const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 				this.setState({ auth });
 
 				if (this.state.auth) {
-					//console.log("PASS");
 					this.getGroups();
 					this.setState({isLoading: false});
 				} else {
@@ -174,6 +175,12 @@ export default class MainScreen extends BaseComponent {
 		});
 
 		if (this.state.auth) {
+			const currentUserJson = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(this.handleError);
+			this.currentUser = JSON.parse(currentUserJson);
+
+			this.getGroups();
+			this.setState({isLoading: false});
+
 			Linking.addEventListener('url', this.handleOpenURL);
 			Linking.getInitialURL().then((url) => {
 				if (url) {
@@ -289,12 +296,12 @@ export default class MainScreen extends BaseComponent {
 											<View style={ViewStyle.groupStatsView}>
 												<View style={ViewStyle.groupStatsSubView}>
 													<Text style={ViewStyle.groupStatsLabel}>Score:</Text>
-													<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'score')}</Text>
+													<Text style={ViewStyle.groupStatsValue}>{this.getGroupUserStat(item, 'score')}</Text>
 												</View>
 
 												<View style={ViewStyle.groupStatsSubView}>
 													<Text style={ViewStyle.groupStatsLabel}>Rank:</Text>
-													<Text style={ViewStyle.groupStatsValue}>{this.getOwnerStat(item, 'rank')}/{item.tournaments[0].leaderboard.length}</Text>
+													<Text style={ViewStyle.groupStatsValue}>{this.getGroupUserStat(item, 'rank')}/{item.tournaments[0].leaderboard.length}</Text>
 												</View>
 											</View>
 										</View>

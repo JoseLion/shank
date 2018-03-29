@@ -68,12 +68,12 @@ export default StyleSheet.create({
 	groupStatsView: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'baseline'
+		alignItems: 'center'
 	},
 	groupStatsSubView: {
 		flex: 1,
 		flexDirection: 'row',
-		alignItems: 'baseline'
+		alignItems: 'center'
 	},
 	groupStatsLabel: {
 		fontFamily: 'century-gothic-bold',

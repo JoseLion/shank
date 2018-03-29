@@ -1,6 +1,7 @@
 // React components:
 import React from 'react';
 import { Image, Text, TouchableHighlight, View } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import Swiper from 'react-native-swiper';
 
 // Shank components:
@@ -21,6 +22,14 @@ export default class SliderScreen extends BaseComponent {
 
 	constructor(props) {
 		super(props);
+		this.goToMainScreen = this.goToMainScreen.bind(this);
+	}
+
+	goToMainScreen() {
+		this.props.navigation.dispatch(NavigationActions.reset({
+			index: 0,
+			actions: [NavigationActions.navigate({routeName: 'Main'})],
+		}));
 	}
 
 	render() {
@@ -37,7 +46,7 @@ export default class SliderScreen extends BaseComponent {
 				<View style={ViewStyle.slide}>
 					<Image style={ViewStyle.coverImage} source={ImgSlideThree}></Image>
 					
-					<TouchableHighlight style={[MainStyles.button, MainStyles.tertiary, ViewStyle.startButton]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => super.navigateToScreen('Login')}>
+					<TouchableHighlight style={[MainStyles.button, MainStyles.tertiary, ViewStyle.startButton]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.goToMainScreen}>
 						<Text style={MainStyles.buttonLinkText}>Let{"\'"}s get start</Text>
 					</TouchableHighlight>
 				</View>

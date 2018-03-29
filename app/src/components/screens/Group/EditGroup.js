@@ -15,7 +15,6 @@ import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessag
 import ViewStyle from './styles/addGroupStyle'
 import { ClienHost } from '../../../config/variables';
 
-@connectActionSheet
 export default class EditGroup extends BaseComponent {
 
   static navigationOptions = ({navigation}) => ({

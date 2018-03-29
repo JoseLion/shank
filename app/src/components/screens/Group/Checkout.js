@@ -35,7 +35,7 @@ export default class Checkout extends BaseComponent {
 	}
 
 	playerWasChanged(index) {
-		if (this.state.roaster[index].player._id == this.state.originalRoaster[index].player._id) {
+		if (this.state.originalRoaster[index].player && this.state.roaster[index].player._id == this.state.originalRoaster[index].player._id) {
 			return false;
 		}
 
@@ -57,13 +57,7 @@ export default class Checkout extends BaseComponent {
 	}
 
 	async componentDidMount() {
-		this.setState({isLoading: true});
-		console.log("RNIap: ", RNIap);
-		await RNIap.prepare().catch(this.handleError);
-		const products = await RNIap.getProducts(this.itemSkus);
-		console.log("products: ", products);
-		this.setState({isLoading: false});
-
+		console.log("this.state.originalRoaster: ", this.state.originalRoaster);
 		let finalCost = 0.0;
 
 		for (let i = 0; i < this.state.roaster.length; i++) {
@@ -79,7 +73,7 @@ export default class Checkout extends BaseComponent {
 	render() {
 		return (
 			<View style={ViewStyle.container}>
-				<ScrollView contentContainerStyle={{width: '100%', alignItems: 'center', backgroundColor: AppConst.COLOR_WHITE}}>
+				<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{width: '100%', alignItems: 'center', backgroundColor: AppConst.COLOR_WHITE}}>
 					<Spinner visible={this.state.isLoading} animation='fade'/>
 
 					<View style={[ViewStyle.titleView]}>
@@ -95,7 +89,7 @@ export default class Checkout extends BaseComponent {
 
 								<Image style={[ViewStyle.exchangeIcon, {flex: 1.5}]} source={ExchangeIcon} resizeMode={'contain'} resizeMethod={'resize'} />
 
-								<Text style={[ViewStyle.rowName, {flex: 6}]} numberOfLines={1}>{this.state.originalRoaster[index].player.firstName + ' ' + this.state.originalRoaster[index].player.lastName}</Text>
+								<Text style={[ViewStyle.rowName, {flex: 6}]} numberOfLines={1}>{this.state.originalRoaster[index].player ? (this.state.originalRoaster[index].player.firstName + ' ' + this.state.originalRoaster[index].player.lastName) : 'Empty Slot'}</Text>
 
 								<Text style={[ViewStyle.rowPrice, {flex: 2.5}]} numberOfLines={1}>{this.playerWasChanged(index) ? '$1.99' : null}</Text>
 							</View>

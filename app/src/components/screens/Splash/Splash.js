@@ -1,6 +1,7 @@
 // React components:
 import React from 'react';
 import { Animated, AsyncStorage, Image, View } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import { Constants } from 'expo';
 
 // Shank components:
@@ -41,10 +42,17 @@ export default class SplashScreen extends BaseComponent {
 				const isFisrtOpen = await AsyncStorage.getItem(AppConst.FIRST_TIME);
 
 				if (isFisrtOpen) {
-					this.props.navigation.navigate('Main');
+					this.props.navigation.dispatch(NavigationActions.reset({
+						index: 0,
+						actions: [NavigationActions.navigate({routeName: 'Main'})],
+					}));
 				} else {
 					await AsyncStorage.setItem(AppConst.FIRST_TIME, 'no');
-					this.props.navigation.navigate('Slider');
+
+					this.props.navigation.dispatch(NavigationActions.reset({
+						index: 0,
+						actions: [NavigationActions.navigate({routeName: 'Slider'})],
+					}));
 				}
 			});
 		});
