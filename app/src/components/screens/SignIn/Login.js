@@ -58,10 +58,15 @@ export default class Login extends BaseComponent {
 			BarMessages.showError(error, this.validationMessage);
 		});
 
-		await AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
-		await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(login.user));
-		this.setLoading(false);
-		this.props.navigation.navigate('Main');
+		if (login) {
+			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
+			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(login.user));
+			this.setLoading(false);
+			this.props.navigation.navigate('Main');
+		} else {
+			this.setLoading(false);
+			BarMessages.showError("Incorrect user/password. Please try again!", this.validationMessage);
+		}
 	}
 
 	async facebookService() {

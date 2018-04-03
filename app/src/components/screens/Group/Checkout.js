@@ -44,7 +44,13 @@ export default class Checkout extends BaseComponent {
 
 	async saveAndPay() {
 		this.setState({isLoading: true});
-		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, {roaster: this.state.roaster, payment: this.state.total, movements: this.movements}).catch(this.handleError);
+		const body = {
+			originalRoaster: this.state.originalRoaster,
+			roaster: this.state.roaster,
+			payment: this.state.total,
+			movements: this.movements
+		};
+		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(this.handleError);
 
 		this.props.navigation.state.params.managePlayersCallback(group, false);
 		this.setState({isLoading: false});
@@ -57,7 +63,6 @@ export default class Checkout extends BaseComponent {
 	}
 
 	async componentDidMount() {
-		console.log("this.state.originalRoaster: ", this.state.originalRoaster);
 		let finalCost = 0.0;
 
 		for (let i = 0; i < this.state.roaster.length; i++) {

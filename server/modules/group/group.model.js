@@ -15,6 +15,8 @@ const GroupSchema = new mongoose.Schema({
 			roaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}],
 			lastRoaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}],
 			checkouts: [{
+				originalRoaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}],
+				roaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}],
 				payment: {type: Number, default: 0},
 				movements: {type: Number, default: 0}
 			}]

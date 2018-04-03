@@ -4,6 +4,9 @@ import auth from '../../config/auth';
 import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
 
+//DELETE AFTER TEST
+import AssignPoints from '../../service/assignPoints';
+
 const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
 const User = mongoose.model('User');
@@ -95,10 +98,7 @@ export default function(app) {
 				cross.leaderboard.forEach(obj => {
 					if (obj.user == request.payload._id) {
 						obj.roaster = request.body.roaster;
-						obj.checkouts.push({
-							payment: request.body.payment,
-							movements: request.body.movements
-						});
+						obj.checkouts.push(request.body);
 					}
 				});
 			}
@@ -111,6 +111,13 @@ export default function(app) {
 			.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
 		.catch(handleMongoError);
 		response.ok(group);
+	});
+
+	/* TESTING - DELETE AFTER */
+	router.get(`${basePath}/assignPoints/:tournamentID/:round`, async (request, response) => {
+		let tournament = await Tournament.find({tournamentID: request.params.tournamentID}).catch(handleMongoError);
+		AssignPoints(tournament._id, request.params.round);
+		response.ok();
 	});
 
 	return router;

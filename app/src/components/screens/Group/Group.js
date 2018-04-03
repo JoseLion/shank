@@ -1,12 +1,13 @@
 // React components:
 import React, { Component } from 'react';
-import { Text, View, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, Share, AsyncStorage, Animated, Easing } from 'react-native';
+import { Text, View, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, Share, AsyncStorage, Animated, Easing, Alert } from 'react-native';
 import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
 import ActionSheet from 'react-native-actionsheet';
 import SortableList from 'react-native-sortable-list';
+import * as InAppBilling from 'react-native-billing';
 
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, FontAwesome, isAndroid, Spinner } from '../BaseComponent';
@@ -440,13 +441,22 @@ export default class Group extends BaseComponent {
 
 		return false;
 	}
-
+	
 	handleError(error) {
 		this.setState({isLoading: false});
 		this.toasterMsg = error;
 	}
 
 	async componentDidMount() {
+		//const InAppBillingBridge = require("react-native").NativeModules.InAppBillingBridge;
+		//console.log("InAppBilling.open(): ", InAppBilling.open());
+		/*Alert.alert('Initializing', 'Starting InAppBilling...', [{text: 'OK', style: 'cancel', onPress: () => {
+			let billing = InAppBilling.open().then(() => InAppBilling.purchase('android.test.purchased')).then(details => {
+				Alert.alert('InAppBilling:', `Purchase details -> ${details}`, [{text: 'OK', style: 'cancel'}]);
+				return InAppBilling.close();
+			}).catch(this.handleError);
+		}}]);*/
+
 		this.setState({isLoading: true});
 
 		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(this.handleError);

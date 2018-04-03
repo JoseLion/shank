@@ -3,5 +3,10 @@ node_modules/
 npm-debug.*
 .idea/
 build/
-android/
+android/build/
+android/app/build/
+android/.gradle/
+android/.idea
+android/gradle/
+android/maven/
 ios/

@@ -118,7 +118,7 @@ async function createCrons(id) {
 	tournament.rounds.forEach(round => {
 		new CronJob({
 			cronTime: `0 30 19 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
-			onTick: () => {
+			onTick: function() {
 				AssignPoints(tournament._id, round.number);
 				this.stop();
 			},
@@ -128,7 +128,7 @@ async function createCrons(id) {
 	});
 }
 
-createCrons("5aba80adda048b2aa431dacb");
+//createCrons("5aba80adda048b2aa431dacb");
 
 /** ----------------------------------------------------------------------------------------------------------- **/
 
