@@ -21,9 +21,9 @@ class PlayerRow extends React.Component {
 		this.state = {cross: this.props.cross};
 	}
 
-	onPress() {
+	async onPress() {
 		if (this.props.count < this.props.max || this.state.cross.isSelected) {
-			this.setState(state => {
+			await this.setState(state => {
 				const cross = Object.assign({}, state.cross);
 				cross.isSelected = !state.cross.isSelected;
 				return { cross };
@@ -108,8 +108,8 @@ export default class PlayerSelection extends BaseComponent {
 
 	constructor(props) {
 		super(props);
-		this.roaster = this.props.navigation.state.params.roaster ? this.props.navigation.state.params.roaster : [];
 		this.searchList = [];
+		this.roaster = this.props.navigation.state.params.roaster ? this.props.navigation.state.params.roaster : [];
 		this.playerSelected = this.playerSelected.bind(this);
 		this.searchChanged = this.searchChanged.bind(this);
 		this.done = this.done.bind(this);
@@ -125,8 +125,25 @@ export default class PlayerSelection extends BaseComponent {
 		};
 	}
 
-	playerSelected(cross) {
+	async playerSelected(cross) {
+		const max = this.state.position != null ? 1 : 5;
 		let selectCount = this.state.selectCount;
+
+		if (selectCount < max || cross.isSelected) {
+			await this.setState(state => {
+				const leaderboard = [...state.leaderboard];
+
+				leaderboard.forEach(leader => {
+					if (cross._id == leader._id) {
+						leader.isSelected = !leader.isSelected;
+						return;
+					}
+				});
+
+				return { leaderboard };
+			});
+		}
+
 
 		if (this.state.position != null) {
 			if (this.roaster[this.state.position] == cross) {
@@ -151,7 +168,7 @@ export default class PlayerSelection extends BaseComponent {
 		this.setState({ selectCount });
 	}
 
-	searchChanged(name) {
+	async searchChanged(name) {
 		this.setState({
 			leaderboard: this.searchList.filter((cross) => {
 				let regex = new RegExp(".*" + name.toUpperCase() + ".*", "g");
@@ -208,6 +225,7 @@ export default class PlayerSelection extends BaseComponent {
 
 			return !isInRoaster;
 		});
+
 		this.setState({leaderboard: leaderboard, isLoading: false});
 		this.searchList = [...this.state.leaderboard];
 	}

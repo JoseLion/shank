@@ -57,7 +57,6 @@ export default ViewStyle = StyleSheet.create({
         alignItems: 'center',
         borderBottomWidth: 1,
         borderBottomColor: AppConst.COLOR_GRAY,
-        paddingHorizontal: '2.5',
         paddingTop: Style.EM(0.5)
     },
     prizeSubView: {

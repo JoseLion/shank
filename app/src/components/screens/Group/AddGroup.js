@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage } from 'react-native';
+import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -145,7 +145,7 @@ export default class AddGroup extends BaseComponent {
 		}
 
 		return (
-			<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' contentContainerStyle={{flex: 1, alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
+			<KeyboardAvoidingView keyboardVerticalOffset={20} behavior={'position'} contentContainerStyle={{alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
 				<Spinner visible={this.state.isLoading} animation='fade'/>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.selectPicture} />
 
@@ -176,7 +176,7 @@ export default class AddGroup extends BaseComponent {
 				</TouchableHighlight>
 
 				<DropdownAlert ref={ref => this.dropDown = ref} />
-			</KeyboardAwareScrollView>
+			</KeyboardAvoidingView>
 		);
 	}
 }
