@@ -210,7 +210,6 @@
     <orderEntry type="library" name="net.openid:appauth-0.4.1" level="project" />
     <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-library:1.3@jar" level="project" />
     <orderEntry type="library" name="io.fabric.sdk.android:fabric-1.3.10" level="project" />
-    <orderEntry type="library" name="com.anjlab.android.iab.v3:library:1.0.44@jar" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-ads-9.8.0" level="project" />
     <orderEntry type="library" name="com.segment.analytics.android:analytics:4.3.0@jar" level="project" />
     <orderEntry type="library" name="expolib_v1.com.squareup.okhttp3:okhttp:3.6.0@jar" level="project" />
@@ -294,6 +293,5 @@
     <orderEntry type="library" name="com.facebook.fbui.textlayoutbuilder:textlayoutbuilder-1.0.0" level="project" />
     <orderEntry type="library" name="org.webkit:android-jsc-r174650" level="project" />
     <orderEntry type="library" name="com.facebook.android:facebook-applinks-4.28.0" level="project" />
-    <orderEntry type="module" module-name="react-native-billing" />
   </component>
 </module>

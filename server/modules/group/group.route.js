@@ -86,7 +86,9 @@ export default function(app) {
 	});
 
 	router.delete(`${basePath}/delete/:id`, async (request, response) => {
-		await Group.findOneAndRemove({_id: request.params.id}).catch(handleMongoError);
+		const group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
+		await Archive.findOneAndRemove({_id: group.photo}).catch(handleMongoError);
+		await group.remove().catch(handleMongoError);
 		response.ok();
 	});
 
@@ -98,7 +100,10 @@ export default function(app) {
 				cross.leaderboard.forEach(obj => {
 					if (obj.user == request.payload._id) {
 						obj.roaster = request.body.roaster;
-						obj.checkouts.push(request.body);
+
+						if (request.body.movements > 0) {
+							obj.checkouts.push(request.body);
+						}
 					}
 				});
 			}
@@ -115,7 +120,8 @@ export default function(app) {
 
 	/* TESTING - DELETE AFTER */
 	router.get(`${basePath}/assignPoints/:tournamentID/:round`, async (request, response) => {
-		let tournament = await Tournament.find({tournamentID: request.params.tournamentID}).catch(handleMongoError);
+		const Tournament = mongoose.model('Tournament');
+		let tournament = await Tournament.findOne({tournamentID: parseInt(request.params.tournamentID)}).catch(handleMongoError);
 		AssignPoints(tournament._id, request.params.round);
 		response.ok();
 	});

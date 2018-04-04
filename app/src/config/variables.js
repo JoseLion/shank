@@ -6,7 +6,7 @@ const port = '3000';
 const Host = `http://${endPoint}:${port}/`;
 const ApiHost = Host + 'api/';
 const FileHost = ApiHost + "archive/download/";
-const ClienHost = `${endPoint}/`;
+const ClienHost = `admin.${endPoint}/`;
 
 const AuthToken = 'shank-auth-token';
 const ApiKey = 'MTU2NDJkYzcxZjkwNTk4NjdlNjVlYWRjZTI5Zjdl';

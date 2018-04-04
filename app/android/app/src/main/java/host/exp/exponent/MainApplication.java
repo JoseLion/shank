@@ -7,9 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 // Needed for `react-native link`
-import com.facebook.react.ReactApplication;
-import com.idehub.Billing.InAppBillingBridgePackage;
-import com.facebook.react.shell.MainReactPackage;
+// import com.facebook.react.ReactApplication;
 
 public class MainApplication extends ExpoApplication {
 
@@ -25,8 +23,7 @@ public class MainApplication extends ExpoApplication {
         // TODO: add native modules!
 
         // Needed for `react-native link`
-            new MainReactPackage(),
-            new InAppBillingBridgePackage(null)
+            // new MainReactPackage(),
     );
   }
 

@@ -7,10 +7,9 @@ const width = Dimensions.get('window').width;
 export default MainStyles = StyleSheet.create({
     button: {
         alignItems: 'center',
-        borderRadius: Style.EM(1.5),
-        marginBottom: Style.EM(0.5),
-        marginTop: Style.EM(0.5),
-        padding: Style.EM(1),
+        borderRadius: Style.EM(0.5),
+        //marginVertical: Style.EM(0.5),
+        padding: Style.EM(0.8),
         width: '100%'
     },
     buttonText: {
@@ -91,14 +90,6 @@ export default MainStyles = StyleSheet.create({
     formPickerText: {
         fontSize: Style.EM(1),
         color: AppConst.COLOR_BLUE
-    },
-    button: {
-        alignItems: 'center',
-        borderRadius: 5,
-        marginBottom: Style.EM(0.5),
-        marginTop: Style.EM(0.5),
-        padding: Style.EM(1),
-        width: '100%'
     },
     buttonVerticalPadding: {
         paddingBottom: Style.EM(0.5),

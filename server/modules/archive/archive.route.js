@@ -8,15 +8,23 @@ const router = express.Router();
 
 export default function(app) {
 	router.get(`${basePath}/download/:id`, async (request, response) => {
-		let archive = await Archive.findOne({_id: request.params.id}).catch(handleMongoError);
+		if (request.params.id != null) {
+			let archive = await Archive.findOne({_id: request.params.id}).catch(handleMongoError);
 
-		response.set({
-			'Content-Type': archive.type,
-			'Content-Disposition': 'inline; filename="' + archive.name + '"',
-			'Content-Length': archive.size
-		});
+			if (archive != null) {
+				response.set({
+					'Content-Type': archive.type,
+					'Content-Disposition': 'inline; filename="' + archive.name + '"',
+					'Content-Length': archive.size
+				});
 
-		response.write(archive.data, 'binary');
+				response.write(archive.data, 'binary');
+				response.end(null, 'binary');
+				return;
+			}
+		}
+
+		response.write('', 'binary');
 		response.end(null, 'binary');
 	});
 

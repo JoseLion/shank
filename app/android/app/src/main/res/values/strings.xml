@@ -4,5 +4,4 @@
   <string name="preference_file_key">host.exp.exponent.SharedPreferences</string>
   <string name="error_default">Something went wrong. Sorry about that.</string>
   <string name="error_unable_to_load_experience">Unable to load Experience.</string>
-  <!--<string name="RNB_GOOGLE_PLAY_LICENSE_KEY">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAojVPfk6ryZN1+f5LqwSBd02SY3Ul8tb2ez/8vM4Fs3NcXfmm/ZSyKkK5sL8iwOnKCDOT01YGvG1LA0BhuIIb28B1yBNgthEF5sYcZXReupXJUE7e2ZwMfFl16+MZV+Rg9BwhlzrShxR8pOKgywITUjtfUPU1VmH2Z9vkbYfvPPSoBn9fnmlLE2GijHgAvVqRm3IPWDaDe2eHF2K7kuqX7jkC1AMaqEkoVJ2yg6J5CbnYemyq/orQcVvVbV/9mMOKMWcUe7Umyis3C+nFyKjWnEtvE2D/3yObkCTmFo9RUKfH/d5yk4IMSITP04/9JNiewY5kEc8zLtD5prRVzVak2wIDAQAB</string>-->
 </resources>

@@ -47,6 +47,7 @@ export default class Checkout extends BaseComponent {
 		const body = {
 			originalRoaster: this.state.originalRoaster,
 			roaster: this.state.roaster,
+			round: this.props.navigation.state.params.round,
 			payment: this.state.total,
 			movements: this.movements
 		};

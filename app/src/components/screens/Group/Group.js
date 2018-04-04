@@ -7,7 +7,6 @@ import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
 import ActionSheet from 'react-native-actionsheet';
 import SortableList from 'react-native-sortable-list';
-import * as InAppBilling from 'react-native-billing';
 
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, FontAwesome, isAndroid, Spinner } from '../BaseComponent';
@@ -192,11 +191,13 @@ class LeaderboardRow extends Component {
 		let nameFont = item.user ? 'century-gothic-bold' : 'century-gothic';
 		return (
 			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => { if (!item.user) this.props.inviteToJoin(); }}>
-				<View style={[ViewStyle.leaderboardRow]}><View style={[ViewStyle.leaderboardRowView]}>
-					<Text style={[ViewStyle.leaderboardRowText, {flex: 1}]}>{item.rank > 0 ? item.ranking : '-'}</Text>
-					<Text style={[ViewStyle.leaderboardRowText, {flex: 6, fontFamily: nameFont}]}>{item.user ? item.user.fullName : 'Invite'}</Text>
-					<Text style={[ViewStyle.leaderboardRowPts, {flex: 3}]}>Pts: {item.score ? item.score : '0'}</Text>
-				</View></View>
+				<View style={[ViewStyle.leaderboardRow]}>
+					<View style={[ViewStyle.leaderboardRowView]}>
+						<Text style={[ViewStyle.leaderboardRowText, {flex: 1}]}>{item.rank > 0 ? item.rank : '-'}</Text>
+						<Text style={[ViewStyle.leaderboardRowText, {flex: 6, fontFamily: nameFont}]}>{item.user ? item.user.fullName : 'Invite'}</Text>
+						<Text style={[ViewStyle.leaderboardRowPts, {flex: 3}]}>Pts: {item.score ? item.score : '0'}</Text>
+					</View>
+				</View>
 			</TouchableHighlight>
 		);
 	}
@@ -448,15 +449,6 @@ export default class Group extends BaseComponent {
 	}
 
 	async componentDidMount() {
-		//const InAppBillingBridge = require("react-native").NativeModules.InAppBillingBridge;
-		//console.log("InAppBilling.open(): ", InAppBilling.open());
-		/*Alert.alert('Initializing', 'Starting InAppBilling...', [{text: 'OK', style: 'cancel', onPress: () => {
-			let billing = InAppBilling.open().then(() => InAppBilling.purchase('android.test.purchased')).then(details => {
-				Alert.alert('InAppBilling:', `Purchase details -> ${details}`, [{text: 'OK', style: 'cancel'}]);
-				return InAppBilling.close();
-			}).catch(this.handleError);
-		}}]);*/
-
 		this.setState({isLoading: true});
 
 		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(this.handleError);
@@ -476,57 +468,59 @@ export default class Group extends BaseComponent {
 				<Spinner visible={this.state.isLoading} animation='fade'></Spinner>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.state.sheetNames} cancelButtonIndex={this.state.sheetNames.length} onPress={this.tournamentSelected} />
 
-				<View style={[ViewStyle.groupInformation]}>
-					<Image source={{uri: FileHost + this.state.group.photo}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.groupImage} />
+				<View style={{flex: 0.7}}>
+					<View style={[ViewStyle.groupInformation]}>
+						<Image source={{uri: FileHost + this.state.group.photo}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.groupImage} />
 
-					<View style={[ViewStyle.groupHeader]}>
-						<View>
-							<Text style={[ViewStyle.groupNameText]}>{this.state.group.name}</Text>
+						<View style={[ViewStyle.groupHeader]}>
+							<View>
+								<Text style={[ViewStyle.groupNameText]}>{this.state.group.name}</Text>
+							</View>
+
+							
+							<TouchableOpacity underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
+								<View style={{flexDirection: 'row', alignItems: 'center'}}>
+									<Text style={[ViewStyle.tournamentNameText]} numberOfLines={1}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
+									<FontAwesome name="chevron-down" />
+								</View>
+							</TouchableOpacity>
 						</View>
 
+						<View style={{flex:2}}>
+							{this.state.group.owner == this.state.currentUser._id ?
+								<TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
+									<Text style={MainStyles.buttonText}>Invite</Text>
+								</TouchableOpacity>
+							: null}
+						</View>
+					</View>
+
+					<View style={[ViewStyle.prizeView]}>
+						<View style={[ViewStyle.prizeSubView]}>
+							<View><Text style={[ViewStyle.prizeText]}>PRIZE</Text></View>
+							<View><Text style={[ViewStyle.prizeDescription]}>{this.state.group.bet}</Text></View>
+						</View>
+					</View>
+
+					<View style={[ViewStyle.groupStats]}>
+						<View style={[ViewStyle.statView]}>
+							<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('score')}</Text></View>
+							<View><Text style={[ViewStyle.statLabel]}>Points</Text></View>
+						</View>
 						
-						<TouchableOpacity underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
-							<View style={{flexDirection: 'row', alignItems: 'center'}}>
-								<Text style={[ViewStyle.tournamentNameText]} numberOfLines={1}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
-								<FontAwesome name="chevron-down" />
-							</View>
-						</TouchableOpacity>
-					</View>
+						<View style={[ViewStyle.statView]}>
+							<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length - 1}</Text></View>
+							<View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
+						</View>
 
-					<View style={{flex:2}}>
-						{this.state.group.owner == this.state.currentUser._id ?
-							<TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
-								<Text style={MainStyles.buttonText}>Invite</Text>
-							</TouchableOpacity>
-						: null}
+						<View style={[ViewStyle.statView]}>
+							<View><Text style={[ViewStyle.statNumber]}>{this.getDaysObj().days}</Text></View>
+							<View><Text style={[ViewStyle.statLabel]}>{this.getDaysObj().label}</Text></View>
+						</View>
 					</View>
 				</View>
 
-				<View style={[ViewStyle.prizeView]}>
-					<View style={[ViewStyle.prizeSubView]}>
-						<View><Text style={[ViewStyle.prizeText]}>PRIZE</Text></View>
-						<View><Text style={[ViewStyle.prizeDescription]}>{this.state.group.bet}</Text></View>
-					</View>
-				</View>
-
-				<View style={[ViewStyle.groupStats]}>
-					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('score')}</Text></View>
-						<View><Text style={[ViewStyle.statLabel]}>Points</Text></View>
-					</View>
-					
-					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length - 1}</Text></View>
-						<View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
-					</View>
-
-					<View style={[ViewStyle.statView]}>
-						<View><Text style={[ViewStyle.statNumber]}>{this.getDaysObj().days}</Text></View>
-						<View><Text style={[ViewStyle.statLabel]}>{this.getDaysObj().label}</Text></View>
-					</View>
-				</View>
-
-				<View style={{flex: 6, flexDirection: 'row'}}>
+				<View style={{flex: 1}}>
 					<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={AppConst.COLOR_BLUE} tabBarInactiveTextColor={AppConst.COLOR_BLUE} renderTabBar={() => <GroupTabBar />}>
 						<View tabLabel='Leaderboard' style={[ViewStyle.tabViewContainer]}>
 							<Text style={[ViewStyle.rankColumnText]}>Rank</Text>
@@ -551,17 +545,17 @@ export default class Group extends BaseComponent {
 									this.setState({ group });
 								}
 							}} />
-
-							{this.shouldShowCheckout() ?
-								<View style={ViewStyle.checkoutButtonView}>
-									<TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
-										<Text style={MainStyles.buttonText}>Checkout</Text>
-									</TouchableOpacity>
-								</View>
-							: null}
 						</View>
 					</ScrollableTabView>
 				</View>
+
+				{true || this.shouldShowCheckout() ?
+					<View style={[ViewStyle.checkoutButtonView, {flex: 0.2}]}>
+						<TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
+							<Text style={MainStyles.buttonText}>Checkout</Text>
+						</TouchableOpacity>
+					</View>
+				: null}
 
 				<DropdownAlert ref={ref => this.toasterMsg = ref} />
 			</View>

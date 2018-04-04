@@ -42,37 +42,37 @@ export default ViewStyle = StyleSheet.create({
     },
     groupNameText: {
         fontFamily: 'century-gothic',
-        fontSize: Style.FONT_18,
+        fontSize: Style.FONT_17,
         color: AppConst.COLOR_BLUE
     },
     tournamentNameText: {
         fontFamily: 'century-gothic-bold',
         fontSize: Style.FONT_16,
-        marginRight: '2%'
+        width: '95%'
     },
     prizeView: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '2.5%',
         borderBottomWidth: 1,
         borderBottomColor: AppConst.COLOR_GRAY,
+        paddingHorizontal: '2.5',
+        paddingTop: Style.EM(0.5)
     },
     prizeSubView: {
         flex: 1,
         flexDirection:'column',
-        paddingVertical: '5%',
         paddingHorizontal: '2.5%'
     },
     prizeText: {
         fontFamily: 'century-gothic-bold',
-        fontSize: Style.FONT_16,
-        marginBottom: '1%'
+        fontSize: Style.FONT_16
     },
     prizeDescription: {
         fontFamily: 'century-gothic',
-        fontSize: Style.FONT_16
+        fontSize: Style.FONT_16,
+        paddingBottom: Style.EM(0.5)
     },
     groupStats: {
         flex: 1,
@@ -107,7 +107,7 @@ export default ViewStyle = StyleSheet.create({
     },
     tabButton: {
         flex: 1,
-        paddingVertical: '5%',
+        paddingVertical: Style.EM(1),
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -159,8 +159,7 @@ export default ViewStyle = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        marginTop: '1%',
-        marginBottom: '2%',
+        marginVertical: '1%',
         marginRight: '10%'
     },
     roundsText: {
@@ -231,8 +230,7 @@ export default ViewStyle = StyleSheet.create({
         width:'100%'
     },
     checkoutButtonView: {
-        paddingLeft: '10%',
-        paddingRight: '10%',
-        paddingBottom: '5%'
+        paddingHorizontal: '10%',
+        marginVertical: Style.EM(0.5)
     }
 });

@@ -8,37 +8,49 @@ const AppSetting = mongoose.model('AppSetting');
 
 export default async function(tournamentId, roundNumber) {
 	let tournament = await Tournament.findById(tournamentId).catch(handleMongoError);
-	let leaders = await Leaderboard.find({tournament: tournamentId}).sort({rank: 1}).catch(handleMongoError);
-	const points = await AppSetting.find({code: /PTS.*/}).sort({code: 1}).catch(handleMongoError);
-	const fines = await AppSetting.find({code: /FND.*/}).sort({code: 1}).catch(handleMongoError);
+	const tournamentLeaderboard = await Leaderboard.find({tournament: tournamentId, rank: {$ne: null}}).sort({rank: 1}).catch(handleMongoError);
+	const points = await AppSetting.find({code: /PTS.*/}).sort({value: -1}).catch(handleMongoError);
+	const fines = await AppSetting.find({code: /FND.*/}).sort({value: 1}).catch(handleMongoError);
 
-	leaders = filterLeaders(leaders);
+	let leaders = filterLeaders(tournamentLeaderboard);
 
 	for (let j = 0; j < tournament.rounds.length; j++) {
 		let round = tournament.rounds[j];
 
 		if (round.number == roundNumber && !round.pointsGiven) {
-			let groups = await Group.find({'tournaments.tournament': tournamentId}).catch(handleMongoError);
+			let groups = await Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.roaster').catch(handleMongoError);
 
 			groups.asyncForEach(async group => {
 				group.tournaments.forEach(crossTournament => {
-					if (crossTournament.tournament == tournamentId) {
-						crossTournament.leaderboard.forEach(leaderboardCross => {
+					if (String(crossTournament.tournament) == String(tournamentId)) {
+						crossTournament.leaderboard.forEach((leaderboardCross, j) => {
+							let roundScore = 0;
+							let comboMult = 0;
+
 							leaderboardCross.roaster.forEach((cross, i) => {
 								let compareList = leaders.filter(leader => leader.position == i+1);
-								let found = compareList.find(obj => obj.player == cross.player);
+								let found = compareList.filter(obj => String(obj.player) == String(cross.player));
 
 								if (found != null && found.length > 0) {
+									let hit = 0.0;
+
 									if (leaderboardCross.lastRoaster.length > 0 && cross.player != leaderboardCross.lastRoaster[i].player) {
-										let penalty = fines[roundNumber - 1].value / 100.0;
-										leaderboardCross.score += (points[i].value * penalty);
+										let penalty = 1.0 - (parseFloat(fines[roundNumber - 1].value) / 100.0);
+										hit = (parseFloat(points[i].value) * penalty);
 									} else {
-										leaderboardCross.score += points[i].value;
+										hit = points[i].value;
 									}
+
+									roundScore += parseFloat(hit);
+									comboMult++;
+									console.log(`User ${j}: +${hit} (x${comboMult})`);
 								}
 							});
 
-							leaderboardCross.lastRoaster = [...leaderboard.roaster];
+							console.log(`Round ${roundNumber} Score: ${roundScore} (x${comboMult}) -> ${roundScore * comboMult}`);
+							leaderboardCross.score += (roundScore * comboMult);
+							leaderboardCross.lastRoaster = [...leaderboardCross.roaster];
+							console.log(`User Score: ${leaderboardCross.score}`);
 						});
 
 						setLeaderboardRank(crossTournament.leaderboard);
@@ -57,44 +69,50 @@ export default async function(tournamentId, roundNumber) {
 }
 
 const setLeaderboardRank = function(leaderboard) {
-	leaderboard = leaderboard.sort(comparePoints);
+	leaderboard = leaderboard.sort((a, b) => {
+		if (a.score < b.score) {
+			return 1;
+		}
 
-	for (let i = 0; i < leaderboard; i++) {
-		leaderboard.rank = i + 1;
-	}
-}
+		if (a.score > b.score) {
+			return -1;
+		}
 
-const comparePoints = function(a ,b) {
-	if (a.score > b.score) {
-		return 1;
-	}
+		return 0;
+	});
 
-	if (a.score < b.score) {
-		return -1;
-	}
-
-	return 0;
+	leaderboard.forEach((leader, i) => {
+		leader.rank = i+1;
+	});
 }
 
 const filterLeaders = function(leaderboard) {
 	let leaders = [];
+	let previous = null;
+	let pos = 1;
 
-	for (let i = 0; i < leaderboard.legth; i++) {
-		if (leaderboard[i-1]) {
-			if (leaderboard[i].score == leaderboard[i-1].score) {
-				leaderboard[i].position = leaderboard[i-1].position
+	for (let i = 0; i < leaderboard.length; i++) {
+		let schema = Object.assign({}, leaderboard[i]);
+		let leader = schema._doc;
+
+		if (previous) {
+			if (leader.totalScore == previous.totalScore) {
+				leader.position = previous.position
 			}
 		}
 
-		if (leaderboard[i].position == null) {
-			leaderboard[i].position = i+1;
+		if (leader.position == null) {
+			leader.position = pos;
+			pos++;
 		}
 
-		leaders.push(leaderboard[i]);
+		leaders.push(leader);
 
-		if (leaders.length == 5) {
+		if (leader.position == 5) {
 			break;
 		}
+
+		previous = Object.assign({}, leader);
 	}
 
 	return leaders;
