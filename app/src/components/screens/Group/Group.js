@@ -23,25 +23,27 @@ class RoasterRow extends Component {
 	}
 
 	animateCell() {
-		const {pan} = this.swipe.state;
+		if (!this.props.hideSortBars) {
+			const {pan} = this.swipe.state;
 
-		this.setState({
-			lastOffset: {x: 0, y: 0},
-			leftActionActivated: false,
-			leftButtonsActivated: false,
-			leftButtonsOpen: false,
-			rightActionActivated: false,
-			rightButtonsActivated: false,
-			rightButtonsOpen: false
-		});
+			this.setState({
+				lastOffset: {x: 0, y: 0},
+				leftActionActivated: false,
+				leftButtonsActivated: false,
+				leftButtonsOpen: false,
+				rightActionActivated: false,
+				rightButtonsActivated: false,
+				rightButtonsOpen: false
+			});
 
-		pan.flattenOffset();
+			pan.flattenOffset();
 
-		Animated.timing(pan, {
-			toValue: {x: -60, y: 0},
-			duration: 250,
-			easing: Easing.elastic(0.5)
-		}).start(() => this.swipe.recenter());
+			Animated.timing(pan, {
+				toValue: {x: -60, y: 0},
+				duration: 250,
+				easing: Easing.elastic(0.5)
+			}).start(() => this.swipe.recenter());
+		}
 	}
 
 	onPress() {
@@ -60,43 +62,53 @@ class RoasterRow extends Component {
 				</TouchableHighlight>
 			];
 
-			return (
-				<Swipeable rightButtons={changeButton} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
-					<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} onLongPress={this.props.toggleRowActive} {...this.props.sortHandlers}>
-						<View style={[ViewStyle.cellSubview, {paddingVertical: '3%'}]}>
-							<View style={{flex: 1}}>
-								<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
-							</View>
-
-							<View style={{flex: 2, marginRight: '2%'}}>
-								<Image source={{uri: this.state.roaster.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.roasterImage} />
-							</View>
-
-							<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
-								<View style={{flex: 1}}>
-									<Text style={[ViewStyle.roasterName]}>{this.state.roaster.player.firstName} {this.state.roaster.player.lastName}</Text>
-								</View>
-
-								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-									<View style={{flex: 1}}>
-										<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.state.roaster.rank > 0 ? this.state.roaster.rank : '-'}`}</Text>
-									</View>
-
-									<View style={{flex: 1}}>
-										<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.state.roaster.totalScore == null ? '-' : this.state.roaster.totalScore}`}</Text>
-									</View>
-								</View>
-							</View>
-
-							{!this.props.hideSortBars ?
-								<View style={{flex: 1}}>
-									<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
-								</View>
-							: null}
+			const row = (
+				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} onLongPress={this.props.toggleRowActive} {...this.props.sortHandlers}>
+					<View style={[ViewStyle.cellSubview, {paddingVertical: '3%'}]}>
+						<View style={{flex: 1}}>
+							<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 						</View>
-					</TouchableHighlight>
-				</Swipeable>
+
+						<View style={{flex: 2, marginRight: '2%'}}>
+							<Image source={{uri: this.state.roaster.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.roasterImage} />
+						</View>
+
+						<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
+							<View style={{flex: 1}}>
+								<Text style={[ViewStyle.roasterName]}>{this.state.roaster.player.firstName} {this.state.roaster.player.lastName}</Text>
+							</View>
+
+							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+								<View style={{flex: 1}}>
+									<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.state.roaster.rank > 0 ? this.state.roaster.rank : '-'}`}</Text>
+								</View>
+
+								<View style={{flex: 1}}>
+									<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.state.roaster.totalScore == null ? '-' : this.state.roaster.totalScore}`}</Text>
+								</View>
+							</View>
+						</View>
+
+						{!this.props.hideSortBars ?
+							<View style={{flex: 1}}>
+								<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
+							</View>
+						: null}
+					</View>
+				</TouchableHighlight>
 			);
+
+			if (this.props.hideSortBars) {
+				return (
+					<View>{row}</View>
+				);
+			} else {
+				return (
+					<Swipeable rightButtons={changeButton} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
+						{row}
+					</Swipeable>
+				);
+			}
 		} else {
 			return (
 				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.onPress} {...this.props.sortHandlers}>
@@ -244,7 +256,7 @@ export default class Group extends BaseComponent {
 		this.managePlayersCallback = this.managePlayersCallback.bind(this);
 		this.shouldShowCheckout = this.shouldShowCheckout.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
-		this.isOnCourse = this.isOnCourse.bind(this);
+		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
 		this.handleError = this.handleError.bind(this);
 		this.state = {
 			isLoading: false,
@@ -429,13 +441,12 @@ export default class Group extends BaseComponent {
 		});
 	}
 
-	isOnCourse() {
+	isBeforeEndDate() {
 		if (this.state.group && this.state.group.tournaments) {
 			const today = new Date();
-			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
 			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
 
-			if (today.getTime() >= startDate.getTime() && today.getTime() <= endDate.getTime()) {
+			if (today.getTime() <= endDate.getTime()) {
 				return true;
 			}
 		}
@@ -445,7 +456,7 @@ export default class Group extends BaseComponent {
 	
 	handleError(error) {
 		this.setState({isLoading: false});
-		this.toasterMsg = error;
+		this.dropDown.alertWithType('error', "Error", error);
 	}
 
 	async componentDidMount() {
@@ -531,8 +542,8 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
 							<RoundLabels tournament={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament} />
 
-							<SortableList style={{flex: 1}} sortingEnabled={this.isOnCourse()} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []} renderRow={({data, index}) => (
-								<RoasterRow roaster={data} rowId={index} hideSortBars={!this.isOnCourse()} onPress={() => this.managePlayers(data, index)} />
+							<SortableList style={{flex: 1}} sortingEnabled={this.isBeforeEndDate()} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []} renderRow={({data, index}) => (
+								<RoasterRow roaster={data} rowId={index} hideSortBars={!this.isBeforeEndDate()} onPress={() => this.managePlayers(data, index)} />
 							)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
 								if (this.nextOrder) {
 									let roaster = [];
@@ -549,7 +560,7 @@ export default class Group extends BaseComponent {
 					</ScrollableTabView>
 				</View>
 
-				{true || this.shouldShowCheckout() ?
+				{this.shouldShowCheckout() ?
 					<View style={[ViewStyle.checkoutButtonView, {flex: 0.2}]}>
 						<TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
 							<Text style={MainStyles.buttonText}>Checkout</Text>
@@ -557,7 +568,7 @@ export default class Group extends BaseComponent {
 					</View>
 				: null}
 
-				<DropdownAlert ref={ref => this.toasterMsg = ref} />
+				<DropdownAlert ref={ref => this.dropDown = ref} />
 			</View>
 		);
 	}

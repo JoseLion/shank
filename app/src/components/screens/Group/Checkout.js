@@ -60,7 +60,7 @@ export default class Checkout extends BaseComponent {
 
 	handleError(error) {
 		this.setState({isLoading: false});
-		this.toasterMsg = error;
+		this.dropDown.alertWithType('error', "Error", error);
 	}
 
 	async componentDidMount() {
@@ -118,7 +118,7 @@ export default class Checkout extends BaseComponent {
 						</TouchableOpacity>
 					</View>
 
-					<DropdownAlert ref={ref => this.toasterMsg = ref} />
+					<DropdownAlert ref={ref => this.dropDown = ref} />
 				</ScrollView>
 			</View>
 		);

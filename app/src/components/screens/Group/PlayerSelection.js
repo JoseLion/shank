@@ -204,8 +204,8 @@ export default class PlayerSelection extends BaseComponent {
 	}
 
 	handleError(error) {
-		this.toasterMsg = error;
 		this.setState({isLoading: false});
+		this.dropDown.alertWithType('error', "Error", error);
 	}
 
 	async componentDidMount() {
@@ -257,7 +257,7 @@ export default class PlayerSelection extends BaseComponent {
 					</View>
 				: null}
 
-				<DropdownAlert ref={ref => this.toasterMsg = ref} />
+				<DropdownAlert ref={ref => this.dropDown = ref} />
 			</View>
 		);
 	}
