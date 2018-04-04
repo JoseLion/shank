@@ -1,12 +1,6 @@
-import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Style from '../../../../styles/Stylesheet';
-
 import * as AppConst from '../../../../core/AppConst';
-
-
-const isAndroid = Platform.OS == 'android' ? true : false;
-const {width, height} = Dimensions.get('window');
-const containerWidth = width > 500 ? 500 : width;
 
 export default ViewStyle = StyleSheet.create({
     editButton: {
@@ -48,7 +42,7 @@ export default ViewStyle = StyleSheet.create({
     tournamentNameText: {
         fontFamily: 'century-gothic-bold',
         fontSize: Style.FONT_16,
-        width: '95%'
+        width: '92.5%'
     },
     prizeView: {
         flex: 1,
