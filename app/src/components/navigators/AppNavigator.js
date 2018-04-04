@@ -63,7 +63,7 @@ export const AppNavigator = StackNavigator({
 	initialRouteName: 'Splash',
 	navigationOptions: {
 		headerTintColor: AppConst.COLOR_WHITE,
-		headerTitleStyle: {fontFamily: 'century-gothic', alignSelf: 'center', color: AppConst.COLOR_WHITE},
+		headerTitleStyle: {flex: 1, textAlign: 'center', fontFamily: 'century-gothic', alignSelf: 'center', color: AppConst.COLOR_WHITE},
 		headerStyle: {backgroundColor: AppConst.COLOR_BLUE},
 		headerBackTitle: 'Back'
 	}

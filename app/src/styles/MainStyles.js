@@ -8,7 +8,7 @@ export default MainStyles = StyleSheet.create({
     button: {
         alignItems: 'center',
         borderRadius: Style.EM(0.5),
-        //marginVertical: Style.EM(0.5),
+        marginVertical: Style.EM(0.5),
         padding: Style.EM(0.8),
         width: '100%'
     },

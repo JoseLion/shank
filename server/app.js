@@ -113,11 +113,11 @@ app.use(function (err, req, res, next) {
 
 async function createCrons(id) {
 	const Tournament = mongoose.model('Tournament');
-	const tournament = await Tournament.findById(id).catch(handleMongoError);
+	const tournament = await Tournament.findOne({tournamentID: id}).catch(handleMongoError);
 
 	tournament.rounds.forEach(round => {
 		new CronJob({
-			cronTime: `0 30 19 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
+			cronTime: `${round.day.getSeconds()} ${round.day.getMinutes()} ${round.day.getHours()} ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
 			onTick: function() {
 				AssignPoints(tournament._id, round.number);
 				this.stop();
@@ -128,7 +128,7 @@ async function createCrons(id) {
 	});
 }
 
-//createCrons("5aba80adda048b2aa431dacb");
+createCrons(261);
 
 /** ----------------------------------------------------------------------------------------------------------- **/
 

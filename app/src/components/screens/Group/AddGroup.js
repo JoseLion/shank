@@ -2,8 +2,7 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import ActionSheet from 'react-native-actionsheet'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import ActionSheet from 'react-native-actionsheet';
 import DropdownAlert from 'react-native-dropdownalert';
 import { ImagePicker } from 'expo';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
