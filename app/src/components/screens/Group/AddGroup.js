@@ -54,7 +54,7 @@ export default class AddGroup extends BaseComponent {
 		if (isAndroid) {
 			this.actionSheet.show();
 		} else {
-			this.props.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
+			ActionSheetIOS.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
 		}
 	}
 

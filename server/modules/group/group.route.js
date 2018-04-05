@@ -74,15 +74,19 @@ export default function(app) {
 		let user = await User.findOne({_id: request.payload._id}).catch(handleMongoError);
 		let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
-		group.tournaments.forEach(tournament => {
-			const rank = tournament.leaderboard.length + 1;
-			tournament.leaderboard.push({ user, rank });
-		});
+		if (group != null) {
+			group.tournaments.forEach(tournament => {
+				const rank = tournament.leaderboard.length + 1;
+				tournament.leaderboard.push({ user, rank });
+			});
 
-		await group.save().catch(handleMongoError);
-		let userGroups = await Group.find({status: true, owner: request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+			await group.save().catch(handleMongoError);
+			let userGroups = await Group.find({status: true, owner: request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
 
-		response.ok(userGroups);
+			response.ok(userGroups);
+		} else {
+			response.serverError("Sorry! The group could not be found...");
+		}
 	});
 
 	router.delete(`${basePath}/delete/:id`, async (request, response) => {
