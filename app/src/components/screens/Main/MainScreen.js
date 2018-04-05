@@ -121,24 +121,6 @@ export default class MainScreen extends BaseComponent {
 		}
 	}
 
-	handleOpenURL(url) {
-		let queryString = url.url.replace(Constants.linkingUri, '');
-
-		if (queryString) {
-			let data = qs.parse(queryString);
-			
-			if (data.group) {
-				this.addToGroup(data);
-			}
-		}
-	}
-
-	async addToGroup(data) {
-		this.setState({isLoading: true});
-		const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(this.handleError);
-		this.setState({isLoading: false, groups: groups});
-	}
-
 	async refreshGroups() {
 		this.setState({groupsRefreshing: true});
 		const groups = await BaseModel.get('group/findMyGroups').catch(error => {
@@ -181,8 +163,27 @@ export default class MainScreen extends BaseComponent {
 			this.getGroups();
 			this.setState({isLoading: false});
 
-			Linking.addEventListener('url', this.handleOpenURL);
-			Linking.getInitialURL().then((url) => {
+			let self = this;
+
+			Linking.addEventListener('url', async function(url) {
+				let queryString = url.url.replace(Constants.linkingUri, '');
+
+				if (queryString) {
+					let data = qs.parse(queryString);
+					
+					if (data.group) {
+						console.log("EVENT LISTENER!");
+						self.setState({isLoading: true});
+						const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(function(error) {
+							self.setState({isLoading: false});
+							self.dropDown.alertWithType('error', "Error", error);
+						});
+						self.setState({isLoading: false, groups: groups});
+					}
+				}
+			});
+
+			Linking.getInitialURL().then(async function(url) {
 				if (url) {
 					let queryString = url.replace(Constants.linkingUri, '');
 					
@@ -190,7 +191,13 @@ export default class MainScreen extends BaseComponent {
 						let data = qs.parse(queryString);
 						
 						if (data.group) {
-							this.addToGroup(data);
+							console.log("INITIAL URL!");
+							self.setState({isLoading: true});
+							const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(function(error) {
+								self.setState({isLoading: false});
+								self.dropDown.alertWithType('error', "Error", error);
+							});
+							self.setState({isLoading: false, groups: groups});
 						}
 					}
 				}
@@ -203,6 +210,9 @@ export default class MainScreen extends BaseComponent {
 	componentWillUnmount() {
 		Linking.removeEventListener('url', e => {});
 	}
+
+
+
 
 
 
