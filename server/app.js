@@ -117,8 +117,9 @@ async function createCrons(id) {
 
 	tournament.rounds.forEach(round => {
 		new CronJob({
-			cronTime: `${round.day.getSeconds()} ${round.day.getMinutes()} ${round.day.getHours()} ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
-			onTick: function() {
+			cronTime: `0 30 18 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
+			onTick: async function() {
+				await fantasy.updateLeaderboard();
 				AssignPoints(tournament._id, round.number);
 				this.stop();
 			},
@@ -128,7 +129,7 @@ async function createCrons(id) {
 	});
 }
 
-//createCrons(261);
+createCrons(261);
 
 /** ----------------------------------------------------------------------------------------------------------- **/
 
