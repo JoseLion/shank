@@ -32,7 +32,7 @@ export default ViewStyle = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-around',
         marginLeft: '2%',
-        paddingRight: '5%'
+        paddingRight: '2%'
     },
     groupNameText: {
         fontFamily: 'century-gothic',
@@ -43,6 +43,10 @@ export default ViewStyle = StyleSheet.create({
         fontFamily: 'century-gothic-bold',
         fontSize: Style.FONT_16,
         width: '92.5%'
+    },
+    caretDown: {
+        width: '7.5%',
+        height: '100%'
     },
     prizeView: {
         flex: 1,

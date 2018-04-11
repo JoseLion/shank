@@ -104,6 +104,11 @@ const ViewStyle = StyleSheet.create({
 		position: 'absolute',
 		left: '5%'
 	},
+	searchButton: {
+		width: Style.EM(1.25),
+		height: Style.EM(1.25),
+		marginRight: Style.EM(1)
+	},
 	searchInput: {
 		flex: 1,
 		fontFamily: 'century-gothic',

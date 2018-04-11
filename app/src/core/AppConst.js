@@ -1,6 +1,8 @@
 import React from 'react';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
+export const LINKING_URI = 'shank://';
+
 export const COLOR_BLUE = '#252D3B';
 export const COLOR_WHITE = '#FFFFFF';
 export const COLOR_GRAY = '#B6B6B5';
@@ -21,7 +23,6 @@ export const FANTASY_DATA_API_KEY = `${FANTASY_DATA_API_KEY_1}`;
 
 export const APIKEYNEWS = '992cdafbd3be4e3892828a84328873a6';
 export const API_KEY_SPORT_RADAR = '4a9rhy2uask7zyvw537xvt6q';
-export const LINKING_URI = 'Shank://+';
 export const SPORT_RADAR_GET_TOURNAMENTS = 'http://api.sportradar.us/golf-t2/schedule/${tour}/${year}/tournaments/schedule.json?api_key=${apiKey}';
 export const DismissKeyboardHOC = (Comp) => {
     return ({ children, ...props }) => (

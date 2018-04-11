@@ -6,23 +6,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components:
-import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, Facebook } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, AppConst, BarMessages } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class Register extends BaseComponent {
 
-    static navigationOptions = ({navigation}) => ({
-        title: 'SIGN UP',
-        headerTintColor: AppConst.COLOR_WHITE,
-        headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
-        headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
-        headerLeft: (
-            <TouchableHighlight onPress={() => navigation.navigate('Login')}>
-                <Entypo name='chevron-small-left' style={[MainStyles.headerIconButton]} />
-            </TouchableHighlight>
-        ),
-        headerRight: (<View></View>)
-    });
+    static navigationOptions = {title: 'SIGN UP'};
 
     constructor(props) {
         super(props);
@@ -87,7 +76,8 @@ export default class Register extends BaseComponent {
     facebookService = async() => {
         this.setLoading(true);
         let option = 'Signup';
-        try {
+        
+        /*try {
             const {type, token} = await Facebook.logInWithReadPermissionsAsync(AppConst.APP_FB_ID, { permissions: ['public_profile', 'email'] });
             
             switch (type) {
@@ -135,7 +125,7 @@ export default class Register extends BaseComponent {
         } catch (e) {
             this.setLoading(false);
             BarMessages.showError(`${option} failed!`, this.validationMessage);
-        }
+        }*/
     };
 
     render() {

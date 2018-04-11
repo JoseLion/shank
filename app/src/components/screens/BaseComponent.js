@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import { Platform, Dimensions, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
-import { Facebook } from 'expo';
-import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';
 
 import NoAuthModel from '../../core/NoAuthModel';
 import BaseModel from '../../core/BaseModel';
@@ -62,16 +60,10 @@ class BaseComponent extends Component {
 export {
     Dimensions,
     DropdownAlert,
-    Facebook,
     Platform,
     Spinner,
     StyleSheet,
-
-    Entypo,
-    FontAwesome,
-    Ionicons,
     Style,
-
     BarMessages,
     BaseComponent,
     BaseModel,

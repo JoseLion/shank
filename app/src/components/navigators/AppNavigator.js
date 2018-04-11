@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
-import { Entypo, FontAwesome } from '@expo/vector-icons';
 import { BackHandler, TouchableOpacity, Image, Text } from 'react-native';
+import Style from '../../styles/Stylesheet';
 
 import * as AppConst from '../../core/AppConst';
 
@@ -42,7 +42,14 @@ export const TabNav = TabNavigator({
 			backgroundColor: AppConst.COLOR_GRAY
 		},
 		labelStyle: {
-			fontWeight: 'bold'
+			fontFamily: 'century-gothic-bold',
+			fontSize: Style.FONT_15,
+			marginBottom: Style.EM(-0.1)
+		},
+		iconStyle: {
+			width: Style.EM(2.2),
+			height: Style.EM(2.2),
+			marginBottom: Style.EM(-0.75)
 		}
 	}
 });

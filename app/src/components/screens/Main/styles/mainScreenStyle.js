@@ -1,8 +1,6 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as AppConst from '../../../../core/AppConst';
 import Style from '../../../../styles/Stylesheet';
-
-const width = Dimensions.get('window').width;
 
 export default StyleSheet.create({
 	navButton: {
@@ -18,6 +16,10 @@ export default StyleSheet.create({
 	navUserIcon: {
 		width: Style.EM(1.5),
 		height: Style.EM(1.5)
+	},
+	tabIcon: {
+		width: '100%',
+		height: '100%'
 	},
 	mainContainer: {
 		flex: 1,

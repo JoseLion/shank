@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components:
-import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, Facebook } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, AppConst, BarMessages } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class Login extends BaseComponent {
@@ -73,8 +73,9 @@ export default class Login extends BaseComponent {
 		this.setLoading(true);
 		let option = 'Signin';
 
-		try {
+		/*try {
 			const {type, token} = await Facebook.logInWithReadPermissionsAsync(AppConst.APP_FB_ID, { permissions: ['public_profile', 'email', 'user_friends'] });
+			
 			switch (type) {
 				case 'success': {
 					const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${token}`);
@@ -119,7 +120,7 @@ export default class Login extends BaseComponent {
 		} catch (e) {
 			this.setLoading(false);
 			BarMessages.showError(`${option} failed!`, this.validationMessage);
-		}
+		}*/
 	}
 
 	render() {

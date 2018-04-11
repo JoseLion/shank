@@ -1,14 +1,12 @@
 // React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, KeyboardAvoidingView } from 'react-native';
+import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, KeyboardAvoidingView, ImagePickerIOS } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet';
 import DropdownAlert from 'react-native-dropdownalert';
-import { ImagePicker } from 'expo';
-import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, Entypo, isAndroid } from '../BaseComponent';
+import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, isAndroid } from '../BaseComponent';
 import { ApiHost } from '../../../config/variables';
 import ViewStyle from './styles/addGroupStyle'
 
@@ -65,7 +63,7 @@ export default class AddGroup extends BaseComponent {
 	}
 
 	async selectPicture(index) {
-		let result;
+		/*let result;
 		let settings = {allowsEditing: true, aspect: [4, 4]};
 
 		switch (index) {
@@ -75,7 +73,7 @@ export default class AddGroup extends BaseComponent {
 
 		if (result != null && !result.cancelled) {
 			this.setState({photoUri: result.uri});
-		}
+		}*/
 	}
 
 	getPhotoSource() {

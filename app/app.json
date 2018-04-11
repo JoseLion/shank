@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shank",
     "icon": "resources/shank_logo_bg.png",
-    "version": "1.0.3",
+    "version": "1.0.0",
     "slug": "Shank",
     "sdkVersion": "25.0.0",
     "orientation": "portrait",
@@ -12,7 +12,7 @@
     //"facebookDisplayName": "Shank",
     "ios": {
       "bundleIdentifier": "com.levelap.shank",
-      "buildNumber" : "1.0.4"
+      "buildNumber" : "1.1.1"
     },
     "android": {
       "package": "com.levelap.shank",

@@ -9,9 +9,11 @@ import ActionSheet from 'react-native-actionsheet';
 import SortableList from 'react-native-sortable-list';
 
 // Shank components:
-import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, FontAwesome, isAndroid, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, isAndroid, Spinner } from '../BaseComponent';
 import { ClienHost } from '../../../config/variables';
 import ViewStyle from './styles/groupStyle';
+
+import DownCaretIcon from '../../../../resources/down-caret-icon.png';
 
 class RoasterRow extends Component {
 
@@ -483,7 +485,7 @@ export default class Group extends BaseComponent {
 					<View style={[ViewStyle.groupInformation]}>
 						<Image source={{uri: FileHost + this.state.group.photo}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.groupImage} />
 
-						<View style={[ViewStyle.groupHeader]}>
+						<View style={ViewStyle.groupHeader}>
 							<View>
 								<Text style={[ViewStyle.groupNameText]}>{this.state.group.name}</Text>
 							</View>
@@ -492,12 +494,12 @@ export default class Group extends BaseComponent {
 							<TouchableOpacity underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
 								<View style={{flexDirection: 'row', alignItems: 'center'}}>
 									<Text style={[ViewStyle.tournamentNameText]} numberOfLines={1}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
-									<FontAwesome name="chevron-down" />
+									<Image style={ViewStyle.caretDown} source={DownCaretIcon} resizeMode={'contain'} resizeMethod={'resize'} />
 								</View>
 							</TouchableOpacity>
 						</View>
 
-						<View style={{flex:2}}>
+						<View style={{flex: 2}}>
 							{this.state.group.owner == this.state.currentUser._id ?
 								<TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
 									<Text style={MainStyles.buttonText}>Invite</Text>
