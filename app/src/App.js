@@ -1,33 +1,14 @@
 import React, { Component } from 'react';
-import {AppRegistry} from 'react-native';
-import {Provider} from 'react-redux';
-import {createStore} from 'redux';
-//import { Font } from 'expo';
+import { AppRegistry } from 'react-native';
+import AppNavigator from './components/navigators/AppNavigator';
+import { YellowBox } from 'react-native';
 
-import AppReducer from './components/reducers';
-import AppWithNavigationState from './components/navigators/AppNavigator';
+YellowBox.ignoreWarnings([
+	'Warning: isMounted(...) is deprecated'
+]);
 
-class ShankApp extends Component {
-	store = createStore(AppReducer);
-
-	/*componentDidMount() {
-		Font.loadAsync({
-			'century-gothic': require('./assets/fonts/CenturyGothic.ttf'),
-			'century-gothic-bold': require('./assets/fonts/CenturyGothicBold.ttf'),
-			'century-gothic-bold-italic': require('./assets/fonts/CenturyGothicBoldItalic.ttf'),
-			'century-gothic-italic': require('./assets/fonts/CenturyGothicItalic.ttf')
-		});
-	}*/
-
+export default class ShankApp extends Component {
 	render() {
-		return (
-			<Provider store={this.store}>
-				<AppWithNavigationState />
-			</Provider>
-		);
+		return (<AppNavigator />);
 	}
 }
-
-AppRegistry.registerComponent('ShankApp', () => ShankApp);
-
-export default ShankApp;

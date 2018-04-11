@@ -1,9 +1,8 @@
 // React components:
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, Text, View, Image, TouchableHighlight, AsyncStorage } from 'react-native';
+import { TouchableOpacity, Text, View, Image, TouchableHighlight, AsyncStorage, FlatList } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import SortableListView from 'react-native-sortable-listview'
 
 // Shank components:
 import NoAuthModel from '../../../core/NoAuthModel';
@@ -94,7 +93,7 @@ export default class Settings extends Component {
 			<View style={{backgroundColor: '#FFFFFF', flex:1, width:'100%'}}>
 				<Spinner visible={this.state.loading} animation="fade"/>
 				
-				<SortableListView style={{flex: 1, marginBottom: '5%'}} data={this.state.data} renderRow= { (row) => <RowComponent data={row} navigation={navigation}/> }/>
+				<FlatList style={{flex: 1, marginBottom: '5%'}} data={this.state.data} keyExtractor={item => item.name} renderItem={({item}) => <RowComponent data={item} navigation={navigation}/> }/>
 
 				<TouchableOpacity onPress={() => this.doLogOut()} style={[{ width: '80%' }, MainStyles.button, MainStyles.error]}>
 					<Text style={MainStyles.buttonText}>Log Out</Text>

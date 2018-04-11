@@ -1,7 +1,6 @@
 // React components:
 import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View, Image, Platform } from 'react-native';
-import { List } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
 

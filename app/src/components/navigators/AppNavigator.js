@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
 import { BackHandler, TouchableOpacity, Image, Text } from 'react-native';
 import Style from '../../styles/Stylesheet';
@@ -54,7 +53,7 @@ export const TabNav = TabNavigator({
 	}
 });
 
-export const AppNavigator = StackNavigator({
+export default AppNavigator = StackNavigator({
 	Splash: { screen: Splash },
 	Slider: { screen: Slider },
 	Login: { screen: Login },
@@ -75,26 +74,3 @@ export const AppNavigator = StackNavigator({
 		headerBackTitle: 'Back'
 	}
 });
-
-const mapStateToProps = state => ({
-	nav: state.nav,
-	auth: state.auth
-});
-
-export class AppWithNavigationState extends Component {
-	render() {
-		const { dispatch, nav } = this.props;
-		
-		return (
-			<AppNavigator />
-		);
-	}
-}
-
-AppWithNavigationState.propTypes = {
-	dispatch: PropTypes.func.isRequired,
-	auth: PropTypes.object.isRequired,
-	nav: PropTypes.object.isRequired
-};
-
-export default connect(mapStateToProps)(AppWithNavigationState);

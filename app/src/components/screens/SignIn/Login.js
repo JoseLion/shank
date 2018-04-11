@@ -1,12 +1,11 @@
 // React components:
 import React from 'react';
 import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components:
-import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, AppConst, BarMessages } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class Login extends BaseComponent {

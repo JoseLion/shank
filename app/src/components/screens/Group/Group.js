@@ -1,7 +1,6 @@
 // React components:
 import React, { Component } from 'react';
 import { Text, View, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, Share, AsyncStorage, Animated, Easing, Alert } from 'react-native';
-import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';

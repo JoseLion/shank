@@ -1,8 +1,6 @@
 // React components:
 import React from 'react';
 import { Text, TouchableHighlight, TouchableOpacity, View, TextInput, Image, FlatList } from 'react-native';
-import { Avatar } from 'react-native-elements';
-import SortableListView from 'react-native-sortable-listview';
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components

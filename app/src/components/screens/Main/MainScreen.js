@@ -1,11 +1,10 @@
 // React components:
 import React from 'react';
 import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View, Linking } from 'react-native';
-import { Avatar, List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
-import { BarMessages, BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
 import PlusIcon from '../../../../resources/plus-icon.png';
@@ -140,17 +139,15 @@ export default class MainScreen extends BaseComponent {
 		const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 		this.setState({ auth });
 		
-		this.props.navigation.addListener('didFocus', async payload => {
+		this.didFocusListener = this.props.navigation.addListener('didFocus', async payload => {
 			if (this.state.auth) {
 				this.getGroups();
-				this.setState({isLoading: false});
 			} else {
 				const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 				this.setState({ auth });
 
 				if (this.state.auth) {
 					this.getGroups();
-					this.setState({isLoading: false});
 				} else {
 					this.props.navigation.navigate('Login');
 				}
@@ -210,6 +207,7 @@ export default class MainScreen extends BaseComponent {
 
 	componentWillUnmount() {
 		Linking.removeEventListener('url', e => {});
+		this.didFocusListener.remove();
 	}
 
 
