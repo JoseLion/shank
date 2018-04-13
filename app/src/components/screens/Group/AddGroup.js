@@ -4,6 +4,7 @@ import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Pic
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet';
 import DropdownAlert from 'react-native-dropdownalert';
+import ImagePicker from 'react-native-image-picker';
 
 // Shank components:
 import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, isAndroid } from '../BaseComponent';
@@ -62,18 +63,34 @@ export default class AddGroup extends BaseComponent {
 		this.setState({isLoading: false, tournaments: tournamentsData});
 	}
 
-	async selectPicture(index) {
-		/*let result;
-		let settings = {allowsEditing: true, aspect: [4, 4]};
+	selectPicture(index) {
+		let response;
+		let options = {
+			mediaType: 'photo',
+			allowsEditing: true,
+			noData: true,
+			maxWidth: 200,
+			maxHeight: 200
+		};
 
 		switch (index) {
-			case 0: result = await ImagePicker.launchImageLibraryAsync(settings); break;
-			case 1: result = await ImagePicker.launchCameraAsync(settings); break;
-		}
+			case 0:
+				ImagePicker.launchImageLibrary(options, (response) => this.pickerCallback(response));
+				break;
 
-		if (result != null && !result.cancelled) {
-			this.setState({photoUri: result.uri});
-		}*/
+			case 1:
+				ImagePicker.launchCamera(options, (response) => this.pickerCallback(response));
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	pickerCallback(response) {
+		if (response && !response.didCancel && !response.error) {
+			this.setState({photoUri: response.uri});
+		}
 	}
 
 	getPhotoSource() {

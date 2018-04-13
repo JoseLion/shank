@@ -537,7 +537,7 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Leaderboard' style={[ViewStyle.tabViewContainer]}>
 							<Text style={[ViewStyle.rankColumnText]}>Rank</Text>
 							
-							<FlatList data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow item={item} group={this.state.group} currentUser={this.state.currentUser} inviteToJoin={this.inviteToJoin} onRemove={this.removeUserFromGroup} />)} />
+							<FlatList data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard} keyExtractor={item => "key_" + item._id} renderItem={({item}) => (<LeaderboardRow item={item} group={this.state.group} currentUser={this.state.currentUser} inviteToJoin={this.inviteToJoin} onRemove={this.removeUserFromGroup} />)} />
 						</View>
 
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>

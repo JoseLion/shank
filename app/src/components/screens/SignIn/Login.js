@@ -3,6 +3,7 @@ import React from 'react';
 import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
+import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
 // Shank components:
 import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
@@ -52,10 +53,7 @@ export default class Login extends BaseComponent {
 	}
 
 	async onLoginPressedAsync(data) {
-		const login = await NoAuthModel.post('login', data).catch((error) => {
-			this.setLoading(false);
-			BarMessages.showError(error, this.validationMessage);
-		});
+		const login = await NoAuthModel.post('login', data).catch(this.handleError);
 
 		if (login) {
 			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
@@ -68,58 +66,68 @@ export default class Login extends BaseComponent {
 		}
 	}
 
+	async facebookCallBack(error, profile) {
+		if (profile.email) {
+			let data = {
+				fullName: profile.name,
+				email: profile.email,
+				facebookId: profile.id,
+				photo: {
+					name: 'facebook',
+					path: profile.picture.data.url
+				}
+			};
+
+			const userInfo = await NoAuthModel.post('users/facebookSignin', data).catch(this.handleError);
+			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
+			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
+			this.setLoading(false);
+			this.props.navigation.navigate('Main');
+		} else {
+			this.handleError('Facebook account does not have an associated email!');
+		}
+	}
+
 	async facebookService() {
+		const permissions = ['public_profile', 'email'];
 		this.setLoading(true);
 		let option = 'Signin';
 
-		/*try {
-			const {type, token} = await Facebook.logInWithReadPermissionsAsync(AppConst.APP_FB_ID, { permissions: ['public_profile', 'email', 'user_friends'] });
-			
-			switch (type) {
-				case 'success': {
-					const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${token}`);
-					const profile = await response.json();
+		const response = await LoginManager.logInWithReadPermissions(permissions).catch(this.handleError);
 
-					if (profile.email) {
-						let data = {
-							fullName: profile.name,
-							email: profile.email,
-							facebookId: profile.id,
-							photo: {
-								name: 'facebook',
-								path: profile.picture.data.url
-							}
-						};
+		if (response.isCancelled) {
+			this.handleError(`${option} with Facebook was cancelled!`);
+		} else {
+			let hasSamePermissions = true;
 
-						await NoAuthModel.post('users/facebookSignin', data)
-						.then((userInfo) => {
-							this.setLoading(false);
-							AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
-							AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
-							super.navigateDispatchToScreen('Main');
-						}).catch((error) => {
-							this.setLoading(false);
-							BarMessages.showError(error, this.validationMessage);
-						});
-					} else {
-						this.setLoading(false);
-						BarMessages.showError('Facebook account does not have an associated email!', this.validationMessage);
+			for (let i = 0; i < response.grantedPermissions.length; i++) {
+				let found = false;
+
+				for (let j = 0; j < permissions.length; j++) {
+					if (response.grantedPermissions[i] == permissions[j]) {
+						found = true;
+						break;
 					}
+				}
+
+				if (!found) {
+					hasSamePermissions = false;
 					break;
 				}
-				case 'cancel': {
-					this.setLoading(false);
-					BarMessages.showError(`${option} with Facebook was cancelled!`, this.validationMessage);
-				}
-				default: {
-					this.setLoading(false);
-					BarMessages.showError(`${option} with Facebook failed!`, this.validationMessage);
-				}
 			}
-		} catch (e) {
-			this.setLoading(false);
-			BarMessages.showError(`${option} failed!`, this.validationMessage);
-		}*/
+
+			if (hasSamePermissions) {
+				const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => this.facebookCallBack(error, profile));
+				new GraphRequestManager().addRequest(infoRequest).start();
+			} else {
+				this.handleError(`Not enought permissions grnated to ${option} with Facebook!`);
+			}
+		}
+	}
+
+	handleError(error) {
+		this.setLoading(false);
+		BarMessages.showError(error, this.validationMessage);
 	}
 
 	render() {
