@@ -4,7 +4,8 @@ import AppNavigator from './components/navigators/AppNavigator';
 import { YellowBox } from 'react-native';
 
 YellowBox.ignoreWarnings([
-	'Warning: isMounted(...) is deprecated'
+	'Warning: isMounted(...) is deprecated',
+	'Module RCTImageLoader requires main'
 ]);
 
 export default class ShankApp extends Component {
