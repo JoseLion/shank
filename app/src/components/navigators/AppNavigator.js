@@ -41,7 +41,7 @@ export const TabNav = TabNavigator({
 			backgroundColor: AppConst.COLOR_GRAY
 		},
 		labelStyle: {
-			fontFamily: 'century-gothic-bold',
+			fontFamily: Style.CENTURY_GOTHIC_BOLD,
 			fontSize: Style.FONT_15,
 			marginBottom: Style.EM(-0.1)
 		},
@@ -69,7 +69,7 @@ export default AppNavigator = StackNavigator({
 	initialRouteName: 'Splash',
 	navigationOptions: {
 		headerTintColor: AppConst.COLOR_WHITE,
-		headerTitleStyle: {flex: 1, textAlign: 'center', fontFamily: 'century-gothic', alignSelf: 'center', color: AppConst.COLOR_WHITE},
+		headerTitleStyle: {flex: 1, textAlign: 'center', fontFamily: Style.CENTURY_GOTHIC, alignSelf: 'center', color: AppConst.COLOR_WHITE},
 		headerStyle: {backgroundColor: AppConst.COLOR_BLUE},
 		headerBackTitle: 'Back'
 	}

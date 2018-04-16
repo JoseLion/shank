@@ -57,13 +57,13 @@ export default StyleSheet.create({
 		height: '100%'
 	},
 	groupName: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_17,
 		color: AppConst.COLOR_GREEN,
 		letterSpacing: Style.EM(0.25)
 	},
 	groupTournament: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_GRAY
 	},
@@ -78,13 +78,13 @@ export default StyleSheet.create({
 		alignItems: 'center'
 	},
 	groupStatsLabel: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_GRAY,
 		marginRight: '3%'
 	},
 	groupStatsValue: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_GRAY
 	},
@@ -100,7 +100,7 @@ export default StyleSheet.create({
 		height: '100%'
 	},
 	noDataText: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_GRAY,
 		textAlign: 'center'

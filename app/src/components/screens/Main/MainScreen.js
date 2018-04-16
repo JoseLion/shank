@@ -93,7 +93,7 @@ export default class MainScreen extends BaseComponent {
 	getRemoveButton(group) {
 		return [(
 			<TouchableHighlight style={{backgroundColor: AppConst.COLOR_RED, height: '100%', justifyContent: 'center'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.removeGroup(group)}>
-				<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_17, color: AppConst.COLOR_WHITE, marginHorizontal: '5%'}}>Remove</Text>
+				<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_17, color: AppConst.COLOR_WHITE, marginHorizontal: '5%'}}>Remove</Text>
 			</TouchableHighlight>
 		)];
 	}

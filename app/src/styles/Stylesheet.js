@@ -139,4 +139,10 @@ export default Style = {
     //HEIGHT
     INPUT_INSIDE_BUBBLE: em(3),
     INPUT_MULTILINE_INSIDE_BUBBLE: Platform.OS == 'android' ? em(5) : em(3),
+
+    //FONTS
+    CENTURY_GOTHIC: 'CenturyGothic',
+    CENTURY_GOTHIC_BOLD: 'CenturyGothic-Bold',
+    CENTURY_GOTHIC_ITALIC: 'CenturyGothic-Italic',
+    CENTURY_GOTHIC_BOLD_ITALIC: 'CenturyGothic-BoldItalic'
 };

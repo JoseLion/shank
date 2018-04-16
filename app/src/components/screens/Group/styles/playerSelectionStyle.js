@@ -29,13 +29,13 @@ const ViewStyle = StyleSheet.create({
 		borderRadius: Style.EM(2) / 2.0
 	},
 	playerName: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15_5,
 		color: AppConst.COLOR_GREEN,
 		paddingHorizontal: '5%'
 	},
 	pickRate: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15_5,
 		color: AppConst.COLOR_GREEN
 	},
@@ -64,7 +64,7 @@ const ViewStyle = StyleSheet.create({
 		backgroundColor: AppConst.COLOR_WHITE
 	},
 	tournamentName: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_17,
 		paddingVertical: '2%',
 		paddingHorizontal: widthSpace
@@ -80,7 +80,7 @@ const ViewStyle = StyleSheet.create({
 		paddingHorizontal: widthSpace
 	},
 	headerText: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_16
 	},
 	saveView: {
@@ -111,7 +111,7 @@ const ViewStyle = StyleSheet.create({
 	},
 	searchInput: {
 		flex: 1,
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15,
 		color: AppConst.COLOR_WHITE,
 		height: '100%',
@@ -128,7 +128,7 @@ const ViewStyle = StyleSheet.create({
 		alignItems: 'center'
 	},
 	cancelSearchText: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15,
 		color: AppConst.COLOR_WHITE
 	}

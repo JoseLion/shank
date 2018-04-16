@@ -10,7 +10,7 @@ export default ViewStyle = StyleSheet.create({
         paddingRight: Style.EM(1)
     },
     editButtonText: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_16,
         color: AppConst.COLOR_WHITE
     },
@@ -35,12 +35,12 @@ export default ViewStyle = StyleSheet.create({
         paddingRight: '2%'
     },
     groupNameText: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_17,
         color: AppConst.COLOR_BLUE
     },
     tournamentNameText: {
-        fontFamily: 'century-gothic-bold',
+        fontFamily: Style.CENTURY_GOTHIC_BOLD,
         fontSize: Style.FONT_16,
         width: '92.5%'
     },
@@ -63,11 +63,11 @@ export default ViewStyle = StyleSheet.create({
         paddingHorizontal: '2.5%'
     },
     prizeText: {
-        fontFamily: 'century-gothic-bold',
+        fontFamily: Style.CENTURY_GOTHIC_BOLD,
         fontSize: Style.FONT_16
     },
     prizeDescription: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_16,
         paddingBottom: Style.EM(0.5)
     },
@@ -86,12 +86,12 @@ export default ViewStyle = StyleSheet.create({
         alignItems: 'center'
     },
     statNumber: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_22,
         color: AppConst.COLOR_GREEN
     },
     statLabel: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_15,
         color: AppConst.COLOR_GRAY
     },
@@ -109,7 +109,7 @@ export default ViewStyle = StyleSheet.create({
         justifyContent: 'center'
     },
     rankColumnText: {
-        fontFamily: 'century-gothic-bold',
+        fontFamily: Style.CENTURY_GOTHIC_BOLD,
         fontSize: Style.FONT_14,
         color: AppConst.COLOR_BLUE,
         paddingTop: '5%',
@@ -132,11 +132,11 @@ export default ViewStyle = StyleSheet.create({
         alignItems: 'center',
     },
     leaderboardRowText: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_16
     },
     leaderboardRowPts: {
-        fontFamily: 'century-gothic-bold',
+        fontFamily: Style.CENTURY_GOTHIC_BOLD,
         fontSize: Style.FONT_15,
         color: AppConst.COLOR_GRAY,
         textAlign: 'right'
@@ -147,7 +147,7 @@ export default ViewStyle = StyleSheet.create({
         justifyContent: 'center'
     },
     swipeButtonText: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_17,
         color: AppConst.COLOR_WHITE,
         marginHorizontal: '5%'
@@ -160,7 +160,7 @@ export default ViewStyle = StyleSheet.create({
         marginRight: '10%'
     },
     roundsText: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_14,
         marginRight: '2%'
     },
@@ -173,7 +173,7 @@ export default ViewStyle = StyleSheet.create({
         marginLeft: '1%'
     },
     roundLabelText: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_15,
         color: 'white',
         backgroundColor: 'transparent'
@@ -192,7 +192,7 @@ export default ViewStyle = StyleSheet.create({
         alignItems: 'center'
     },
     roasterPosition: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_16,
         color: AppConst.COLOR_GREEN
     },
@@ -202,18 +202,18 @@ export default ViewStyle = StyleSheet.create({
         borderRadius: Style.EM(2.5) / 2
     },
     roasterEmpty: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_16,
         color: AppConst.COLOR_GRAY,
         textAlign: 'center'
     },
     roasterName: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_16,
         color: AppConst.COLOR_GREEN,
     },
     roasterInfo: {
-        fontFamily: 'century-gothic-bold',
+        fontFamily: Style.CENTURY_GOTHIC_BOLD,
         fontSize: Style.FONT_15,
         color: AppConst.COLOR_GRAY
     },
