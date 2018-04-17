@@ -13,7 +13,7 @@ import * as AppConst from '../../core/AppConst';
 import * as BarMessages from '../../core/BarMessages';
 import Style from '../../styles/Stylesheet';
 
-let isAndroid = Platform.OS == 'android' ? true : false;
+let IsAndroid = Platform.OS == 'android' ? true : false;
 
 class BaseComponent extends Component {
 
@@ -68,7 +68,7 @@ export {
     BaseModel,
     FileHost,
     AppConst,
-    isAndroid,
+    IsAndroid,
     MainStyles,
     NoAuthModel
 };

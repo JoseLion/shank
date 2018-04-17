@@ -1,8 +1,6 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import Style from '../../../../styles/Stylesheet';
 
-const isAndroid = Platform.OS == 'android' ? true : false;
-const {width, height} = Dimensions.get('window');
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
 
 const LocalStyles = StyleSheet.create({

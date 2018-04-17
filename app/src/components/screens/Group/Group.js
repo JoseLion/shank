@@ -8,7 +8,7 @@ import ActionSheet from 'react-native-actionsheet';
 import SortableList from 'react-native-sortable-list';
 
 // Shank components:
-import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, isAndroid, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, IsAndroid, Spinner } from '../BaseComponent';
 import { ClienHost } from '../../../config/variables';
 import ViewStyle from './styles/groupStyle';
 
@@ -337,7 +337,7 @@ export default class Group extends BaseComponent {
 
 	showActionSheet() {
 		if (this.state.group.tournaments) {
-			if (isAndroid) {
+			if (IsAndroid) {
 				this.actionSheet.show();
 			} else {
 				ActionSheetIOS.showActionSheetWithOptions({options: this.state.sheetNames, cancelButtonIndex: this.state.sheetNames.length}, this.tournamentSelected);

@@ -1,7 +1,6 @@
 import React from 'react';
-import {Dimensions, Platform, PixelRatio} from 'react-native';
+import {Dimensions, PixelRatio} from 'react-native';
 
-const isAndroid = Platform.OS == 'android' ? true : false;
 
 // Precalculate Device Dimensions for better performance
 const x = Dimensions.get('window').width;

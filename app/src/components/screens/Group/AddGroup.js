@@ -7,7 +7,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import ImagePicker from 'react-native-image-picker';
 
 // Shank components:
-import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, isAndroid } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid } from '../BaseComponent';
 import { ApiHost } from '../../../config/variables';
 import ViewStyle from './styles/addGroupStyle'
 
@@ -50,7 +50,7 @@ export default class AddGroup extends BaseComponent {
 	}
 
 	openImageSheet() {
-		if (isAndroid) {
+		if (IsAndroid) {
 			this.actionSheet.show();
 		} else {
 			ActionSheetIOS.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
@@ -152,7 +152,7 @@ export default class AddGroup extends BaseComponent {
 	render() {
 		let tournamentList;
 
-		if (isAndroid) {
+		if (IsAndroid) {
 			tournamentList = this.state.tournaments.map(tournament => {
 				return (<Picker.Item style={[ViewStyle.pickerText]} key={tournament.tournamentID} value={tournament} label={tournament.name} />);
 			});
@@ -170,7 +170,7 @@ export default class AddGroup extends BaseComponent {
 
 				<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={ViewStyle.nameInput} onChangeText={name => this.updateGroup('name', name)} value={this.state.group.name} placeholder={'Group name'} />
 
-				{isAndroid ?
+				{IsAndroid ?
 					<View style={[ViewStyle.pickerView, ViewStyle.androidPicker]}>
 						<Picker itemStyle={[ViewStyle.pickerText]} selectedValue={this.state.group.tournaments[0] && this.state.group.tournaments[0].tournament} onValueChange={tournament => this.updateGroup('tournaments', [{ tournament }])}>
 							<Picker.Item color={AppConst.COLOR_GRAY} value='' label='Pick a tournament' />

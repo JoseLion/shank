@@ -3,9 +3,10 @@ import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View, Image, Platform } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
+import InAppBilling  from 'react-native-billing';
 
 // Shank components:
-import { BaseComponent, BaseModel, MainStyles, AppConst } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, IsAndroid } from '../BaseComponent';
 import ViewStyle from './styles/checkoutStyle';
 
 // Images
@@ -42,19 +43,38 @@ export default class Checkout extends BaseComponent {
 	}
 
 	async saveAndPay() {
-		this.setState({isLoading: true});
-		const body = {
-			originalRoaster: this.state.originalRoaster,
-			roaster: this.state.roaster,
-			round: this.props.navigation.state.params.round,
-			payment: this.state.total,
-			movements: this.movements
-		};
-		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(this.handleError);
+		let wasPaymentSuccessful = false;
 
-		this.props.navigation.state.params.managePlayersCallback(group, false);
-		this.setState({isLoading: false});
-		this.props.navigation.goBack();
+		if (IsAndroid) {
+			await InAppBilling.close();
+			await InAppBilling.open().catch(this.handleError);
+			let details = await InAppBilling.purchase(AppConst.SKU.android).catch(this.handleError);
+
+			if (details.purchaseState === 'PurchasedSuccessfully') {
+				wasPaymentSuccessful = await InAppBilling.consumePurchase(AppConst.SKU.android).catch(this.handleError);
+			}
+
+			InAppBilling.close();
+		} else {
+			// TODO: Implement iOS in-app purchase code
+		}
+
+
+		if (wasPaymentSuccessful) {
+			this.setState({isLoading: true});
+			const body = {
+				originalRoaster: this.state.originalRoaster,
+				roaster: this.state.roaster,
+				round: this.props.navigation.state.params.round,
+				payment: this.state.total,
+				movements: this.movements
+			};
+			const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(this.handleError);
+
+			this.props.navigation.state.params.managePlayersCallback(group, false);
+			this.setState({isLoading: false});
+			this.props.navigation.goBack();
+		}
 	}
 
 	handleError(error) {
