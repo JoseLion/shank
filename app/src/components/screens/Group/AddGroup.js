@@ -7,7 +7,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import ImagePicker from 'react-native-image-picker';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, isAndroid } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, isAndroid } from '../BaseComponent';
 import { ApiHost } from '../../../config/variables';
 import ViewStyle from './styles/addGroupStyle'
 

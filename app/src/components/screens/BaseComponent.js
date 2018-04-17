@@ -8,7 +8,6 @@ import DropdownAlert from 'react-native-dropdownalert';
 import NoAuthModel from '../../core/NoAuthModel';
 import BaseModel from '../../core/BaseModel';
 import { FileHost } from '../../config/variables';
-import GolfApiModel from '../../core/GolfApiModel';
 import MainStyles from '../../styles/MainStyles';
 import * as AppConst from '../../core/AppConst';
 import * as BarMessages from '../../core/BarMessages';
@@ -69,7 +68,6 @@ export {
     BaseModel,
     FileHost,
     AppConst,
-    GolfApiModel,
     isAndroid,
     MainStyles,
     NoAuthModel

@@ -4,7 +4,7 @@ import React from 'react';
 
 import * as ApiUtils from './ApiUtils';
 import * as AppConst from './AppConst';
-import { Host, ApiHost, AuthToken, ApiKey, version } from '../config/variables';
+import { Host, ApiHost, AuthToken } from '../config/variables';
 
 let internetError = 'No fue posible acceder al internet de su teléfono.';
 let requestServerError = 'No fue posible comunicar con el servidor.';

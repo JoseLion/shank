@@ -18,6 +18,7 @@ export default class Login extends BaseComponent {
 		this.scrollToInput = this.scrollToInput.bind(this);
 		this.onLoginPressed = this.onLoginPressed.bind(this);
 		this.facebookService = this.facebookService.bind(this);
+		this.handleError = this.handleError.bind(this);
 		this.state = {
 			email: '',
 			password: '',

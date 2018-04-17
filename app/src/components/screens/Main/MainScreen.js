@@ -2,9 +2,10 @@
 import React from 'react';
 import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View, Linking } from 'react-native';
 import Swipeable from 'react-native-swipeable';
+import InAppBilling  from 'react-native-billing';
 
 // Shank components:
-import { BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, MainStyles, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
 import PlusIcon from '../../../../resources/plus-icon.png';
@@ -136,6 +137,13 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	async componentDidMount() {
+		await InAppBilling.close();
+		await InAppBilling.open().catch(error => console.log("error: ", error));
+		let details = await InAppBilling.purchase(AppConst.SKU.android).catch(error => console.log("error: ", error));
+		console.log('details: ', details);
+		InAppBilling.close();
+		
+
 		const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 		this.setState({ auth });
 		

@@ -7,7 +7,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
 // Shank components:
-import { BaseComponent, NoAuthModel, GolfApiModel, MainStyles, AppConst, BarMessages } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class Register extends BaseComponent {

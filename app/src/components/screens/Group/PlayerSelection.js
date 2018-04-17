@@ -4,7 +4,7 @@ import { Text, TouchableHighlight, TouchableOpacity, View, TextInput, Image, Fla
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/playerSelectionStyle';
 
 // Images
