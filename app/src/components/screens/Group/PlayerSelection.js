@@ -177,7 +177,7 @@ export default class PlayerSelection extends BaseComponent {
 	}
 
 	async done() {
-		if (this.hasTournamentBegan()) {
+		if (this.hasTournamentBegan() && !this.state.group.tournaments[this.state.tournamentIndex].isRoasterEmpty) {
 			this.props.navigation.state.params.managePlayersCallback(this.roaster, true);
 			this.props.navigation.goBack();
 		} else {

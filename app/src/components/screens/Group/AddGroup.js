@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, KeyboardAvoidingView, ImagePickerIOS } from 'react-native';
+import { ScrollView, Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, ImagePickerIOS } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -159,7 +159,7 @@ export default class AddGroup extends BaseComponent {
 		}
 
 		return (
-			<KeyboardAvoidingView keyboardVerticalOffset={20} behavior={'position'} contentContainerStyle={{alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
+			<ScrollView contentContainerStyle={{alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
 				<Spinner visible={this.state.isLoading} animation='fade'/>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.selectPicture} />
 
@@ -190,7 +190,7 @@ export default class AddGroup extends BaseComponent {
 				</TouchableHighlight>
 
 				<DropdownAlert ref={ref => this.dropDown = ref} />
-			</KeyboardAvoidingView>
+			</ScrollView>
 		);
 	}
 }

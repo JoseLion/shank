@@ -24,7 +24,7 @@ class RoasterRow extends Component {
 	}
 
 	animateCell() {
-		if (!this.props.hideSortBars) {
+		if (this.props.isEditable) {
 			const {pan} = this.swipe.state;
 
 			this.setState({
@@ -90,7 +90,7 @@ class RoasterRow extends Component {
 							</View>
 						</View>
 
-						{!this.props.hideSortBars ?
+						{this.props.isEditable ?
 							<View style={{flex: 1}}>
 								<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
 							</View>
@@ -99,15 +99,15 @@ class RoasterRow extends Component {
 				</TouchableHighlight>
 			);
 
-			if (this.props.hideSortBars) {
-				return (
-					<View>{row}</View>
-				);
-			} else {
+			if (this.props.isEditable) {
 				return (
 					<Swipeable rightButtons={changeButton} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
 						{row}
 					</Swipeable>
+				);
+			} else {
+				return (
+					<View>{row}</View>
 				);
 			}
 		} else {
@@ -258,6 +258,7 @@ export default class Group extends BaseComponent {
 		this.shouldShowCheckout = this.shouldShowCheckout.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
 		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
+		this.isRoundOnCourse = this.isRoundOnCourse.bind(this);
 		this.handleError = this.handleError.bind(this);
 		this.state = {
 			isLoading: false,
@@ -276,6 +277,8 @@ export default class Group extends BaseComponent {
 
 			group.tournaments[this.state.tournamentIndex].leaderboard.forEach((cross, i) => {
 				if (cross.roaster.length == 0) {
+					cross.isRoasterEmpty = true;
+
 					for (let i = -1; i >= -5; i--) {
 						cross.roaster.push({_id: i});
 					}
@@ -406,7 +409,7 @@ export default class Group extends BaseComponent {
 			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
 			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
 
-			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime()) {
+			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime() && !this.state.group.tournaments[this.state.tournamentIndex].isRoasterEmpty) {
 				for (let i = 0; i < this.state.userRoaster.length; i++) {
 					if (this.state.userRoaster[i]._id != this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[i]._id) {
 						hasChanged = true;
@@ -448,6 +451,23 @@ export default class Group extends BaseComponent {
 			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
 
 			if (today.getTime() <= endDate.getTime()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	isRoundOnCourse() {
+		if (this.state.group && this.state.group.tournaments) {
+			const today = new Date();
+			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
+			const time = (today.getHours() * 60 * 60) + (today.getMinutes() * 60) + today.getSeconds;
+			const startTime = (startDate.getHours() * 60 * 60) + (startDate.getMinutes() * 60) + startDate.getSeconds;
+			const endTime = (endDate.getHours() * 60 * 60) + (endDate.getMinutes() * 60) + endDate.getSeconds;
+
+			if (time >= startTime && time <= endTime) {
 				return true;
 			}
 		}
@@ -543,8 +563,8 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
 							<RoundLabels tournament={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament} />
 
-							<SortableList style={{flex: 1}} sortingEnabled={this.isBeforeEndDate()} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []} renderRow={({data, index}) => (
-								<RoasterRow roaster={data} rowId={index} hideSortBars={!this.isBeforeEndDate()} onPress={() => this.managePlayers(data, index)} />
+							<SortableList style={{flex: 1}} sortingEnabled={this.isBeforeEndDate() && !this.isRoundOnCourse()} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []} renderRow={({data, index}) => (
+								<RoasterRow roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />
 							)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
 								if (this.nextOrder) {
 									let roaster = [];

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, PixelRatio} from 'react-native';
+import {Dimensions, Platform, PixelRatio} from 'react-native';
 
 
 // Precalculate Device Dimensions for better performance

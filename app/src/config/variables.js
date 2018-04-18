@@ -1,6 +1,6 @@
 // shank.levelaptesting.com
 // 192.168.10.152
-const endPoint = 'http://localhost';
+const endPoint = '192.168.10.152';
 const port = '3000';
 const Host = `http://${endPoint}:${port}/`;
 const ApiHost = Host + 'api/';
