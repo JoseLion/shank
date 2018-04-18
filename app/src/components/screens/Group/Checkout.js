@@ -3,7 +3,6 @@ import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View, Image, Platform } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
-import InAppBilling  from 'react-native-billing';
 
 // Shank components:
 import { BaseComponent, BaseModel, MainStyles, AppConst, IsAndroid } from '../BaseComponent';
@@ -46,6 +45,7 @@ export default class Checkout extends BaseComponent {
 		let wasPaymentSuccessful = false;
 
 		if (IsAndroid) {
+			const InAppBilling = await import('react-native-billing');
 			await InAppBilling.close();
 			await InAppBilling.open().catch(this.handleError);
 			let details = await InAppBilling.purchase(AppConst.SKU.android).catch(this.handleError);
