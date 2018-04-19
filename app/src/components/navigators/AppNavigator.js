@@ -49,6 +49,10 @@ export const TabNav = TabNavigator({
 			width: Style.EM(2.2),
 			height: Style.EM(2.2),
 			marginBottom: Style.EM(-0.75)
+		},
+		tabStyle: {
+			paddingVertical: '2.5%',
+			marginBottom: Style.EM(0.5)
 		}
 	}
 });

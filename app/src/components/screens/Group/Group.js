@@ -10,6 +10,7 @@ import SortableList from 'react-native-sortable-list';
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, IsAndroid, Spinner } from '../BaseComponent';
 import { ClienHost } from '../../../config/variables';
+import Style from '../../../styles/Stylesheet';
 import ViewStyle from './styles/groupStyle';
 
 import DownCaretIcon from '../../../../resources/down-caret-icon.png';
@@ -201,7 +202,7 @@ class LeaderboardRow extends Component {
 	}
 
 	getLeaderboardRow(item) {
-		let nameFont = item.user ? 'century-gothic-bold' : 'century-gothic';
+		let nameFont = item.user ? Style.CENTURY_GOTHIC_BOLD : Style.CENTURY_GOTHIC;
 		return (
 			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => { if (!item.user) this.props.inviteToJoin(); }}>
 				<View style={[ViewStyle.leaderboardRow]}>
