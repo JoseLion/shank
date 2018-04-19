@@ -9,6 +9,7 @@ const ClienHost = `admin.${endPoint}/`;
 
 const AuthToken = 'shank-auth-token';
 const ProductSku = {
+    ios: 'com.levelap.shank.playerchange',
     android: 'android.test.purchased'
 };
 

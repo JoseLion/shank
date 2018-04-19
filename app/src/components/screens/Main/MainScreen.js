@@ -136,6 +136,35 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	async componentDidMount() {
+		/*const { NativeModules } = await import('react-native');
+		const { InAppUtils } = NativeModules;
+
+		const canPay = await InAppUtils.canMakePayments(canPay => {
+			if (canPay) {
+				InAppUtils.loadProducts([AppConst.SKU.ios], (error, products) => {
+					if (error) {
+						console.log("ERROR: ", error);
+						return;
+					}
+
+					console.log("products: ", products);
+
+					InAppUtils.purchaseProduct(AppConst.SKU.ios, (error, response) => {
+						if (error) {
+							console.log("ERROR: ", error);
+							return;
+						}
+						
+						if (response && response.productIdentifier) {
+							console.log("PURCHASE SUCCESSFUL!!!");
+						}
+					});
+				});
+			}
+		});*/
+
+
+
 		const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 		this.setState({ auth });
 		
