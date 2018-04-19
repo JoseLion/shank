@@ -5,7 +5,8 @@ import { YellowBox } from 'react-native';
 
 YellowBox.ignoreWarnings([
 	'Warning: isMounted(...) is deprecated',
-	'Module RCTImageLoader requires main'
+	'Module RCTImageLoader requires main',
+	'Class RCTCxxModule was not exported'
 ]);
 
 export default class ShankApp extends Component {
