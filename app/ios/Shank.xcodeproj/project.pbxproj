@@ -40,6 +40,7 @@
 		4F18BD8614A14D6080EF709B /* InAppUtilsTests.xctest in Frameworks */ = {isa = PBXBuildFile; fileRef = 603A7258892B407383A7A75C /* InAppUtilsTests.xctest */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		796DD896CC8444ED8BE19729 /* century-gothic-bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F15F5960079048B0AC87C87E /* century-gothic-bold.ttf */; };
+		82B44E7F208A3C3E00365941 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B44E7E208A3C3E00365941 /* StoreKit.framework */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		9A019DA16EE94E42BCE24750 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B49A8CBA246648919D65E36E /* libRNImagePicker.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -387,6 +388,7 @@
 		603A7258892B407383A7A75C /* InAppUtilsTests.xctest */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = InAppUtilsTests.xctest; sourceTree = "<group>"; };
 		764C1A901021476981BFED8D /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/ios/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
+		82B44E7E208A3C3E00365941 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8EACAAF9289A4456871B6182 /* InAppUtils.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = InAppUtils.xcodeproj; path = "../node_modules/react-native-in-app-utils/InAppUtils.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -426,6 +428,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				0BF036F3D9564F46897A0DE1 /* libRCTFBSDK.a in Frameworks */,
 				9A019DA16EE94E42BCE24750 /* libRNImagePicker.a in Frameworks */,
+				82B44E7F208A3C3E00365941 /* StoreKit.framework in Frameworks */,
 				D2FEE67074534D8B85E8C98F /* FBSDKCoreKit.framework in Frameworks */,
 				C84A06FF0CC04DB2B8135B45 /* FBSDKShareKit.framework in Frameworks */,
 				359848480992440CBB1AC87F /* FBSDKLoginKit.framework in Frameworks */,
@@ -590,6 +593,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				82B44E7E208A3C3E00365941 /* StoreKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				511674E1AFF5486AA378A6DE /* FBSDKCoreKit.framework */,
 				2B0EA47D0CCB49FBBA03FC27 /* FBSDKShareKit.framework */,
@@ -810,6 +814,11 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 7LLREBA73R;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
