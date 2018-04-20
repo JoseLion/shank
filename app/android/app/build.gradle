@@ -96,10 +96,12 @@ def enableProguardInReleaseBuilds = false
 android {
     signingConfigs {
         release {
-            keyAlias 'shank'
-            keyPassword 'shank.levelap'
-            storeFile file('C:/wamp/www/Shank/app/keystore/android_upload_cert.der')
-            storePassword 'shank.levelap'
+            if (project.hasProperty('SHANK_RELEASE_STORE_FILE')) {
+                storeFile file(SHANK_RELEASE_STORE_FILE)
+                storePassword SHANK_RELEASE_STORE_PASSWORD
+                keyAlias SHANK_RELEASE_KEY_ALIAS
+                keyPassword SHANK_RELEASE_KEY_PASSWORD
+            }
         }
     }
     compileSdkVersion 27
