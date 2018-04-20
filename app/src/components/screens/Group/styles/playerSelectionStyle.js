@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from 'react-native';
-import Style from 'Stylesheet';
+import Style from 'ShankStyle';
 import * as AppConst from 'AppConst';
 
 const {width, height} = Dimensions.get('window');

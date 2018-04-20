@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import Style from 'Stylesheet';
+import Style from 'ShankStyle';
 
 const LocalStyles = StyleSheet.create({
     addPhotoLogo: {

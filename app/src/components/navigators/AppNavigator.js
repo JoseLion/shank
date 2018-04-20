@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
 import { BackHandler, TouchableOpacity, Image, Text } from 'react-native';
-import Style from 'Stylesheet';
+import Style from 'ShankStyle';
 
 import * as AppConst from 'AppConst';
 

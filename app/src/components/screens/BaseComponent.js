@@ -11,7 +11,7 @@ import { FileHost } from '../../config/variables';
 import MainStyles from 'MainStyles';
 import * as AppConst from 'AppConst';
 import * as BarMessages from 'BarMessages';
-import Style from 'Stylesheet';
+import Style from 'ShankStyle';
 
 let IsAndroid = Platform.OS == 'android' ? true : false;
 
