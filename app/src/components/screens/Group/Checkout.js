@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { ScrollView, Text, TouchableOpacity, View, Image, Platform } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, Image, Platform, AlertIOS, Alert } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
 import InAppBilling from 'react-native-billing';
@@ -45,19 +45,28 @@ export default class Checkout extends BaseComponent {
 		let wasPaymentSuccessful = false;
 
 		if (IsAndroid) {
-			await InAppBilling.close();
 			await InAppBilling.open().catch(this.handleError);
-			let details = await InAppBilling.purchase(AppConst.SKU.android).catch(this.handleError);
+			let details = await InAppBilling.purchase(AppConst.SKU.android).catch(error => {
+				Alert.alert('In-app Billing', error.message, [{text: 'OK'}]);
+			});
 
-			if (details.purchaseState === 'PurchasedSuccessfully') {
-				wasPaymentSuccessful = await InAppBilling.consumePurchase(AppConst.SKU.android).catch(this.handleError);
+			if (details != null && details.purchaseState === 'PurchasedSuccessfully') {
+				wasPaymentSuccessful = await InAppBilling.consumePurchase(AppConst.SKU.android).catch(error => {
+					Alert.alert('In-app Billing', error.message, [{text: 'OK'}]);
+				});
 			}
 
-			InAppBilling.close();
+			await InAppBilling.close().catch(this.handleError);
 		} else {
-			// TODO: Implement iOS in-app purchase
-		}
+			const response = await InAppHelper.purchaseProduct(this.product.identifier).catch(error => {
+				AlertIOS.alert("In-app Purchase", error.message);
+			});
 
+			if (response && response.productIdentifier) {
+				wasPaymentSuccessful = true;
+				AlertIOS.alert('Success!', 'Purchase successfull');
+			}
+		}
 
 		if (wasPaymentSuccessful) {
 			this.setState({isLoading: true});
@@ -87,14 +96,27 @@ export default class Checkout extends BaseComponent {
 		let priceString = this.state.priceString;
 
 		if (IsAndroid) {
-			this.product = await InAppBilling.getProductDetails(AppConst.SKU.android).catch(this.handleError);
+			await InAppBilling.open().catch(this.handleError);
+			this.product = await InAppBilling.getProductDetails(AppConst.SKU.android).catch(error => {
+				return Alert.alert("In-app Billing", error, [{text: "OK", onPress: () => this.props.navigation.goBack(null)}], {cancelable: false});
+			});
+
 			price = this.product.priceValue;
 			priceString = this.product.priceText;
+			await InAppBilling.close().catch(this.handleError);
 		} else {
 			const canPay = await InAppHelper.canMakePayments();
 
 			if (canPay) {
-				this.product = await InAppHelper.loadProducts(AppConst.SKU.ios).catch(this.handleError)[0];
+				const productArray = await InAppHelper.loadProducts(AppConst.SKU.ios).catch(error => {
+					return AlertIOS.alert("In-app Purchase", error.message, () => this.props.navigation.goBack(null));
+				});
+
+				if (productArray == null || productArray.length <= 0) {
+					return AlertIOS.alert("In-app Purchase", "The product couldn't be found in the AppStore", () => this.props.navigation.goBack(null));
+				}
+
+				this.product = productArray[0];
 				price = this.product.price;
 				priceString = this.product.priceString;
 			}
@@ -143,7 +165,7 @@ export default class Checkout extends BaseComponent {
 					</View>
 
 					<View style={[ViewStyle.buttonsView]}>
-						<TouchableOpacity style={[MainStyles.button, MainStyles.primary, {flex: 1, marginRight: '1%'}]} onPress={() => { this.props.navigation.goBack(null); }}>
+						<TouchableOpacity style={[MainStyles.button, MainStyles.primary, {flex: 1, marginRight: '1%'}]} onPress={() => this.props.navigation.goBack(null)}>
 							<Text style={MainStyles.buttonText}>Keep Changing</Text>
 						</TouchableOpacity>
 

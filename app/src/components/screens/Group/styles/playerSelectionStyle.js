@@ -9,16 +9,19 @@ const widthSpace = '3%';
 const ViewStyle = StyleSheet.create({
 	rowCell: {
 		paddingHorizontal: widthSpace,
-		backgroundColor: AppConst.COLOR_WHITE
+		backgroundColor: AppConst.COLOR_WHITE,
+		flex: 1,
+		justifyContent: 'center'
 	},
 	cellView: {
 		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: '1%',
 		borderBottomWidth: 1,
-		borderColor: AppConst.COLOR_GRAY
+		borderColor: AppConst.COLOR_GRAY,
+		height: '100%',
+		paddingBottom: '2%'
 	},
 	playerImage: {
 		width: Style.EM(2),
@@ -42,7 +45,6 @@ const ViewStyle = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: AppConst.COLOR_SUCCESS,
 		borderRadius: 17.5,
-		height: '100%',
 		paddingVertical: '10%',
 		paddingHorizontal: '30%'
 	},
