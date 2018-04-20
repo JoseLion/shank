@@ -2,7 +2,6 @@
 import React from 'react';
 import { Animated, AsyncStorage, Image, View } from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import { Constants } from 'expo';
 
 // Shank components:
 import { BaseComponent, AppConst } from '../BaseComponent';

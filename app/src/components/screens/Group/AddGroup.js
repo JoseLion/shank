@@ -1,14 +1,13 @@
 // React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, ImagePickerIOS } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet';
 import DropdownAlert from 'react-native-dropdownalert';
-import { ImagePicker } from 'expo';
-import { connectActionSheet } from '@expo/react-native-action-sheet';
+import ImagePicker from 'react-native-image-picker';
 
 // Shank components:
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, Entypo, isAndroid } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid } from '../BaseComponent';
 import { ApiHost } from '../../../config/variables';
 import ViewStyle from './styles/addGroupStyle'
 
@@ -51,7 +50,7 @@ export default class AddGroup extends BaseComponent {
 	}
 
 	openImageSheet() {
-		if (isAndroid) {
+		if (IsAndroid) {
 			this.actionSheet.show();
 		} else {
 			ActionSheetIOS.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
@@ -64,17 +63,33 @@ export default class AddGroup extends BaseComponent {
 		this.setState({isLoading: false, tournaments: tournamentsData});
 	}
 
-	async selectPicture(index) {
-		let result;
-		let settings = {allowsEditing: true, aspect: [4, 4]};
+	selectPicture(index) {
+		let response;
+		let options = {
+			mediaType: 'photo',
+			allowsEditing: true,
+			noData: true,
+			maxWidth: 200,
+			maxHeight: 200
+		};
 
 		switch (index) {
-			case 0: result = await ImagePicker.launchImageLibraryAsync(settings); break;
-			case 1: result = await ImagePicker.launchCameraAsync(settings); break;
-		}
+			case 0:
+				ImagePicker.launchImageLibrary(options, (response) => this.pickerCallback(response));
+				break;
 
-		if (result != null && !result.cancelled) {
-			this.setState({photoUri: result.uri});
+			case 1:
+				ImagePicker.launchCamera(options, (response) => this.pickerCallback(response));
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	pickerCallback(response) {
+		if (response && !response.didCancel && !response.error) {
+			this.setState({photoUri: response.uri});
 		}
 	}
 
@@ -137,14 +152,14 @@ export default class AddGroup extends BaseComponent {
 	render() {
 		let tournamentList;
 
-		if (isAndroid) {
+		if (IsAndroid) {
 			tournamentList = this.state.tournaments.map(tournament => {
 				return (<Picker.Item style={[ViewStyle.pickerText]} key={tournament.tournamentID} value={tournament} label={tournament.name} />);
 			});
 		}
 
 		return (
-			<KeyboardAvoidingView keyboardVerticalOffset={20} behavior={'position'} contentContainerStyle={{alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
+			<ScrollView contentContainerStyle={{alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
 				<Spinner visible={this.state.isLoading} animation='fade'/>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.selectPicture} />
 
@@ -155,7 +170,7 @@ export default class AddGroup extends BaseComponent {
 
 				<TextInput returnKeyType={'next'} underlineColorAndroid='transparent' style={ViewStyle.nameInput} onChangeText={name => this.updateGroup('name', name)} value={this.state.group.name} placeholder={'Group name'} />
 
-				{isAndroid ?
+				{IsAndroid ?
 					<View style={[ViewStyle.pickerView, ViewStyle.androidPicker]}>
 						<Picker itemStyle={[ViewStyle.pickerText]} selectedValue={this.state.group.tournaments[0] && this.state.group.tournaments[0].tournament} onValueChange={tournament => this.updateGroup('tournaments', [{ tournament }])}>
 							<Picker.Item color={AppConst.COLOR_GRAY} value='' label='Pick a tournament' />
@@ -175,7 +190,7 @@ export default class AddGroup extends BaseComponent {
 				</TouchableHighlight>
 
 				<DropdownAlert ref={ref => this.dropDown = ref} />
-			</KeyboardAvoidingView>
+			</ScrollView>
 		);
 	}
 }

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
-import { Entypo, FontAwesome } from '@expo/vector-icons';
 import { BackHandler, TouchableOpacity, Image, Text } from 'react-native';
+import Style from 'ShankStyle';
 
-import * as AppConst from '../../core/AppConst';
+import * as AppConst from 'AppConst';
 
 import Splash from '../screens/Splash/Splash';
 import Slider from '../screens/Splash/Slider';
@@ -42,12 +41,23 @@ export const TabNav = TabNavigator({
 			backgroundColor: AppConst.COLOR_GRAY
 		},
 		labelStyle: {
-			fontWeight: 'bold'
+			fontFamily: Style.CENTURY_GOTHIC_BOLD,
+			fontSize: Style.FONT_15,
+			marginBottom: Style.EM(-0.1)
+		},
+		iconStyle: {
+			width: Style.EM(2.2),
+			height: Style.EM(2.2),
+			marginBottom: Style.EM(-0.75)
+		},
+		tabStyle: {
+			paddingVertical: '2.5%',
+			marginBottom: Style.EM(0.5)
 		}
 	}
 });
 
-export const AppNavigator = StackNavigator({
+export default AppNavigator = StackNavigator({
 	Splash: { screen: Splash },
 	Slider: { screen: Slider },
 	Login: { screen: Login },
@@ -63,31 +73,8 @@ export const AppNavigator = StackNavigator({
 	initialRouteName: 'Splash',
 	navigationOptions: {
 		headerTintColor: AppConst.COLOR_WHITE,
-		headerTitleStyle: {flex: 1, textAlign: 'center', fontFamily: 'century-gothic', alignSelf: 'center', color: AppConst.COLOR_WHITE},
+		headerTitleStyle: {flex: 1, textAlign: 'center', fontFamily: Style.CENTURY_GOTHIC, alignSelf: 'center', color: AppConst.COLOR_WHITE},
 		headerStyle: {backgroundColor: AppConst.COLOR_BLUE},
 		headerBackTitle: 'Back'
 	}
 });
-
-const mapStateToProps = state => ({
-	nav: state.nav,
-	auth: state.auth
-});
-
-export class AppWithNavigationState extends Component {
-	render() {
-		const { dispatch, nav } = this.props;
-		
-		return (
-			<AppNavigator />
-		);
-	}
-}
-
-AppWithNavigationState.propTypes = {
-	dispatch: PropTypes.func.isRequired,
-	auth: PropTypes.object.isRequired,
-	nav: PropTypes.object.isRequired
-};
-
-export default connect(mapStateToProps)(AppWithNavigationState);

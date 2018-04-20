@@ -1,10 +1,7 @@
-import { Dimensions, Platform, StyleSheet } from 'react-native';
-import Style from '../../../../styles/Stylesheet';
+import { Dimensions, StyleSheet } from 'react-native';
+import Style from 'ShankStyle';
+import * as AppConst from 'AppConst';
 
-import * as AppConst from '../../../../core/AppConst';
-
-
-const isAndroid = Platform.OS == 'android' ? true : false;
 const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;
 const widthSpace = '3%';
@@ -12,16 +9,19 @@ const widthSpace = '3%';
 const ViewStyle = StyleSheet.create({
 	rowCell: {
 		paddingHorizontal: widthSpace,
-		backgroundColor: AppConst.COLOR_WHITE
+		backgroundColor: AppConst.COLOR_WHITE,
+		flex: 1,
+		justifyContent: 'center'
 	},
 	cellView: {
 		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: '1%',
 		borderBottomWidth: 1,
-		borderColor: AppConst.COLOR_GRAY
+		borderColor: AppConst.COLOR_GRAY,
+		height: '100%',
+		paddingBottom: '2%'
 	},
 	playerImage: {
 		width: Style.EM(2),
@@ -29,13 +29,13 @@ const ViewStyle = StyleSheet.create({
 		borderRadius: Style.EM(2) / 2.0
 	},
 	playerName: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15_5,
 		color: AppConst.COLOR_GREEN,
 		paddingHorizontal: '5%'
 	},
 	pickRate: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15_5,
 		color: AppConst.COLOR_GREEN
 	},
@@ -45,7 +45,6 @@ const ViewStyle = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: AppConst.COLOR_SUCCESS,
 		borderRadius: 17.5,
-		height: '100%',
 		paddingVertical: '10%',
 		paddingHorizontal: '30%'
 	},
@@ -64,7 +63,7 @@ const ViewStyle = StyleSheet.create({
 		backgroundColor: AppConst.COLOR_WHITE
 	},
 	tournamentName: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_17,
 		paddingVertical: '2%',
 		paddingHorizontal: widthSpace
@@ -80,7 +79,7 @@ const ViewStyle = StyleSheet.create({
 		paddingHorizontal: widthSpace
 	},
 	headerText: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_16
 	},
 	saveView: {
@@ -104,9 +103,14 @@ const ViewStyle = StyleSheet.create({
 		position: 'absolute',
 		left: '5%'
 	},
+	searchButton: {
+		width: Style.EM(1.25),
+		height: Style.EM(1.25),
+		marginRight: Style.EM(1)
+	},
 	searchInput: {
 		flex: 1,
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15,
 		color: AppConst.COLOR_WHITE,
 		height: '100%',
@@ -123,7 +127,7 @@ const ViewStyle = StyleSheet.create({
 		alignItems: 'center'
 	},
 	cancelSearchText: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15,
 		color: AppConst.COLOR_WHITE
 	}

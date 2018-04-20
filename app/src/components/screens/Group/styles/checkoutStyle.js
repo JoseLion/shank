@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import Style from '../../../../styles/Stylesheet';
-import * as AppConst from '../../../../core/AppConst';
+import Style from 'ShankStyle';
+import * as AppConst from 'AppConst';
 
 export default StyleSheet.create({
 	container: {
@@ -18,7 +18,7 @@ export default StyleSheet.create({
 		borderBottomColor: AppConst.COLOR_GRAY
 	},
 	titleText: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_17,
 		color: AppConst.COLOR_BLUE,
 		textAlign: 'center'
@@ -33,12 +33,12 @@ export default StyleSheet.create({
 		borderColor: AppConst.COLOR_GRAY
 	},
 	rowNum: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_15,
 		color: AppConst.COLOR_BLUE
 	},
 	rowName: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_15,
 		color: AppConst.COLOR_GRAY,
 		paddingHorizontal: Style.EM(0.25)
@@ -48,7 +48,7 @@ export default StyleSheet.create({
 		height: Style.EM(0.8),
 	},
 	rowPrice: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_15_5,
 		color: AppConst.COLOR_BLUE,
 		textAlign: 'right'
@@ -61,12 +61,12 @@ export default StyleSheet.create({
 		marginTop: Style.EM(1)
 	},
 	totalLabel: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_BLUE
 	},
 	totalValue: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_18,
 		color: AppConst.COLOR_SUCCESS,
 		alignSelf: 'flex-end'

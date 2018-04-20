@@ -1,119 +1,31 @@
-import React, {Component} from 'react';
-import {ActivityIndicator, ListView, Text, View, Image, Dimensions, ScrollView,Linking} from 'react-native';
-import MainStyles from '../../../styles/MainStyles';
-import LocalStyles from './styles/local';
-import * as AppConst from '../../../core/AppConst';
-import ProgressBar from '../../../global/ProgressBar';
-import {FontAwesome,Ionicons} from '@expo/vector-icons';
-import {Container, Content, Card, CardItem, Left, Right, Body, Thumbnail, Spinner, Icon, CardImage} from 'native-base';
+import React, { Component } from 'react';
+import { ScrollView, View, Image } from 'react-native';
+import { AppConst } from '../BaseComponent';
+import ViewStyle from './styles/tournamentStyle';
 
-const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
+import TournamentIcon from '../../../../resources/tournament-icon.png';
+import TournamentIconO from '../../../../resources/tournament-icon-o.png';
+import GolfCourse from '../../../../resources/golf-course.png';
 
-export default class TournamentsScreen extends Component {
-    static navigationOptions = {
-        title: 'TOURNAMENTS',
-        showIcon: true,
-        headerTintColor: AppConst.COLOR_WHITE,
-        headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
-        headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
-        headerLeft: null,
-        tabBarIcon: ({tintColor}) => {
-            return (
-                <Ionicons name="md-trophy" style={[MainStyles.tabBarIcon, {color: tintColor}]} />
-            )
-        },
-        tabBarLabel: 'Tournaments'
-    };
+export default class Tournaments extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isLoading: true,
-            showLoader: true,
-        }
-    }
+	static navigationOptions = {
+		title: "Tournaments",
+		tabBarLabel: 'Tournaments',
+		tabBarIcon: ({tintColor}) => (<Image style={ViewStyle.tabIcon} source={tintColor == AppConst.COLOR_WHITE ? TournamentIcon : TournamentIconO} resizeMode={'contain'} resizeMethod={'resize'} />)
+	};
 
-    renderLoader() {
-        return (
-            this.state.showLoader ? <View><Spinner color="black"/></View> : null
-        )
-    }
+	constructor(props) {
+		super(props);
+	}
 
-    hideLoader() {
-        setTimeout(() => {
-            this.setState({showLoader: false})
-        }, 1);
-    }
-
-    componentDidMount() {
-
-        /*return fetch('https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey=' + AppConst.APIKEYNEWS)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-                let dataSource = ds.cloneWithRows(responseJson.articles);
-
-                this.setState({
-                    isLoading: false,
-                    data: dataSource,
-                }, function () {
-
-                });
-            })
-            .catch((error) => {
-                console.error(error);
-            });*/
-    }
-
-
-    renderCards(data) {
-        // let httpsUrl = data.urlToImage.replace("http", "https");
-        let httpsUrl = data.urlToImage;
-        return (
-            <View>
-                <Card style={LocalStyles.card}>
-                    <CardItem cardBody>
-                        <Image source={{uri: httpsUrl}} style={LocalStyles.gridItemImage}>
-                            <View style={LocalStyles.fixedFooter}>
-                                <FontAwesome name="chain" size={25} color="white" onPress={()=> {
-                                    Linking.canOpenURL(data.url).then(supported => {
-                                        if (!supported) {
-                                            console.log('Can\'t handle url: ' + data.url);
-                                        } else {
-                                            return Linking.openURL(data.url);
-                                        }
-                                    }).catch(err => console.error('An error occurred', err));
-                                }}/>
-                                <Text style={LocalStyles.headline}>{data.title}</Text>
-                                <Text note style={LocalStyles.headline}>{data.author}</Text>
-                            </View>
-                        </Image>
-                    </CardItem>
-                    <CardItem style={LocalStyles.gridItemText}>
-                        <Text style={MainStyles.mediumShankGreenFont}> {data.description}</Text>
-                    </CardItem>
-                </Card>
-            </View>
-        )
-    }
-
-    render() {
-        return (
-            this.state.isLoading ? <View style={LocalStyles.justifyCenterContent}><ProgressBar/></View> :
-                <Container>
-                        <ListView
-                            contentContainerStyle={LocalStyles.listView}
-                            dataSource={this.state.data}
-                            initialListSize={20}
-                            stickyHeaderIndices={[]}
-                            onEndReachedThreshold={1}
-                            scrollRenderAheadDistance={4}
-                            pageSize={20}
-                            renderFooter={(event) => this.renderLoader(event)}
-                            onEndReached={(event) => this.hideLoader(event)}
-                            renderRow={this.renderCards}
-                        />
-                </Container>
-        );
-    }
+	render() {
+		return (
+			<ScrollView contentContainerStyle={{flex: 1, alignItems: 'flex-start'}}>
+				<Image style={{flex: 1, width: '100%'}} source={GolfCourse} resizeMode={'contain'} resizeMethod={'resize'}>
+					
+				</Image>
+			</ScrollView>
+		);
+	}
 }

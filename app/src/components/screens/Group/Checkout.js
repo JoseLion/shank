@@ -1,12 +1,13 @@
 // React components:
 import React from 'react';
-import { ScrollView, Text, TouchableOpacity, View, Image, Platform } from 'react-native';
-import { List } from 'react-native-elements';
+import { ScrollView, Text, TouchableOpacity, View, Image, Platform, AlertIOS, Alert } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
+import InAppBilling from 'react-native-billing';
+import InAppHelper from 'InAppHelper';
 
 // Shank components:
-import { BaseComponent, BaseModel, MainStyles, AppConst } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, IsAndroid } from '../BaseComponent';
 import ViewStyle from './styles/checkoutStyle';
 
 // Images
@@ -18,10 +19,7 @@ export default class Checkout extends BaseComponent {
 
 	constructor(props) {
 		super(props);
-		this.itemSkus = Platform.select({
-			ios: ['com.levelap.shank'],
-			android: ['']
-		});
+		this.product = {};
 		this.movements = 0;
 		this.playerWasChanged = this.playerWasChanged.bind(this);
 		this.saveAndPay = this.saveAndPay.bind(this);
@@ -30,7 +28,8 @@ export default class Checkout extends BaseComponent {
 			isLoading: false,
 			roaster: this.props.navigation.state.params.roaster,
 			originalRoaster: this.props.navigation.state.params.originalRoaster,
-			total: 0
+			priceString: '$0.0',
+			total: 0.0
 		};
 	}
 
@@ -43,19 +42,47 @@ export default class Checkout extends BaseComponent {
 	}
 
 	async saveAndPay() {
-		this.setState({isLoading: true});
-		const body = {
-			originalRoaster: this.state.originalRoaster,
-			roaster: this.state.roaster,
-			round: this.props.navigation.state.params.round,
-			payment: this.state.total,
-			movements: this.movements
-		};
-		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(this.handleError);
+		let wasPaymentSuccessful = false;
 
-		this.props.navigation.state.params.managePlayersCallback(group, false);
-		this.setState({isLoading: false});
-		this.props.navigation.goBack();
+		if (IsAndroid) {
+			await InAppBilling.open().catch(this.handleError);
+			let details = await InAppBilling.purchase(AppConst.SKU.android).catch(error => {
+				Alert.alert('In-app Billing', error.message, [{text: 'OK'}]);
+			});
+
+			if (details != null && details.purchaseState === 'PurchasedSuccessfully') {
+				wasPaymentSuccessful = await InAppBilling.consumePurchase(AppConst.SKU.android).catch(error => {
+					Alert.alert('In-app Billing', error.message, [{text: 'OK'}]);
+				});
+			}
+
+			await InAppBilling.close().catch(this.handleError);
+		} else {
+			const response = await InAppHelper.purchaseProduct(this.product.identifier).catch(error => {
+				AlertIOS.alert("In-app Purchase", error.message);
+			});
+
+			if (response && response.productIdentifier) {
+				wasPaymentSuccessful = true;
+				AlertIOS.alert('Success!', 'Purchase successfull');
+			}
+		}
+
+		if (wasPaymentSuccessful) {
+			this.setState({isLoading: true});
+			const body = {
+				originalRoaster: this.state.originalRoaster,
+				roaster: this.state.roaster,
+				round: this.props.navigation.state.params.round,
+				payment: this.state.total,
+				movements: this.movements
+			};
+			const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(this.handleError);
+
+			this.props.navigation.state.params.managePlayersCallback(group, false);
+			this.setState({isLoading: false});
+			this.props.navigation.goBack();
+		}
 	}
 
 	handleError(error) {
@@ -64,16 +91,45 @@ export default class Checkout extends BaseComponent {
 	}
 
 	async componentDidMount() {
-		let finalCost = 0.0;
+		let price = 0.0;
+		let total = this.state.total;
+		let priceString = this.state.priceString;
+
+		if (IsAndroid) {
+			await InAppBilling.open().catch(this.handleError);
+			this.product = await InAppBilling.getProductDetails(AppConst.SKU.android).catch(error => {
+				return Alert.alert("In-app Billing", error, [{text: "OK", onPress: () => this.props.navigation.goBack(null)}], {cancelable: false});
+			});
+
+			price = this.product.priceValue;
+			priceString = this.product.priceText;
+			await InAppBilling.close().catch(this.handleError);
+		} else {
+			const canPay = await InAppHelper.canMakePayments();
+
+			if (canPay) {
+				const productArray = await InAppHelper.loadProducts(AppConst.SKU.ios).catch(error => {
+					return AlertIOS.alert("In-app Purchase", error.message, () => this.props.navigation.goBack(null));
+				});
+
+				if (productArray == null || productArray.length <= 0) {
+					return AlertIOS.alert("In-app Purchase", "The product couldn't be found in the AppStore", () => this.props.navigation.goBack(null));
+				}
+
+				this.product = productArray[0];
+				price = this.product.price;
+				priceString = this.product.priceString;
+			}
+		}
 
 		for (let i = 0; i < this.state.roaster.length; i++) {
 			if (this.playerWasChanged(i)) {
 				this.movements++;
-				finalCost += 1.99;
+				total += price;
 			}
 		}
 
-		this.setState({total: finalCost});
+		this.setState({ priceString, total });
 	}
 
 	render() {
@@ -97,7 +153,7 @@ export default class Checkout extends BaseComponent {
 
 								<Text style={[ViewStyle.rowName, {flex: 6}]} numberOfLines={1}>{this.state.originalRoaster[index].player ? (this.state.originalRoaster[index].player.firstName + ' ' + this.state.originalRoaster[index].player.lastName) : 'Empty Slot'}</Text>
 
-								<Text style={[ViewStyle.rowPrice, {flex: 2.5}]} numberOfLines={1}>{this.playerWasChanged(index) ? '$1.99' : null}</Text>
+								<Text style={[ViewStyle.rowPrice, {flex: 2.5}]} numberOfLines={1}>{this.playerWasChanged(index) ? this.state.priceString : null}</Text>
 							</View>
 						);
 					})}
@@ -109,7 +165,7 @@ export default class Checkout extends BaseComponent {
 					</View>
 
 					<View style={[ViewStyle.buttonsView]}>
-						<TouchableOpacity style={[MainStyles.button, MainStyles.primary, {flex: 1, marginRight: '1%'}]} onPress={() => { this.props.navigation.goBack(null); }}>
+						<TouchableOpacity style={[MainStyles.button, MainStyles.primary, {flex: 1, marginRight: '1%'}]} onPress={() => this.props.navigation.goBack(null)}>
 							<Text style={MainStyles.buttonText}>Keep Changing</Text>
 						</TouchableOpacity>
 

@@ -1,19 +1,17 @@
 // React components:
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, Text, View, TouchableHighlight, AsyncStorage } from 'react-native';
+import { TouchableOpacity, Text, View, Image, TouchableHighlight, AsyncStorage, FlatList } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import SortableListView from 'react-native-sortable-listview'
-
-// Third party components:
-import { FontAwesome } from '@expo/vector-icons';
 
 // Shank components:
-import NoAuthModel from '../../../core/NoAuthModel';
-import MainStyles from '../../../styles/MainStyles';
+import NoAuthModel from 'NoAuthModel';
+import MainStyles from 'MainStyles';
 import LocalStyles from './styles/local';
-import * as AppConst from '../../../core/AppConst';
-import * as BarMessages from '../../../core/BarMessages';
+import * as AppConst from 'AppConst';
+import * as BarMessages from 'BarMessages';
+
+import RighCaret from '../../../../resources/right-caret-icon.png';
 
 const DismissKeyboardView = AppConst.DismissKeyboardHOC(View);
 
@@ -28,7 +26,7 @@ class RowComponent extends React.Component {
 			<TouchableHighlight onPress={this.props.data.action} style={{flex: 1, padding: 20, backgroundColor: '#ffffff', borderBottomWidth: 0, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
 				<View style={{ flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
 					<Text>{this.props.data.name}</Text>
-					<FontAwesome name="chevron-right" size={29} />
+					<Image style={{width: 25, height: 25}} source={RighCaret} resizeMode="contain" resizeMethod={'resize'} />
 				</View>
 			</TouchableHighlight>
 		);
@@ -95,7 +93,7 @@ export default class Settings extends Component {
 			<View style={{backgroundColor: '#FFFFFF', flex:1, width:'100%'}}>
 				<Spinner visible={this.state.loading} animation="fade"/>
 				
-				<SortableListView style={{flex: 1, marginBottom: '5%'}} data={this.state.data} renderRow= { (row) => <RowComponent data={row} navigation={navigation}/> }/>
+				<FlatList style={{flex: 1, marginBottom: '5%'}} data={this.state.data} keyExtractor={item => item.name} renderItem={({item}) => <RowComponent data={item} navigation={navigation}/> }/>
 
 				<TouchableOpacity onPress={() => this.doLogOut()} style={[{ width: '80%' }, MainStyles.button, MainStyles.error]}>
 					<Text style={MainStyles.buttonText}>Log Out</Text>

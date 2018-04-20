@@ -51,3 +51,9 @@ fabric.properties
 
 # *.iml
 # modules.xml
+
+# Visual Studio AppCode
+.vscode
+
+# Android APKs
+/app/android/.apk

@@ -1,26 +1,4 @@
 {
-  "expo": {
-    "name": "Shank",
-    "icon": "resources/shank_logo_bg.png",
-    "version": "1.0.3",
-    "slug": "Shank",
-    "sdkVersion": "25.0.0",
-    "orientation": "portrait",
-    "scheme": "shank",
-    "facebookScheme": "fb1840743005946613",
-    //"facebookAppId": "1840743005946613",
-    //"facebookDisplayName": "Shank",
-    "ios": {
-      "bundleIdentifier": "com.levelap.shank",
-      "buildNumber" : "1.0.4"
-    },
-    "android": {
-      "package": "com.levelap.shank",
-      "versionCode": 12
-    },
-    "androidStatusBar": {
-      "barStyle": "light-content",
-      "backgroundColor": "#53627c"
-    }
-  }
+  "name": "Shank",
+  "displayName": "Shank"
 }

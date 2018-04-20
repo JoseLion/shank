@@ -1,33 +1,20 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, TouchableOpacity, Image, TextInput, TouchableHighlight, Alert} from 'react-native';
-import MainStyles from '../../../styles/MainStyles';
+import MainStyles from 'MainStyles';
 import LocalStyles from './styles/local'
-import { FontAwesome } from '@expo/vector-icons';
-import BaseModel from '../../../core/BaseModel';
-import Notifier from '../../../core/Notifier';
+import BaseModel from 'BaseModel';
+import Notifier from 'Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {ImagePicker} from 'expo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import * as AppConst from '../../../core/AppConst';
-import * as BarMessages from '../../../core/BarMessages';
+import * as AppConst from 'AppConst';
+import * as BarMessages from 'BarMessages';
 import LoadingIndicator from '../../common/LoadingIndicator';
 import { Host } from '../../../config/variables';
 import { BaseComponent } from '../BaseComponent';
 
 export default class ProfileScreen extends BaseComponent {
-	static navigationOptions = ({navigation}) => ({
-		title: 'User Profile',
-		headerTintColor: AppConst.COLOR_WHITE,
-		headerTitleStyle: {alignSelf: 'center', color: AppConst.COLOR_WHITE},
-		headerStyle: { backgroundColor: AppConst.COLOR_BLUE },
-		headerLeft: (
-			<TouchableHighlight onPress={() => navigation.dispatch({type: 'Settings'})}>
-				<FontAwesome name='chevron-left' style={MainStyles.headerIconButton} />
-			</TouchableHighlight>
-		),
-		headerRight: (<View></View>)
-	});
+	static navigationOptions = {title: 'User Profile'};
 
 	constructor(props) {
 		super(props);
@@ -117,25 +104,25 @@ export default class ProfileScreen extends BaseComponent {
 	}
 
 	async _pickImage() {
-		let result = await ImagePicker.launchImageLibraryAsync({
+		/*let result = await ImagePicker.launchImageLibraryAsync({
 			allowsEditing: true,
 			aspect: [4, 3],
 		});
 
 		if (!result.cancelled) {
 			this.setState({userImage: result.uri});
-		}
+		}*/
 	};
 
 	async _takePicture() {
-		let result = await ImagePicker.launchCameraAsync({
+		/*let result = await ImagePicker.launchCameraAsync({
 			allowsEditing: true,
 			aspect: [4, 3],
 		});
 
 		if (!result.cancelled) {
 			this.setState({userImage: result.uri});
-		}
+		}*/
 	}
 
 	componentDidMount() {

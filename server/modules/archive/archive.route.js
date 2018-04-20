@@ -8,7 +8,7 @@ const router = express.Router();
 
 export default function(app) {
 	router.get(`${basePath}/download/:id`, async (request, response) => {
-		if (request.params.id != null) {
+		if (request.params.id != null && request.params.id != 'undefined') {
 			let archive = await Archive.findOne({_id: request.params.id}).catch(handleMongoError);
 
 			if (archive != null) {

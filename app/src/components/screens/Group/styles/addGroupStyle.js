@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import Style from '../../../../styles/Stylesheet';
-import * as AppConst from '../../../../core/AppConst';
+import Style from 'ShankStyle';
+import * as AppConst from 'AppConst';
 
 export default StyleSheet.create({
 	mainContainer: {
@@ -19,7 +19,7 @@ export default StyleSheet.create({
 		marginBottom: Style.EM(0.5)
 	},
 	imageText: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_14,
 		color: AppConst.COLOR_GRAY
 	},
@@ -28,7 +28,7 @@ export default StyleSheet.create({
 		padding: Style.EM(1),
 		borderWidth: 1,
 		borderColor: AppConst.COLOR_GRAY,
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_16
 	},
 	pickerView: {
@@ -42,7 +42,7 @@ export default StyleSheet.create({
 		padding: Style.EM(0.5)
 	},
 	pickerText: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_16
 	},
 	betInput: {
@@ -53,7 +53,7 @@ export default StyleSheet.create({
 		borderWidth: 1,
 		borderColor: AppConst.COLOR_GRAY,
 		borderTopWidth: 0,
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_16
 	}
 });

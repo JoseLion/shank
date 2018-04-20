@@ -1,15 +1,16 @@
 // React components:
 import React from 'react';
 import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View, Linking } from 'react-native';
-import { Constants } from 'expo';
-import { Avatar, List } from 'react-native-elements';
 import Swipeable from 'react-native-swipeable';
 
 // Shank components:
-import { BarMessages, BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, Entypo, FontAwesome, GolfApiModel, MainStyles, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, MainStyles, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
-
+import PlusIcon from '../../../../resources/plus-icon.png';
+import UserIcon from '../../../../resources/user-icon.png';
+import GroupIcon from '../../../../resources/group-icon.png';
+import GroupIconO from '../../../../resources/group-icon-o.png';
 import RightCaretIcon from '../../../../resources/right-caret-icon.png';
 
 export default class MainScreen extends BaseComponent {
@@ -27,17 +28,16 @@ export default class MainScreen extends BaseComponent {
 			title: 'GROUPS',
 			headerLeft: (
 				<TouchableOpacity style={[ViewStyle.navButton]} onPress={() => goToScreen('AddGroup')}>
-					<Image source={require('../../../../resources/plus-icon.png')} resizeMode={'contain'} style={[ViewStyle.navPlusIcon]}></Image>
+					<Image style={ViewStyle.navPlusIcon} source={PlusIcon} resizeMode={'contain'} resizeMethod={'resize'} />
 				</TouchableOpacity>
 			),
 			headerRight: (
 				<TouchableOpacity style={[ViewStyle.navButton]} onPress={() => goToScreen('Settings')}>
-					<Image source={require('../../../../resources/user-icon.png')} resizeMode={'contain'} style={[ViewStyle.navUserIcon]}></Image>
+					<Image style={ViewStyle.navUserIcon} source={UserIcon} resizeMode={'contain'} resizeMethod={'resize'} />
 				</TouchableOpacity>
 			),
-			showIcon: true,
 			tabBarLabel: 'Groups',
-			tabBarIcon: ({tintColor}) => (<Entypo name='users' style={[MainStyles.tabBarIcon, {color: tintColor}]} />)
+			tabBarIcon: ({tintColor}) => (<Image style={ViewStyle.tabIcon} source={tintColor == AppConst.COLOR_WHITE ? GroupIcon : GroupIconO} resizeMode={'contain'} resizeMethod={'resize'} />)
 		};
 	};
 
@@ -93,7 +93,7 @@ export default class MainScreen extends BaseComponent {
 	getRemoveButton(group) {
 		return [(
 			<TouchableHighlight style={{backgroundColor: AppConst.COLOR_RED, height: '100%', justifyContent: 'center'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.removeGroup(group)}>
-				<Text style={{fontFamily: 'century-gothic', fontSize: Style.FONT_17, color: AppConst.COLOR_WHITE, marginHorizontal: '5%'}}>Remove</Text>
+				<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_17, color: AppConst.COLOR_WHITE, marginHorizontal: '5%'}}>Remove</Text>
 			</TouchableHighlight>
 		)];
 	}
@@ -136,20 +136,47 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	async componentDidMount() {
+		/*const { NativeModules } = await import('react-native');
+		const { InAppUtils } = NativeModules;
+
+		const canPay = await InAppUtils.canMakePayments(canPay => {
+			if (canPay) {
+				InAppUtils.loadProducts([AppConst.SKU.ios], (error, products) => {
+					if (error) {
+						console.log("ERROR: ", error);
+						return;
+					}
+
+					console.log("products: ", products);
+
+					InAppUtils.purchaseProduct(AppConst.SKU.ios, (error, response) => {
+						if (error) {
+							console.log("ERROR: ", error);
+							return;
+						}
+						
+						if (response && response.productIdentifier) {
+							console.log("PURCHASE SUCCESSFUL!!!");
+						}
+					});
+				});
+			}
+		});*/
+
+
+
 		const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 		this.setState({ auth });
 		
-		this.props.navigation.addListener('didFocus', async payload => {
+		this.didFocusListener = this.props.navigation.addListener('didFocus', async payload => {
 			if (this.state.auth) {
 				this.getGroups();
-				this.setState({isLoading: false});
 			} else {
 				const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 				this.setState({ auth });
 
 				if (this.state.auth) {
 					this.getGroups();
-					this.setState({isLoading: false});
 				} else {
 					this.props.navigation.navigate('Login');
 				}
@@ -166,7 +193,7 @@ export default class MainScreen extends BaseComponent {
 			let self = this;
 
 			Linking.addEventListener('url', async function(url) {
-				let queryString = url.url.replace(Constants.linkingUri, '');
+				let queryString = url.url.replace(AppConst.LINKING_URI, '');
 
 				if (queryString) {
 					let data = qs.parse(queryString);
@@ -185,7 +212,7 @@ export default class MainScreen extends BaseComponent {
 
 			Linking.getInitialURL().then(async function(url) {
 				if (url) {
-					let queryString = url.replace(Constants.linkingUri, '');
+					let queryString = url.replace(AppConst.LINKING_URI, '');
 					
 					if (queryString) {
 						let data = qs.parse(queryString);
@@ -209,6 +236,7 @@ export default class MainScreen extends BaseComponent {
 
 	componentWillUnmount() {
 		Linking.removeEventListener('url', e => {});
+		this.didFocusListener.remove();
 	}
 
 

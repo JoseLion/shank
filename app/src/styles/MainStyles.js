@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import Style from './Stylesheet';
-import * as AppConst from '../core/AppConst';
+import Style from 'ShankStyle';
+import * as AppConst from 'AppConst';
 
 const width = Dimensions.get('window').width;
 
@@ -13,7 +13,7 @@ export default MainStyles = StyleSheet.create({
         width: '100%'
     },
     buttonText: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         color: AppConst.COLOR_WHITE,
         fontSize: Style.EM(1)
     },
@@ -96,7 +96,7 @@ export default MainStyles = StyleSheet.create({
         paddingTop: Style.EM(0.5)
     },
     buttonText: {
-        fontFamily: 'century-gothic',
+        fontFamily: Style.CENTURY_GOTHIC,
         color: AppConst.COLOR_WHITE,
         fontSize: Style.EM(1)
     },

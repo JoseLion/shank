@@ -1,8 +1,6 @@
-import {Dimensions, StyleSheet} from 'react-native';
-import * as AppConst from '../../../../core/AppConst';
-import Style from '../../../../styles/Stylesheet';
-
-const width = Dimensions.get('window').width;
+import { StyleSheet } from 'react-native';
+import * as AppConst from 'AppConst';
+import Style from 'ShankStyle';
 
 export default StyleSheet.create({
 	navButton: {
@@ -18,6 +16,10 @@ export default StyleSheet.create({
 	navUserIcon: {
 		width: Style.EM(1.5),
 		height: Style.EM(1.5)
+	},
+	tabIcon: {
+		width: '100%',
+		height: '100%'
 	},
 	mainContainer: {
 		flex: 1,
@@ -55,13 +57,13 @@ export default StyleSheet.create({
 		height: '100%'
 	},
 	groupName: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_17,
 		color: AppConst.COLOR_GREEN,
 		letterSpacing: Style.EM(0.25)
 	},
 	groupTournament: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_GRAY
 	},
@@ -76,13 +78,13 @@ export default StyleSheet.create({
 		alignItems: 'center'
 	},
 	groupStatsLabel: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_GRAY,
 		marginRight: '3%'
 	},
 	groupStatsValue: {
-		fontFamily: 'century-gothic',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_GRAY
 	},
@@ -98,7 +100,7 @@ export default StyleSheet.create({
 		height: '100%'
 	},
 	noDataText: {
-		fontFamily: 'century-gothic-bold',
+		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_16,
 		color: AppConst.COLOR_GRAY,
 		textAlign: 'center'

@@ -1,15 +1,14 @@
 // React components:
 import React from 'react';
 import { Text, TouchableHighlight, TouchableOpacity, View, TextInput, Image, FlatList } from 'react-native';
-import { Avatar } from 'react-native-elements';
-import SortableListView from 'react-native-sortable-listview';
 import DropdownAlert from 'react-native-dropdownalert';
 
 // Shank components
-import { BaseComponent, BaseModel, GolfApiModel, MainStyles, AppConst, BarMessages, FontAwesome, Entypo, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/playerSelectionStyle';
 
 // Images
+import SearchIcon from '../../../../resources/search-icon.png';
 import CheckWhiteIcon from '../../../../resources/check-white-icon.png';
 import CheckGreenIcon from '../../../../resources/check-green-icon.png';
 
@@ -81,7 +80,7 @@ export default class PlayerSelection extends BaseComponent {
 				headerTitleStyle: null,
 				headerLeft: (
 					<View style={[ViewStyle.searchInputView]}>
-						<Image source={require('../../../../resources/search-icon.png')} resizeMode="contain" resizeMethod={'resize'} style={[ViewStyle.searchIcon]}></Image>
+						<Image source={SearchIcon} resizeMode="contain" resizeMethod={'resize'} style={[ViewStyle.searchIcon]}></Image>
 						<TextInput style={[ViewStyle.searchInput]} underlineColorAndroid="transparent" placeholderTextColor="#FFF" placeholder={'Search Players'} clearButtonMode="always" onChangeText={navigation.state.params.searchChanged}></TextInput>
 					</View>
 				),
@@ -99,7 +98,7 @@ export default class PlayerSelection extends BaseComponent {
 				title: 'CHOOSE PLAYER',
 				headerRight: (
 					<TouchableOpacity style={[MainStyles.headerIconButtonContainer]} onPress={() => navigation.setParams({isSearching: true})}>
-						<FontAwesome name='search' style={[MainStyles.headerIconButton]} />
+						<Image style={ViewStyle.searchButton} source={SearchIcon} resizeMode="contain" resizeMethod={'resize'} />
 					</TouchableOpacity>
 				)
 			};
@@ -178,7 +177,7 @@ export default class PlayerSelection extends BaseComponent {
 	}
 
 	async done() {
-		if (this.hasTournamentBegan()) {
+		if (this.hasTournamentBegan() && !this.state.group.tournaments[this.state.tournamentIndex].isRoasterEmpty) {
 			this.props.navigation.state.params.managePlayersCallback(this.roaster, true);
 			this.props.navigation.goBack();
 		} else {

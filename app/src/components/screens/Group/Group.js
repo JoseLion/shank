@@ -1,7 +1,6 @@
 // React components:
 import React, { Component } from 'react';
 import { Text, View, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, Share, AsyncStorage, Animated, Easing, Alert } from 'react-native';
-import SortableListView from 'react-native-sortable-listview'
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -9,9 +8,12 @@ import ActionSheet from 'react-native-actionsheet';
 import SortableList from 'react-native-sortable-list';
 
 // Shank components:
-import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, FontAwesome, isAndroid, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, IsAndroid, Spinner } from '../BaseComponent';
 import { ClienHost } from '../../../config/variables';
+import Style from 'ShankStyle';
 import ViewStyle from './styles/groupStyle';
+
+import DownCaretIcon from '../../../../resources/down-caret-icon.png';
 
 class RoasterRow extends Component {
 
@@ -23,7 +25,7 @@ class RoasterRow extends Component {
 	}
 
 	animateCell() {
-		if (!this.props.hideSortBars) {
+		if (this.props.isEditable) {
 			const {pan} = this.swipe.state;
 
 			this.setState({
@@ -89,7 +91,7 @@ class RoasterRow extends Component {
 							</View>
 						</View>
 
-						{!this.props.hideSortBars ?
+						{this.props.isEditable ?
 							<View style={{flex: 1}}>
 								<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
 							</View>
@@ -98,15 +100,15 @@ class RoasterRow extends Component {
 				</TouchableHighlight>
 			);
 
-			if (this.props.hideSortBars) {
-				return (
-					<View>{row}</View>
-				);
-			} else {
+			if (this.props.isEditable) {
 				return (
 					<Swipeable rightButtons={changeButton} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
 						{row}
 					</Swipeable>
+				);
+			} else {
+				return (
+					<View>{row}</View>
 				);
 			}
 		} else {
@@ -200,7 +202,7 @@ class LeaderboardRow extends Component {
 	}
 
 	getLeaderboardRow(item) {
-		let nameFont = item.user ? 'century-gothic-bold' : 'century-gothic';
+		let nameFont = item.user ? Style.CENTURY_GOTHIC_BOLD : Style.CENTURY_GOTHIC;
 		return (
 			<TouchableHighlight style={{flex: 1, paddingHorizontal: '10%'}} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => { if (!item.user) this.props.inviteToJoin(); }}>
 				<View style={[ViewStyle.leaderboardRow]}>
@@ -257,6 +259,7 @@ export default class Group extends BaseComponent {
 		this.shouldShowCheckout = this.shouldShowCheckout.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
 		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
+		this.isRoundOnCourse = this.isRoundOnCourse.bind(this);
 		this.handleError = this.handleError.bind(this);
 		this.state = {
 			isLoading: false,
@@ -275,6 +278,8 @@ export default class Group extends BaseComponent {
 
 			group.tournaments[this.state.tournamentIndex].leaderboard.forEach((cross, i) => {
 				if (cross.roaster.length == 0) {
+					cross.isRoasterEmpty = true;
+
 					for (let i = -1; i >= -5; i--) {
 						cross.roaster.push({_id: i});
 					}
@@ -336,7 +341,7 @@ export default class Group extends BaseComponent {
 
 	showActionSheet() {
 		if (this.state.group.tournaments) {
-			if (isAndroid) {
+			if (IsAndroid) {
 				this.actionSheet.show();
 			} else {
 				ActionSheetIOS.showActionSheetWithOptions({options: this.state.sheetNames, cancelButtonIndex: this.state.sheetNames.length}, this.tournamentSelected);
@@ -405,7 +410,7 @@ export default class Group extends BaseComponent {
 			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
 			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
 
-			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime()) {
+			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime() && !this.state.group.tournaments[this.state.tournamentIndex].isRoasterEmpty) {
 				for (let i = 0; i < this.state.userRoaster.length; i++) {
 					if (this.state.userRoaster[i]._id != this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[i]._id) {
 						hasChanged = true;
@@ -453,6 +458,23 @@ export default class Group extends BaseComponent {
 
 		return false;
 	}
+
+	isRoundOnCourse() {
+		if (this.state.group && this.state.group.tournaments) {
+			const today = new Date();
+			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
+			const time = (today.getHours() * 60 * 60) + (today.getMinutes() * 60) + today.getSeconds;
+			const startTime = (startDate.getHours() * 60 * 60) + (startDate.getMinutes() * 60) + startDate.getSeconds;
+			const endTime = (endDate.getHours() * 60 * 60) + (endDate.getMinutes() * 60) + endDate.getSeconds;
+
+			if (time >= startTime && time <= endTime) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 	
 	handleError(error) {
 		this.setState({isLoading: false});
@@ -483,7 +505,7 @@ export default class Group extends BaseComponent {
 					<View style={[ViewStyle.groupInformation]}>
 						<Image source={{uri: FileHost + this.state.group.photo}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.groupImage} />
 
-						<View style={[ViewStyle.groupHeader]}>
+						<View style={ViewStyle.groupHeader}>
 							<View>
 								<Text style={[ViewStyle.groupNameText]}>{this.state.group.name}</Text>
 							</View>
@@ -492,12 +514,12 @@ export default class Group extends BaseComponent {
 							<TouchableOpacity underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
 								<View style={{flexDirection: 'row', alignItems: 'center'}}>
 									<Text style={[ViewStyle.tournamentNameText]} numberOfLines={1}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
-									<FontAwesome name="chevron-down" />
+									<Image style={ViewStyle.caretDown} source={DownCaretIcon} resizeMode={'contain'} resizeMethod={'resize'} />
 								</View>
 							</TouchableOpacity>
 						</View>
 
-						<View style={{flex:2}}>
+						<View style={{flex: 2}}>
 							{this.state.group.owner == this.state.currentUser._id ?
 								<TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
 									<Text style={MainStyles.buttonText}>Invite</Text>
@@ -536,14 +558,14 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Leaderboard' style={[ViewStyle.tabViewContainer]}>
 							<Text style={[ViewStyle.rankColumnText]}>Rank</Text>
 							
-							<FlatList data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard} keyExtractor={item => item._id} renderItem={({item}) => (<LeaderboardRow item={item} group={this.state.group} currentUser={this.state.currentUser} inviteToJoin={this.inviteToJoin} onRemove={this.removeUserFromGroup} />)} />
+							<FlatList data={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard} keyExtractor={item => "key_" + item._id} renderItem={({item}) => (<LeaderboardRow item={item} group={this.state.group} currentUser={this.state.currentUser} inviteToJoin={this.inviteToJoin} onRemove={this.removeUserFromGroup} />)} />
 						</View>
 
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
 							<RoundLabels tournament={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament} />
 
-							<SortableList style={{flex: 1}} sortingEnabled={this.isBeforeEndDate()} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []} renderRow={({data, index}) => (
-								<RoasterRow roaster={data} rowId={index} hideSortBars={!this.isBeforeEndDate()} onPress={() => this.managePlayers(data, index)} />
+							<SortableList style={{flex: 1}} sortingEnabled={this.isBeforeEndDate() && !this.isRoundOnCourse()} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []} renderRow={({data, index}) => (
+								<RoasterRow roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />
 							)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
 								if (this.nextOrder) {
 									let roaster = [];

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import * as AppConst from '../../core/AppConst';
+import * as AppConst from 'AppConst';
 
 class LoadingIndicator extends Component {
   render () {
