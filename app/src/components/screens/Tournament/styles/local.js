@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import Style from '../../../../styles/Stylesheet';
+import Style from 'Stylesheet';
 
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
 

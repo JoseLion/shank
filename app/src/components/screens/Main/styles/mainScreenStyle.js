@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import * as AppConst from '../../../../core/AppConst';
-import Style from '../../../../styles/Stylesheet';
+import * as AppConst from 'AppConst';
+import Style from 'Stylesheet';
 
 export default StyleSheet.create({
 	navButton: {

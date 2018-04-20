@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import Style from '../../../../styles/Stylesheet';
-import * as AppConst from '../../../../core/AppConst';
+import Style from 'Stylesheet';
+import * as AppConst from 'AppConst';
 
 export default StyleSheet.create({
 	mainContainer: {

@@ -10,7 +10,7 @@ import SortableList from 'react-native-sortable-list';
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, IsAndroid, Spinner } from '../BaseComponent';
 import { ClienHost } from '../../../config/variables';
-import Style from '../../../styles/Stylesheet';
+import Style from 'Stylesheet';
 import ViewStyle from './styles/groupStyle';
 
 import DownCaretIcon from '../../../../resources/down-caret-icon.png';

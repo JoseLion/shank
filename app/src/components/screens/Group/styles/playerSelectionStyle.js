@@ -1,6 +1,6 @@
 import { Dimensions, StyleSheet } from 'react-native';
-import Style from '../../../../styles/Stylesheet';
-import * as AppConst from '../../../../core/AppConst';
+import Style from 'Stylesheet';
+import * as AppConst from 'AppConst';
 
 const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;

@@ -5,11 +5,11 @@ import { TouchableOpacity, Text, View, Image, TouchableHighlight, AsyncStorage, 
 import Spinner from 'react-native-loading-spinner-overlay';
 
 // Shank components:
-import NoAuthModel from '../../../core/NoAuthModel';
-import MainStyles from '../../../styles/MainStyles';
+import NoAuthModel from 'NoAuthModel';
+import MainStyles from 'MainStyles';
 import LocalStyles from './styles/local';
-import * as AppConst from '../../../core/AppConst';
-import * as BarMessages from '../../../core/BarMessages';
+import * as AppConst from 'AppConst';
+import * as BarMessages from 'BarMessages';
 
 import RighCaret from '../../../../resources/right-caret-icon.png';
 

@@ -3,6 +3,8 @@ import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View, Image, Platform } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
+import InAppBilling from 'react-native-billing';
+import InAppHelper from 'InAppHelper';
 
 // Shank components:
 import { BaseComponent, BaseModel, MainStyles, AppConst, IsAndroid } from '../BaseComponent';
@@ -17,10 +19,7 @@ export default class Checkout extends BaseComponent {
 
 	constructor(props) {
 		super(props);
-		this.itemSkus = Platform.select({
-			ios: ['com.levelap.shank'],
-			android: ['']
-		});
+		this.product = {};
 		this.movements = 0;
 		this.playerWasChanged = this.playerWasChanged.bind(this);
 		this.saveAndPay = this.saveAndPay.bind(this);
@@ -29,7 +28,8 @@ export default class Checkout extends BaseComponent {
 			isLoading: false,
 			roaster: this.props.navigation.state.params.roaster,
 			originalRoaster: this.props.navigation.state.params.originalRoaster,
-			total: 0
+			priceString: '$0.0',
+			total: 0.0
 		};
 	}
 
@@ -45,7 +45,6 @@ export default class Checkout extends BaseComponent {
 		let wasPaymentSuccessful = false;
 
 		if (IsAndroid) {
-			const InAppBilling = await import('react-native-billing');
 			await InAppBilling.close();
 			await InAppBilling.open().catch(this.handleError);
 			let details = await InAppBilling.purchase(AppConst.SKU.android).catch(this.handleError);
@@ -56,7 +55,7 @@ export default class Checkout extends BaseComponent {
 
 			InAppBilling.close();
 		} else {
-			// TODO: Implement iOS in-app purchase code
+			// TODO: Implement iOS in-app purchase
 		}
 
 
@@ -83,16 +82,32 @@ export default class Checkout extends BaseComponent {
 	}
 
 	async componentDidMount() {
-		let finalCost = 0.0;
+		let price = 0.0;
+		let total = this.state.total;
+		let priceString = this.state.priceString;
+
+		if (IsAndroid) {
+			this.product = await InAppBilling.getProductDetails(AppConst.SKU.android).catch(this.handleError);
+			price = this.product.priceValue;
+			priceString = this.product.priceText;
+		} else {
+			const canPay = await InAppHelper.canMakePayments();
+
+			if (canPay) {
+				this.product = await InAppHelper.loadProducts(AppConst.SKU.ios).catch(this.handleError)[0];
+				price = this.product.price;
+				priceString = this.product.priceString;
+			}
+		}
 
 		for (let i = 0; i < this.state.roaster.length; i++) {
 			if (this.playerWasChanged(i)) {
 				this.movements++;
-				finalCost += 1.99;
+				total += price;
 			}
 		}
 
-		this.setState({total: finalCost});
+		this.setState({ priceString, total });
 	}
 
 	render() {
@@ -116,7 +131,7 @@ export default class Checkout extends BaseComponent {
 
 								<Text style={[ViewStyle.rowName, {flex: 6}]} numberOfLines={1}>{this.state.originalRoaster[index].player ? (this.state.originalRoaster[index].player.firstName + ' ' + this.state.originalRoaster[index].player.lastName) : 'Empty Slot'}</Text>
 
-								<Text style={[ViewStyle.rowPrice, {flex: 2.5}]} numberOfLines={1}>{this.playerWasChanged(index) ? '$1.99' : null}</Text>
+								<Text style={[ViewStyle.rowPrice, {flex: 2.5}]} numberOfLines={1}>{this.playerWasChanged(index) ? this.state.priceString : null}</Text>
 							</View>
 						);
 					})}

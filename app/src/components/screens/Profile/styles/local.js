@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import Style from '../../../../styles/Stylesheet';
+import Style from 'Stylesheet';
 
 const LocalStyles = StyleSheet.create({
     addPhotoLogo: {

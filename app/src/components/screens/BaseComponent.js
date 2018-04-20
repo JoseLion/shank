@@ -5,13 +5,13 @@ import { Platform, Dimensions, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
 
-import NoAuthModel from '../../core/NoAuthModel';
-import BaseModel from '../../core/BaseModel';
+import NoAuthModel from 'NoAuthModel';
+import BaseModel from 'BaseModel';
 import { FileHost } from '../../config/variables';
-import MainStyles from '../../styles/MainStyles';
-import * as AppConst from '../../core/AppConst';
-import * as BarMessages from '../../core/BarMessages';
-import Style from '../../styles/Stylesheet';
+import MainStyles from 'MainStyles';
+import * as AppConst from 'AppConst';
+import * as BarMessages from 'BarMessages';
+import Style from 'Stylesheet';
 
 let IsAndroid = Platform.OS == 'android' ? true : false;
 

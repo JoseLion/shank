@@ -1,7 +1,7 @@
 import { Dimensions, Platform, StyleSheet } from 'react-native';
-import Style from '../../../../styles/Stylesheet';
+import Style from 'Stylesheet';
 
-import * as AppConst from '../../../../core/AppConst';
+import * as AppConst from 'AppConst';
 
 const LocalStyles = StyleSheet.create({
 });
