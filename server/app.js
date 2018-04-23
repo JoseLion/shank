@@ -115,18 +115,20 @@ async function createCrons(id) {
 	const Tournament = mongoose.model('Tournament');
 	const tournament = await Tournament.findOne({tournamentID: id}).catch(handleMongoError);
 
-	tournament.rounds.forEach(round => {
-		new CronJob({
-			cronTime: `0 30 18 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
-			onTick: async function() {
-				await fantasy.updateLeaderboard();
-				AssignPoints(tournament._id, round.number);
-				this.stop();
-			},
-			start: true,
-			timeZone: 'America/Guayaquil'
+	if (tournament) {
+		tournament.rounds.forEach(round => {
+			new CronJob({
+				cronTime: `0 30 18 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
+				onTick: async function() {
+					await fantasy.updateLeaderboard();
+					AssignPoints(tournament._id, round.number);
+					this.stop();
+				},
+				start: true,
+				timeZone: 'America/Guayaquil'
+			});
 		});
-	});
+	}
 }
 
 createCrons(263);
