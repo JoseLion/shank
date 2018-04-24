@@ -314,7 +314,7 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	render() {
-		if (this.state.groups.length > 0) {
+		if (this.state.groups && this.state.groups.length > 0) {
 			return (
 				<View style={ViewStyle.mainContainer}>
 					<Spinner visible={this.state.isLoading} animation='fade' />
