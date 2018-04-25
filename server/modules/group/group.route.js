@@ -81,7 +81,7 @@ export default function(app) {
 			});
 
 			await group.save().catch(handleMongoError);
-			let userGroups = await Group.find({status: true, owner: request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+			const userGroups = await Group.find({status: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
 
 			response.ok(userGroups);
 		} else {
