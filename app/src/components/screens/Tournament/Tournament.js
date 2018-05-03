@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Image } from 'react-native';
+import { ScrollView, View, Image, Text } from 'react-native';
 import { AppConst } from '../BaseComponent';
 import ViewStyle from './styles/tournamentStyle';
+import Style from 'ShankStyle';
 
 import TournamentIcon from '../../../../resources/tournament-icon.png';
 import TournamentIconO from '../../../../resources/tournament-icon-o.png';
@@ -21,10 +22,32 @@ export default class Tournaments extends Component {
 
 	render() {
 		return (
-			<ScrollView contentContainerStyle={{flex: 1, alignItems: 'flex-start'}}>
-				<Image style={{flex: 1, width: '100%'}} source={GolfCourse} resizeMode={'contain'} resizeMethod={'resize'}>
-					
-				</Image>
+			<ScrollView contentContainerStyle={{width: '100%'}}>
+				<View style={{flexDirection: 'row'}}>
+					<Image style={{flex: 1, aspectRatio: 1.75}} source={GolfCourse} resizeMode={'contain'} resizeMethod={'resize'} />
+
+					<View style={{position: 'absolute', bottom: 0, left: 0, width: '100%', height: '100%', justifyContent: "flex-end", paddingHorizontal: '5%'}}>
+						<Text style={{fontFamily: Style.CENTURY_GOTHIC_BOLD, fontSize: Style.FONT_15_5, color: AppConst.COLOR_WHITE}}>OPEN US</Text>
+
+						<View style={{flexDirection: 'row', marginVertical: '2%'}}>
+							<View style={{flex: 2, paddingRight: '1%'}}>
+								<Text style={{fontFamily: Style.CENTURY_GOTHIC_BOLD, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>Course/Location</Text>
+								<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>Augusta National Golf Course</Text>
+								<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>Augusta, Georgia</Text>
+							</View>
+
+							<View style={{flex: 1, paddingLeft: '1%'}}>
+								<Text style={{fontFamily: Style.CENTURY_GOTHIC_BOLD, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>Dates</Text>
+								<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>April 6-9, 2017</Text>
+							</View>
+						</View>
+					</View>
+				</View>
+
+				<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_19, color: AppConst.COLOR_BLUE, paddingVertical: '2%', paddingHorizontal: '5%'}}>Leaderboard</Text>
+				<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_15, color: AppConst.COLOR_BLUE, paddingVertical: '2%', paddingHorizontal: '5%'}}>The tournament hasn't started.</Text>
+
+				
 			</ScrollView>
 		);
 	}

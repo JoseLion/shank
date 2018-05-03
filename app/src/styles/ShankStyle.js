@@ -79,6 +79,7 @@ export default Style = {
     FONT_12: em(0.45),
     FONT_13: em(0.55),
     FONT_14: em(0.70),
+    FONT_14_5: em(0.775),
     FONT_15: em(0.85),
     FONT_15_5: em(0.925),
     FONT_16: em(1),
