@@ -41,7 +41,7 @@ export const TabNav = TabNavigator({
 			backgroundColor: AppConst.COLOR_GRAY
 		},
 		labelStyle: {
-			fontFamily: Style.CENTURY_GOTHIC_BOLD,
+			fontFamily: Style.CENTURY_GOTHIC,
 			fontSize: Style.FONT_15,
 			marginBottom: Style.EM(-0.1)
 		},
