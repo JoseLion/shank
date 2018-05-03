@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Image, Text } from 'react-native';
+import { ScrollView, View, Image, Text, TouchableHighlight } from 'react-native';
 import { AppConst } from '../BaseComponent';
 import ViewStyle from './styles/tournamentStyle';
 import Style from 'ShankStyle';
@@ -21,10 +21,17 @@ export default class Tournaments extends Component {
 	}
 
 	render() {
+		const array = [{_id: 1, name: 'Tournament 1'}, {_id: 2, name: 'Tournament 2'}, {_id: 3, name: 'Tournament 3'}];
+		const grid = array.map(tournament => {
+			return (
+				<TouchableHighlight style={{width: '47,5%', marginLeft: '2,5%'}}></TouchableHighlight>
+			);
+		});
+
 		return (
 			<ScrollView contentContainerStyle={{width: '100%'}}>
 				<View style={{flexDirection: 'row'}}>
-					<Image style={{flex: 1, aspectRatio: 1.75}} source={GolfCourse} resizeMode={'contain'} resizeMethod={'resize'} />
+					<Image style={{flex: 1, aspectRatio: 1280/720}} source={GolfCourse} resizeMode={'contain'} resizeMethod={'resize'} />
 
 					<View style={{position: 'absolute', bottom: 0, left: 0, width: '100%', height: '100%', justifyContent: "flex-end", paddingHorizontal: '5%'}}>
 						<Text style={{fontFamily: Style.CENTURY_GOTHIC_BOLD, fontSize: Style.FONT_15_5, color: AppConst.COLOR_WHITE}}>OPEN US</Text>
@@ -47,7 +54,8 @@ export default class Tournaments extends Component {
 				<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_19, color: AppConst.COLOR_BLUE, paddingVertical: '2%', paddingHorizontal: '5%'}}>Leaderboard</Text>
 				<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_15, color: AppConst.COLOR_BLUE, paddingVertical: '2%', paddingHorizontal: '5%'}}>The tournament hasn't started.</Text>
 
-				
+				<View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+				</View>
 			</ScrollView>
 		);
 	}

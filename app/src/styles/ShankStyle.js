@@ -141,8 +141,8 @@ export default Style = {
     INPUT_MULTILINE_INSIDE_BUBBLE: Platform.OS == 'android' ? em(5) : em(3),
 
     //FONTS
-    CENTURY_GOTHIC: 'CenturyGothic',
-    CENTURY_GOTHIC_BOLD: 'CenturyGothic-Bold',
-    CENTURY_GOTHIC_ITALIC: 'CenturyGothic-Italic',
-    CENTURY_GOTHIC_BOLD_ITALIC: 'CenturyGothic-BoldItalic'
+    CENTURY_GOTHIC: Platform.OS == 'ios' ? 'CenturyGothic' : 'century-gothic',
+    CENTURY_GOTHIC_BOLD: Platform.OS == 'ios' ? 'CenturyGothic-Bold' : 'century-gothic-bold',
+    CENTURY_GOTHIC_ITALIC: Platform.OS == 'ios' ? 'CenturyGothic-Italic' : 'century-gothic-italic',
+    CENTURY_GOTHIC_BOLD_ITALIC: Platform.OS == 'ios' ? 'CenturyGothic-BoldItalic' : 'century-gothic-bold-italic'
 };
