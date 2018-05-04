@@ -46,12 +46,12 @@ export default class Checkout extends BaseComponent {
 
 		if (IsAndroid) {
 			await InAppBilling.open().catch(this.handleError);
-			let details = await InAppBilling.purchase(AppConst.SKU.android).catch(error => {
+			let details = await InAppBilling.purchase(AppConst.SKUS[this.movements-1]).catch(error => {
 				Alert.alert('In-app Billing', error.message, [{text: 'OK'}]);
 			});
 
 			if (details != null && details.purchaseState === 'PurchasedSuccessfully') {
-				wasPaymentSuccessful = await InAppBilling.consumePurchase(AppConst.SKU.android).catch(error => {
+				wasPaymentSuccessful = await InAppBilling.consumePurchase(AppConst.SKUS[this.movements-1]).catch(error => {
 					Alert.alert('In-app Billing', error.message, [{text: 'OK'}]);
 				});
 			}
@@ -91,24 +91,24 @@ export default class Checkout extends BaseComponent {
 	}
 
 	async componentDidMount() {
-		let price = 0.0;
-		let total = this.state.total;
-		let priceString = this.state.priceString;
+		for (let i = 0; i < this.state.roaster.length; i++) {
+			if (this.playerWasChanged(i)) {
+				this.movements++;
+			}
+		}
 
 		if (IsAndroid) {
 			await InAppBilling.open().catch(this.handleError);
-			this.product = await InAppBilling.getProductDetails(AppConst.SKU.android).catch(error => {
+			this.product = await InAppBilling.getProductDetails(AppConst.SKUS[this.movements-1]).catch(error => {
 				return Alert.alert("In-app Billing", error, [{text: "OK", onPress: () => this.props.navigation.goBack(null)}], {cancelable: false});
 			});
-
-			price = this.product.priceValue;
-			priceString = this.product.priceText;
 			await InAppBilling.close().catch(this.handleError);
+			this.setState({priceString: this.product.priceText, total: this.product.priceValue});
 		} else {
 			const canPay = await InAppHelper.canMakePayments();
 
 			if (canPay) {
-				const productArray = await InAppHelper.loadProducts(AppConst.SKU.ios).catch(error => {
+				const productArray = await InAppHelper.loadProducts(AppConst.SKUS).catch(error => {
 					return AlertIOS.alert("In-app Purchase", error.message, () => this.props.navigation.goBack(null));
 				});
 
@@ -116,20 +116,10 @@ export default class Checkout extends BaseComponent {
 					return AlertIOS.alert("In-app Purchase", "The product couldn't be found in the AppStore", () => this.props.navigation.goBack(null));
 				}
 
-				this.product = productArray[0];
-				price = this.product.price;
-				priceString = this.product.priceString;
+				this.product = productArray[this.movements-1];
+				this.setState({priceString: this.product.priceString, total: this.product.price});
 			}
 		}
-
-		for (let i = 0; i < this.state.roaster.length; i++) {
-			if (this.playerWasChanged(i)) {
-				this.movements++;
-				total += price;
-			}
-		}
-
-		this.setState({ priceString, total });
 	}
 
 	render() {
