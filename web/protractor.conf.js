@@ -1,28 +1,27 @@
-// Protractor configuration file, see link for more information
-// https://github.com/angular/protractor/blob/master/lib/config.ts
+'use strict';
 
-const { SpecReporter } = require('jasmine-spec-reporter');
+var paths = require('./.yo-rc.json')['generator-gulp-angular'].props.paths;
 
+// An example configuration file.
 exports.config = {
-    allScriptsTimeout: 11000,
-    specs: [
-        './e2e/**/*.e2e-spec.ts'
-    ],
-    capabilities: {
-        'browserName': 'chrome'
-    },
-    directConnect: true,
-    baseUrl: 'http://localhost:4200/',
-    framework: 'jasmine',
-    jasmineNodeOpts: {
-        showColors: true,
-        defaultTimeoutInterval: 30000,
-        print: function() {}
-    },
-    onPrepare() {
-        require('ts-node').register({
-            project: 'e2e/tsconfig.e2e.json'
-        });
-        jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
-    }
+  // The address of a running selenium server.
+  //seleniumAddress: 'http://localhost:4444/wd/hub',
+  //seleniumServerJar: deprecated, this should be set on node_modules/protractor/config.json
+
+  // Capabilities to be passed to the webdriver instance.
+  capabilities: {
+    'browserName': 'chrome'
+  },
+
+  baseUrl: 'http://localhost:3000',
+
+  // Spec patterns are relative to the current working directory when
+  // protractor is called.
+  specs: [paths.e2e + '/**/*.js'],
+
+  // Options to be passed to Jasmine-node.
+  jasmineNodeOpts: {
+    showColors: true,
+    defaultTimeoutInterval: 30000
+  }
 };

@@ -1,0 +1,45 @@
+.footer-grey-color {
+  color: #676a6c !important;
+}
+
+#toast-container {
+  z-index: 999999 !important;
+}
+
+.info-icon {
+  padding-top: 7px;
+  padding-left: 5px;
+}
+
+.levelap-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Specify styling for tooltip contents */
+.tooltip.customClass .tooltip-inner {
+  width: 250px;
+}
+/* Hide arrow */
+.tooltip.customClass .tooltip-arrow {
+  //display: none;
+}
+
+.font-25 {
+  font-size: 25px !important;
+}
+
+.header-text-left {
+  text-align: left !important;
+}
+.header-text-right {
+  text-align: right !important;
+}
+
+.ta-editor {
+  min-height: 200px !important;
+  height: 300px !important;
+  overflow: auto !important;
+  font-family: inherit !important;
+  font-size: 100% !important;
+}
