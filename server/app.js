@@ -36,14 +36,14 @@ mongoose.Promise = global.Promise;
 mongoose.connect(databaseUri, {}).then(async () => {
 	console.log(`Database connected at ${databaseUri}`);
 
-	let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
+	/*let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
 	console.log("Tournaments updated! (Total: " + tournaments.length + ")");
 
 	let players = await fantasy.updatePlayers().catch(error => console.log("Error fetching from fantasydata.net: ", error));
 	console.log("Players updated! (Total: " + players.length + ")");
 
 	let total = await fantasy.updateLeaderboard();
-	console.log("Updated " + total + " leaderboards in all tournaments!");
+	console.log("Updated " + total + " leaderboards in all tournaments!");*/
 }).catch(err => console.log(`Database connection error: ${err.message}`));
 
 customResponses(path.join(__dirname, '/modules/responses'));
@@ -115,18 +115,20 @@ async function createCrons(id) {
 	const Tournament = mongoose.model('Tournament');
 	const tournament = await Tournament.findOne({tournamentID: id}).catch(handleMongoError);
 
-	tournament.rounds.forEach(round => {
-		new CronJob({
-			cronTime: `0 30 18 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
-			onTick: async function() {
-				await fantasy.updateLeaderboard();
-				AssignPoints(tournament._id, round.number);
-				this.stop();
-			},
-			start: true,
-			timeZone: 'America/Guayaquil'
+	if (tournament) {
+		tournament.rounds.forEach(round => {
+			new CronJob({
+				cronTime: `0 30 18 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
+				onTick: async function() {
+					await fantasy.updateLeaderboard();
+					AssignPoints(tournament._id, round.number);
+					this.stop();
+				},
+				start: true,
+				timeZone: 'America/Guayaquil'
+			});
 		});
-	});
+	}
 }
 
 createCrons(263);

@@ -1,10 +1,10 @@
 // React components:
 import React from 'react';
-import { ScrollView, Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage, ImagePickerIOS } from 'react-native';
+import { ScrollView, Text, View, TextInput, TouchableHighlight, Image, TouchableOpacity, Picker, ActionSheetIOS, AsyncStorage } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet';
 import DropdownAlert from 'react-native-dropdownalert';
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
 // Shank components:
 import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid } from '../BaseComponent';
@@ -63,33 +63,30 @@ export default class AddGroup extends BaseComponent {
 		this.setState({isLoading: false, tournaments: tournamentsData});
 	}
 
-	selectPicture(index) {
+	async selectPicture(index) {
 		let response;
-		let options = {
-			mediaType: 'photo',
-			allowsEditing: true,
-			noData: true,
-			maxWidth: 200,
-			maxHeight: 200
-		};
+		const options = {
+			width: 200,
+			height: 200,
+			cropping: true,
+			mediaType: 'photo'
+		}
 
 		switch (index) {
 			case 0:
-				ImagePicker.launchImageLibrary(options, (response) => this.pickerCallback(response));
+				response = await ImagePicker.openPicker(options);
 				break;
 
 			case 1:
-				ImagePicker.launchCamera(options, (response) => this.pickerCallback(response));
+				response = await ImagePicker.openCamera(options);
 				break;
 
 			default:
 				break;
 		}
-	}
 
-	pickerCallback(response) {
-		if (response && !response.didCancel && !response.error) {
-			this.setState({photoUri: response.uri});
+		if (response) {
+			this.setState({photoUri: response.path});
 		}
 	}
 

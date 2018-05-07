@@ -50,12 +50,8 @@ export default class MainScreen extends BaseComponent {
 		this.removeGroup = this.removeGroup.bind(this);
 		this.goToGroup = this.goToGroup.bind(this);
 		this.refreshGroups = this.refreshGroups.bind(this);
+		this.handleUrlEvent = this.handleUrlEvent.bind(this);
 		this.handleError = this.handleError.bind(this);
-
-		this.handleRefresh = this.handleRefresh.bind(this);
-		this.removeGroup = this.removeGroup.bind(this);
-		this.onListGroupAsync = this.onListGroupAsync.bind(this);
-		this.getGroupList = this.getGroupList.bind(this);
 		this.state = {
 			isLoading: false,
 			groupsRefreshing: false,
@@ -123,11 +119,26 @@ export default class MainScreen extends BaseComponent {
 
 	async refreshGroups() {
 		this.setState({groupsRefreshing: true});
-		const groups = await BaseModel.get('group/findMyGroups').catch(error => {
-			this.setState({groupsRefreshing: false});
-			this.dropDown.alertWithType('error', "Error", error);
-		});
+		const groups = await BaseModel.get('group/findMyGroups').catch(this.handleError);
 		this.setState({groupsRefreshing: false, groups: groups});
+	}
+
+	async handleUrlEvent(event) {
+		if (event) {
+			const url = event.url != null ? event.url : event;
+			const split = url.split('://');
+			console.log("split: ", split);
+			
+			if (split.length > 1) {
+				let data = qs.parse(split[split.length - 1]);
+						
+				if (data.group) {
+					this.setState({isLoading: true});
+					const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(this.handleError);
+					this.setState({isLoading: false, groups: groups});
+				}
+			}
+		}
 	}
 
 	handleError(error) {
@@ -163,8 +174,6 @@ export default class MainScreen extends BaseComponent {
 			}
 		});*/
 
-
-
 		const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
 		this.setState({ auth });
 		
@@ -192,43 +201,8 @@ export default class MainScreen extends BaseComponent {
 
 			let self = this;
 
-			Linking.addEventListener('url', async function(url) {
-				let queryString = url.url.replace(AppConst.LINKING_URI, '');
-
-				if (queryString) {
-					let data = qs.parse(queryString);
-					
-					if (data.group) {
-						console.log("EVENT LISTENER!");
-						self.setState({isLoading: true});
-						const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(function(error) {
-							self.setState({isLoading: false});
-							self.dropDown.alertWithType('error', "Error", error);
-						});
-						self.setState({isLoading: false, groups: groups});
-					}
-				}
-			});
-
-			Linking.getInitialURL().then(async function(url) {
-				if (url) {
-					let queryString = url.replace(AppConst.LINKING_URI, '');
-					
-					if (queryString) {
-						let data = qs.parse(queryString);
-						
-						if (data.group) {
-							console.log("INITIAL URL!");
-							self.setState({isLoading: true});
-							const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(function(error) {
-								self.setState({isLoading: false});
-								self.dropDown.alertWithType('error', "Error", error);
-							});
-							self.setState({isLoading: false, groups: groups});
-						}
-					}
-				}
-			}).catch(err => console.error('An error occurred', err));
+			Linking.addEventListener('url', this.handleUrlEvent);
+			Linking.getInitialURL().then(this.handleUrlEvent).catch(err => console.log('An error occurred', err));
 		} else {
 			this.props.navigation.navigate('Login');
 		}
@@ -239,82 +213,8 @@ export default class MainScreen extends BaseComponent {
 		this.didFocusListener.remove();
 	}
 
-
-
-
-
-
-
-
-
-	async getGroupList() {
-		let user = await AsyncStorage.getItem(AppConst.USER_PROFILE);
-		this.setState({currentUser: JSON.parse(user)})
-		this.onListGroupAsync();
-	}
-
-	setLoading(loading) {
-		this.setState({isLoading: loading});
-	}
-
-	handleRefresh() {
-		this.setState({
-			page: 1,
-			seed: this.state.seed + 1,
-			refreshing: true
-		}, () => {
-			this.onListGroupAsync();
-		});
-	}
-
-	async onListGroupAsync(data) {
-		const { page, currentUser } = this.state;
-
-		this.setState({refreshing: true, loading: true});
-		BaseModel.get(`groups/myList/${currentUser._id}`).then(groups => {
-			this.setState({
-				data: groups,
-				loading: false,
-				refreshing: false
-			});
-		}).catch(error => {
-			this.setLoading(false);
-
-			if (error === 401) {
-				try {
-					AsyncStorage.removeItem(AppConst.AUTH_TOKEN);
-				} catch (error) {
-					console.log('ERROR ON REMOVING TOKEN: ', error);
-				}
-			} else {
-				console.log('ERROR: ', error);
-				this.dropDown.alertWithType('error', "Error", error);
-			}
-		});
-	}
-
-	async onRemoveGroupAsync(data) {
-		let endPoint;
-		this.setLoading(true);
-		
-		if (data.isOwner) {
-			endPoint = `groups/changeStatus/${data._id}/false`;
-		} else {
-			endPoint = `groups/removeUser/${data._id}/${this.state.currentUser._id}`;
-		}
-
-		BaseModel.delete(endPoint).then(() => {
-			this.setLoading(false);
-			this.handleRefresh();
-		}).catch(error => {
-			this.setLoading(false);
-			console.log('ERROR! ', error);
-			this.dropDown.alertWithType('error', "Error", error);
-		});
-	}
-
 	render() {
-		if (this.state.groups.length > 0) {
+		if (this.state.groups && this.state.groups.length > 0) {
 			return (
 				<View style={ViewStyle.mainContainer}>
 					<Spinner visible={this.state.isLoading} animation='fade' />

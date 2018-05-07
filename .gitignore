@@ -54,6 +54,3 @@ fabric.properties
 
 # Visual Studio AppCode
 .vscode
-
-# Android APKs
-/app/android/.apk
