@@ -1,0 +1,66 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>Perfiles</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a ui-sref="admin.dashboard">Dashboard</a>
+      </li>
+      <li class="active">
+        <strong>Perfiles</strong>
+      </li>
+    </ol>
+  </div>
+  
+  <div class="col-lg-2">
+  </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-12 text-right">
+              <button authorize-section="['profiles.create']"
+                      type="button"
+                      class="btn btn-primary"
+                      ui-sref="admin.profiles.create">Nuevo</button>
+              <div class="space-10"></div>
+            </div>
+          </div>
+        
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nombres</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              
+              <tbody>
+                <tr ng-repeat="profile in profileCtrl.profiles">
+                  <td>{{profile.name}}</td>
+                  <td class="text-center">
+                    <button authorize-section="['profiles.update']"
+                            type="button"
+                            class="btn btn-xs btn-warning"
+                            ng-click="profileCtrl.edit_profile(profile)"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="Editar">
+                      <i class="fa fa-pencil"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-include src="'app/modules/profiles/views/profiles.delete.modal.html'"></div>

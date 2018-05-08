@@ -1,0 +1,141 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+  <div class="sidebar-collapse">
+    <ul side-navigation class="nav metismenu" id="side-menu">
+      <li class="nav-header">
+        <div class="profile-element" uib-dropdown>
+          
+          <!--<img alt="image" class="img-circle" ng-src="assets/images/profile_small.jpg" />-->
+          
+          <a uib-dropdown-toggle href>
+            <span class="clear">
+              <span class="block m-t-xs">
+                <strong class="font-bold">{{current_user.name}} {{current_user.surname}}</strong>
+              </span>
+              <span class="text-muted text-xs block">{{current_user.profile}} <b class="caret"></b></span>
+            </span>
+          </a>
+          
+          <ul uib-dropdown-menu class="animated fadeInRight m-t-xs">
+            <!--<li><a ui-sref="app.profile">Profile</a></li>-->
+            <!--<li><a ui-sref="app.contacts">Contacts</a></li>-->
+            <!--<li><a ui-sref="mailbox.inbox">Mailbox</a></li>-->
+            <!--<li class="divider"></li>-->
+            <li><a ng-click="layoutCtrl.open_change_password_modal()">Cambiar contrase&ntilde;a</a></li>
+            <li><a ng-click="layoutCtrl.logout()">Logout</a></li>
+          </ul>
+        </div>
+        
+        <div class="logo-element">
+          D+
+        </div>
+      </li>
+      
+      <li ng-class="{active: (state.includes('admin.brands.list')
+                             || state.includes('admin.brands.create')
+                             || state.includes('admin.brands.update')
+                             || state.includes('admin.shops.list')
+                             || state.includes('admin.shops.create')
+                             || state.includes('admin.shops.update')
+                             || state.includes('admin.measurements.list')
+                             || state.includes('admin.measurements.create')
+                             || state.includes('admin.measurements.update')
+                             || state.includes('admin.banners.list')
+                             || state.includes('admin.banners.create')
+                             || state.includes('admin.banners.update')
+                             || state.includes('admin.advertisements.list')
+                             || state.includes('admin.advertisements.create')
+                             || state.includes('admin.advertisements.update')
+                             || state.includes('admin.promotions.list')
+                             || state.includes('admin.promotions.create')
+                             || state.includes('admin.promotions.update'))}">
+        <a href="#">
+          <i class="fa fa-users"></i>
+          <span class="nav-label">Administraci&oacute;n</span>
+          <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse"
+          ng-class="{in: (state.includes('admin.brands.list')
+                             || state.includes('admin.brands.create')
+                             || state.includes('admin.brands.update')
+                             || state.includes('admin.shops.list')
+                             || state.includes('admin.shops.create')
+                             || state.includes('admin.shops.update')
+                             || state.includes('admin.measurements.list')
+                             || state.includes('admin.measurements.create')
+                             || state.includes('admin.measurements.update')
+                             || state.includes('admin.banners.list')
+                             || state.includes('admin.banners.create')
+                             || state.includes('admin.banners.update')
+                             || state.includes('admin.advertisements.list')
+                             || state.includes('admin.advertisements.create')
+                             || state.includes('admin.advertisements.update')
+                             || state.includes('admin.promotions.list')
+                             || state.includes('admin.promotions.create')
+                             || state.includes('admin.promotions.update'))}">
+          <li ng-class="{active: (state.includes('admin.brands.list')
+                                 || state.includes('admin.brands.create')
+                                 || state.includes('admin.brands.update'))}">
+            <a ui-sref="admin.brands.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Marcas</span> </a>
+          </li>          
+          <li ng-class="{active: (state.includes('admin.shops.list')
+                                 || state.includes('admin.shops.create')
+                                 || state.includes('admin.shops.update'))}">
+            <a ui-sref="admin.shops.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Locales / Tecnicentros</span> </a>
+          </li>
+          <li ng-class="{active: (state.includes('admin.measurements.list')
+                                 || state.includes('admin.measurements.create')
+                                 || state.includes('admin.measurements.update'))}">
+            <a ui-sref="admin.measurements.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Parametrizaci&oacute;n Autos</span> </a>
+          </li>
+          <li ng-class="{active: (state.includes('admin.banners.list')
+                                 || state.includes('admin.banners.create')
+                                 || state.includes('admin.banners.update'))}">
+            <a ui-sref="admin.banners.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Banners</span> </a>
+          </li>
+          <li ng-class="{active: (state.includes('admin.advertisements.list')
+                                 || state.includes('admin.advertisements.create')
+                                 || state.includes('admin.advertisements.update'))}">
+            <a ui-sref="admin.advertisements.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Publicidad</span> </a>
+          </li>
+          <li ng-class="{active: (state.includes('admin.promotions.list')
+                                 || state.includes('admin.promotions.create')
+                                 || state.includes('admin.promotions.update'))}">
+            <a ui-sref="admin.promotions.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Promociones</span> </a>
+          </li>          
+        </ul>
+      </li>
+      
+      <li ng-class="{active: (state.includes('admin.admin_users.list')
+                             || state.includes('admin.admin_users.create')
+                             || state.includes('admin.admin_users.update')
+                             || state.includes('admin.store_users.list')
+                             || state.includes('admin.store_users.update')
+                             || state.includes('admin.store_users.update'))}">
+        <a href="#">
+          <i class="fa fa-users"></i>
+          <span class="nav-label">Usuarios</span>
+          <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse"
+          ng-class="{in: (state.includes('admin.admin_users.list')
+                             || state.includes('admin.admin_users.create')
+                             || state.includes('admin.admin_users.update')
+                             || state.includes('admin.store_users.list')
+                             || state.includes('admin.store_users.create')
+                             || state.includes('admin.store_users.update'))}">
+          <li ng-class="{active: (state.includes('admin.users.list')
+                                  || state.includes('admin.admin_users.create')
+                                  || state.includes('admin.admin_users.update'))}">
+            <a ui-sref="admin.admin_users.list"><i class="fa fa-user"></i> <span class="nav-label">Del Sistema</span></a>
+          </li>
+        </ul>
+      </li>
+      
+      <li ng-class="{active: (state.includes('admin.profiles.list')
+                             || state.includes('admin.profiles.create')
+                             || state.includes('admin.profiles.update'))}">
+        <a ui-sref="admin.profiles.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Perfiles</span> </a>
+      </li>
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,88 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>Usuarios del Sistema</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a ui-sref="admin.dashboard">Dashboard</a>
+      </li>
+      <li class="active">
+        <strong>Usuarios del Sistema</strong>
+      </li>
+    </ol>
+  </div>
+  
+  <div class="col-lg-2">
+  </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-12 text-right">
+              <button authorize-section="['admin_users.create']"
+                      type="button"
+                      class="btn btn-primary"
+                      ui-sref="admin.admin_users.create">Nuevo</button>
+              <div class="space-10"></div>
+            </div>
+          </div>
+          
+          <div class="table-responsive">
+            <table ng-table="adminUserCtrl.tableParams" class="table table-bordered">
+              <tr ng-repeat="user in $data track by $index">
+                <td data-title="'Nombres'" filter="{ 'name': 'text'}" class="text-center">{{user.name}}</td>
+                <td data-title="'Apellidos'" filter="{ 'surname': 'text'}" class="text-center">{{user.surname}}</td>
+                <td data-title="'Correo Electr&oacute;nico'" filter="{ 'email': 'text'}" class="text-center">{{user.email}}</td>
+                <td data-title="'Perfil'" filter="{ 'profile.name': 'text'}" class="text-center">{{user.profile.name}}</td>
+                <td data-title="'Local'" filter="{ 'shop.name': 'text'}" class="text-center">{{user.shop.name}}</td>
+                <td data-title="'Ciudad'" filter="{ 'shop.city.name': 'text'}" class="text-center">{{user.shop.city.name}}</td>
+                <td data-title="'Estado'" filter="{ 'state': 'text' }" class="text-center">{{user.state}}</td>
+                <td data-title="'Fecha Creaci&oacute;n'" filter="{ 'created_at': 'text' }" class="text-center">{{user.created_at | date : 'dd-MM-yyyy'}}</td>
+                <td data-title="'Acciones'" class="text-center">
+                  <button authorize-section="['admin_users.update']"
+                          type="button"
+                          class="btn btn-xs btn-warning"
+                          ng-click="adminUserCtrl.edit_user(user)"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Editar">
+                    <i class="fa fa-pencil"></i>
+                  </button>
+                  <button ng-if="user.enabled"
+                          authorize-section="['admin_users.remove']"
+                          ng-click="adminUserCtrl.remove_user(user)"
+                          class="btn btn-xs btn-primary"
+                          data-toggle="modal"
+                          data-target="#manage_activation_admin_user_modal_form"
+                          title="Desactivar">
+                    <i class="fa fa-power-off"></i>
+                  </button>
+                  <button ng-if="!user.enabled"
+                          authorize-section="['admin_users.remove']"
+                          ng-click="adminUserCtrl.remove_user(user)"
+                          class="btn btn-xs btn-danger"
+                          data-toggle="modal"
+                          data-target="#manage_activation_admin_user_modal_form"
+                          title="Activar">
+                    <i class="fa fa-power-off"></i>
+                  </button>
+                </td>
+              </tr>
+              
+              <tr ng-if="adminUserCtrl.users.length == 0">
+                <td class="text-center" colspan="7">{{messages.empty_records}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- manage activation_admin_user_modal--> 
+<div ng-include src="'app/modules/users/admin/views/admin.users.manage.modal.html'"></div>
+<!-- /.delete_admin_user_modal-->

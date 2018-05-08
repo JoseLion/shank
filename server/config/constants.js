@@ -18,4 +18,4 @@ export default {
 		notFound: "Your user doesn't exists!",
 		password: "Incorrect password!"
 	}
-}
+};
