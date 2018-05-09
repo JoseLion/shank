@@ -28,6 +28,7 @@ export default class Tournaments extends Component {
 	constructor(props) {
 		super(props);
 		this.getFormattedDate = this.getFormattedDate.bind(this);
+		this.tournamentHasStarted = this.tournamentHasStarted.bind(this);
 		this.state = {
 			header: {},
 			tournaments: [],
@@ -46,6 +47,17 @@ export default class Tournaments extends Component {
 		}
 		
 		return '';
+	}
+
+	tournamentHasStarted() {
+		const today = new Date();
+		const startDate = new Date(this.state.header.startDate);
+
+		if (today.getTime() >= startDate.getTime()) {
+			return true;
+		}
+
+		return false;
 	}
 	
 	async componentDidMount() {
@@ -103,7 +115,7 @@ export default class Tournaments extends Component {
 				</View>
 
 				<Text style={ViewStyle.leaderboardTitle}>Leaderboard</Text>
-				{this.state.leaderboard.length > 0 ?
+				{this.state.leaderboard.length > 0 && this.tournamentHasStarted() ?
 					<FlatList contentContainerStyle={ViewStyle.listContainer} data={this.state.leaderboard} keyExtractor={item => item._id}
 						ListHeaderComponent={<LeaderboardHeader style={ViewStyle.listHeader} />}
 						renderItem={({item, index}) => <LeaderboardRow item={item} index={index} header={this.state.header} />} />

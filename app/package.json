@@ -26,6 +26,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.5.0",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-loading-spinner-overlay": "^0.5.2",
+    "react-native-push-notification": "^3.0.2",
     "react-native-scrollable-tab-view": "^0.8.0",
     "react-native-sortable-list": "0.0.21",
     "react-native-swipeable": "^0.6.0",

@@ -152,6 +152,7 @@ dependencies {
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-billing')
     implementation project(':react-native-linear-gradient')
+    implementation project(':react-native-push-notification')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api 'com.android.support:appcompat-v7:27.1.1'
     api 'com.facebook.react:react-native:+'
@@ -163,4 +164,13 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+ext {
+    googlePlayServicesVersion = "+"
+
+    compileSdkVersion = 27
+    buildToolsVersion = "27.0.3"
+    targetSdkVersion = 27
+    supportLibVersion = "27.1.1"
 }
