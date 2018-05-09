@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Shank</string>
     <string name="facebook_app_id">1840743005946613</string>
-    <string name="RNB_GOOGLE_PLAY_LICENSE_KEY">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAojVPfk6ryZN1+f5LqwSBd02SY3Ul8tb2ez/8vM4Fs3NcXfmm/ZSyKkK5sL8iwOnKCDOT01YGvG1LA0BhuIIb28B1yBNgthEF5sYcZXReupXJUE7e2ZwMfFl16+MZV+Rg9BwhlzrShxR8pOKgywITUjtfUPU1VmH2Z9vkbYfvPPSoBn9fnmlLE2GijHgAvVqRm3IPWDaDe2eHF2K7kuqX7jkC1AMaqEkoVJ2yg6J5CbnYemyq/orQcVvVbV/9mMOKMWcUe7Umyis3C+nFyKjWnEtvE2D/3yObkCTmFo9RUKfH/d5yk4IMSITP04/9JNiewY5kEc8zLtD5prRVzVak2wIDAQAB</string>
+    <string name="RNB_GOOGLE_PLAY_LICENSE_KEY">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApvczZa8BIxs91a4C+OsrPEoEcNJVX1GkhQptlvXsei4fagMW+5TrAZqbREuvScMJxZKwCkIjY3vygb0k43dBfvIFTLbjKZPpwpQgJJF9WC7/wmSJX7lQ9qA2icU36uAEWXuAD7im4RcBbpw50WbWKPDz2y2DBxtl8qx29dD3oMJ83q6vmdrRUAi7amFBM6VZ/dsGlr+kyxbL3loRipXFFhnwkKfRbupSmirNhFPglRNx6KWZSZbfyVZvn1ATHxmBpob3R4TroZeKiOntCsHog36Gz4bYlpXhFZYFI8MV72CzPf2PNIsU5Rnw3KAE29Sj84sfwlTU4U9gWeNswDf9iwIDAQAB</string>
     <string name="app_url_filter">ShankUrlIntebtFilter</string>
     <string name="app_https_url_filter">ShankHttpsUrlIntebtFilter</string>
 </resources>

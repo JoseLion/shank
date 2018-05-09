@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import Style from 'ShankStyle';
-import * as AppConst from 'AppConst';
+import * as AppConst from 'Core/AppConst';
 
 const width = Dimensions.get('window').width;
 
@@ -120,9 +120,6 @@ export default MainStyles = StyleSheet.create({
     },
     textSuccess: {
         color: AppConst.COLOR_SUCCESS
-    },
-    error: {
-        backgroundColor: AppConst.COLOR_RED
     },
     textError: {
         color: AppConst.COLOR_RED

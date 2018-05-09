@@ -108,11 +108,11 @@ android {
     buildToolsVersion "27.0.3"
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
-        applicationId "com.levelap.shank"
+        applicationId "com.elevision.shank"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0.5"
+        versionCode 2
+        versionName "1.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -151,6 +151,8 @@ dependencies {
     implementation project(':react-native-fbsdk')
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-billing')
+    implementation project(':react-native-linear-gradient')
+    implementation project(':react-native-push-notification')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api 'com.android.support:appcompat-v7:27.1.1'
     api 'com.facebook.react:react-native:+'
@@ -162,4 +164,13 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+ext {
+    googlePlayServicesVersion = "+"
+
+    compileSdkVersion = 27
+    buildToolsVersion = "27.0.3"
+    targetSdkVersion = 27
+    supportLibVersion = "27.1.1"
 }
