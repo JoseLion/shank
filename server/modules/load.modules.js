@@ -22,6 +22,7 @@ import profilesRoute from './profiles/profiles.routes';
 import userRoute from './users/users.routes';
 import appSettingRoute from './app_settings/appSetting.routes';
 import platerRoute from './player/player.routes';
+import permissions from './permissions/permissions.routes';
 
 let api_prefix = '/admin/api';
 
@@ -37,4 +38,5 @@ export default function(app) {
 	app.use('/api', userRoute(app));
 	app.use('/api', appSettingRoute(app));
 	app.use('/api', platerRoute(app));
+  app.use(api_prefix, permissions()); 
 }

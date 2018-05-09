@@ -20,7 +20,7 @@
       });
   });
   
-  function usersCreateController($scope, $state, admin_users_model, store_users_model, Notifier, initial_data, _) {
+  function usersCreateController($state, admin_users_model, Notifier, initial_data) {
     var vm = this;
     
     vm.profiles = initial_data.profiles;
@@ -28,24 +28,11 @@
     vm.update_password = true;
     vm.controller = 'create';
     
-    $scope.$watch('adminUserCtrl.user.profile', function() {
-      vm.display_extra_fields = false;
-      
-      if (vm.user && vm.user.profile) {
-        var commercial_user = _(vm.profiles).findWhere({_id: vm.user.profile});
-        if (commercial_user && commercial_user.role == 2) {
-          vm.display_extra_fields = true;
-        }
-      }
-    });
-    
     vm.save = function() {
-      var current_model = vm.display_extra_fields? store_users_model : admin_users_model;
-      
-      current_model.create(vm.user).then(function() {
+      admin_users_model.create(vm.user).then(function() {
         Notifier.success({custom_message: 'Usuario ' + vm.user.name + ' ' + vm.user.surname + ' creado.'});
         $state.go('admin.admin_users.list');
       });
     };
-  }  
+  }
 })();

@@ -109,14 +109,14 @@ let get_store_users = (req, res) => {
 let get_data_for_admin_user = (req, res, is_for_create) => {
   try {
     if (is_for_create) {
-      let promises = [
-        Profile.find().exec()
-      ];
-      
-      Q.all(promises).spread((profiles, shops) => {
-        res.ok({profiles: profiles, shops: shops});
-      }, (err) => {
-        res.server_error(err);
+      Profile
+      .find()
+      .exec((err, profiles) => {
+        if (err) {
+          return res.server_error(err);
+        }
+        
+        res.ok({profiles: profiles});
       });
     }
     else {
@@ -125,8 +125,8 @@ let get_data_for_admin_user = (req, res, is_for_create) => {
         Profile.find().exec()
       ];
       
-      Q.all(promises).spread((user, profiles, shops) => {
-        res.ok({user: user, profiles: profiles, shops: shops});
+      Q.all(promises).spread((user, profiles) => {
+        res.ok({user: user, profiles: profiles});
       }, (err) => {
         res.server_error(err);
       });
