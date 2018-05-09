@@ -21,6 +21,7 @@ import leaderboardRoute from './leaderboard/leaderboard.route';
 import profilesRoute from './profiles/profiles.routes';
 import userRoute from './users/users.routes';
 import appSettingsRoute from './app_settings/app.settings.routes';
+import tournamentSettingsRoute from './tournament_settings/tournament.settings.routes';
 import platerRoute from './player/player.routes';
 import permissions from './permissions/permissions.routes';
 
@@ -37,6 +38,7 @@ export default function(app) {
 	app.use(api_prefix, profilesRoute(app));
 	app.use(api_prefix, userRoute(app));
 	app.use(api_prefix, appSettingsRoute(app));
+	app.use(api_prefix, tournamentSettingsRoute(app));
 	app.use(api_prefix, platerRoute(app));
   app.use(api_prefix, permissions()); 
 }

@@ -22,7 +22,7 @@
         <div class="ibox-content">
           <form class="form-horizontal"
                 name="form_create_admin_user"
-                validate-form="adminUserCtrl.save()"
+                validate-form="tournamentSettingsCtrl.save()"
                 role="form"
                 novalidate>
             
@@ -32,75 +32,15 @@
                   <label class="col-sm-4 control-label text-right">PUNTOS: </label>
                 </div>
                 
-                <div class="form-group">
-                  <label class="col-sm-4 control-label text-right" for="position_one">Posici&oacute;n 1: </label>
+                <div class="form-group" ng-repeat="position in tournamentSettingsCtrl.points.values track by $index">
+                  <label class="col-sm-4 control-label text-right" for="position_{{$index}}">Posici&oacute;n {{($index + 1)}}: </label>
                   <div class="col-sm-6">
                     <input validation
                            decimal
                            type="text"
-                           id="position_one"
-                           name="position_one"
-                           ng-model="adminUserCtrl.user.name"
-                           class="form-control"
-                           maxlength="255"
-                           required="" />
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-sm-4 control-label text-right" for="position_two">Posici&oacute;n 2: </label>
-                  <div class="col-sm-6">
-                    <input validation
-                           decimal
-                           type="text"
-                           id="position_two"
-                           name="position_two"
-                           ng-model="adminUserCtrl.user.name"
-                           class="form-control"
-                           maxlength="255"
-                           required="" />
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-sm-4 control-label text-right" for="position_three">Posici&oacute;n 3: </label>
-                  <div class="col-sm-6">
-                    <input validation
-                           decimal
-                           type="text"
-                           id="position_three"
-                           name="position_three"
-                           ng-model="adminUserCtrl.user.name"
-                           class="form-control"
-                           maxlength="255"
-                           required="" />
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-sm-4 control-label text-right" for="position_four">Posici&oacute;n 4: </label>
-                  <div class="col-sm-6">
-                    <input validation
-                           decimal
-                           type="text"
-                           id="position_four"
-                           name="position_four"
-                           ng-model="adminUserCtrl.user.name"
-                           class="form-control"
-                           maxlength="255"
-                           required="" />
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-sm-4 control-label text-right" for="position_five">Posici&oacute;n 5: </label>
-                  <div class="col-sm-6">
-                    <input validation
-                           decimal
-                           type="text"
-                           id="position_five"
-                           name="position_five"
-                           ng-model="adminUserCtrl.user.name"
+                           id="position_{{$index}}"
+                           name="position_{{$index}}"
+                           ng-model="position.value"
                            class="form-control"
                            maxlength="255"
                            required="" />
@@ -119,19 +59,19 @@
                 </div>
                 
                 <!--<div class="table-responsive">-->
-                  <div class="form-group" ng-repeat="round in tournamentSettingsCtrl.rounds track by $index">
-                    <label class="col-sm-3 control-label text-right" for="round_one">R{{($index + 1)}}: </label>
+                  <div class="form-group" ng-repeat="round in tournamentSettingsCtrl.fines_percentage.values track by $index">
+                    <label class="col-sm-3 control-label text-right" for="round_{{$index}}">R{{($index + 1)}}: </label>
                     <div class="col-sm-6">
                       <input validation
                              type="text"
-                             id="round_one"
-                             name="round_one"
-                             ng-model="adminUserCtrl.user.name"
+                             id="round_{{$index}}"
+                             name="round_{{$index}}"
+                             ng-model="round.value"
                              class="form-control"
                              maxlength="255"
                              required="" />
                     </div>
-                    <div class="col-sm-1 no-left-padding" ng-if="tournamentSettingsCtrl.rounds.length > 4">
+                    <div class="col-sm-1 no-left-padding" ng-if="($index > 3 && tournamentSettingsCtrl.fines_percentage.values.length > 4)">
                       <span ng-click="tournamentSettingsCtrl.remove_round(round)">
                         <i class="fa fa fa-trash-o fa-lg text-danger"></i>
                       </span>
@@ -144,7 +84,7 @@
             <div class="row">
               <div class="form-group text-center">
                 <button type="submit" class="btn btn-primary">Guardar</button>              
-                <button class="btn btn-default" ui-sref="admin.admin_users.list">Cancelar</button>
+                <button class="btn btn-default" ui-sref="admin.dashboard">Cancelar</button>
               </div>
             </div>
           </form>
@@ -153,5 +93,3 @@
     </div>
   </div>
 </div>
-
-<div ng-include src="'app/modules/profiles/views/profiles.delete.modal.html'"></div>
