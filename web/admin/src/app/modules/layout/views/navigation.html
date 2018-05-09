@@ -50,7 +50,7 @@
                              || state.includes('admin.promotions.update'))}">
         <a href="#">
           <i class="fa fa-users"></i>
-          <span class="nav-label">Administraci&oacute;n</span>
+          <span class="nav-label">Administration</span>
           <span class="fa arrow"></span>
         </a>
         <ul class="nav nav-second-level collapse"
@@ -75,7 +75,17 @@
           <li ng-class="{active: (state.includes('admin.brands.list')
                                  || state.includes('admin.brands.create')
                                  || state.includes('admin.brands.update'))}">
-            <a ui-sref="admin.tournament.settings"><i class="fa fa-list-alt"></i> <span class="nav-label">Parametrizaciones del torneo</span> </a>
+            <a ui-sref="admin.tournament.settings"><i class="fa fa-list-alt"></i> <span class="nav-label">Tournament settings</span> </a>
+          </li>
+          <li ng-class="{active: (state.includes('admin.brands.list')
+                                 || state.includes('admin.brands.create')
+                                 || state.includes('admin.brands.update'))}">
+            <a ui-sref="admin.tournament.settings"><i class="fa fa-list-alt"></i> <span class="nav-label">Web links</span> </a>
+          </li>
+          <li ng-class="{active: (state.includes('admin.brands.list')
+                                 || state.includes('admin.brands.create')
+                                 || state.includes('admin.brands.update'))}">
+            <a ui-sref="admin.tournament.settings"><i class="fa fa-list-alt"></i> <span class="nav-label">Tournaments</span> </a>
           </li>
         </ul>
       </li>
@@ -88,7 +98,7 @@
                              || state.includes('admin.store_users.update'))}">
         <a href="#">
           <i class="fa fa-users"></i>
-          <span class="nav-label">Usuarios</span>
+          <span class="nav-label">Users</span>
           <span class="fa arrow"></span>
         </a>
         <ul class="nav nav-second-level collapse"
@@ -101,7 +111,7 @@
           <li ng-class="{active: (state.includes('admin.users.list')
                                   || state.includes('admin.admin_users.create')
                                   || state.includes('admin.admin_users.update'))}">
-            <a ui-sref="admin.admin_users.list"><i class="fa fa-user"></i> <span class="nav-label">Del Sistema</span></a>
+            <a ui-sref="admin.admin_users.list"><i class="fa fa-user"></i> <span class="nav-label">Of system</span></a>
           </li>
         </ul>
       </li>
@@ -109,7 +119,7 @@
       <li ng-class="{active: (state.includes('admin.profiles.list')
                              || state.includes('admin.profiles.create')
                              || state.includes('admin.profiles.update'))}">
-        <a ui-sref="admin.profiles.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Perfiles</span> </a>
+        <a ui-sref="admin.profiles.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Profiles</span> </a>
       </li>
     </ul>
   </div>
