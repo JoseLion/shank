@@ -85,7 +85,7 @@
     
     function is_valid_fines_percentage() {
       if (vm.fines_percentage.values.length < 3) {
-        Notifier.warning({custom_message: 'Ingrese por lomenos 4 porcentajes de multa.'});
+        Notifier.warning({custom_message: 'Ingrese por lo menos 4 porcentajes de multa.'});
         return false;
       }
       

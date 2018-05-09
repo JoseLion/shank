@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 
-let AppSettingSchema = new mongoose.Schema({
+let App_SettingSchema = new mongoose.Schema({
   code: {
     type: String,
     unique: true
@@ -10,4 +10,4 @@ let AppSettingSchema = new mongoose.Schema({
 },
 { timestamps: { createdAt: 'created_at' , updatedAt: 'updated_at' }});
 
-mongoose.model('AppSetting', AppSettingSchema);
+mongoose.model('App_Setting', App_SettingSchema);

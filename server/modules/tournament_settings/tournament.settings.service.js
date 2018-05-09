@@ -1,14 +1,14 @@
 'use strict';
 
 let mongoose = require('mongoose');
-let AppSetting = mongoose.model('AppSetting');
+let App_Setting = mongoose.model('App_Setting');
 let Q = require('q');
 
 let get_tournament_settings = (req, res) => {
   try {
     let promises = [
-      AppSetting.findOne({'code': 'PTS'}).exec(),
-      AppSetting.findOne({'code': 'FND'}).exec()
+      App_Setting.findOne({'code': 'PTS'}).exec(),
+      App_Setting.findOne({'code': 'FND'}).exec()
     ];
     
     Q.all(promises).spread((res_points, res_fines_percentage) => {
