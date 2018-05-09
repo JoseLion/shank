@@ -8,6 +8,8 @@
     'admin.dashboard',
     'admin.admin_users',
     'admin.profiles',
-    'admin.permissions'
+    'admin.permissions',
+    'admin.tournament.settings',
+    'admin.app.settings'
   ]);
 })();

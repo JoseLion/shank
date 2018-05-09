@@ -7,7 +7,7 @@
   
   if (location.hostname === 'localhost') {
     Host = "http://localhost:3010/";
-    ApiHost = Host + "admin/api/";
+    ApiHost = Host + "api/";
   }
   
   angular

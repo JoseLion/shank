@@ -28,6 +28,12 @@
         title: 'Perfiles',
         template: '<div ui-view></div>'
       })
+      .state('admin.tournament', {
+        url: '/tournament',
+        abstract: true,
+        title: 'Tournament',
+        template: '<div ui-view></div>'
+      })
       .state('home', {
         url: '/home',
         templateUrl: 'app/main/main.html',

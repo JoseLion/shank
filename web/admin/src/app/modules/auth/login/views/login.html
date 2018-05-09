@@ -1,9 +1,17 @@
 <div class="loginColumns animated fadeInDown">
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 text-center">
+      <img class="logo" ng-src="assets/images/logo_shank.png" width="40%">
     </div>
+  </div>
+  
+  <div class="space-20"></div>
+  
+  <div class="row">
+    <div class="col-md-3"></div>
     <div class="col-md-6">
-      <div ng-if="!LoginCtrl.has_tmp_password" class="ibox-content">
+      <div ng-if="!LoginCtrl.has_tmp_password" class="ibox-content login-form-container">
         <form class="m-t"
               role="form"
               validate-form="LoginCtrl.login()"

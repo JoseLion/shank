@@ -1,3 +1,6 @@
+textarea {
+  resize: none;
+}
 .flex {
   display: flex;
 }
@@ -30,10 +33,6 @@
 
 .pointer {
   cursor: pointer !important;
-}
-
-textarea {
-  resize: none;
 }
 
 .space-10 {
@@ -337,4 +336,7 @@ textarea {
     padding: 6px 12px;
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
     width: 59%;
+}
+.login-form-container {
+  border-radius: 10px;
 }
