@@ -7,7 +7,7 @@ import archiveModel from './archive/archive.model';
 import leaderboardModel from './leaderboard/leaderboard.model';
 
 import profileModel from './profiles/profiles.model';
-import userModel from './users/user.model';
+import userModel from './users/users.model';
 import appSettingModel from './app_settings/appSetting.model';
 import playerModel from './player/player.model';
 
@@ -19,7 +19,7 @@ import archiveRoute from './archive/archive.route';
 import leaderboardRoute from './leaderboard/leaderboard.route';
 
 import profilesRoute from './profiles/profiles.routes';
-import userRoute from './users/user.routes';
+import userRoute from './users/users.routes';
 import appSettingRoute from './app_settings/appSetting.routes';
 import platerRoute from './player/player.routes';
 
@@ -33,7 +33,7 @@ export default function(app) {
 	app.use('/api', archiveRoute(app));
 	app.use('/api', leaderboardRoute(app));
 
-	app.use('/api', profilesRoute(app));
+	app.use(api_prefix, profilesRoute(app));
 	app.use('/api', userRoute(app));
 	app.use('/api', appSettingRoute(app));
 	app.use('/api', platerRoute(app));

@@ -1,11 +1,11 @@
-let express = require('express');
-let router = express.Router();
 let mongoose = require('mongoose');
 let Admin_User = mongoose.model('Admin_User');
 let mail_service = require('../services/mail.services');
 let string_utils = require('../utils/string.utils');
 let users_service = require('./users.service.js');
 let auth = require('../../config/auth');
+
+let router = require('../core/routes.js')(Admin_User, '/admin_users');
 
 let prepare_router = function(app) {
   let path = '/admin_users';
@@ -81,7 +81,7 @@ let prepare_router = function(app) {
     }
   });
   
-  return require('../core/routes.js')(router, Admin_User, path);
+  return router;
 }
 
 module.exports = prepare_router;

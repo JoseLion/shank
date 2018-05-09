@@ -79,8 +79,6 @@
             string = string.replace('current_action', scope.$parent.current_action);
           }
           
-          console.log(string, 'string');
-          console.log(permissions, 'permissions');
           return Boolean($parse(string)(permissions).length);
         }
       }
