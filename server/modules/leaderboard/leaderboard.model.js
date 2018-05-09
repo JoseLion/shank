@@ -7,6 +7,7 @@ const LeaderboardSchema = new mongoose.Schema({
 	player: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
 	rank: Number,
 	totalScore: Number,
+	totalThrough: Number,
 	rounds: [{
 		number: Number,
 		score: Number

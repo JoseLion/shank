@@ -5,6 +5,7 @@ import android.content.res.Resources;
 
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.idehub.Billing.InAppBillingBridgePackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
@@ -37,6 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new LinearGradientPackage(),
                     new PickerPackage(),
                     new InAppBillingBridgePackage(LICENSE_KEY),
                     new FBSDKPackage(mCallbackManager)

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import {Text, View, TouchableOpacity, Image, TextInput, TouchableHighlight, Alert} from 'react-native';
 import MainStyles from 'MainStyles';
 import LocalStyles from './styles/local'
-import BaseModel from 'BaseModel';
-import Notifier from 'Notifier';
+import BaseModel from 'Core/BaseModel';
+import Notifier from 'Core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import * as AppConst from 'AppConst';
-import * as BarMessages from 'BarMessages';
+import * as AppConst from 'Core/AppConst';
+import * as BarMessages from 'Core/BarMessages';
 import LoadingIndicator from '../../common/LoadingIndicator';
 import { Host } from '../../../config/variables';
 import { BaseComponent } from '../BaseComponent';

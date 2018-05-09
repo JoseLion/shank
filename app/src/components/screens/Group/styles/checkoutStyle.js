@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import Style from 'ShankStyle';
-import * as AppConst from 'AppConst';
+import * as AppConst from 'Core/AppConst';
 
 export default StyleSheet.create({
 	container: {

@@ -151,6 +151,7 @@ dependencies {
     implementation project(':react-native-fbsdk')
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-billing')
+    implementation project(':react-native-linear-gradient')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api 'com.android.support:appcompat-v7:27.1.1'
     api 'com.facebook.react:react-native:+'

@@ -4,7 +4,7 @@ import { ScrollView, Text, TouchableOpacity, View, Image, Platform, AlertIOS, Al
 import Spinner from 'react-native-loading-spinner-overlay';
 import DropdownAlert from 'react-native-dropdownalert';
 import InAppBilling from 'react-native-billing';
-import InAppHelper from 'InAppHelper';
+import InAppHelper from 'Core/InAppHelper';
 
 // Shank components:
 import { BaseComponent, BaseModel, MainStyles, AppConst, IsAndroid } from '../BaseComponent';

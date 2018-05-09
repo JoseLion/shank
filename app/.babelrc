@@ -5,7 +5,8 @@
       "module-resolver", {
         "root": ["./src/styles"],
         "alias": {
-          "Core": "./src/core"
+          "Core": "./src/core",
+          "Res": "./resources"
         }
       }
     ]

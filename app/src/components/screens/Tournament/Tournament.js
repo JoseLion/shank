@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Image, Text, TouchableHighlight, Platform, NativeModules } from 'react-native';
+import { ScrollView, View, Image, Text, TouchableHighlight, Platform, NativeModules, FlatList, Linking } from 'react-native';
 import ImageLoad from "react-native-image-placeholder";
+import LinearGradient from "react-native-linear-gradient";
+import Moment from 'moment';
 import { FileHost } from "../BaseComponent";
 import * as AppConst from "Core/AppConst";
 import BaseModel from "Core/BaseModel";
 import handleError from "Core/handleError";
 import ViewStyle from './styles/tournamentStyle';
-import Style from 'ShankStyle';
 
-import TournamentIcon from '../../../../resources/tournament-icon.png';
-import TournamentIconO from '../../../../resources/tournament-icon-o.png';
-import GolfCourse from '../../../../resources/golf-course.png';
-import LinkIcon from '../../../../resources/link-icon.png';
-import Static1 from '../../../../resources/static1.png';
-import Static2 from '../../../../resources/static2.png';
-import Placeholder from '../../../../resources/placeholder.png';
+import TournamentIcon from 'Res/tournament-icon.png';
+import TournamentIconO from 'Res/tournament-icon-o.png';
+import GolfCourse from 'Res/golf-course.png';
+import LinkIcon from 'Res/link-icon.png';
+import Static1 from 'Res/static1.png';
+import Static2 from 'Res/static2.png';
+import Placeholder from 'Res/placeholder.png';
 
 export default class Tournaments extends Component {
 
@@ -29,27 +30,30 @@ export default class Tournaments extends Component {
 		this.getFormattedDate = this.getFormattedDate.bind(this);
 		this.state = {
 			header: {},
-			tournaments: []
+			tournaments: [],
+			leaderboard: []
 		};
 	}
 
 	getFormattedDate(obj) {
 		if (obj && obj.startDate && obj.endDate) {
-			const locale = Platform.OS == 'android' ? NativeModules.I18nManager.localeIdentifier : NativeModules.SettingsManager.settings.AppleLocale;
-			console.log("locale: ", locale);
-			const startDate = new Date(obj.starDate);
+			const startDate = new Date(obj.startDate);
 			const endDate = new Date(obj.endDate);
-			const startMonth = startDate.toLocaleString(locale, {month: "short"});
-			const endMonth = endDate.toLocaleString(locale, {month: "short"});
-
-			return `${startMonth} ${startDate.getDate()} - ${endMonth} ${endDate.getDate()}, ${startDate.getFullYear()}`;
+			const start = Moment(startDate).format('MMM D');
+			const end = Moment(endDate).format('MMM D');
+			
+			return `${start}-${end}, ${startDate.getFullYear()}`;
 		}
 		
 		return '';
 	}
 	
 	async componentDidMount() {
+		global.setLoading(true);
+		const locale = Platform.OS == 'android' ? NativeModules.I18nManager.localeIdentifier : NativeModules.SettingsManager.settings.AppleLocale;
+		Moment.locale(locale);
 		let tournaments = await BaseModel.get("tournament/findAll").catch(handleError);
+		let leaderboard = [];
 
 		if (tournaments == null || tournaments.length == 0) {
 			tournaments = [
@@ -61,49 +65,60 @@ export default class Tournaments extends Component {
 			tournaments.forEach(tournament => {
 				tournament.bigImage = {uri: FileHost + tournament.bigImage};
 				tournament.smallImage = {uri: FileHost + tournament.smallImage};
-			})
+			});
+
+			leaderboard = await BaseModel.get('leaderboard/findByTournament/' + tournaments[0]._id).catch(handleError);
 		}
 
 		let header = tournaments.shift();
-		this.setState({ tournaments, header });
+		await this.setState({ tournaments, header, leaderboard });
+		global.setLoading(false);
 	}
 
 	render() {
-		const grid = this.state.tournaments.map((tournament, index) => {
-			const margin = index % 2 == 0 ? {marginRight: '2.5%'} : {marginLeft: '2.5%'};
-			return (<GridItem key={tournament._id} style={[{width: '47.5%', marginBottom: '5%'}, margin]} tournament={tournament} />);
-		});
-
 		return (
-			<ScrollView contentContainerStyle={{width: '100%', backgroundColor: AppConst.COLOR_WHITE}}>
-				<View style={{flexDirection: 'row'}}>
-					<ImageLoad style={{flex: 1, aspectRatio: 1280/720}} source={this.state.header.bigImage} resizeMode={'contain'} resizeMethod={'resize'}
-					placeholderSource={Placeholder} placeholderStyle={{flex: 1, aspectRatio: 1280/720, resizeMode: 'cover'}} />
+			<ScrollView contentContainerStyle={ViewStyle.mainScroll}>
+				<View style={ViewStyle.headerView}>
+					<ImageLoad style={ViewStyle.headerImage} source={this.state.header.bigImage} resizeMode={'contain'} resizeMethod={'resize'}
+					placeholderSource={Placeholder} placeholderStyle={ViewStyle.headerPlaceholder}>
+						<LinearGradient style={ViewStyle.headerGradient} colors={['transparent', 'rgba(0, 0, 0, 0.5)']} locations={[0.4, 1]} />
+					</ImageLoad>
 
-					<View style={{position: 'absolute', bottom: 0, left: 0, width: '100%', height: '100%', justifyContent: "flex-end", paddingHorizontal: '5%'}}>
-						<Text style={{fontFamily: Style.CENTURY_GOTHIC_BOLD, fontSize: Style.FONT_15_5, color: AppConst.COLOR_WHITE}}>{this.state.header.name}</Text>
+					<View style={ViewStyle.headerDetailView}>
+						<Text style={ViewStyle.headerName}>{this.state.header.name}</Text>
 
 						<View style={{flexDirection: 'row', marginVertical: '2%'}}>
 							<View style={{flex: 2, paddingRight: '1%'}}>
-								<Text style={{fontFamily: Style.CENTURY_GOTHIC_BOLD, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>{this.state.header.venue ? 'Course/Location' : null}</Text>
-								<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>{this.state.header.venue}</Text>
-								<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>{this.state.header.location}</Text>
+								<Text style={ViewStyle.headerSubtitle}>{this.state.header.venue ? 'Course/Location' : null}</Text>
+								<Text style={ViewStyle.headerText}>{this.state.header.venue}</Text>
+								<Text style={ViewStyle.headerText}>{this.state.header.location}</Text>
 							</View>
 
 							<View style={{flex: 1, paddingLeft: '1%'}}>
-								<Text style={{fontFamily: Style.CENTURY_GOTHIC_BOLD, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>{this.state.header.startDate ? 'Dates' : null}</Text>
-								<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_14_5, color: AppConst.COLOR_WHITE}}>{this.getFormattedDate(this.state.header)}</Text>
+								<Text style={ViewStyle.headerSubtitle}>{this.state.header.startDate ? 'Dates' : null}</Text>
+								<Text style={ViewStyle.headerText}>{this.getFormattedDate(this.state.header)}</Text>
 							</View>
 						</View>
 					</View>
 				</View>
 
-				<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_19, color: AppConst.COLOR_BLUE, paddingVertical: '2%', paddingHorizontal: '5%'}}>Leaderboard</Text>
-				<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_15, color: AppConst.COLOR_BLUE, paddingVertical: '2%', paddingHorizontal: '5%'}}>The tournament hasn't started.</Text>
+				<Text style={ViewStyle.leaderboardTitle}>Leaderboard</Text>
+				{this.state.leaderboard.length > 0 ?
+					<FlatList contentContainerStyle={ViewStyle.listContainer} data={this.state.leaderboard} keyExtractor={item => item._id}
+						ListHeaderComponent={<LeaderboardHeader style={ViewStyle.listHeader} />}
+						renderItem={({item, index}) => <LeaderboardRow item={item} index={index} header={this.state.header} />} />
+				:
+					<Text style={ViewStyle.hasntStartedText}>The tournament hasn't started.</Text>
+				}
 
-				<View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-					{grid}
-				</View>
+				{/*this.state.leaderboard.length <= 0 && */
+					<View style={ViewStyle.gridView}>
+						{this.state.tournaments.map((tournament, index) => {
+							const margin = index % 2 == 0 ? {marginRight: '2.5%'} : {marginLeft: '2.5%'};
+							return (<GridItem key={tournament._id} style={[ViewStyle.gridItem, margin]} tournament={tournament} />);
+						})}
+					</View>
+				}
 			</ScrollView>
 		);
 	}
@@ -113,48 +128,154 @@ class GridItem extends Component {
 	
 	constructor(props) {
 		super(props);
-		this.state = {tournament: props.tournament};
 		this.getFormattedDate = this.getFormattedDate.bind(this);
+		this.openLink = this.openLink.bind(this);
+		this.state = {tournament: props.tournament};
 	}
 
 	getFormattedDate(obj) {
-		if (obj && obj.starDate && obj.endDate) {
-			const locale = Platform.OS == 'android' ? NativeModules.I18nManager.localeIdentifier : NativeModules.SettingsManager.settings.AppleLocale;
-			const startDate = new Date(obj.starDate);
+		if (obj && obj.startDate && obj.endDate) {
+			const startDate = new Date(obj.startDate);
 			const endDate = new Date(obj.endDate);
-			const startMonth = startDate.toLocaleString(locale, {month: "short"});
-			const endMonth = endDate.toLocaleString(locale, {month: "short"});
-
-			return `${startMonth} ${startDate.getDate()} - ${endMonth} ${endDate.getDate()}, ${startDate.getFullYear()}`;
+			const start = Moment(startDate).format('MMM D');
+			const end = Moment(endDate).format('MMM D');
+			
+			return `${start}-${end}, ${startDate.getFullYear()}`;
 		}
 		
 		return '';
 	}
 
+	async openLink() {
+		if (this.state.tournament.url) {
+			let canOpen = await Linking.canOpenURL(this.state.tournament.url).catch(handleError);
+
+			if (canOpen) {
+				return Linking.openURL(this.state.tournament.url).catch(handleError);
+			}
+
+			return handleError("Unable to open URL! The URL might not be valid.");
+		}
+
+		handleError("The URL was not found!");
+	}
+
 	render() {
 		return (
-			<TouchableHighlight style={this.props.style} underlayColor={AppConst.COLOR_WHITE} onPress={() => {}}>
-				<View>
-					<View style={{flexDirection: 'row'}}>
-						<ImageLoad style={{flex: 1, aspectRatio: 1, alignSelf: 'center'}} source={this.state.tournament.smallImage} resizeMode={'cover'} resizeMethod={'resize'}
-						placeholderSource={Placeholder} placeholderStyle={{flex: 1, aspectRatio: 1280/720, resizeMode: 'cover'}} />
+			<TouchableHighlight style={this.props.style} underlayColor={AppConst.COLOR_WHITE} onPress={this.openLink}>
+				<View style={ViewStyle.gridItemView}>
+					<View style={ViewStyle.gridItemImageView}>
+						<ImageLoad style={ViewStyle.gridItemImage} source={this.state.tournament.smallImage} resizeMode={'cover'} resizeMethod={'resize'}
+						placeholderSource={Placeholder} placeholderStyle={ViewStyle.gridItemPlaceholder}>
+							<LinearGradient style={ViewStyle.gridItemGradient} colors={['transparent', 'rgba(0, 0, 0, 0.5)']} locations={[0.4, 1]} />
+						</ImageLoad>
 
-						<View style={{flexDirection: 'row', alignItems: 'flex-end', position: 'absolute', width: '100%', height: '100%'}}>
+						<View style={ViewStyle.gridItemOverView}>
 							<View style={{flex: 9, padding: '5%'}}>
-								<Text style={{fontFamily: Style.CENTURY_GOTHIC_BOLD, fontSize: Style.FONT_15, color: AppConst.COLOR_WHITE}} numberOfLines={1}>{this.state.tournament.name}</Text>
-								<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_15, color: AppConst.COLOR_WHITE}} numberOfLines={1}>{this.getFormattedDate(this.state.tournament)}</Text>
+								<Text style={ViewStyle.gridItemName} numberOfLines={1}>{this.state.tournament.name}</Text>
+								<Text style={ViewStyle.gridItemDate} numberOfLines={1}>{this.getFormattedDate(this.state.tournament)}</Text>
 							</View>
 
-							<Image style={{flex: 1, aspectRatio: 1, alignSelf: 'flex-end', marginRight: '5%', marginBottom: '5%'}} source={LinkIcon} resizeMode={'contain'} resizeMethod={'resize'} />
+							<Image style={ViewStyle.gridItemLinkImage} source={LinkIcon} resizeMode={'contain'} resizeMethod={'resize'} />
 						</View>
 					</View>
 
-					<View style={{backgroundColor: 'rgba(179, 190, 201, 0.1)', padding: '5%'}}>
-						<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_15, color: AppConst.COLOR_GREEN}} numberOfLines={1}>{this.state.tournament.venue}</Text>
-						<Text style={{fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.FONT_15, color: AppConst.COLOR_GREEN}} numberOfLines={1}>{this.state.tournament.location}</Text>
+					<View style={ViewStyle.gridItemDetailView}>
+						<Text style={ViewStyle.gridItemDetailText} numberOfLines={1}>{this.state.tournament.venue}</Text>
+						<Text style={ViewStyle.gridItemDetailText} numberOfLines={1}>{this.state.tournament.location}</Text>
 					</View>
 				</View>
 			</TouchableHighlight>
+		);
+	}
+}
+
+class LeaderboardHeader extends Component {
+
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return (
+			<View style={this.props.style}>
+				<View style={[ViewStyle.listHeaderView, {flex: 2, alignItems: 'center'}]}>
+					<Text style={ViewStyle.listHeaderText} numberOfLines={1}>POS</Text>
+				</View>
+
+				<View style={[ViewStyle.listHeaderView, {flex: 5}]}>
+					<Text style={ViewStyle.listHeaderText} numberOfLines={1}>PLAYERS</Text>
+				</View>
+
+				<View style={[ViewStyle.listHeaderView, {flex: 2}]}>
+					<Text style={ViewStyle.listHeaderText} numberOfLines={1}>TOTAL</Text>
+				</View>
+
+				<View style={[ViewStyle.listHeaderView, {flex: 2}]}>
+					<Text style={ViewStyle.listHeaderText} numberOfLines={1}>THRU</Text>
+				</View>
+
+				<View style={[ViewStyle.listHeaderView, {flex: 2.5}]}>
+					<Text style={ViewStyle.listHeaderText} numberOfLines={1}>TODAY</Text>
+				</View>
+			</View>
+		);
+	}
+}
+
+class LeaderboardRow extends Component {
+	constructor(props) {
+		super(props);
+		this.getTodaysScore = this.getTodaysScore.bind(this);
+		this.state = {
+			item: this.props.item,
+			index: this.props.index
+		};
+	}
+
+	getTodaysScore(item) {
+		const today = new Date();
+		let roundIndex = 0;
+		
+		this.props.header.rounds.forEach((round, i) => {
+			const date = new Date(round.day);
+
+			if (today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth() && today.getDate() == date.getDate()) {
+				roundIndex = i;
+				return;
+			}
+		});
+		
+		if (item.rounds && item.rounds[roundIndex]) {
+			return item.rounds[roundIndex].score;
+		}
+	}
+
+	render() {
+		const backgroundColor = this.state.index % 2 == 0 ? '#EAEAEA' : '#F8F6F7';
+
+		return (
+			<View style={[ViewStyle.listRowView, { backgroundColor }]}>
+				<View style={[ViewStyle.listRowFirstCol, {flex: 2}]}>
+					<Text style={ViewStyle.listRowTextBold} numberOfLines={1}>{this.state.item.rank}</Text>
+				</View>
+
+				<View style={[ViewStyle.listRowCol, {flex: 5}]}>
+					<Text style={ViewStyle.listRowTextGreen} numberOfLines={1}>{this.state.item.player.firstName} {this.state.item.player.lastName}</Text>
+				</View>
+
+				<View style={[ViewStyle.listRowCol, {flex: 2}]}>
+					<Text style={ViewStyle.listRowTextBold} numberOfLines={1}>{this.state.item.totalScore}</Text>
+				</View>
+
+				<View style={[ViewStyle.listRowCol, {flex: 2}]}>
+					<Text style={ViewStyle.listRowTextGreen} numberOfLines={1}>{this.state.item.totalThrough}</Text>
+				</View>
+
+				<View style={[ViewStyle.listRowCol, {flex: 2.5}]}>
+					<Text style={ViewStyle.listRowTextGreen} numberOfLines={1}>{this.getTodaysScore(this.state.item)}</Text>
+				</View>
+			</View>
 		);
 	}
 }
