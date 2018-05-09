@@ -6,8 +6,7 @@ let AppSettingSchema = new mongoose.Schema({
     unique: true
   },
   name: String,
-  value: String,
-  type: String
+  values: [String]
 },
 { timestamps: { createdAt: 'created_at' , updatedAt: 'updated_at' }});
 

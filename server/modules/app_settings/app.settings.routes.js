@@ -1,6 +1,6 @@
 let mongoose = require('mongoose'),
     AppSetting = mongoose.model('AppSetting'),
-    path = '/appSettings';
+    path = '/app_settings';
 
 let router = require('../core/routes.js')(AppSetting, path),
     auth = require('../../config/auth');
