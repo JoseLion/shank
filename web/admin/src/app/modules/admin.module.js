@@ -10,6 +10,7 @@
     'admin.profiles',
     'admin.permissions',
     'admin.tournament.settings',
-    'admin.app.settings'
+    'admin.app.settings',
+    'admin.tournaments'
   ]);
 })();

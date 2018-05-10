@@ -13,6 +13,7 @@ let TournamentSchema = new mongoose.Schema({
 	venue: String,
 	location: String,
 	url: String,
+	year: String,
 	rounds: [{
 		roundID: Number,
 		number: Number,

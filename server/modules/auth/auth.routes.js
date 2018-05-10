@@ -84,7 +84,7 @@ export default function() {
             
             let response = {
               user: res_user,
-              token: user.generateJwt()
+              token: user.generateJwt([])
             };
             
             res.ok(response);

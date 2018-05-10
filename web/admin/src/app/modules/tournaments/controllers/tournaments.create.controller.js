@@ -3,36 +3,40 @@
   
   angular
   .module('admin.tournaments')
-  .controller('usersCreateController', usersCreateController)
+  .controller('tournamentsCreateController', tournamentsCreateController)
   .config(function($stateProvider) {
     $stateProvider
       .state('admin.tournaments.create', {
         url: '/create',
         title: 'Nuevo Tournament',
-        templateUrl: 'app/modules/users/admin/views/admin.users.create.html',
-        controller: 'usersCreateController',
-        controllerAs: 'adminUserCtrl',
-        resolve: {
-          initial_data: function(tournaments_model) {
-            return tournaments_model.get_data_for_create_admin_user();
-          }
-        }      
+        templateUrl: 'app/modules/tournaments/views/tournaments.create.html',
+        controller: 'tournamentsCreateController',
+        controllerAs: 'tournamentsCtrl'
       });
   });
   
-  function usersCreateController($state, tournaments_model, Notifier, initial_data) {
+  function tournamentsCreateController($state, tournaments_model, Notifier) {
     var vm = this;
+    vm.tournament = {};
+    vm.years = [];
     
-    vm.profiles = initial_data.profiles;
-    vm.shops = initial_data.shops;
-    vm.update_password = true;
-    vm.controller = 'create';
+    var i;
+    var start_year = 2016;
     
-    vm.save = function() {
-      tournaments_model.create(vm.user).then(function() {
-        Notifier.success({custom_message: 'Usuario ' + vm.user.name + ' ' + vm.user.surname + ' creado.'});
-        $state.go('admin.tournaments.list');
+    for (i = 0; i < 20; i++) {
+      vm.years.push(start_year);
+      start_year++;
+    }
+    
+    vm.get_tournaments = function() {
+      if (!vm.tournament.year) {
+        Notifier.warning({custom_message: 'Select a year'});
+        return;
+      }
+      
+      tournaments_model.get_tournaments_from_fantasy({year: vm.tournament.year}).then(function(data) {
+        console.log(data, '-----------');
       });
-    };
+    }
   }
 })();

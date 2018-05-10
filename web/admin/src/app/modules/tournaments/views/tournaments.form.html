@@ -1,12 +1,32 @@
 <div class="form-group">
   <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="user_name">Name: </label>
+  <label class="col-sm-2 control-label text-right" for="tournament_year">Year: </label>
+  <div class="col-sm-4">
+    <select validation
+            chosenselect
+            data-placeholder="Seleccione"
+            class="form-control m-b"
+            id="tournament_year"
+            name="tournament_year"
+            ng-model="tournamentsCtrl.tournament.year"
+            ng-options="year as year for year in tournamentsCtrl.years">
+      <option value=""></option>
+    </select>
+  </div>
+  <div class="col-sm-2">
+    <button type="button" class="btn btn-primary" ng-click="tournamentsCtrl.get_tournaments()">Search Tournament</button>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_surname">Surname: </label>
   <div class="col-sm-6">
     <input validation
            type="text"
-           id="user_name"
-           name="user_name"
-           ng-model="adminUserCtrl.user.name"
+           id="tournament_surname"
+           name="tournament_surname"
+           ng-model="tournamentsCtrl.tournament.surname"
            class="form-control"
            maxlength="255"
            required="" />
@@ -16,29 +36,13 @@
 
 <div class="form-group">
   <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="user_surname">Surname: </label>
-  <div class="col-sm-6">
-    <input validation
-           type="text"
-           id="user_surname"
-           name="user_surname"
-           ng-model="adminUserCtrl.user.surname"
-           class="form-control"
-           maxlength="255"
-           required="" />
-  </div>
-  <div class="col-sm-2"></div>
-</div>
-
-<div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="user_email">Email: </label>
+  <label class="col-sm-2 control-label text-right" for="tournament_email">Email: </label>
   <div class="col-sm-6">
     <input validation
            type="email"
-           id="user_email"
-           name="user_email"
-           ng-model="adminUserCtrl.user.email"
+           id="tournament_email"
+           name="tournament_email"
+           ng-model="tournamentsCtrl.tournament.email"
            class="form-control"
            maxlength="255"
            required="" />
@@ -48,14 +52,14 @@
 
 <div class="form-group">
   <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="user_cell_phone">Cell phone: </label>
+  <label class="col-sm-2 control-label text-right" for="tournament_cell_phone">Cell phone: </label>
   <div class="col-sm-6">
     <input validation
            integer
            type="text"
-           id="user_cell_phone"
-           name="user_cell_phone"
-           ng-model="adminUserCtrl.user.cell_phone"
+           id="tournament_cell_phone"
+           name="tournament_cell_phone"
+           ng-model="tournamentsCtrl.tournament.cell_phone"
            class="form-control"
            maxlength="255"
             />
@@ -63,23 +67,23 @@
   <div class="col-sm-2"></div>
 </div>
 
-<div ng-if="adminUserCtrl.controller == 'update'" class="form-group">
+<div ng-if="tournamentsCtrl.controller == 'update'" class="form-group">
   <div class="col-sm-4"></div>
   <div class="col-sm-5">
-    <label><input type="checkbox" ng-click="adminUserCtrl.change_password()" class="i-checks">&nbsp;&nbsp;Change password</label>
+    <label><input type="checkbox" ng-click="tournamentsCtrl.change_password()" class="i-checks">&nbsp;&nbsp;Change password</label>
   </div>
 </div>
 
-<div ng-if="adminUserCtrl.update_password" class="form-group">
+<div ng-if="tournamentsCtrl.update_password" class="form-group">
   <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="user_password">Password: </label>
+  <label class="col-sm-2 control-label text-right" for="tournament_password">Password: </label>
   <div class="col-sm-5">
     <input validation
            password
            type="password"
-           id="user_password"
-           name="user_password"
-           ng-model="adminUserCtrl.user.password"
+           id="tournament_password"
+           name="tournament_password"
+           ng-model="tournamentsCtrl.tournament.password"
            class="form-control"
            maxlength="255"
            required="" />
@@ -96,16 +100,16 @@
 
 <div class="form-group">
   <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="user_profile">Profile: </label>
+  <label class="col-sm-2 control-label text-right" for="tournament_profile">Profile: </label>
   <div class="col-sm-6">
     <select validation
             chosenselect
             data-placeholder="Seleccione"
             class="form-control m-b"
-            id="user_profile"
-            name="user_profile"
-            ng-model="adminUserCtrl.user.profile"
-            ng-options="profile._id as profile.name for profile in adminUserCtrl.profiles"
+            id="tournament_profile"
+            name="tournament_profile"
+            ng-model="tournamentsCtrl.tournament.profile"
+            ng-options="profile._id as profile.name for profile in tournamentsCtrl.profiles"
             required>
       <option value=""></option>
     </select>
