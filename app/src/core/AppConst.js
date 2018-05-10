@@ -1,9 +1,9 @@
 import React from 'react';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { ProductSku } from '../config/variables';
+import { ProductSKUs } from '../config/variables';
 
 export const LINKING_URI = 'comlevelapshank://';
-export const SKU = ProductSku;
+export const SKUS = ProductSKUs;
 
 export const COLOR_BLUE = '#252D3B';
 export const COLOR_WHITE = '#FFFFFF';

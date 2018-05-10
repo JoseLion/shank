@@ -1,21 +1,18 @@
 // React components:
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, Image, TouchableHighlight, AsyncStorage, FlatList } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 // Shank components:
-import NoAuthModel from 'NoAuthModel';
+import NoAuthModel from 'Core/NoAuthModel';
+import * as AppConst from 'Core/AppConst';
+import handleError from 'Core/handleError';
 import MainStyles from 'MainStyles';
-import LocalStyles from './styles/local';
-import * as AppConst from 'AppConst';
-import * as BarMessages from 'BarMessages';
+import ViewStyle from './styles/settingsStyle';
 
-import RighCaret from '../../../../resources/right-caret-icon.png';
+import RighCaretIcon from 'Res/right-caret-icon.png';
+import index from 'react-native-swipeable';
 
-const DismissKeyboardView = AppConst.DismissKeyboardHOC(View);
-
-class RowComponent extends React.Component {
+class SettingsRow extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -23,66 +20,59 @@ class RowComponent extends React.Component {
 
 	render() {
 		return (
-			<TouchableHighlight onPress={this.props.data.action} style={{flex: 1, padding: 20, backgroundColor: '#ffffff', borderBottomWidth: 0, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
-				<View style={{ flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
-					<Text>{this.props.data.name}</Text>
-					<Image style={{width: 25, height: 25}} source={RighCaret} resizeMode="contain" resizeMethod={'resize'} />
+			<TouchableHighlight underlayColor={AppConst.COLOR_GRAY} onPress={this.props.onPress}>
+				<View style={ViewStyle.listRowView}>
+					<Text style={ViewStyle.listRowText}>{this.props.data.name}</Text>
+					<Image style={ViewStyle.listRowCaret} source={RighCaretIcon} resizeMode="contain" resizeMethod={'resize'} />
 				</View>
-			</TouchableHighlight>
+			</TouchableHighlight> 
 		);
 	}
 }
 
 export default class Settings extends Component {
 
-	static propTypes = { navigation: PropTypes.object.isRequired };
 	static navigationOptions = ({navigation}) => ({title: 'SETTINGS'});
 
 	constructor(props) {
 		super(props);
-		let self = this;
-
-		this._removeStorage = this._removeStorage.bind(this);
+		this.removeStorage = this.removeStorage.bind(this);
+		this.actionForRow - this.actionForRow.bind(this);
 		this.state = {
-			loading: false,
-			data: [{
-				id: 0,
-				name: 'Edit Profile',
-				action: function() {
-					AsyncStorage.getItem(AppConst.USER_PROFILE).then(user => {
-						self.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)})
-					});
-				}
-			}, {
-				id: 1,
-				name: 'Privacy Policy',
-				action: function() {
-				}
-			}, {
-				id: 2,
-				name: 'Terms of Service',
-				action: function() {
-				}
-			}, {
-				id: 3,
-				name: 'Rules',
-				action: function() {
-				}
-			}]
+			data: [
+				{id: 0, name: 'Edit Profile'},
+				{id: 1, name: 'Privacy Policy'},
+				{id: 2, name: 'Terms of Service'},
+				{id: 3, name: 'Rules'}
+			]
 		};
 	}
 
-	setLoading(loading) {
-		this.setState({loading: loading});
-	}
-
-	doLogOut() {
-		this._removeStorage();
-	}
-
-	async _removeStorage() {
-		let token = await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(error => console.log("Error: ", error));
+	async removeStorage() {
+		global.setLoading(true);
+		let token = await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
+		global.setLoading(false);
 		this.props.navigation.navigate('Main');
+	}
+
+	async actionForRow(index) {
+		switch(index) {
+			case 0: {
+				global.setLoading(true);
+				const user = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
+				global.setLoading(false);
+
+				if (user) {
+					this.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)});
+				}
+				
+				break;
+			}
+
+			default: {
+				break;
+			}
+		}
 	}
 
 	render() {
@@ -90,14 +80,14 @@ export default class Settings extends Component {
 		let completeData = this.state.data;
 
 		return (
-			<View style={{backgroundColor: '#FFFFFF', flex:1, width:'100%'}}>
-				<Spinner visible={this.state.loading} animation="fade"/>
-				
-				<FlatList style={{flex: 1, marginBottom: '5%'}} data={this.state.data} keyExtractor={item => item.name} renderItem={({item}) => <RowComponent data={item} navigation={navigation}/> }/>
+			<View style={ViewStyle.mainContainer}>
+				<View style={ViewStyle.mainSubview}>
+					<FlatList style={ViewStyle.list} data={this.state.data} keyExtractor={item => item.name} renderItem={({item, index}) => <SettingsRow data={item} onPress={() => this.actionForRow(index)} /> }/>
 
-				<TouchableOpacity onPress={() => this.doLogOut()} style={[{ width: '80%' }, MainStyles.button, MainStyles.error]}>
-					<Text style={MainStyles.buttonText}>Log Out</Text>
-				</TouchableOpacity>
+					<TouchableOpacity style={[MainStyles.button, MainStyles.error, {width: '80%'}]} onPress={this.removeStorage}>
+						<Text style={MainStyles.buttonText}>Log Out</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 		);
 	}

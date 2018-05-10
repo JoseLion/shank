@@ -10,6 +10,9 @@ let TournamentSchema = new mongoose.Schema({
 	isInProgress: Boolean,
 	canceled: Boolean,
 	covered: Boolean,
+	venue: String,
+	location: String,
+	url: String,
 	rounds: [{
 		roundID: Number,
 		number: Number,

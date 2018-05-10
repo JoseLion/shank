@@ -3,8 +3,11 @@
   "plugins": [
     [
       "module-resolver", {
-        "root": ["./src/core", "./src/styles"],
-        "extensions": [".js", ".ios.js", ".android.js"]
+        "root": ["./src/styles"],
+        "alias": {
+          "Core": "./src/core",
+          "Res": "./resources"
+        }
       }
     ]
   ]

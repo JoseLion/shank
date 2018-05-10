@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import * as AppConst from 'AppConst';
+import * as AppConst from 'Core/AppConst';
 import Style from 'ShankStyle';
 
 export default StyleSheet.create({

@@ -1,6 +1,6 @@
 import { Dimensions, StyleSheet } from 'react-native';
 import Style from 'ShankStyle';
-import * as AppConst from 'AppConst';
+import * as AppConst from 'Core/AppConst';
 
 const {width, height} = Dimensions.get('window');
 const containerWidth = width > 500 ? 500 : width;

@@ -75,7 +75,11 @@ export default class Register extends BaseComponent {
 	};
 
 	async facebookCallBack(error, profile) {
-		if (profile.email) {
+		if (error) {
+			return this.handleError(`Facebook error: ${error}`);
+		}
+
+		if (profile && profile.email) {
 			let data = {
 				fullName: profile.name,
 				email: profile.email,
