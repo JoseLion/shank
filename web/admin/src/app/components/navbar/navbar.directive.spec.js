@@ -12,7 +12,7 @@
     var el;
     var timeInMs;
 
-    beforeEach(module('durallantaAdmin'));
+    beforeEach(module('shankAdmin'));
     beforeEach(inject(function($compile, $rootScope) {
       // spyOn(_$window_, 'moment').and.callThrough();
       // $window = _$window_;

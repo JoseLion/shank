@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('durallantaAdmin')
+    .module('shankAdmin')
     .controller('MainController', MainController);
 
   /** @ngInject */
@@ -11,7 +11,7 @@
 
     vm.awesomeThings = [];
     vm.classAnimation = '';
-    vm.creationDate = 1513791527103;
+    vm.creationDate = 1525971618641;
     vm.showToastr = showToastr;
 
     activate();

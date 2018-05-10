@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('durallantaAdmin')
+    .module('shankAdmin')
     .directive('acmeMalarkey', acmeMalarkey);
 
   /** @ngInject */

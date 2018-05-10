@@ -11,7 +11,7 @@
   }
   
   angular
-    .module('durallantaAdmin')
+    .module('shankAdmin')
     .constant('malarkey', malarkey)
     .constant('moment', moment)
     .constant('Host', Host)
