@@ -4,7 +4,7 @@ import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions }
 import { BackHandler, TouchableOpacity, Image, Text } from 'react-native';
 import Style from 'ShankStyle';
 
-import * as AppConst from 'AppConst';
+import * as AppConst from 'Core/AppConst';
 
 import Splash from '../screens/Splash/Splash';
 import Slider from '../screens/Splash/Slider';
@@ -41,7 +41,7 @@ export const TabNav = TabNavigator({
 			backgroundColor: AppConst.COLOR_GRAY
 		},
 		labelStyle: {
-			fontFamily: Style.CENTURY_GOTHIC_BOLD,
+			fontFamily: Style.CENTURY_GOTHIC,
 			fontSize: Style.FONT_15,
 			marginBottom: Style.EM(-0.1)
 		},

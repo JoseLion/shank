@@ -79,6 +79,7 @@ export default Style = {
     FONT_12: em(0.45),
     FONT_13: em(0.55),
     FONT_14: em(0.70),
+    FONT_14_5: em(0.775),
     FONT_15: em(0.85),
     FONT_15_5: em(0.925),
     FONT_16: em(1),
@@ -140,8 +141,8 @@ export default Style = {
     INPUT_MULTILINE_INSIDE_BUBBLE: Platform.OS == 'android' ? em(5) : em(3),
 
     //FONTS
-    CENTURY_GOTHIC: 'CenturyGothic',
-    CENTURY_GOTHIC_BOLD: 'CenturyGothic-Bold',
-    CENTURY_GOTHIC_ITALIC: 'CenturyGothic-Italic',
-    CENTURY_GOTHIC_BOLD_ITALIC: 'CenturyGothic-BoldItalic'
+    CENTURY_GOTHIC: Platform.OS == 'ios' ? 'CenturyGothic' : 'century-gothic',
+    CENTURY_GOTHIC_BOLD: Platform.OS == 'ios' ? 'CenturyGothic-Bold' : 'century-gothic-bold',
+    CENTURY_GOTHIC_ITALIC: Platform.OS == 'ios' ? 'CenturyGothic-Italic' : 'century-gothic-italic',
+    CENTURY_GOTHIC_BOLD_ITALIC: Platform.OS == 'ios' ? 'CenturyGothic-BoldItalic' : 'century-gothic-bold-italic'
 };
