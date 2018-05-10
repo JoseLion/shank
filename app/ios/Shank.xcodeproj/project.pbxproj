@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -39,6 +40,7 @@
 		359848480992440CBB1AC87F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA5EC59D81434504B56A19C5 /* FBSDKLoginKit.framework */; };
 		4F18BD8614A14D6080EF709B /* InAppUtilsTests.xctest in Frameworks */ = {isa = PBXBuildFile; fileRef = 603A7258892B407383A7A75C /* InAppUtilsTests.xctest */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		7370631A4DBA4D158F3E5C81 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC1B17ADA6B8466DBB4DC4E8 /* libBVLinearGradient.a */; };
 		796DD896CC8444ED8BE19729 /* century-gothic-bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F15F5960079048B0AC87C87E /* century-gothic-bold.ttf */; };
 		828FBAC7208FB20300CF22C5 /* RSKImageCropper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 828FBAC6208FB20300CF22C5 /* RSKImageCropper.framework */; };
 		828FBAC8208FB20300CF22C5 /* RSKImageCropper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 828FBAC6208FB20300CF22C5 /* RSKImageCropper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -46,6 +48,7 @@
 		828FBAF5208FB21C00CF22C5 /* QBImagePicker.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 828FBAF3208FB21C00CF22C5 /* QBImagePicker.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8298753C209BC54F00C025F7 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8298753B209BC54F00C025F7 /* GameKit.framework */; };
 		82B44E7F208A3C3E00365941 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B44E7E208A3C3E00365941 /* StoreKit.framework */; };
+		82CFD5B120A490D8004DC84C /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CFD5AE20A49033004DC84C /* libRCTPushNotification.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		BD9D79AA930E4CF797D4745B /* century-gothic-italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0515B701C95B414CBC336AED /* century-gothic-italic.ttf */; };
@@ -54,7 +57,6 @@
 		D2FEE67074534D8B85E8C98F /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511674E1AFF5486AA378A6DE /* FBSDKCoreKit.framework */; };
 		D373FB6DB89F4A6B99F1EAF2 /* libInAppUtils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A468EF2BA684268A0B07F47 /* libInAppUtils.a */; };
 		D5436011202A4AA19442B66C /* century-gothic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C1D1570742634C229DB935A3 /* century-gothic.ttf */; };
-		7370631A4DBA4D158F3E5C81 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC1B17ADA6B8466DBB4DC4E8 /* libBVLinearGradient.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -345,6 +347,34 @@
 			remoteGlobalIDString = 46E6943D1B289730000B634E;
 			remoteInfo = InAppUtilsTests;
 		};
+		82CFD5A420A3A62A004DC84C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B57511E089864CD6B574D46C /* BVLinearGradient.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = BVLinearGradient;
+		};
+		82CFD5A620A3A62A004DC84C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B57511E089864CD6B574D46C /* BVLinearGradient.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 64AA15081EF7F30100718508;
+			remoteInfo = "BVLinearGradient-tvOS";
+		};
+		82CFD5AD20A49033004DC84C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82CFD5A820A49033004DC84C /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
+		82CFD5AF20A49033004DC84C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82CFD5A820A49033004DC84C /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
+			remoteInfo = "RCTPushNotification-tvOS";
+		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
@@ -415,15 +445,16 @@
 		8298753B209BC54F00C025F7 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		8298753D209BC55100C025F7 /* Shank.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Shank.entitlements; path = Shank/Shank.entitlements; sourceTree = "<group>"; };
 		82B44E7E208A3C3E00365941 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		82CFD5A820A49033004DC84C /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8EACAAF9289A4456871B6182 /* InAppUtils.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = InAppUtils.xcodeproj; path = "../node_modules/react-native-in-app-utils/InAppUtils.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		B57511E089864CD6B574D46C /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		BA5EC59D81434504B56A19C5 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ./ios/Frameworks/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		C1D1570742634C229DB935A3 /* century-gothic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "century-gothic.ttf"; path = "../assets/fonts/century-gothic.ttf"; sourceTree = "<group>"; };
+		CC1B17ADA6B8466DBB4DC4E8 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		F15F5960079048B0AC87C87E /* century-gothic-bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "century-gothic-bold.ttf"; path = "../assets/fonts/century-gothic-bold.ttf"; sourceTree = "<group>"; };
 		FDD38F360922432AA651494A /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
-		B57511E089864CD6B574D46C /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; name = "BVLinearGradient.xcodeproj"; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		CC1B17ADA6B8466DBB4DC4E8 /* libBVLinearGradient.a */ = {isa = PBXFileReference; name = "libBVLinearGradient.a"; path = "libBVLinearGradient.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -439,6 +470,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82CFD5B120A490D8004DC84C /* libRCTPushNotification.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -659,6 +691,7 @@
 				1A468EF2BA684268A0B07F47 /* libInAppUtils.a */,
 				603A7258892B407383A7A75C /* InAppUtilsTests.xctest */,
 				29C820BA9FF6469A9AC11C4A /* libimageCropPicker.a */,
+				CC1B17ADA6B8466DBB4DC4E8 /* libBVLinearGradient.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -688,9 +721,28 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		82CFD5A020A3A62A004DC84C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				82CFD5A520A3A62A004DC84C /* libBVLinearGradient.a */,
+				82CFD5A720A3A62A004DC84C /* libBVLinearGradient.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		82CFD5A920A49033004DC84C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				82CFD5AE20A49033004DC84C /* libRCTPushNotification.a */,
+				82CFD5B020A49033004DC84C /* libRCTPushNotification-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				82CFD5A820A49033004DC84C /* RCTPushNotification.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -889,6 +941,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 82CFD5A020A3A62A004DC84C /* Products */;
+					ProjectRef = B57511E089864CD6B574D46C /* BVLinearGradient.xcodeproj */;
+				},
+				{
 					ProductGroup = 828FBA66208FADC900CF22C5 /* Products */;
 					ProjectRef = 76CB0CAD52964F078392AA66 /* imageCropPicker.xcodeproj */;
 				},
@@ -927,6 +983,10 @@
 				{
 					ProductGroup = 00C302D41ABCB9D200DB3ED1 /* Products */;
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
+				},
+				{
+					ProductGroup = 82CFD5A920A49033004DC84C /* Products */;
+					ProjectRef = 82CFD5A820A49033004DC84C /* RCTPushNotification.xcodeproj */;
 				},
 				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
@@ -1233,6 +1293,34 @@
 			remoteRef = 82B44E7C2089186300365941 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		82CFD5A520A3A62A004DC84C /* libBVLinearGradient.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBVLinearGradient.a;
+			remoteRef = 82CFD5A420A3A62A004DC84C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		82CFD5A720A3A62A004DC84C /* libBVLinearGradient.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBVLinearGradient.a;
+			remoteRef = 82CFD5A620A3A62A004DC84C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		82CFD5AE20A49033004DC84C /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 82CFD5AD20A49033004DC84C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		82CFD5B020A49033004DC84C /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = 82CFD5AF20A49033004DC84C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		832341B51AAA6A8300B99B32 /* libRCTText.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1399,7 +1487,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-image-pickerios",
 					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 					"$(SRCROOT)..\node_modules\neact-native-image-crop-pickerios/**",
-					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
 				);
 				INFOPLIST_FILE = ShankTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1433,7 +1521,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-image-pickerios",
 					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 					"$(SRCROOT)..\node_modules\neact-native-image-crop-pickerios/**",
-					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
 				);
 				INFOPLIST_FILE = ShankTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1475,7 +1563,9 @@
 					"$(SRCROOT)..",
 					ode_modules,
 					"eact-native-image-crop-pickerios/**",
-					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-linear-gradientBVLinearGradient",
 				);
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(inherited)",
@@ -1521,7 +1611,7 @@
 					"$(SRCROOT)..",
 					ode_modules,
 					"eact-native-image-crop-pickerios/**",
-					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
 				);
 				INFOPLIST_FILE = Shank/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1558,7 +1648,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-image-pickerios",
 					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 					"$(SRCROOT)..\node_modules\neact-native-image-crop-pickerios/**",
-					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
 				);
 				INFOPLIST_FILE = "Shank-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1598,7 +1688,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-image-pickerios",
 					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 					"$(SRCROOT)..\node_modules\neact-native-image-crop-pickerios/**",
-					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
 				);
 				INFOPLIST_FILE = "Shank-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1637,7 +1727,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-image-pickerios",
 					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 					"$(SRCROOT)..\node_modules\neact-native-image-crop-pickerios/**",
-					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
 				);
 				INFOPLIST_FILE = "Shank-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1676,7 +1766,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-image-pickerios",
 					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 					"$(SRCROOT)..\node_modules\neact-native-image-crop-pickerios/**",
-					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
 				);
 				INFOPLIST_FILE = "Shank-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
