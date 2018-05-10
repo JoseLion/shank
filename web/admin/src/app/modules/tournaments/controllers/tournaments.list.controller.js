@@ -9,7 +9,7 @@
       .state('admin.tournaments.list', {
         url: '/list',
         title: 'Tournaments',
-        templateUrl: 'app/modules/tournaments/views/tournaments.html',
+        templateUrl: 'app/modules/tournaments/views/tournaments.list.html',
         controller: 'TournamentsController',
         controllerAs: 'tournamentsCtrl',
         resolve: {
