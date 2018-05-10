@@ -1,0 +1,114 @@
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="user_name">Name: </label>
+  <div class="col-sm-6">
+    <input validation
+           type="text"
+           id="user_name"
+           name="user_name"
+           ng-model="adminUserCtrl.user.name"
+           class="form-control"
+           maxlength="255"
+           required="" />
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="user_surname">Surname: </label>
+  <div class="col-sm-6">
+    <input validation
+           type="text"
+           id="user_surname"
+           name="user_surname"
+           ng-model="adminUserCtrl.user.surname"
+           class="form-control"
+           maxlength="255"
+           required="" />
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="user_email">Email: </label>
+  <div class="col-sm-6">
+    <input validation
+           type="email"
+           id="user_email"
+           name="user_email"
+           ng-model="adminUserCtrl.user.email"
+           class="form-control"
+           maxlength="255"
+           required="" />
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="user_cell_phone">Cell phone: </label>
+  <div class="col-sm-6">
+    <input validation
+           integer
+           type="text"
+           id="user_cell_phone"
+           name="user_cell_phone"
+           ng-model="adminUserCtrl.user.cell_phone"
+           class="form-control"
+           maxlength="255"
+            />
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div ng-if="adminUserCtrl.controller == 'update'" class="form-group">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-5">
+    <label><input type="checkbox" ng-click="adminUserCtrl.change_password()" class="i-checks">&nbsp;&nbsp;Change password</label>
+  </div>
+</div>
+
+<div ng-if="adminUserCtrl.update_password" class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="user_password">Password: </label>
+  <div class="col-sm-5">
+    <input validation
+           password
+           type="password"
+           id="user_password"
+           name="user_password"
+           ng-model="adminUserCtrl.user.password"
+           class="form-control"
+           maxlength="255"
+           required="" />
+  </div>
+  <div class="col-md-1 col-xs-1 text-right">
+    <div class="levelap-tooltip">
+      <i class="fa fa-question-circle font-25"
+         tooltip-placement="top-right"
+         uib-tooltip="The password must have only letters and numbers, at least 6 characters, with at least one lowercase, one uppercase and one number"
+         tooltip-class="customClass"></i>
+    </div>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="user_profile">Profile: </label>
+  <div class="col-sm-6">
+    <select validation
+            chosenselect
+            data-placeholder="Seleccione"
+            class="form-control m-b"
+            id="user_profile"
+            name="user_profile"
+            ng-model="adminUserCtrl.user.profile"
+            ng-options="profile._id as profile.name for profile in adminUserCtrl.profiles"
+            required>
+      <option value=""></option>
+    </select>
+  </div>
+  <div class="col-sm-2"></div>
+</div>

@@ -33,7 +33,7 @@ module.exports = function (model, path) {
 		});
 	});
 
-	router.route(path.concat('/:_id'))
+	router.route(path + '/:_id')
 	.put(auth, function (req, res) {
 		model.findByIdAndUpdate(req.params, req.body, function (err, data) {
 			if (err) {

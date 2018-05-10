@@ -1,0 +1,42 @@
+<div modal="manage_activation_admin_user_modal_form" hide-on-submit="{{adminUserCtrl.close_remove_user_modal}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="inmodal">
+        <form class="form-horizontal"
+              name="form_exception_modal"
+              validate-form="adminUserCtrl.delete_user()"
+              class="form-horizontal"
+              role="form"
+              novalidate>
+          
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 ng-if="!adminUserCtrl.user.enabled" class="modal-title">Activar usuario</h4>
+            <h4 ng-if="adminUserCtrl.user.enabled" class="modal-title">Desactivar usuario</h4>
+          </div>
+          
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div ng-if="!adminUserCtrl.user.enabled" class="col-sm-12">
+                    Est&aacute; seguro que desea activar el usuario: {{adminUserCtrl.user.name}} {{adminUserCtrl.user.surname}}?
+                  </div>
+                  <div ng-if="adminUserCtrl.user.enabled" class="col-sm-12">
+                    Est&aacute; seguro que desea desactivar el usuario: {{adminUserCtrl.user.name}} {{adminUserCtrl.user.surname}}?
+                  </div>                  
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button ng-if="!adminUserCtrl.user.enabled" type="submit" class="btn btn-primary">Activar</button>
+            <button ng-if="adminUserCtrl.user.enabled" type="submit" class="btn btn-primary">Desactivar</button>            
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>

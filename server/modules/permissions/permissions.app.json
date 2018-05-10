@@ -1,0 +1,5 @@
+{
+  "permissions": [
+    "route:create"
+  ]
+}

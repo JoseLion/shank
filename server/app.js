@@ -17,6 +17,13 @@ import { CronJob } from 'cron';
 import handleMongoError from './service/handleMongoError';
 import AssignPoints from './service/assignPoints';
 
+import db_config from './config/database';
+
+//DeprecationWarning: Mongoose: mpromise (mongoose's default promise library)
+mongoose.Promise = global.Promise;
+
+//Must come AFTER require('express') and BEFORE any routes
+require('./helpers/custom.response');
 
 /**
 * Custom prototypes
@@ -31,22 +38,33 @@ if (!Array.prototype.asyncForEach) {
 
 let app = express();
 
-const databaseUri = 'mongodb://localhost:27017/shank';
-mongoose.Promise = global.Promise;
-mongoose.connect(databaseUri, {}).then(async () => {
-	console.log(`Database connected at ${databaseUri}`);
+let environment = app.get('env');
+let testing_preview_or_production = (environment === 'production' || environment === 'preproduction' || environment === 'testing');
 
-	let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
-	console.log("Tournaments updated! (Total: " + tournaments.length + ")");
+let database_uri = db_config[environment].uri;
+let options = {};
 
-	let players = await fantasy.updatePlayers().catch(error => console.log("Error fetching from fantasydata.net: ", error));
-	console.log("Players updated! (Total: " + players.length + ")");
+if (testing_preview_or_production) {
+  options.user = process.env.DB_USER;
+  options.pass = process.env.DB_PASS;
+}
 
-	let total = await fantasy.updateLeaderboard();
-	console.log("Updated " + total + " leaderboards in all tournaments!");
-}).catch(err => console.log(`Database connection error: ${err.message}`));
+mongoose.connect(database_uri, {})
+  .then(async() => {
+    console.log(`Database connected at ${database_uri}`);
+    
+    /*let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
+    console.log("Tournaments updated! (Total: " + tournaments.length + ")");
+  
+    let players = await fantasy.updatePlayers().catch(error => console.log("Error fetching from fantasydata.net: ", error));
+    console.log("Players updated! (Total: " + players.length + ")");
+  
+    let total = await fantasy.updateLeaderboard();
+    console.log("Updated " + total + " leaderboards in all tournaments!");*/
+  })
+  .catch(err => console.log(`Database connection error: ${err.message}`));
 
-customResponses(path.join(__dirname, '/modules/responses'));
+//customResponses(path.join(__dirname, '/modules/responses'));
 
 app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
