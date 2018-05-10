@@ -2,11 +2,11 @@ let mongoose = require('mongoose');
 let multer = require('multer');
 let fs = require('fs-extra');
 
-let User = mongoose.model('User');
+let App_User = mongoose.model('App_User');
 let Profile = mongoose.model('Profile');
 let path = '/users';
 
-let router = require('../core/routes.js')(User, '/users');
+let router = require('../core/routes.js')(App_User, '/users');
 let auth = require('../../config/auth');
 
 let constants = require('../../config/constants');
@@ -34,7 +34,7 @@ let prepareRouter = function (app) {
         return;
       }
       req.body.profile = profile;
-      User.find(req.body).populate('profile').exec((err, users) => {
+      App_User.find(req.body).populate('profile').exec((err, users) => {
         if(err) {
           res.serverError();
           return;
@@ -45,13 +45,13 @@ let prepareRouter = function (app) {
     });
   })
   .post(`${path}/save`, auth, (req, res) => {
-    User.findOne({email: req.body.email}).exec((err, user) => {
+    App_User.findOne({email: req.body.email}).exec((err, user) => {
       if(err) {
         res.serverError();
         return;
       }
 
-      User.findByIdAndUpdate(req.body._id, { $set : req.body }, { new: true }, (err, final) => {
+      App_User.findByIdAndUpdate(req.body._id, { $set : req.body }, { new: true }, (err, final) => {
         if(err) {
           res.serverError();
           return;
@@ -63,12 +63,12 @@ let prepareRouter = function (app) {
   })
 
   .post(`${path}/register`, function (req, res) {
-    User.findOne({email: req.body.email})
+    App_User.findOne({email: req.body.email})
     .exec((err, user) => {
       if(err) { res.serverError(); console.log("Error 1: ", err); return; }
       if(user) { res.ok({}, 'The email entered is already used.'); return; }
 
-      let userModel = new User(req.body);
+      let userModel = new App_User(req.body);
       userModel.setPassword(req.body.password);
       userModel.save((err, userFinal) => {
         if(err) { res.serverError(); console.log("Error 2: ", err); return; }
@@ -78,7 +78,7 @@ let prepareRouter = function (app) {
     });
   })
   .post(`${path}/facebookSignin`, function (req, res) {
-    User.findOne({email: req.body.email})
+    App_User.findOne({email: req.body.email})
     .exec(function(err, user) {
       if(err) { res.serverError(); return; }
 
@@ -90,9 +90,9 @@ let prepareRouter = function (app) {
         user.fullName = req.body.fullName;
         user.facebookId = req.body.facebookId;
         user.photo = req.body.photo;
-        userModel = new User(user);
+        userModel = new App_User(user);
       } else {
-        userModel = new User(req.body);
+        userModel = new App_User(req.body);
         userModel.setPassword(req.body.facebookId);
       }
       userModel.save(function(err, userFinal) {
@@ -103,10 +103,10 @@ let prepareRouter = function (app) {
     });
   })
   .post(`${path}/updateApp`, auth, function (req, res) {
-    User.findOne({_id: req.body._id})
+    App_User.findOne({_id: req.body._id})
     .exec(function(err, user) {
       if(err) { res.serverError(); return; }
-      let userModel = new User(user);
+      let userModel = new App_User(user);
       if(req.body.photo) {
         console.log(req.body.photo);
       }
@@ -130,7 +130,7 @@ let prepareRouter = function (app) {
       return;
     }
 
-    User
+    App_User
     .findById(req.payload._id)
     .select('_id name surname email')
     .exec(function (err, user) {
@@ -142,7 +142,7 @@ let prepareRouter = function (app) {
     });
   })
   .get('/allUsers', function (req, res) {
-    User
+    App_User
     .find()
     .select('_id name surname email hash salt enabled type group')
     .exec(function (err, user) {
@@ -170,7 +170,7 @@ let prepareRouter = function (app) {
       }
     }
 
-    User.update({_id: req.payload._id}, data_to_update, function(err, user_updated) {
+    App_User.update({_id: req.payload._id}, data_to_update, function(err, user_updated) {
       if (err) {
         return res.serverError();
       }

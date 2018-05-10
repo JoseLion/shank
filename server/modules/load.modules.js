@@ -7,7 +7,7 @@ import archiveModel from './archive/archive.model';
 import leaderboardModel from './leaderboard/leaderboard.model';
 
 import profileModel from './profiles/profiles.model';
-import userModel from './users/users.model';
+import appUserModel from './app_users/app.users.model';
 import appSettingsModel from './app_settings/app.settings.model';
 import playerModel from './player/player.model';
 
@@ -19,7 +19,7 @@ import archiveRoute from './archive/archive.route';
 import leaderboardRoute from './leaderboard/leaderboard.route';
 
 import profilesRoute from './profiles/profiles.routes';
-import userRoute from './users/users.routes';
+import appUserRoute from './app_users/app.users.routes';
 import appSettingsRoute from './app_settings/app.settings.routes';
 import tournamentSettingsRoute from './tournament_settings/tournament.settings.routes';
 import platerRoute from './player/player.routes';
@@ -36,7 +36,7 @@ export default function(app) {
 	app.use(api_prefix, leaderboardRoute(app));
 
 	app.use(api_prefix, profilesRoute(app));
-	app.use(api_prefix, userRoute(app));
+	app.use(api_prefix, appUserRoute(app));
 	app.use(api_prefix, appSettingsRoute(app));
 	app.use(api_prefix, tournamentSettingsRoute(app));
 	app.use(api_prefix, platerRoute(app));

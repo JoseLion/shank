@@ -4,12 +4,12 @@ import LocalStrategy from 'passport-local';
 import constants from './constants';
 
 let Admin_User = mongoose.model('Admin_User');
-let User = mongoose.model('User');
+let App_User = mongoose.model('App_User');
 const Strategy = LocalStrategy.Strategy;
 
 export default function() {
 	passport.use('app-users', new Strategy({usernameField: 'email'}, function(username, password, done) {
-		User.findOne({ email: username }).populate('profile').exec(function (err, user) {
+		App_User.findOne({ email: username }).exec(function (err, user) {
 			if (err) {
 				return done(err);
 			}

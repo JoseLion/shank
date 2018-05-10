@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 
 const GroupSchema = new mongoose.Schema({
 	status: {type: Boolean, default: true},
-	owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+	owner: {type: mongoose.Schema.Types.ObjectId, ref: 'App_User'},
 	name: String,
 	bet: String,
 	photo: {type: mongoose.Schema.Types.ObjectId, ref: 'Archive'},
 	tournaments: [{
 		tournament: {type: mongoose.Schema.Types.ObjectId, ref: 'Tournament'},
 		leaderboard: [{
-			user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+			user: {type: mongoose.Schema.Types.ObjectId, ref: 'App_User'},
 			score: {type: Number, default: 0},
 			rank: {type: Number, default: 0},
 			roaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}],
