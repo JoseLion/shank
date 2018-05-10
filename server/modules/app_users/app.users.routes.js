@@ -30,13 +30,13 @@ let prepareRouter = function (app) {
   .post(`${path}/findUsers`, auth, (req, res) => {
     Profile.findOne({acronyms: req.body.profile}).exec((err, profile) => {
       if (err) {
-        res.serverError();
+        res.server_error();
         return;
       }
       req.body.profile = profile;
       App_User.find(req.body).populate('profile').exec((err, users) => {
         if(err) {
-          res.serverError();
+          res.server_error();
           return;
         }
         res.ok(users);
@@ -47,13 +47,13 @@ let prepareRouter = function (app) {
   .post(`${path}/save`, auth, (req, res) => {
     App_User.findOne({email: req.body.email}).exec((err, user) => {
       if(err) {
-        res.serverError();
+        res.server_error();
         return;
       }
 
       App_User.findByIdAndUpdate(req.body._id, { $set : req.body }, { new: true }, (err, final) => {
         if(err) {
-          res.serverError();
+          res.server_error();
           return;
         }
         res.ok(final);
@@ -65,22 +65,30 @@ let prepareRouter = function (app) {
   .post(`${path}/register`, function (req, res) {
     App_User.findOne({email: req.body.email})
     .exec((err, user) => {
-      if(err) { res.serverError(); console.log("Error 1: ", err); return; }
-      if(user) { res.ok({}, 'The email entered is already used.'); return; }
+      if (err) {
+        return res.server_error(err);
+      }
+      
+      if (user) {
+        return res.server_error('The email entered is already used');
+      }
 
       let userModel = new App_User(req.body);
       userModel.setPassword(req.body.password);
+      
       userModel.save((err, userFinal) => {
-        if(err) { res.serverError(); console.log("Error 2: ", err); return; }
-        res.ok({user: userFinal, token: userFinal.generateJwt([])});
-        return;
+        if (err) {
+          return res.server_error(err);
+        }
+        
+        res.ok({user: userFinal, token: userFinal.generateJwt()});
       });
     });
   })
   .post(`${path}/facebookSignin`, function (req, res) {
     App_User.findOne({email: req.body.email})
     .exec(function(err, user) {
-      if(err) { res.serverError(); return; }
+      if(err) { res.server_error(); return; }
 
       let userModel;
       if(user && user.facebookId) {
@@ -96,7 +104,7 @@ let prepareRouter = function (app) {
         userModel.setPassword(req.body.facebookId);
       }
       userModel.save(function(err, userFinal) {
-        if(err) { res.serverError(); return; }
+        if(err) { res.server_error(); return; }
         res.ok({user: userFinal, token: userFinal.generateJwt([])});
         return;
       });
@@ -105,7 +113,7 @@ let prepareRouter = function (app) {
   .post(`${path}/updateApp`, auth, function (req, res) {
     App_User.findOne({_id: req.body._id})
     .exec(function(err, user) {
-      if(err) { res.serverError(); return; }
+      if(err) { res.server_error(); return; }
       let userModel = new App_User(user);
       if(req.body.photo) {
         console.log(req.body.photo);
@@ -118,7 +126,7 @@ let prepareRouter = function (app) {
       userModel.cellPhone = req.body.cellPhone;
 
       userModel.save(function(err, userFinal) {
-        if(err) { res.serverError(); return; }
+        if(err) { res.server_error(); return; }
         res.ok(userFinal);
         return;
       });
@@ -172,7 +180,7 @@ let prepareRouter = function (app) {
 
     App_User.update({_id: req.payload._id}, data_to_update, function(err, user_updated) {
       if (err) {
-        return res.serverError();
+        return res.server_error();
       }
 
       res.ok({});

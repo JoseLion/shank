@@ -35,7 +35,7 @@ export default function(app) {
 		group = await Group.create(group).catch(handleMongoError);
 		
 		if (!group) {
-			response.serverError();
+			response.server_error();
 		}
 
 		response.ok(group);
@@ -85,7 +85,7 @@ export default function(app) {
 
 			response.ok(userGroups);
 		} else {
-			response.serverError("Sorry! The group could not be found...");
+			response.server_error("Sorry! The group could not be found...");
 		}
 	});
 

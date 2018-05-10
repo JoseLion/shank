@@ -11,7 +11,7 @@ module.exports = (app) => {
       Player.find().exec((err, players) => {
         if(err) {
           console.error('ERROR! ', err);
-          res.serverError();
+          res.server_error();
           return;
         }
         res.ok(players);
@@ -19,7 +19,7 @@ module.exports = (app) => {
       });
     } catch (e) {
       console.error('FATAL! ', e);
-      res.serverError();
+      res.server_error();
       return;
     }
   })
@@ -28,7 +28,7 @@ module.exports = (app) => {
       Player.remove((err) => {
         if(err) {
           console.error('ERROR! ', err);
-          res.serverError();
+          res.server_error();
           return;
         }
         res.ok({success: true});
@@ -36,7 +36,7 @@ module.exports = (app) => {
       });
     } catch (e) {
       console.error('FATAL! ', e);
-      res.serverError();
+      res.server_error();
       return;
     }
   })
@@ -53,7 +53,7 @@ module.exports = (app) => {
           playerModel.save((err, finalModel) => {
             if(err) {
               console.error('ERROR! ', err);
-              res.serverError();
+              res.server_error();
               return;
             }
             res.ok(finalModel);
@@ -66,7 +66,7 @@ module.exports = (app) => {
       });
     } catch (e) {
       console.error('FATAL! ', e);
-      res.serverError();
+      res.server_error();
       return;
     }
   });

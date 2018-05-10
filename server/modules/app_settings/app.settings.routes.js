@@ -15,7 +15,7 @@ module.exports = function (app) {
     let data = req.params;
     App_Setting.findOne({code: data.code})
     .exec(function(err, setting) {
-      if(err) { res.serverError(); return; }
+      if(err) { res.server_error(); return; }
       res.ok(setting);
       return;
     });
@@ -28,12 +28,12 @@ module.exports = function (app) {
     for(let dataSet in data) {
       App_Setting.findOne({code: data[dataSet].code})
       .exec(function(err, setting) {
-        if(err) { res.serverError(); return; }
+        if(err) { res.server_error(); return; }
         if(setting) {
           console.log('UPDATE SETTING: ', setting)
           let toSave = { $set : {value: data[dataSet].value} }
           App_Setting.findByIdAndUpdate(setting._id, toSave, {new: true}, function(finalError, finalSetting) {
-            if(finalError) { res.serverError(); return; }
+            if(finalError) { res.server_error(); return; }
             counter++;
             if(counter === 7) { res.ok('Information saved.'); return; }
           });
@@ -41,7 +41,7 @@ module.exports = function (app) {
           let newSetting = new App_Setting(data[dataSet]);
           console.log('DEFINE NEW SETTING: ', newSetting)
           newSetting.save(function(error) {
-            if(err) { res.serverError(); return; }
+            if(err) { res.server_error(); return; }
             counter++;
             if(counter === 7) { res.ok('Information saved.'); return; }
           });
@@ -54,19 +54,19 @@ module.exports = function (app) {
     let data = req.body;
     App_Setting.findOne({code: data.code})
     .exec(function(err, setting) {
-      if(err) { res.serverError(); return; }
+      if(err) { res.server_error(); return; }
       let toSave;
       if(setting) {
         let toSave = { $set : {value: data.value} }
         App_Setting.findByIdAndUpdate(setting._id, toSave, {new: true}, function(finalError, finalSetting) {
-          if(finalError) { res.serverError(); return; }
+          if(finalError) { res.server_error(); return; }
           res.ok(finalSetting);
           return;
         });
       } else {
         let newSetting = new App_Setting(data);
         newSetting.save(function(error) {
-          if(err) { res.serverError(); return; }
+          if(err) { res.server_error(); return; }
           res.ok(newSetting);
           return;
         });

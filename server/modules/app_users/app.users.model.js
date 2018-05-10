@@ -22,15 +22,7 @@ let App_UserSchema = new mongoose.Schema({
 });
 
 App_UserSchema.pre('save', async function(next) {
-	const Profile = mongoose.model('Profile');
-	this.fullName = this.fullName.trim();
-	this.email = this.email.trim();
-
-	if (!this.profile) {
-		let profile = await Profile.findOne({acronyms: 'public'}).catch(error => this.profile = null);
-		this.profile = profile._id;
-		next();
-	}
+	next();
 });
 
 App_UserSchema.methods.setPassword = function(password) {
