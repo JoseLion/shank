@@ -27,32 +27,24 @@ export const TabNav = TabNavigator({
 	swipeEnabled: false,
 	tabBarOptions: {
 		activeTintColor: AppConst.COLOR_WHITE,
-		activeBackgroundColor: AppConst.COLOR_BLUE,
-		inactiveTintColor: AppConst.COLOR_BLUE,
-		inactiveBackgroundColor: AppConst.COLOR_GRAY,
+		inactiveTintColor: AppConst.COLOR_GRAY,
 		showIcon: true,
 		showLabel: true,
 		upperCaseLabel: false,
 		indicatorStyle: {
 			backgroundColor: AppConst.COLOR_BLUE,
-			height: '100%'
+			height: 0
 		},
 		style: {
-			backgroundColor: AppConst.COLOR_GRAY
+			backgroundColor: AppConst.COLOR_BLUE
 		},
 		labelStyle: {
 			fontFamily: Style.CENTURY_GOTHIC,
 			fontSize: Style.FONT_15,
-			marginBottom: Style.EM(-0.1)
-		},
-		iconStyle: {
-			width: Style.EM(2.2),
-			height: Style.EM(2.2),
-			marginBottom: Style.EM(-0.75)
+			marginTop: 0
 		},
 		tabStyle: {
-			paddingVertical: '2.5%',
-			marginBottom: Style.EM(0.5)
+			paddingVertical: '7.5%',
 		}
 	}
 });

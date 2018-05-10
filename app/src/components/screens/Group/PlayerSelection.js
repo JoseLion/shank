@@ -1,16 +1,18 @@
 // React components:
 import React from 'react';
 import { Text, TouchableHighlight, TouchableOpacity, View, TextInput, Image, FlatList } from 'react-native';
-import DropdownAlert from 'react-native-dropdownalert';
+import ImageLoad from 'react-native-image-placeholder';
 
 // Shank components
-import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages } from '../BaseComponent';
+import handleError from "Core/handleError";
 import ViewStyle from './styles/playerSelectionStyle';
 
 // Images
-import SearchIcon from '../../../../resources/search-icon.png';
-import CheckWhiteIcon from '../../../../resources/check-white-icon.png';
-import CheckGreenIcon from '../../../../resources/check-green-icon.png';
+import SearchIcon from 'Res/search-icon.png';
+import CheckWhiteIcon from 'Res/check-white-icon.png';
+import CheckGreenIcon from 'Res/check-green-icon.png';
+import UserIcon from 'Res/user-icon.png';
 
 class PlayerRow extends React.Component {
 	
@@ -45,7 +47,8 @@ class PlayerRow extends React.Component {
 			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.onPress}>
 				<View style={[ViewStyle.cellView]}>
 					<View style={{flex: 1}}>
-						<Image source={{uri: this.state.cross.player && this.state.cross.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.playerImage} />
+						<ImageLoad style={ViewStyle.playerImage} source={{uri: this.state.cross.player && this.state.cross.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'}
+						placeholderSource={UserIcon} placeholderStyle={ViewStyle.playerImage} />
 					</View>
 
 					<View style={{flex: 6}}>
@@ -112,9 +115,7 @@ export default class PlayerSelection extends BaseComponent {
 		this.playerSelected = this.playerSelected.bind(this);
 		this.searchChanged = this.searchChanged.bind(this);
 		this.done = this.done.bind(this);
-		this.handleError = this.handleError.bind(this);
 		this.state = {
-			isLoading: false,
 			selectCount: 0,
 			position: this.props.navigation.state.params.position,
 			group: this.props.navigation.state.params.group,
@@ -181,12 +182,12 @@ export default class PlayerSelection extends BaseComponent {
 			this.props.navigation.state.params.managePlayersCallback(this.roaster, true);
 			this.props.navigation.goBack();
 		} else {
-			this.setState({isLoading: true});
+			global.setLoading(true);
 			const tournamentId = this.state.group.tournaments[this.state.tournamentIndex].tournament._id;
-			const group = await BaseModel.post(`group/updateMyRoaster/${this.state.group._id}/${tournamentId}`, {roaster: this.roaster}).catch(this.handleError);
+			const group = await BaseModel.post(`group/updateMyRoaster/${this.state.group._id}/${tournamentId}`, {roaster: this.roaster}).catch(handleError);
 			
 			this.props.navigation.state.params.managePlayersCallback(group, false);
-			this.setState({isLoading: false});
+			global.setLoading(false);
 			this.props.navigation.goBack();
 		}
 	}
@@ -202,16 +203,11 @@ export default class PlayerSelection extends BaseComponent {
 		return false;
 	}
 
-	handleError(error) {
-		this.setState({isLoading: false});
-		this.dropDown.alertWithType('error', "Error", error);
-	}
-
 	async componentDidMount() {
 		this.props.navigation.setParams({searchChanged: this.searchChanged});
 
-		this.setState({isLoading: true});
-		let leaderboard = await BaseModel.get('leaderboard/findByTournament/' + this.state.group.tournaments[this.state.tournamentIndex].tournament._id).catch(this.handleError);
+		global.setLoading(true);
+		let leaderboard = await BaseModel.get('leaderboard/findByTournament/' + this.state.group.tournaments[this.state.tournamentIndex].tournament._id).catch(handleError);
 		leaderboard = leaderboard.filter(cross => {
 			let isInRoaster = false;
 
@@ -225,15 +221,14 @@ export default class PlayerSelection extends BaseComponent {
 			return !isInRoaster;
 		});
 
-		this.setState({leaderboard: leaderboard, isLoading: false});
+		this.setState({leaderboard: leaderboard});
 		this.searchList = [...this.state.leaderboard];
+		global.setLoading(false);
 	}
 
 	render() {
 		return (
 			<View style={[ViewStyle.mainContainer]}>
-				<Spinner visible={this.state.isLoading} animation='fade' />
-
 				<Text style={[ViewStyle.tournamentName]}>{this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
 
 				<View style={[ViewStyle.headerView]}>
@@ -255,8 +250,6 @@ export default class PlayerSelection extends BaseComponent {
 						</TouchableOpacity>
 					</View>
 				: null}
-
-				<DropdownAlert ref={ref => this.dropDown = ref} />
 			</View>
 		);
 	}

@@ -36,14 +36,14 @@ mongoose.Promise = global.Promise;
 mongoose.connect(databaseUri, {}).then(async () => {
 	console.log(`Database connected at ${databaseUri}`);
 
-	/*let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
+	let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
 	console.log("Tournaments updated! (Total: " + tournaments.length + ")");
 
 	let players = await fantasy.updatePlayers().catch(error => console.log("Error fetching from fantasydata.net: ", error));
 	console.log("Players updated! (Total: " + players.length + ")");
 
 	let total = await fantasy.updateLeaderboard();
-	console.log("Updated " + total + " leaderboards in all tournaments!");*/
+	console.log("Updated " + total + " leaderboards in all tournaments!");
 }).catch(err => console.log(`Database connection error: ${err.message}`));
 
 customResponses(path.join(__dirname, '/modules/responses'));
