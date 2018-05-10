@@ -41,7 +41,7 @@ App_UserSchema.methods.validPassword = function(password) {
 	return this.hash === hash;
 }
 
-App_UserSchema.methods.generateJwt = function() {
+App_UserSchema.methods.generateJwt = function(permissions) {
 	let expiry = new Date();
 	expiry.setDate(expiry.getDate() + 10000);
 
@@ -50,6 +50,7 @@ App_UserSchema.methods.generateJwt = function() {
 		email: this.email,
 		fullName: this.fullName,
 		exp: parseInt(expiry.getTime() / 1000),
+		permissions: permissions
 	}, configJWT.TOKEN_SECRET);
 }
 
