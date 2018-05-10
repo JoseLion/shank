@@ -21,7 +21,7 @@ export default StyleSheet.create({
 	headerPlaceholder: {
 		flex: 1,
 		aspectRatio: 1280/720,
-		resizeMode: 'cover'
+		resizeMode: 'contain'
 	},
 	headerGradient: {
 		width: '100%',
@@ -83,7 +83,7 @@ export default StyleSheet.create({
 		width: '47.5%'
 	},
 	gridItemView: {
-		paddingVertical: '5%'
+		paddingVertical: '5%',
 	},
 	gridItemImageView: {
 		flexDirection: 'row'
@@ -96,7 +96,7 @@ export default StyleSheet.create({
 	gridItemPlaceholder: {
 		flex: 1,
 		aspectRatio: 1280/720,
-		resizeMode: 'cover'
+		resizeMode: 'contain'
 	},
 	gridItemGradient: {
 		width: '100%',
