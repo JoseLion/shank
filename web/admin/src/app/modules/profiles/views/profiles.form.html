@@ -1,6 +1,6 @@
 <div class="col-lg-12 col-md-12 col-sm-12">
   <div class="form-group">
-    <label class="col-lg-1 col-md-3 control-label" for="profile_name">Perfil:</label>
+    <label class="col-lg-1 col-md-3 control-label" for="profile_name">Profile:</label>
     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
       <input validation
              type="text"
@@ -18,13 +18,13 @@
 
 <div class="col-lg-12 col-md-12 col-sm-12">
   <div class="form-group">
-    <label class="col-lg-2 col-md-2 col-sm-2 control-label">PERMISOS:</label>
+    <label class="col-lg-2 col-md-2 col-sm-2 control-label">PERMISSIONS:</label>
     <div class="col-lg-10 col-md-10 col-sm-10">
       <input icheck
              type="checkbox"
              name="all_permissions"
              ng-model="profileCtrl.is_checked_all_modules"
-             ng-change="profileCtrl.check_permissions_all_modules()" />&nbsp;&nbsp;Todos
+             ng-change="profileCtrl.check_permissions_all_modules()" />&nbsp;&nbsp;All
     </div>
   </div>
 </div>
@@ -44,7 +44,7 @@
                          type="checkbox"
                          name="module_permission_{{module.module_id}}"
                          ng-model="module.is_checked"
-                         ng-change="profileCtrl.check_permissions_by_module(module)" />&nbsp;&nbsp;Todos
+                         ng-change="profileCtrl.check_permissions_by_module(module)" />&nbsp;&nbsp;All
                 </label>
               </div>
             </div>
