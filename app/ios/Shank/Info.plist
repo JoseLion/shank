@@ -58,6 +58,10 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>192.168.10.152</key>
+			<dict/>
+			<key>NSExceptionAllowsInsecureHTTPLoads</key>
+			<true/>
 			<key>levelaptesting.com</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
