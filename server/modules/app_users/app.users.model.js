@@ -4,22 +4,18 @@ import jwt from 'jsonwebtoken';
 import configJWT from '../../config/jwt';
 
 let App_UserSchema = new mongoose.Schema({
-	status: {type: Boolean, default: true},
-	photo: {type: mongoose.Schema.Types.ObjectId, ref: 'Archive'},
 	fullName: String,
+	photo: {type: mongoose.Schema.Types.ObjectId, ref: 'Archive'},
 	gender: String,
 	country: String,
 	email: {type: String, unique: true, required: true, index: true},
 	facebookId: String,
 	pushToken: String,
 	hash: String,
-	salt: String
-}, {
-	timestamps: {
-		createdAt: 'created_at',
-		updatedAt: 'updated_at'
-	}
-});
+	salt: String,
+	enabled: {type: Boolean, default: true}
+},
+{ timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}});
 
 App_UserSchema.pre('save', async function(next) {
 	next();

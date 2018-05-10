@@ -52,7 +52,7 @@ export default function() {
           });
         }
         else {
-          res.not_found('User not found.');
+          res.not_found('User disabled.');
         }
       }
       else {
@@ -91,7 +91,7 @@ export default function() {
           });
         }
         else {
-          res.not_found('User not found.');
+          res.not_found('User disabled.');
         }
       }
       else {

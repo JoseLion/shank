@@ -23,7 +23,7 @@ let Admin_UserSchema = new mongoose.Schema({
   hash: String,
   enabled: {type: Boolean, default: true}
 },
-{ timestamps: { createdAt: 'created_at' } });
+{ timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}});
 
 Admin_UserSchema.post('save', (error, doc, next) => {
   if (error.name === 'BulkWriteError' && error.code === 11000) {
