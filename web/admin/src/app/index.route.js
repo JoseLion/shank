@@ -28,10 +28,16 @@
         title: 'Perfiles',
         template: '<div ui-view></div>'
       })
-      .state('admin.tournament', {
-        url: '/tournament',
+      .state('admin.tournaments', {
+        url: '/tournaments',
         abstract: true,
         title: 'Tournament',
+        template: '<div ui-view></div>'
+      })
+      .state('admin.administration', {
+        url: '/administration',
+        abstract: true,
+        title: 'Administration',
         template: '<div ui-view></div>'
       })
       .state('home', {

@@ -6,7 +6,7 @@
   .controller('tournamentSettingsController', tournamentSettingsController)
   .config(function($stateProvider) {
     $stateProvider
-      .state('admin.tournament.settings', {
+      .state('admin.tournaments.settings', {
         url: '/settings',
         title: 'Tournament Settings',
         templateUrl: 'app/modules/tournament_settings/views/tournament.settings.html',
