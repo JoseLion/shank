@@ -19,6 +19,7 @@
     var vm = this;
     vm.tournament = {};
     vm.years = [];
+    vm.time = '02:40PM';
     
     var i;
     var start_year = 2016;
