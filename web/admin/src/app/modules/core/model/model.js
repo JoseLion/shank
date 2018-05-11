@@ -3,7 +3,7 @@
   'use strict';
   
   angular.module('core.model')
-  .factory('base_model', function($http, $q, $document, $rootScope, _, ApiHost, Notifier) {
+  .factory('base_model', function($http, $q, $document, $rootScope, ApiHost, Upload, Notifier, _) {
   
     var method_map = {
       get: 'get',
@@ -24,6 +24,34 @@
         return $q.reject(response.data.errors);
       };
     };
+    
+    function request_multipart(method, resource, params) {
+      var path = ApiHost + resource;
+      
+      //var req = {
+      //    method: method,
+      //    url: path,
+      //    headers: {
+      //      'Content-Type': undefined
+      //    },
+      //    enctype: 'multipart/form-data',
+      //    data: params,
+      //    transformRequest: angular.identity
+      //};
+      //
+      //return $http(req)
+      //.then(handle_errors(method, resource));
+      
+      return Upload.upload({
+          url: path,
+          data: params
+      }).then(handle_errors(method, resource), function (resp) {
+        console.log('Error status: ' + resp.status);
+      }, function () {
+        //var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+        //console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+      });
+    }
     
     function request(method, resource, params) {
       var path = ApiHost + resource;
@@ -62,7 +90,11 @@
             
             return [];
           });
-        }
+        },
+        
+        multipart: function(params) {
+          return request_multipart('post', resource, params);
+        },
       };
     };
   });
