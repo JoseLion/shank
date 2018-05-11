@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+/*import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
-});
+});*/

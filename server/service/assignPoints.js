@@ -4,13 +4,13 @@ import handleMongoError from './handleMongoError';
 const Tournament = mongoose.model('Tournament');
 const Leaderboard = mongoose.model('Leaderboard');
 const Group = mongoose.model('Group');
-const AppSetting = mongoose.model('AppSetting');
+const App_Setting = mongoose.model('App_Setting');
 
 export default async function(tournamentId, roundNumber) {
 	let tournament = await Tournament.findById(tournamentId).catch(handleMongoError);
 	const tournamentLeaderboard = await Leaderboard.find({tournament: tournamentId, rank: {$ne: null}}).sort({rank: 1}).catch(handleMongoError);
-	const points = await AppSetting.find({code: /PTS.*/}).sort({value: -1}).catch(handleMongoError);
-	const fines = await AppSetting.find({code: /FND.*/}).sort({value: 1}).catch(handleMongoError);
+	const points = await App_Setting.find({code: /PTS.*/}).sort({value: -1}).catch(handleMongoError);
+	const fines = await App_Setting.find({code: /FND.*/}).sort({value: 1}).catch(handleMongoError);
 
 	let leaders = filterLeaders(tournamentLeaderboard);
 

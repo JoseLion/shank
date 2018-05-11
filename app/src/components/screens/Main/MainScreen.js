@@ -7,11 +7,11 @@ import Swipeable from 'react-native-swipeable';
 import { BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, MainStyles, Spinner } from '../BaseComponent';
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
-import PlusIcon from '../../../../resources/plus-icon.png';
-import UserIcon from '../../../../resources/user-icon.png';
-import GroupIcon from '../../../../resources/group-icon.png';
-import GroupIconO from '../../../../resources/group-icon-o.png';
-import RightCaretIcon from '../../../../resources/right-caret-icon.png';
+import PlusIcon from 'Res/plus-icon.png';
+import UserIcon from 'Res/user-icon.png';
+import GroupsTabOn from 'Res/groups-tab-on.png';
+import GroupsTabOff from 'Res/groups-tab-off.png';
+import RightCaretIcon from 'Res/right-caret-icon.png';
 
 export default class MainScreen extends BaseComponent {
 
@@ -37,7 +37,7 @@ export default class MainScreen extends BaseComponent {
 				</TouchableOpacity>
 			),
 			tabBarLabel: 'Groups',
-			tabBarIcon: ({tintColor}) => (<Image style={ViewStyle.tabIcon} source={tintColor == AppConst.COLOR_WHITE ? GroupIcon : GroupIconO} resizeMode={'contain'} resizeMethod={'resize'} />)
+			tabBarIcon: ({tintColor}) => (<Image style={ViewStyle.tabIcon} source={tintColor == AppConst.COLOR_WHITE ? GroupsTabOn : GroupsTabOff} resizeMode={'contain'} resizeMethod={'resize'} />)
 		};
 	};
 

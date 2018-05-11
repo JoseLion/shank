@@ -60,6 +60,7 @@ const ViewStyle = StyleSheet.create({
 	mainContainer: {
 		flex:1,
 		width:'100%',
+		height: '100%',
 		backgroundColor: AppConst.COLOR_WHITE
 	},
 	tournamentName: {
@@ -72,21 +73,20 @@ const ViewStyle = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginTop: '2%',
-		paddingBottom: '2%',
 		borderBottomWidth: 0.5,
 		borderColor: AppConst.COLOR_GRAY,
 		paddingHorizontal: widthSpace
 	},
 	headerText: {
 		fontFamily: Style.CENTURY_GOTHIC,
-		fontSize: Style.FONT_16
+		fontSize: Style.FONT_16,
+		marginBottom: '2%'
 	},
 	saveView: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingVertical: '2.5%',
-		paddingHorizontal: '7.5%'
+		paddingHorizontal: '7.5%',
+		marginTop: '-2%'
 	},
 	searchInputView: {
 		width: (containerWidth * 0.80),

@@ -1,0 +1,95 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>Administration</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a ui-sref="admin.dashboard">Dashboard</a>
+      </li>
+      <li class="active">
+        <strong>Tournament settings</strong>
+      </li>
+    </ol>
+  </div>
+  
+  <div class="col-lg-2">
+  </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <form class="form-horizontal"
+                name="form_create_admin_user"
+                validate-form="tournamentSettingsCtrl.save()"
+                role="form"
+                novalidate>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-sm-4 control-label text-right">POINTS: </label>
+                </div>
+                
+                <div class="form-group" ng-repeat="position in tournamentSettingsCtrl.points.values track by $index">
+                  <label class="col-sm-4 control-label text-right" for="position_{{$index}}">Position {{($index + 1)}}: </label>
+                  <div class="col-sm-6">
+                    <input validation
+                           decimal
+                           type="text"
+                           id="position_{{$index}}"
+                           name="position_{{$index}}"
+                           ng-model="position.value"
+                           class="form-control"
+                           maxlength="255"
+                           required="" />
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-sm-6 control-label text-right">FINES: </label>
+                  <div class="col-md-2 col-xs-2 text-right">
+                    <span ng-click="tournamentSettingsCtrl.add_round()">
+                      <i class="fa fa-plus-circle font-25"></i>
+                    </span>
+                  </div>
+                </div>
+                
+                <!--<div class="table-responsive">-->
+                  <div class="form-group" ng-repeat="round in tournamentSettingsCtrl.fines_percentage.values track by $index">
+                    <label class="col-sm-3 control-label text-right" for="round_{{$index}}">R{{($index + 1)}}: </label>
+                    <div class="col-sm-6">
+                      <input validation
+                             type="text"
+                             id="round_{{$index}}"
+                             name="round_{{$index}}"
+                             ng-model="round.value"
+                             class="form-control"
+                             maxlength="255"
+                             required="" />
+                    </div>
+                    <div class="col-sm-1 no-left-padding" ng-if="($index > 3 && tournamentSettingsCtrl.fines_percentage.values.length > 4)">
+                      <span ng-click="tournamentSettingsCtrl.remove_round(round)">
+                        <i class="fa fa fa-trash-o fa-lg text-danger"></i>
+                      </span>
+                    </div>
+                  </div>
+                <!--</div>-->
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary">Save</button>              
+                <button class="btn btn-default" ui-sref="admin.dashboard">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

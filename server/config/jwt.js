@@ -1,3 +1,3 @@
 module.exports = {
-  TOKEN_SECRET: process.env.TOKEN_SECRET || "tokendevWWF"
+  TOKEN_SECRET: process.env.TOKEN_SECRET || "secretTokenForDevelopment"
 };

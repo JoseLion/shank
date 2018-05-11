@@ -1,0 +1,118 @@
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_year">Year: </label>
+  <div class="col-sm-4">
+    <select validation
+            chosenselect
+            data-placeholder="Seleccione"
+            class="form-control m-b"
+            id="tournament_year"
+            name="tournament_year"
+            ng-model="tournamentsCtrl.tournament.year"
+            ng-options="year as year for year in tournamentsCtrl.years">
+      <option value=""></option>
+    </select>
+  </div>
+  <div class="col-sm-2">
+    <button type="button" class="btn btn-primary" ng-click="tournamentsCtrl.get_tournaments()">Search Tournament</button>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_surname">Surname: </label>
+  <div class="col-sm-6">
+    <input validation
+           type="text"
+           id="tournament_surname"
+           name="tournament_surname"
+           ng-model="tournamentsCtrl.tournament.surname"
+           class="form-control"
+           maxlength="255"
+           required="" />
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_email">Email: </label>
+  <div class="col-sm-6">
+    <input validation
+           type="email"
+           id="tournament_email"
+           name="tournament_email"
+           ng-model="tournamentsCtrl.tournament.email"
+           class="form-control"
+           maxlength="255"
+           required="" />
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_cell_phone">Cell phone: </label>
+  <div class="col-sm-6">
+    <input validation
+           integer
+           type="text"
+           id="tournament_cell_phone"
+           name="tournament_cell_phone"
+           ng-model="tournamentsCtrl.tournament.cell_phone"
+           class="form-control"
+           maxlength="255"
+            />
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div ng-if="tournamentsCtrl.controller == 'update'" class="form-group">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-5">
+    <label><input type="checkbox" ng-click="tournamentsCtrl.change_password()" class="i-checks">&nbsp;&nbsp;Change password</label>
+  </div>
+</div>
+
+<div ng-if="tournamentsCtrl.update_password" class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_password">Password: </label>
+  <div class="col-sm-5">
+    <input validation
+           password
+           type="password"
+           id="tournament_password"
+           name="tournament_password"
+           ng-model="tournamentsCtrl.tournament.password"
+           class="form-control"
+           maxlength="255"
+           required="" />
+  </div>
+  <div class="col-md-1 col-xs-1 text-right">
+    <div class="levelap-tooltip">
+      <i class="fa fa-question-circle font-25"
+         tooltip-placement="top-right"
+         uib-tooltip="The password must have only letters and numbers, at least 6 characters, with at least one lowercase, one uppercase and one number"
+         tooltip-class="customClass"></i>
+    </div>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_profile">Profile: </label>
+  <div class="col-sm-6">
+    <select validation
+            chosenselect
+            data-placeholder="Seleccione"
+            class="form-control m-b"
+            id="tournament_profile"
+            name="tournament_profile"
+            ng-model="tournamentsCtrl.tournament.profile"
+            ng-options="profile._id as profile.name for profile in tournamentsCtrl.profiles"
+            required>
+      <option value=""></option>
+    </select>
+  </div>
+  <div class="col-sm-2"></div>
+</div>

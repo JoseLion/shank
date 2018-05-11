@@ -1,0 +1,44 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>Create User of System</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a ui-sref="admin.dashboard">Dashboard</a>
+      </li>
+      <li>
+        <a ui-sref="admin.admin_users.list">Users of system</a>
+      </li>
+      <li class="active">
+        <strong>Create</strong>
+      </li>
+    </ol>
+  </div>
+  
+  <div class="col-lg-2">
+  </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <form class="form-horizontal"
+                name="form_create_admin_user"
+                validate-form="adminUserCtrl.save()"
+                role="form"
+                novalidate>
+            
+            <div ng-include src="'app/modules/users/admin/views/admin.users.form.html'"></div>
+            
+            <div class="form-group text-center">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button class="btn btn-default" ui-sref="admin.admin_users.list">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

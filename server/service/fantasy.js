@@ -2,31 +2,25 @@ import mongoose from 'mongoose';
 import fetch from 'node-fetch';
 import AppConst from '../config/constants';
 
+const fantasy_url = 'https://api.fantasydata.net/golf/v2/JSON/Tournaments';
 const options = {method: 'GET',headers: {}};
 options.headers[AppConst.FANTASY_HEADER] = AppConst.FANTASY_KEY;
 
 export default {
-	updateTournaments: async function() {
+	get_tournaments: async function(year) {
 		console.log("Fetching tournaments from fantasydata.net...");
-
-		const Tournament = mongoose.model('Tournament');
-		const today = new Date();
-
-		const response = await fetch(`https://api.fantasydata.net/golf/v2/JSON/Tournaments/${today.getFullYear()}`, options).catch(handleError);
+		
+		let year_of_search = year;
+		
+		if (!year_of_search) {
+			let today = new Date();
+			year_of_search = today.getFullYear();
+		}
+		
+		const response = await fetch(`${fantasy_url}/${year_of_search}`, options).catch(handleError);
 		let json = await response.json().catch(handleError);
 		json = normalizeKeys(json);
-
-		json.asyncForEach(async tournament => {
-			let found = await Tournament.findOne({tournamentID: tournament.tournamentID}).catch(handleError);
-
-			if (found) {
-				found.set(tournament);
-				await found.save().catch(handleError);
-			} else {
-				await Tournament.create(tournament).catch(handleError);
-			}
-		});
-
+		
 		return json;
 	},
 
