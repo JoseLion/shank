@@ -80,7 +80,7 @@ export default class Login extends BaseComponent {
 				}
 			};
 
-			const userInfo = await NoAuthModel.post('users/facebookSignin', data).catch(this.handleError);
+			const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(this.handleError);
 			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
 			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
 			this.setLoading(false);

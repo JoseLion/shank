@@ -2,9 +2,11 @@
 import React from 'react';
 import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View, Linking } from 'react-native';
 import Swipeable from 'react-native-swipeable';
+import PushNotification from 'react-native-push-notification';
 
 // Shank components:
-import { BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, MainStyles, Spinner } from '../BaseComponent';
+import { BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, MainStyles } from '../BaseComponent';
+import handleError from 'Core/handleError';
 import ViewStyle from './styles/mainScreenStyle';
 import qs from 'qs';
 import PlusIcon from 'Res/plus-icon.png';
@@ -51,26 +53,18 @@ export default class MainScreen extends BaseComponent {
 		this.goToGroup = this.goToGroup.bind(this);
 		this.refreshGroups = this.refreshGroups.bind(this);
 		this.handleUrlEvent = this.handleUrlEvent.bind(this);
-		this.handleError = this.handleError.bind(this);
 		this.state = {
-			isLoading: false,
 			groupsRefreshing: false,
 			groups: [],
-
-
-			data: [],
-			page: 1,
-			seed: 1,
-			error: null,
-			refreshing: false,
 			auth: null
 		};
 	}
 
 	async getGroups() {
-		this.setState({isLoading: true});
-		const groups = await BaseModel.get('group/findMyGroups').catch(this.handleError);
-		this.setState({isLoading: false, groups: groups});
+		global.setLoading(true);
+		const groups = await BaseModel.get('group/findMyGroups').catch(handleError);
+		this.setState({ groups });
+		global.setLoading(false);
 	}
 
 	getGroupUserStat(group, key) {
@@ -99,14 +93,15 @@ export default class MainScreen extends BaseComponent {
 			this.swipe.recenter();
 		}
 
-		this.setState({isLoading: true});
-		await BaseModel.delete('group/delete/' + group._id).catch(this.handleError);
+		global.setLoading(true);
+		await BaseModel.delete('group/delete/' + group._id).catch(handleError);
 
 		let index = this.state.groups.indexOf(group);
 		let groups = [...this.state.groups];
 		groups.splice(index, 1);
 
-		this.setState({groups: groups, isLoading: false});
+		this.setState({ groups });
+		global.setLoading(false);
 	}
 
 	goToGroup(group) {
@@ -119,66 +114,67 @@ export default class MainScreen extends BaseComponent {
 
 	async refreshGroups() {
 		this.setState({groupsRefreshing: true});
-		const groups = await BaseModel.get('group/findMyGroups').catch(this.handleError);
+		const groups = await BaseModel.get('group/findMyGroups').catch(handleError);
 		this.setState({groupsRefreshing: false, groups: groups});
 	}
 
 	async handleUrlEvent(event) {
 		if (event) {
-			const url = event.url != null ? event.url : event;
-			const split = url.split('://');
-			console.log("split: ", split);
-			
-			if (split.length > 1) {
-				let data = qs.parse(split[split.length - 1]);
-						
-				if (data.group) {
-					this.setState({isLoading: true});
-					const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(this.handleError);
-					this.setState({isLoading: false, groups: groups});
+			try {
+				const url = event.url != null ? event.url : event;
+				const split = url.split('://');
+				console.log("split: ", split);
+				
+				if (split.length > 1) {
+					let data = qs.parse(split[split.length - 1]);
+							
+					if (data.group) {
+						global.setLoading(true);
+						const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`);
+						this.setState({ groups });
+						global.setLoading(false);
+					}
 				}
+			} catch (error) {
+				handleError(error);
 			}
 		}
-	}
-
-	handleError(error) {
-		this.setState({isLoading: false});
-		this.dropDown.alertWithType('error', "Error", error);
 	}
 
 	async componentDidMount() {
-		const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
-		this.setState({ auth });
-		
-		this.didFocusListener = this.props.navigation.addListener('didFocus', async payload => {
-			if (this.state.auth) {
-				this.getGroups();
-			} else {
-				const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(this.handleError);
-				this.setState({ auth });
-
-				if (this.state.auth) {
-					this.getGroups();
-				} else {
-					this.props.navigation.navigate('Login');
-				}
-			}
-		});
+		if (!this.state.auth) {
+			const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(handleError);
+			this.setState({ auth });
+		}
 
 		if (this.state.auth) {
-			const currentUserJson = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(this.handleError);
+			Linking.addEventListener('url', this.handleUrlEvent);
+			Linking.getInitialURL().then(this.handleUrlEvent).catch(handleError);
+			
+			const currentUserJson = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 			this.currentUser = JSON.parse(currentUserJson);
 
+			console.log("this.currentUser.pushToken: ", this.currentUser.pushToken);
+			if (this.currentUser.notifications == null) {
+				PushNotification.requestPermissions();
+			}
+
 			this.getGroups();
-			this.setState({isLoading: false});
-
-			let self = this;
-
-			Linking.addEventListener('url', this.handleUrlEvent);
-			Linking.getInitialURL().then(this.handleUrlEvent).catch(err => console.log('An error occurred', err));
 		} else {
 			this.props.navigation.navigate('Login');
 		}
+
+		this.didFocusListener = this.props.navigation.addListener('didFocus', async payload => {
+			if (!this.state.auth) {
+				const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(handleError);
+
+				if (!auth) {
+					return this.props.navigation.navigate('Login');
+				}
+
+				this.setState({ auth });
+			}
+		});
 	}
 
 	componentWillUnmount() {
@@ -190,8 +186,6 @@ export default class MainScreen extends BaseComponent {
 		if (this.state.groups && this.state.groups.length > 0) {
 			return (
 				<View style={ViewStyle.mainContainer}>
-					<Spinner visible={this.state.isLoading} animation='fade' />
-
 					<FlatList data={this.state.groups} keyExtractor={item => item._id} renderItem={({item}) => (
 						<Swipeable rightButtons={this.getRemoveButton(item)} rightButtonWidth={120} onRef={ref => this.swipe = ref}>
 							<TouchableHighlight style={ViewStyle.rowButton} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.goToGroup(item)}>
@@ -230,10 +224,7 @@ export default class MainScreen extends BaseComponent {
 		} else {
 			return (
 				<View style={ViewStyle.noDataContainer}>
-					<Spinner visible={this.state.isLoading} animation='fade' />
-					
 					<Text style={ViewStyle.noDataText}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
-
 					<DropdownAlert ref={ref => this.dropDown = ref} />
 				</View>
 			);

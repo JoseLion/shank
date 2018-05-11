@@ -9,8 +9,11 @@ let App_UserSchema = new mongoose.Schema({
 	gender: String,
 	country: String,
 	email: {type: String, unique: true, required: true, index: true},
-	facebookId: String,
-	pushToken: String,
+	isFacebookUser: {type: Boolean, default: false},
+	notifications: {
+		os: String,
+		token: String
+	},
 	hash: String,
 	salt: String,
 	enabled: {type: Boolean, default: true}
