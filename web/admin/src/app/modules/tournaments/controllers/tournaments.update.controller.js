@@ -15,21 +15,23 @@
         resolve: {
           tournament: function(tournaments_model, $stateParams) {
             return tournaments_model.get($stateParams._id);
-          }
+          },
+          
         }
       });
   });
   
   function tournamentsUpdateController($state, $timeout, tournaments_model, tournament, Upload, Notifier) {
     var vm = this;
-    vm.tournament = {};
+    vm.tournament = tournament;
+    console.log(vm.tournament, 'vm.tournament');
     vm.years = [];
     
     var i;
     var start_year = 2016;
     
     for (i = 0; i < 20; i++) {
-      vm.years.push(start_year);
+      vm.years.push(String(start_year));
       start_year++;
     }
     
@@ -51,6 +53,8 @@
         vm.tournaments = data;
       });
     };
+    
+    vm.get_tournaments();
     
     vm.open_search_calendar = function(number) {
       

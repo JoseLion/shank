@@ -6,6 +6,7 @@
     'auth',
     'admin.layout',
     'admin.dashboard',
+    'admin.archives',
     'admin.admin_users',
     'admin.profiles',
     'admin.permissions',

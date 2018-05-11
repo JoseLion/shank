@@ -5,16 +5,17 @@ import fantasy from '../../service/fantasy';
 import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
 import Q from 'q';
+import serverConfig from '../../config/server';
 
 const Tournament = mongoose.model('Tournament');
 const Archive = mongoose.model('Archive');
-const base_path = '/tournaments'
+const base_path = '/tournament'
 const router = express.Router();
 
-export default function(app) {
+export default function() {
 	router.get(`${base_path}/findAll`, auth, async (request, response) => {
 		let tournaments = await Tournament.find({endDate: {$gte: new Date()}}).sort({startDate: 1}).catch(handleMongoError);
-		response.ok(tournaments)
+		response.ok(tournaments);
 	});
 
 	router.get(`${base_path}/updateTournaments`, auth, async (request, response) => {
@@ -22,15 +23,18 @@ export default function(app) {
 		response.ok(tournaments);
 	});
 	
-	router.route(base_path)
-	.get(auth, (req, res) => {
-		Tournament.find({}, (err, data) => {
-			if (err) {
-				return res.server_error(err);
-			}
-			
-			res.ok(data);
-		});
+	router.route('/tournaments')
+	.get(auth, async (req, res) => {
+		let tournaments = await Tournament.find().catch((err) => {res.server_error(err);});
+		
+		res.ok(tournaments);
+	});
+	
+	router.route('/tournaments/:_id')
+	.get(auth, async (req, res) => {
+		let tournament = await Tournament.findOne(req.params).catch((err) => {res.server_error(err);});
+		
+		res.ok(tournament);
 	});
 	
 	router.route('/get_tournaments_from_fantasy')

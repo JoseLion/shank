@@ -91,9 +91,9 @@
   <div class="col-sm-2"></div>
   <label class="col-sm-2 control-label text-right" for="tournament_main_photo">Main photo: </label>
   <div class="col-sm-6">
+    <img ng-if="!tournamentsCtrl.tournament.mainPhoto && !tournamentsCtrl.main_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
+    <img ng-if="tournamentsCtrl.tournament.mainPhoto && !tournamentsCtrl.main_photo_file" ng-src="{{archive_path}}/{{tournamentsCtrl.tournament.mainPhoto}}" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
     <img ng-if="tournamentsCtrl.main_photo_file" ngf-src="tournamentsCtrl.main_photo_file" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
-    <img ng-if="tournamentsCtrl.tournament.document_base && !tournamentsCtrl.main_photo_file" ng-src="{{tournamentsCtrl.tournament.document_base.file_virtual_route}}" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
-    <img ng-if="!tournamentsCtrl.tournament.document_base && !tournamentsCtrl.main_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
     <br/>
     <input type="file"
            id="tournament_main_photo"
@@ -110,9 +110,9 @@
   <div class="col-sm-2"></div>
   <label class="col-sm-2 control-label text-right" for="tournament_secondary_photo">Secondary photo: </label>
   <div class="col-sm-6">
+    <img ng-if="!tournamentsCtrl.tournament.secondaryPhoto && !tournamentsCtrl.secondary_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
+    <img ng-if="tournamentsCtrl.tournament.secondaryPhoto && !tournamentsCtrl.secondary_photo_file" ng-src="{{archive_path}}/{{tournamentsCtrl.tournament.secondaryPhoto}}" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
     <img ng-if="tournamentsCtrl.secondary_photo_file" ngf-src="tournamentsCtrl.secondary_photo_file" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
-    <img ng-if="tournamentsCtrl.tournament.document_base && !tournamentsCtrl.secondary_photo_file" ng-src="{{tournamentsCtrl.tournament.document_base.file_virtual_route}}" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
-    <img ng-if="!tournamentsCtrl.tournament.document_base && !tournamentsCtrl.secondary_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
     <br/>
     <input type="file"
            id="tournament_secondary_photo"
