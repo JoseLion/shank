@@ -145,17 +145,15 @@ export default class Checkout extends BaseComponent {
 
 								<Text style={[ViewStyle.rowName, {flex: 6, textAlign: 'right'}]} numberOfLines={1}>{item.player.firstName + ' ' + item.player.lastName}</Text>
 
-								<Image style={[ViewStyle.exchangeIcon, {flex: 1.5}]} source={ExchangeIcon} resizeMode={'contain'} resizeMethod={'resize'} />
+								<Image style={[ViewStyle.exchangeIcon, {flex: 2}]} source={ExchangeIcon} resizeMode={'contain'} resizeMethod={'resize'} />
 
 								<Text style={[ViewStyle.rowName, {flex: 6}]} numberOfLines={1}>{this.state.originalRoaster[index].player ? (this.state.originalRoaster[index].player.firstName + ' ' + this.state.originalRoaster[index].player.lastName) : 'Empty Slot'}</Text>
-
-								<Text style={[ViewStyle.rowPrice, {flex: 2.5}]} numberOfLines={1}>{this.playerWasChanged(index) ? this.state.priceString : null}</Text>
 							</View>
 						);
 					})}
 
 					<View style={[ViewStyle.totalView]}>
-						<Text style={[ViewStyle.totalLabel]}>Total</Text>
+						<Text style={[ViewStyle.totalLabel]}>Total for {this.movements} movement(s)</Text>
 
 						<Text style={[ViewStyle.totalValue]}>${this.state.total.toFixed(2)}</Text>
 					</View>

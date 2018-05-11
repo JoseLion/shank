@@ -5,6 +5,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import ActionSheet from 'react-native-actionsheet';
 import DropdownAlert from 'react-native-dropdownalert';
 import ImagePicker from 'react-native-image-crop-picker';
+import { EventRegister } from 'react-native-event-listeners';
 
 // Shank components:
 import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid } from '../BaseComponent';
@@ -135,6 +136,7 @@ export default class AddGroup extends BaseComponent {
 		let group = await BaseModel.multipart('group/create', formData).catch(this.handleError);
 		this.setState({isLoading: false});
 		this.props.navigation.goBack(null);
+		EventRegister.emit(AppConst.EVENTS.realodGroups);
 	}
 
 	handleError(error) {

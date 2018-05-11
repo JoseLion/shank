@@ -19,13 +19,6 @@ export const USER_PROFILE = 'shank-profile';
 export const TIME_OUT_NOTIFIER = 10000;
 export const APP_FB_ID = '1840743005946613';
 
-export const API_KEY_SPORT_RADAR = '4a9rhy2uask7zyvw537xvt6q';
-export const DismissKeyboardHOC = (Comp) => {
-    return ({ children, ...props }) => (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <Comp { ...props }>
-                { children }
-            </Comp>
-        </TouchableWithoutFeedback>
-    );
+export const EVENTS = {
+    realodGroups: 'EVT_REOAL_GROUPS'
 };

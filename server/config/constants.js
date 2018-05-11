@@ -8,6 +8,9 @@ const DOC_HOST = `http://docs.${END_POINT}/`;
 export default {
 	FANTASY_HEADER: 'Ocp-Apim-Subscription-Key',
 	FANTASY_KEY: 'c9c0062b61e7427ea036a05ecb8bf11b',/*'2c3eac2a290f44d09305e3f195ef36da',*/
+	APNS_KEY_PATH: './certificates/AuthKey_4NGX852253.p8',
+	APNS_KEY_ID: '4NGX852253',
+	APNS_TEAM_ID: 'X4Q95LZ6Y8',
 
 
 

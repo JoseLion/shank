@@ -2,6 +2,7 @@
 import React from 'react';
 import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View, Linking } from 'react-native';
 import Swipeable from 'react-native-swipeable';
+import { EventRegister } from 'react-native-event-listeners';
 import PushNotification from 'react-native-push-notification';
 
 // Shank components:
@@ -150,6 +151,7 @@ export default class MainScreen extends BaseComponent {
 		if (this.state.auth) {
 			Linking.addEventListener('url', this.handleUrlEvent);
 			Linking.getInitialURL().then(this.handleUrlEvent).catch(handleError);
+			this.realodGroupsEvent = EventRegister.addEventListener(AppConst.EVENTS.realodGroups, this.getGroups);
 			
 			const currentUserJson = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 			this.currentUser = JSON.parse(currentUserJson);
@@ -180,6 +182,7 @@ export default class MainScreen extends BaseComponent {
 	componentWillUnmount() {
 		Linking.removeEventListener('url', e => {});
 		this.didFocusListener.remove();
+		EventRegister.removeEventListener(this.realodGroupsEvent);
 	}
 
 	render() {

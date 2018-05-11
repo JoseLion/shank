@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import express from 'express';
 import auth from '../../config/auth';
 import handleMongoError from '../../service/handleMongoError';
+import apn from 'apn';
+import Constants from '../../config/constants';
 
 const AppUser = mongoose.model('App_User');
 const basePath = '/app_user'
@@ -70,10 +72,26 @@ export default function(app) {
     });
 
     router.get(`/apns/send/:token`, async (request, response) => {
-        
-        
-        return response.ok("OK");
-    })
+        let options = {
+            token: {
+                key: Constants.APNS_KEY_PATH,
+                keyId: Constants.APNS_KEY_ID,
+                teamId: Constants.APNS_TEAM_ID
+            }
+        };
+
+        const apnProvider = new apn.Provider(options);
+        const notif = new apn.Notification();
+        notif.expiry = Math.floor(Date.now() / 1000) + 3600;
+        notif.badge = 1;
+        notif.sound = 'ping.aiff';
+        notif.alert = "You have a new message";
+        notif.payload = {'messageFrom': 'Jose Lion'};
+        notif.topic = 'com.elevision.shank';
+
+        const result = await apnProvider.send(notif, request.params.token);
+        return response.ok(result);
+    });
 
     return router;
 }
