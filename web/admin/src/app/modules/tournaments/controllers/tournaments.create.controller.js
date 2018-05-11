@@ -8,14 +8,14 @@
     $stateProvider
       .state('admin.tournaments.create', {
         url: '/create',
-        title: 'Nuevo Tournament',
+        title: 'Create Tournament',
         templateUrl: 'app/modules/tournaments/views/tournaments.create.html',
         controller: 'tournamentsCreateController',
         controllerAs: 'tournamentsCtrl'
       });
   });
   
-  function tournamentsCreateController($state, $timeout, tournaments_model, Notifier) {
+  function tournamentsCreateController($state, $timeout, tournaments_model, Upload, Notifier) {
     var vm = this;
     vm.tournament = {};
     vm.years = [];
@@ -43,7 +43,6 @@
       
       vm.tournaments = [];
       tournaments_model.get_tournaments_from_fantasy({year: vm.tournament.year}).then(function(data) {
-        console.log(data, '-----------');
         vm.tournaments = data;
       });
     };
@@ -115,6 +114,28 @@
       }
       
       return is_valid_extension;
+    }
+    
+    vm.save = function() {
+      //var form_data = new FormData();
+      
+      //form_data.append('tournament', vm.tournament);
+      //form_data.append('file1', vm.main_photo_file);
+      //form_data.append('file2', vm.secondary_photo_file);
+      var tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
+      if (!tournament_selected) {
+        Notifier.warning({custom_message: 'Tournament not found.'});
+        return;
+      }
+      
+      tournaments_model.create_tournament(prepare_data(tournament_selected)).then(function() {
+        $state.go('admin.tournaments.list');
+      });
+    };
+    
+    function prepare_data(tournament_selected) {
+      vm.tournament = Object.assign(tournament_selected, vm.tournament);
+      return Object.assign({file1: vm.main_photo_file, file2: vm.secondary_photo_file}, vm.tournament);
     }
   }
 })();

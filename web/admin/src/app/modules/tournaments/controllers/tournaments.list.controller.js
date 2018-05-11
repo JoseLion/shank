@@ -2,25 +2,40 @@
   'use strict';
   
   angular
-  .module('admin.tournament.settings')
-  .controller('TournamentsController', TournamentsController)
+  .module('admin.tournaments')
+  .controller('TournamentsListController', TournamentsListController)
   .config(function($stateProvider) {
     $stateProvider
       .state('admin.tournaments.list', {
         url: '/list',
         title: 'Tournaments',
         templateUrl: 'app/modules/tournaments/views/tournaments.list.html',
-        controller: 'TournamentsController',
+        controller: 'TournamentsListController',
         controllerAs: 'tournamentsCtrl',
         resolve: {
-          tournament_settings: function(tournament_settings_model) {
-            return tournament_settings_model.get_tournament_settings();
+          tournaments: function(tournaments_model) {
+            return tournaments_model.get();
           }
         }
       });
   });
   
-  function TournamentsController() {
+  function TournamentsListController($state, tournaments, NgTableParams) {
     var vm = this;
+    
+    vm.tournaments = tournaments;
+    
+    set_pagination();
+    
+    function set_pagination() {
+      vm.tableParams = new NgTableParams({
+      }, {
+        dataset: vm.tournaments
+      });
+    }
+    
+    vm.edit_tournament = function(tournament) {
+      $state.go('admin.tournaments.update', {_id: tournament._id});
+    }
   }
 })();
