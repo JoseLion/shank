@@ -414,7 +414,7 @@ export default class Group extends BaseComponent {
 			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
 			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
 
-			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime() && !this.state.group.tournaments[this.state.tournamentIndex].isRoasterEmpty) {
+			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime() && !this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].isRoasterEmpty) {
 				for (let i = 0; i < this.state.userRoaster.length; i++) {
 					if (this.state.userRoaster[i]._id != this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[i]._id) {
 						hasChanged = true;

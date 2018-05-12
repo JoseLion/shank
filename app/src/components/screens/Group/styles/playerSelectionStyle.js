@@ -55,8 +55,6 @@ const ViewStyle = StyleSheet.create({
 	selectedView: {
 		backgroundColor: AppConst.COLOR_SUCCESS
 	},
-
-
 	mainContainer: {
 		flex:1,
 		width:'100%',
@@ -79,14 +77,13 @@ const ViewStyle = StyleSheet.create({
 	},
 	headerText: {
 		fontFamily: Style.CENTURY_GOTHIC,
-		fontSize: Style.FONT_16,
-		marginBottom: '2%'
+		fontSize: Style.FONT_16
 	},
 	saveView: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		paddingHorizontal: '7.5%',
-		marginTop: '-2%'
+		marginBottom: Style.EM(0.5)
 	},
 	searchInputView: {
 		width: (containerWidth * 0.80),

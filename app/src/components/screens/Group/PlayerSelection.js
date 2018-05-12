@@ -178,7 +178,7 @@ export default class PlayerSelection extends BaseComponent {
 	}
 
 	async done() {
-		if (this.hasTournamentBegan() && !this.state.group.tournaments[this.state.tournamentIndex].isRoasterEmpty) {
+		if (this.hasTournamentBegan() && !this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].isRoasterEmpty) {
 			this.props.navigation.state.params.managePlayersCallback(this.roaster, true);
 			this.props.navigation.goBack();
 		} else {
@@ -246,7 +246,7 @@ export default class PlayerSelection extends BaseComponent {
 				{this.state.selectCount == (this.state.position != null ? 1 : 5) ?
 					<View style={[ViewStyle.saveView]}>
 						<TouchableOpacity onPress={this.done} style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
-							<Text style={[MainStyles.buttonText]}>{this.hasTournamentBegan() ? 'Done' : 'Save'}</Text>
+							<Text style={[MainStyles.buttonText]}>{this.hasTournamentBegan() && !this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].isRoasterEmpty ? 'Done' : 'Save'}</Text>
 						</TouchableOpacity>
 					</View>
 				: null}

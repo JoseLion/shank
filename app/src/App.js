@@ -41,7 +41,6 @@ export default class ShankApp extends Component {
 			},
 
 			onNotification: notification => {
-				console.log("NOTIFICATION: ", notification);
 				PushNotification.setApplicationIconBadgeNumber(0);
 				notification.finish(PushNotificationIOS.FetchResult.NoData);
 			},
