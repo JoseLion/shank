@@ -27,6 +27,8 @@ export default class ShankApp extends Component {
 	componentWillMount() {
 		PushNotification.configure({
 			onRegister: async notifObj => {
+				console.log("notifObj: ", notifObj);
+				
 				try {
 					const userStr = await AsyncStorage.getItem(AppConst.USER_PROFILE);
 					let currentUser = JSON.parse(userStr);
@@ -45,7 +47,7 @@ export default class ShankApp extends Component {
 				notification.finish(PushNotificationIOS.FetchResult.NoData);
 			},
 
-			senderID: "FCM SENDER ID",
+			senderID: "AIzaSyDGhxtfXraqdytnkiLFheeEg3mYCvQ4hLA",
 			popInitialNotification: true,
 			requestPermissions: false
 		});

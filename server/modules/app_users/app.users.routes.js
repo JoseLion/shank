@@ -2,8 +2,13 @@ import mongoose from 'mongoose';
 import express from 'express';
 import auth from '../../config/auth';
 import handleMongoError from '../../service/handleMongoError';
+
+/* ------------ PUSH NOTIFICATIONS ------------ */
 import apn from 'apn';
 import Constants from '../../config/constants';
+import * as FireBaseAdmin from 'firebase-admin';
+import ServiceAccount from '../../../app/android/app/google-services.json';
+/* -------------------------------------------- */
 
 const AppUser = mongoose.model('App_User');
 const basePath = '/app_user'
@@ -72,6 +77,11 @@ export default function(app) {
     });
 
     router.get(`/apns/send/:token`, async (request, response) => {
+        FireBaseAdmin.initializeApp({
+            credential: FireBaseAdmin.credential.cert(ServiceAccount),
+            databaseURL: 'https://shank-e5ddc.firebaseio.com'
+        });
+
         let options = {
             token: {
                 key: Constants.APNS_KEY_PATH,

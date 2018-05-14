@@ -156,6 +156,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api 'com.android.support:appcompat-v7:27.1.1'
     api 'com.facebook.react:react-native:+'
+    api 'com.google.firebase:firebase-core:15.0.0'
     // From node_modules
 }
 
@@ -174,3 +175,5 @@ ext {
     targetSdkVersion = 27
     supportLibVersion = "27.1.1"
 }
+
+apply plugin: 'com.google.gms.google-services'
