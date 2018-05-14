@@ -1,6 +1,5 @@
 <div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_year">Year: </label>
+  <label class="col-sm-4 control-label text-right" for="tournament_year">Year: </label>
   <div class="col-sm-4">
     <select validation
             chosenselect
@@ -20,9 +19,8 @@
 </div>
 
 <div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_tournament">Tournament: </label>
-  <div class="col-sm-6">
+  <label class="col-sm-4 control-label text-right" for="tournament_tournament">Tournament: </label>
+  <div class="col-sm-4">
     <select validation
             chosenselect
             data-placeholder="Seleccione"
@@ -38,14 +36,21 @@
 </div>
 
 <div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_start_date">Start date: </label>
-  <div class="col-sm-6">
+  <label class="col-sm-4 control-label text-right" for="tournament_start_date">Start date: </label>
+  <div class="col-sm-2">
+    <input type="text"
+           id="tournament_start_date"
+           name="tournament_start_date"
+           ng-value="tournamentsCtrl.tournament.startDate | date : 'yyyy-MM-dd'"
+           class="form-control"
+           readonly />
+  </div>
+  <div class="col-sm-2">
       <div ng-cloak>
         <div class="input-group clockpicker" 
              clock-picker 
              data-autoclose="true">
-          <input ng-model="tournamentsCtrl.time" type="text" class="form-control">
+          <input ng-model="tournamentsCtrl.tournament.start_date_time" type="text" class="form-control">
           <span class="input-group-addon">
             <span class="glyphicon glyphicon-time"></span>
           </span>
@@ -55,33 +60,31 @@
 </div>
 
 <div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_end_date">End date: </label>
-  <div class="col-sm-6">
-    <div class="input-group">
-      <input type="text"
-             class="form-control"
-             id="tournament_end_date"
-             name="tournament_end_date"
-             uib-datepicker-popup="yyyy-MM-dd"
-             ng-model="tournamentsCtrl.tournament.end_date"
-             is-open="tournamentsCtrl.dates.end_date_opened"
-             datepicker-options="tournamentsCtrl.dateOptions"
-             alt-input-formats="tournamentsCtrl.altInputFormats" />
-      <span class="input-group-btn">
-        <button type="button"
-                class="btn btn-default"
-                ng-click="tournamentsCtrl.open_search_calendar(2)">
-          <i class="glyphicon glyphicon-calendar"></i>
-        </button>
-      </span>
+  <label class="col-sm-4 control-label text-right" for="tournament_end_date">End date: </label>
+  <div class="col-sm-2">
+    <input type="text"
+           id="tournament_end_date"
+           name="tournament_end_date"
+           ng-value="tournamentsCtrl.tournament.endDate | date : 'yyyy-MM-dd'"
+           class="form-control"
+           readonly />
+  </div>
+  <div class="col-sm-2">
+      <div ng-cloak>
+        <div class="input-group clockpicker" 
+             clock-picker 
+             data-autoclose="true">
+          <input ng-model="tournamentsCtrl.tournament.end_date_time" type="text" class="form-control">
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-time"></span>
+          </span>
+        </div>
     </div>
   </div>
 </div>
 
 <div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_main_photo">Main photo: </label>
+  <label class="col-sm-4 control-label text-right" for="tournament_main_photo">Main photo: </label>
   <div class="col-sm-6">
     <img ng-if="!tournamentsCtrl.tournament.mainPhoto && !tournamentsCtrl.main_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
     <img ng-if="tournamentsCtrl.tournament.mainPhoto && !tournamentsCtrl.main_photo_file" ng-src="{{archive_path}}/{{tournamentsCtrl.tournament.mainPhoto}}" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
@@ -99,8 +102,7 @@
 </div>
 
 <div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_secondary_photo">Secondary photo: </label>
+  <label class="col-sm-4 control-label text-right" for="tournament_secondary_photo">Secondary photo: </label>
   <div class="col-sm-6">
     <img ng-if="!tournamentsCtrl.tournament.secondaryPhoto && !tournamentsCtrl.secondary_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
     <img ng-if="tournamentsCtrl.tournament.secondaryPhoto && !tournamentsCtrl.secondary_photo_file" ng-src="{{archive_path}}/{{tournamentsCtrl.tournament.secondaryPhoto}}" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
@@ -118,9 +120,8 @@
 </div>
 
 <div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="atourment_url">Url: </label>
-  <div class="col-sm-6">
+  <label class="col-sm-4 control-label text-right" for="atourment_url">Url: </label>
+  <div class="col-sm-4">
     <input validation
            type="text"
            id="atourment_url"

@@ -29,6 +29,10 @@
       return new_date;
     }
     
+    function to_unix(date) {
+      return moment(date).unix();
+    }
+    
     return {
       current_date: function(format) {
         return format_date(moment(), format);
@@ -47,6 +51,10 @@
       },
       add_days: function(date1, days) {
         return add_days(date1, days);
+      },
+      to_unix: function(date) {
+        console.log(date, '--------------------');
+        return to_unix(date);
       }
     };
   });

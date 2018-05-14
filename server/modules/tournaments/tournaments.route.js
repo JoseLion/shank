@@ -47,33 +47,47 @@ export default function() {
 	router.route('/create_tournament')
 	.post(auth, multer().fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), (req, res) => {
 		try {
-			let archive_one_id = mongoose.Types.ObjectId();
+			let promises = [];
 			
-			let archive_one = new Archive({
-				_id: archive_one_id,
-				name: req.files['file1'][0].originalname,
-				type: req.files['file1'][0].mimetype,
-				size: req.files['file1'][0].size,
-				data: req.files['file1'][0].buffer
-			});
+			if (req.files['file1']) {
+				let archive_one_id = mongoose.Types.ObjectId();
+				
+				let archive_one = new Archive({
+					_id: archive_one_id,
+					name: req.files['file1'][0].originalname,
+					type: req.files['file1'][0].mimetype,
+					size: req.files['file1'][0].size,
+					data: req.files['file1'][0].buffer
+				});
+				
+				promises.push(archive_one.save());
+			}
 			
-			let archive_two_id = mongoose.Types.ObjectId();
+			if (req.files['file2']) {
+				let archive_two_id = mongoose.Types.ObjectId();
+				
+				let archive_two = new Archive({
+					_id: archive_two_id,
+					name: req.files['file2'][0].originalname,
+					type: req.files['file2'][0].mimetype,
+					size: req.files['file2'][0].size,
+					data: req.files['file2'][0].buffer
+				});
+				
+				promises.push(archive_two.save());
+			}
 			
-			let archive_two = new Archive({
-				_id: archive_two_id,
-				name: req.files['file2'][0].originalname,
-				type: req.files['file2'][0].mimetype,
-				size: req.files['file2'][0].size,
-				data: req.files['file2'][0].buffer
-			});
-			
-			let tournament = new Tournament(Object.assign({mainPhoto: archive_one_id, secondaryPhoto: archive_two_id}, req.body));
-			
-			let promises = [
-				archive_one.save(),
-				archive_two.save(),
-				tournament.save()
-			];
+			if (req.files['file1'] && req.files['file2']) {
+				let tournament = new Tournament(Object.assign({mainPhoto: archive_one_id, secondaryPhoto: archive_two_id}, req.body));
+				
+				promises.push(tournament.save());
+			}
+			else if (req.files['file1']) {
+				let tournament = new Tournament(Object.assign({mainPhoto: archive_one_id}, req.body));
+			}
+			else if (req.files['file2']) {
+				let tournament = new Tournament(Object.assign({secondaryPhoto: archive_two_id}, req.body));
+			}
 			
 			Q.all(promises).then(() => {
 				res.ok({});
@@ -81,6 +95,7 @@ export default function() {
 				res.server_error(err);
 			});
     } catch (e) {
+			console.log(e, '----------------------');
       res.server_error();
     }
 	});

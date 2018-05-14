@@ -15,11 +15,11 @@
       });
   });
   
-  function tournamentsCreateController($state, $timeout, tournaments_model, Upload, Notifier) {
+  function tournamentsCreateController($scope, $state, $timeout, tournaments_model, date_utils, Notifier) {
     var vm = this;
     vm.tournament = {};
     vm.years = [];
-    vm.time = '02:40PM';
+    var tournament_selected;
     
     var i;
     var start_year = 2016;
@@ -47,6 +47,16 @@
         vm.tournaments = data;
       });
     };
+    
+    $scope.$watch("tournamentsCtrl.tournament.tournamentID", function() {
+      if (vm.tournament.tournamentID) {
+        tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
+        tournament_selected.startDate = date_utils.format_date(tournament_selected.startDate, 'YYYY/MM/DD');
+        
+        vm.tournament = Object.assign(tournament_selected, vm.tournament);
+        console.log(vm.tournament, 'vm.tournament');
+      }
+    });
     
     vm.open_search_calendar = function(number) {
       
@@ -123,19 +133,21 @@
       //form_data.append('tournament', vm.tournament);
       //form_data.append('file1', vm.main_photo_file);
       //form_data.append('file2', vm.secondary_photo_file);
-      var tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
+      
       if (!tournament_selected) {
         Notifier.warning({custom_message: 'Tournament not found.'});
         return;
       }
       
-      tournaments_model.create_tournament(prepare_data(tournament_selected)).then(function() {
-        $state.go('admin.tournaments.list');
-      });
+      //prepare_data();
+      console.log(prepare_data(), '*********************');
+      //tournaments_model.create_tournament(prepare_data(tournament_selected)).then(function() {
+      //  $state.go('admin.tournaments.list');
+      //});
     };
     
-    function prepare_data(tournament_selected) {
-      vm.tournament = Object.assign(tournament_selected, vm.tournament);
+    function prepare_data() {
+      vm.tournament.startDate = date_utils.to_unix(vm.tournament.startDate + ' ' + vm.tournament.start_date_time + ':00');
       return Object.assign({file1: vm.main_photo_file, file2: vm.secondary_photo_file}, vm.tournament);
     }
   }
