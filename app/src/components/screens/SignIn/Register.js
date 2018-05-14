@@ -62,7 +62,7 @@ export default class Register extends BaseComponent {
 
 
 	onRegisterPressedAsync = async (data) => {
-		await NoAuthModel.create('/users/register', data)
+		await NoAuthModel.create('app_user/register', data)
 		.then((response) => {
 			this.setLoading(false);
 			AsyncStorage.setItem(AppConst.AUTH_TOKEN, response.token);
@@ -90,7 +90,7 @@ export default class Register extends BaseComponent {
 				}
 			};
 
-			const userInfo = await NoAuthModel.post('users/facebookSignin', data).catch(this.handleError);
+			const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(this.handleError);
 			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
 			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
 			this.setLoading(false);

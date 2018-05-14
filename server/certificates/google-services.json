@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "804287418020",
+    "firebase_url": "https://shank-e5ddc.firebaseio.com",
+    "project_id": "shank-e5ddc",
+    "storage_bucket": "shank-e5ddc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:804287418020:android:eacdf00aa5dc2c70",
+        "android_client_info": {
+          "package_name": "com.elevision.shank"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "804287418020-7u0hdr5sams2kv416s4cblkkbn0j6te3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.elevision.shank",
+            "certificate_hash": "65761895e4998bfe6553212ca86189e6655c0155"
+          }
+        },
+        {
+          "client_id": "804287418020-8mdqjsh6bqg689ihpt2v2a61mvtp6p6u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGhxtfXraqdytnkiLFheeEg3mYCvQ4hLA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "804287418020-8mdqjsh6bqg689ihpt2v2a61mvtp6p6u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

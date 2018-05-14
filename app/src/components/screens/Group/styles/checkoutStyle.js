@@ -14,14 +14,14 @@ export default StyleSheet.create({
 		justifyContent: 'center',
 		borderBottomWidth: 2.5,
 		width: '100%',
-		paddingVertical: '2.5%',
 		borderBottomColor: AppConst.COLOR_GRAY
 	},
 	titleText: {
 		fontFamily: Style.CENTURY_GOTHIC_BOLD,
 		fontSize: Style.FONT_17,
 		color: AppConst.COLOR_BLUE,
-		textAlign: 'center'
+		textAlign: 'center',
+		paddingVertical: '2.5%'
 	},
 	rowView: {
 		flex: 1,

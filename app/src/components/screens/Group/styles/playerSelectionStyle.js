@@ -55,11 +55,10 @@ const ViewStyle = StyleSheet.create({
 	selectedView: {
 		backgroundColor: AppConst.COLOR_SUCCESS
 	},
-
-
 	mainContainer: {
 		flex:1,
 		width:'100%',
+		height: '100%',
 		backgroundColor: AppConst.COLOR_WHITE
 	},
 	tournamentName: {
@@ -72,8 +71,6 @@ const ViewStyle = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginTop: '2%',
-		paddingBottom: '2%',
 		borderBottomWidth: 0.5,
 		borderColor: AppConst.COLOR_GRAY,
 		paddingHorizontal: widthSpace
@@ -85,8 +82,8 @@ const ViewStyle = StyleSheet.create({
 	saveView: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingVertical: '2.5%',
-		paddingHorizontal: '7.5%'
+		paddingHorizontal: '7.5%',
+		marginBottom: Style.EM(0.5)
 	},
 	searchInputView: {
 		width: (containerWidth * 0.80),

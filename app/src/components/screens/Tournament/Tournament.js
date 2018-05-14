@@ -9,8 +9,8 @@ import BaseModel from "Core/BaseModel";
 import handleError from "Core/handleError";
 import ViewStyle from './styles/tournamentStyle';
 
-import TournamentIcon from 'Res/tournament-icon.png';
-import TournamentIconO from 'Res/tournament-icon-o.png';
+import TournamentsTabOn from 'Res/tournaments-tab-on.png';
+import TournamentsTabOff from 'Res/tournaments-tab-off.png';
 import GolfCourse from 'Res/golf-course.png';
 import LinkIcon from 'Res/link-icon.png';
 import Static1 from 'Res/static1.png';
@@ -22,7 +22,7 @@ export default class Tournaments extends Component {
 	static navigationOptions = {
 		title: "Tournaments",
 		tabBarLabel: 'Tournaments',
-		tabBarIcon: ({tintColor}) => (<Image style={ViewStyle.tabIcon} source={tintColor == AppConst.COLOR_WHITE ? TournamentIcon : TournamentIconO} resizeMode={'contain'} resizeMethod={'resize'} />)
+		tabBarIcon: ({tintColor}) => (<Image style={ViewStyle.tabIcon} source={tintColor == AppConst.COLOR_WHITE ? TournamentsTabOn : TournamentsTabOff} resizeMode={'contain'} resizeMethod={'resize'} />)
 	};
 
 	constructor(props) {
@@ -83,7 +83,7 @@ export default class Tournaments extends Component {
 		}
 
 		let header = tournaments.shift();
-		await this.setState({ tournaments, header, leaderboard });
+		this.setState({ tournaments, header, leaderboard });
 		global.setLoading(false);
 	}
 

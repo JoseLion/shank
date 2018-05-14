@@ -10,10 +10,12 @@ import SortableList from 'react-native-sortable-list';
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, IsAndroid, Spinner } from '../BaseComponent';
 import { ClienHost } from '../../../config/variables';
+import handleError from 'Core/handleError';
 import Style from 'ShankStyle';
 import ViewStyle from './styles/groupStyle';
 
-import DownCaretIcon from '../../../../resources/down-caret-icon.png';
+import DownCaretIcon from 'Res/down-caret-icon.png';
+import SortBarsIcon from 'Res/sort-bars.png';
 
 class RoasterRow extends Component {
 
@@ -93,7 +95,7 @@ class RoasterRow extends Component {
 
 						{this.props.isEditable ?
 							<View style={{flex: 1}}>
-								<Image source={require('../../../../resources/sort-bars.png')} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
+								<Image source={SortBarsIcon} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
 							</View>
 						: null}
 					</View>
@@ -260,9 +262,7 @@ export default class Group extends BaseComponent {
 		this.goToCheckout = this.goToCheckout.bind(this);
 		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
 		this.isRoundOnCourse = this.isRoundOnCourse.bind(this);
-		this.handleError = this.handleError.bind(this);
 		this.state = {
-			isLoading: false,
 			group: {},
 			currentUser: {},
 			sheetNames: ['Cancel'],
@@ -294,7 +294,7 @@ export default class Group extends BaseComponent {
 			const userRoaster = group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster;
 			this.setState({ group, sheetNames, userRoaster });
 		} catch(error) {
-			this.handleError(error);
+			handleError(error);
 		}
 	}
 
@@ -370,26 +370,30 @@ export default class Group extends BaseComponent {
 				'com.apple.uikit.activity.mail'
 			],
 			tintColor: AppConst.COLOR_GREEN
-		}).catch(this.handleError);
+		}).catch(handleError);
 	}
 
 	async removeUserFromGroup(cross) {
-		this.setState({isLoading: true});
-		const group = await BaseModel.delete(`group/removeUserFromGroup/${this.state.item.user._id}/${this.state.group._id}`).catch(this.handleError);
+		global.setLoading(true);
+		const group = await BaseModel.delete(`group/removeUserFromGroup/${this.state.item.user._id}/${this.state.group._id}`).catch(handleError);
 		this.setGroupData(group);
-		this.setState({isLoading: false});
+		global.setLoading(false);
 	}
 
 	managePlayers(row, index) {
-		this.props.navigation.navigate('PlayerSelection', {
-			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster.filter(cross => cross.player != null),
-			position: row.player ? index : null,
-			group: this.state.group,
-			tournamentIndex: this.state.tournamentIndex,
-			currentUserIndex: this.state.currentUserIndex,
-			onPlayesrsManaged: this.onPlayesrsManaged,
-			managePlayersCallback: this.managePlayersCallback
-		});
+		if (this.isBeforeEndDate() && !this.isRoundOnCourse()) {
+			this.props.navigation.navigate('PlayerSelection', {
+				roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster.filter(cross => cross.player != null),
+				position: row.player ? index : null,
+				group: this.state.group,
+				tournamentIndex: this.state.tournamentIndex,
+				currentUserIndex: this.state.currentUserIndex,
+				onPlayesrsManaged: this.onPlayesrsManaged,
+				managePlayersCallback: this.managePlayersCallback
+			});
+		} else {
+			this.dropDownRef.alertWithType('info', 'Opps!', 'You cannot edit your roaster during the round');
+		}
 	}
 
 	managePlayersCallback(data, shouldCheckout) {
@@ -410,7 +414,7 @@ export default class Group extends BaseComponent {
 			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
 			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
 
-			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime() && !this.state.group.tournaments[this.state.tournamentIndex].isRoasterEmpty) {
+			if (today.getTime() > startDate.getTime() && today.getTime() < endDate.getTime() && !this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].isRoasterEmpty) {
 				for (let i = 0; i < this.state.userRoaster.length; i++) {
 					if (this.state.userRoaster[i]._id != this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[i]._id) {
 						hasChanged = true;
@@ -475,30 +479,24 @@ export default class Group extends BaseComponent {
 
 		return false;
 	}
-	
-	handleError(error) {
-		this.setState({isLoading: false});
-		this.dropDown.alertWithType('error', "Error", error);
-	}
 
 	async componentDidMount() {
-		this.setState({isLoading: true});
+		global.setLoading(true);
 
-		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(this.handleError);
-		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(this.handleError);
+		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(handleError);
+		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 		this.setState({currentUser: JSON.parse(currentUser)});
 		this.setGroupData(group);
 		this.props.navigation.setParams({editGroup: () => {
 			this.props.navigation.navigate('AddGroup', {group: this.state.group});
 		}});
 
-		this.setState({isLoading: false});
+		global.setLoading(false);
 	}
 
 	render() {
 		return (
 			<View style={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}}>
-				<Spinner visible={this.state.isLoading} animation='fade'></Spinner>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.state.sheetNames} cancelButtonIndex={this.state.sheetNames.length} onPress={this.tournamentSelected} />
 
 				<View style={{flex: 0.7}}>
@@ -564,20 +562,23 @@ export default class Group extends BaseComponent {
 						<View tabLabel='Roaster' style={[ViewStyle.tabViewContainer]}>
 							<RoundLabels tournament={this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament} />
 
-							<SortableList style={{flex: 1}} sortingEnabled={this.isBeforeEndDate() && !this.isRoundOnCourse()} manuallyActivateRows={true} data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []} renderRow={({data, index}) => (
-								<RoasterRow roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />
-							)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
-								if (this.nextOrder) {
-									let roaster = [];
-									this.nextOrder.forEach(order => {
-										roaster.push(this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[order]);
-									});
+							<SortableList style={{flex: 1}} sortingEnabled={this.isBeforeEndDate() && !this.isRoundOnCourse()} manuallyActivateRows={true}
+								data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []}
+								renderRow={({data, index}) => (
+									<RoasterRow roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />
+								)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
+									if (this.nextOrder) {
+										let roaster = [];
+										this.nextOrder.forEach(order => {
+											roaster.push(this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[order]);
+										});
 
-									let group = Object.assign({}, this.state.group);
-									group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster = roaster;
-									this.setState({ group });
-								}
-							}} />
+										let group = Object.assign({}, this.state.group);
+										group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster = roaster;
+										this.setState({ group });
+									}
+								}}
+							/>
 						</View>
 					</ScrollableTabView>
 				</View>
@@ -590,7 +591,7 @@ export default class Group extends BaseComponent {
 					</View>
 				: null}
 
-				<DropdownAlert ref={ref => this.dropDown = ref} />
+				<DropdownAlert ref={ref => this.dropDownRef = ref} />
 			</View>
 		);
 	}
