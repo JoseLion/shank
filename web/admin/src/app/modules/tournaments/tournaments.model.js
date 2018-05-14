@@ -9,6 +9,10 @@
       return base_model('get_tournaments_from_fantasy').create(params);
     }
     
+    model.create_tournament = function(params) {
+      return base_model('create_tournament').multipart(params);
+    }
+    
     return model;
   });
 })();

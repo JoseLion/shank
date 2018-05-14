@@ -9,7 +9,8 @@
             id="tournament_year"
             name="tournament_year"
             ng-model="tournamentsCtrl.tournament.year"
-            ng-options="year as year for year in tournamentsCtrl.years">
+            ng-options="year as year for year in tournamentsCtrl.years"
+            required>
       <option value=""></option>
     </select>
   </div>
@@ -20,99 +21,121 @@
 
 <div class="form-group">
   <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_surname">Surname: </label>
+  <label class="col-sm-2 control-label text-right" for="tournament_tournament">Tournament: </label>
   <div class="col-sm-6">
-    <input validation
-           type="text"
-           id="tournament_surname"
-           name="tournament_surname"
-           ng-model="tournamentsCtrl.tournament.surname"
-           class="form-control"
-           maxlength="255"
-           required="" />
+    <select validation
+            chosenselect
+            data-placeholder="Seleccione"
+            class="form-control m-b"
+            id="tournament_tournament"
+            name="tournament_tournament"
+            ng-model="tournamentsCtrl.tournament.tournamentID"
+            ng-options="tournament.tournamentID as tournament.name for tournament in tournamentsCtrl.tournaments"
+            required>
+      <option value=""></option>
+    </select>
   </div>
-  <div class="col-sm-2"></div>
 </div>
 
 <div class="form-group">
   <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_email">Email: </label>
+  <label class="col-sm-2 control-label text-right" for="tournament_start_date">Start date: </label>
   <div class="col-sm-6">
-    <input validation
-           type="email"
-           id="tournament_email"
-           name="tournament_email"
-           ng-model="tournamentsCtrl.tournament.email"
-           class="form-control"
-           maxlength="255"
-           required="" />
-  </div>
-  <div class="col-sm-2"></div>
-</div>
-
-<div class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_cell_phone">Cell phone: </label>
-  <div class="col-sm-6">
-    <input validation
-           integer
-           type="text"
-           id="tournament_cell_phone"
-           name="tournament_cell_phone"
-           ng-model="tournamentsCtrl.tournament.cell_phone"
-           class="form-control"
-           maxlength="255"
-            />
-  </div>
-  <div class="col-sm-2"></div>
-</div>
-
-<div ng-if="tournamentsCtrl.controller == 'update'" class="form-group">
-  <div class="col-sm-4"></div>
-  <div class="col-sm-5">
-    <label><input type="checkbox" ng-click="tournamentsCtrl.change_password()" class="i-checks">&nbsp;&nbsp;Change password</label>
-  </div>
-</div>
-
-<div ng-if="tournamentsCtrl.update_password" class="form-group">
-  <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_password">Password: </label>
-  <div class="col-sm-5">
-    <input validation
-           password
-           type="password"
-           id="tournament_password"
-           name="tournament_password"
-           ng-model="tournamentsCtrl.tournament.password"
-           class="form-control"
-           maxlength="255"
-           required="" />
-  </div>
-  <div class="col-md-1 col-xs-1 text-right">
-    <div class="levelap-tooltip">
-      <i class="fa fa-question-circle font-25"
-         tooltip-placement="top-right"
-         uib-tooltip="The password must have only letters and numbers, at least 6 characters, with at least one lowercase, one uppercase and one number"
-         tooltip-class="customClass"></i>
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             id="tournament_start_date"
+             name="tournament_start_date"
+             uib-datepicker-popup="yyyy-MM-dd"
+             ng-model="tournamentsCtrl.tournament.start_date"
+             is-open="tournamentsCtrl.dates.start_date_opened"
+             datepicker-options="tournamentsCtrl.dateOptions"
+             alt-input-formats="tournamentsCtrl.altInputFormats" />
+      <span class="input-group-btn">
+        <button type="button"
+                class="btn btn-default"
+                ng-click="tournamentsCtrl.open_search_calendar(1)">
+          <i class="glyphicon glyphicon-calendar"></i>
+        </button>
+      </span>
     </div>
   </div>
 </div>
 
 <div class="form-group">
   <div class="col-sm-2"></div>
-  <label class="col-sm-2 control-label text-right" for="tournament_profile">Profile: </label>
+  <label class="col-sm-2 control-label text-right" for="tournament_end_date">End date: </label>
   <div class="col-sm-6">
-    <select validation
-            chosenselect
-            data-placeholder="Seleccione"
-            class="form-control m-b"
-            id="tournament_profile"
-            name="tournament_profile"
-            ng-model="tournamentsCtrl.tournament.profile"
-            ng-options="profile._id as profile.name for profile in tournamentsCtrl.profiles"
-            required>
-      <option value=""></option>
-    </select>
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             id="tournament_end_date"
+             name="tournament_end_date"
+             uib-datepicker-popup="yyyy-MM-dd"
+             ng-model="tournamentsCtrl.tournament.end_date"
+             is-open="tournamentsCtrl.dates.end_date_opened"
+             datepicker-options="tournamentsCtrl.dateOptions"
+             alt-input-formats="tournamentsCtrl.altInputFormats" />
+      <span class="input-group-btn">
+        <button type="button"
+                class="btn btn-default"
+                ng-click="tournamentsCtrl.open_search_calendar(2)">
+          <i class="glyphicon glyphicon-calendar"></i>
+        </button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_main_photo">Main photo: </label>
+  <div class="col-sm-6">
+    <img ng-if="!tournamentsCtrl.tournament.mainPhoto && !tournamentsCtrl.main_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
+    <img ng-if="tournamentsCtrl.tournament.mainPhoto && !tournamentsCtrl.main_photo_file" ng-src="{{archive_path}}/{{tournamentsCtrl.tournament.mainPhoto}}" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
+    <img ng-if="tournamentsCtrl.main_photo_file" ngf-src="tournamentsCtrl.main_photo_file" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
+    <br/>
+    <input type="file"
+           id="tournament_main_photo"
+           name="tournament_main_photo"
+           ngf-change="tournamentsCtrl.on_change_select_main_photo($files)"
+           ngf-select
+           ng-model="tournamentsCtrl.main_photo_file"
+           accept="image/png, image/jpeg, image/jpg, application/msword, application/vnd.ms-excel, application/pdf"
+           ng-show="false"/>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="tournament_secondary_photo">Secondary photo: </label>
+  <div class="col-sm-6">
+    <img ng-if="!tournamentsCtrl.tournament.secondaryPhoto && !tournamentsCtrl.secondary_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
+    <img ng-if="tournamentsCtrl.tournament.secondaryPhoto && !tournamentsCtrl.secondary_photo_file" ng-src="{{archive_path}}/{{tournamentsCtrl.tournament.secondaryPhoto}}" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
+    <img ng-if="tournamentsCtrl.secondary_photo_file" ngf-src="tournamentsCtrl.secondary_photo_file" class="thumb-100" ng-click="tournamentsCtrl.open_select_secondary_photo()">
+    <br/>
+    <input type="file"
+           id="tournament_secondary_photo"
+           name="tournament_secondary_photo"
+           ngf-change="tournamentsCtrl.on_change_select_secondary_photo($files)"
+           ngf-select
+           ng-model="tournamentsCtrl.secondary_photo_file"
+           accept="image/png, image/jpeg, image/jpg, application/msword, application/vnd.ms-excel, application/pdf"
+           ng-show="false"/>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-2"></div>
+  <label class="col-sm-2 control-label text-right" for="atourment_url">Url: </label>
+  <div class="col-sm-6">
+    <input validation
+           type="text"
+           id="atourment_url"
+           name="atourment_url"
+           ng-model="tournamentsCtrl.tournament.url"
+           class="form-control"
+           required="" />
   </div>
   <div class="col-sm-2"></div>
 </div>

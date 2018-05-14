@@ -22,7 +22,7 @@
         <div class="ibox-content">
           <div class="row">
             <div class="col-sm-12 text-right">
-              <button authorize-section="['admin_users.create']"
+              <button authorize-section="['tournaments.create']"
                       type="button"
                       class="btn btn-primary"
                       ui-sref="admin.tournaments.create">New</button>
@@ -32,45 +32,45 @@
           
           <div class="table-responsive">
             <table ng-table="tournamentsCtrl.tableParams" class="table table-bordered">
-              <tr ng-repeat="user in $data track by $index">
-                <td data-title="'Tournament'" filter="{ 'name': 'text'}" class="text-center">{{user.name}}</td>
-                <td data-title="'Location'" filter="{ 'surname': 'text'}" class="text-center">{{user.surname}}</td>
-                <td data-title="'Venue'" filter="{ 'email': 'text'}" class="text-center">{{user.email}}</td>
-                <td data-title="'Start date'" filter="{ 'state': 'text' }" class="text-center">{{user.state}}</td>
-                <td data-title="'End date'" filter="{ 'created_at': 'text' }" class="text-center">{{user.created_at | date : 'dd-MM-yyyy'}}</td>
-                <td data-title="'Year'" filter="{ 'created_at': 'text' }" class="text-center">{{user.created_at | date : 'dd-MM-yyyy'}}</td>
+              <tr ng-repeat="tournament in $data track by $index">
+                <td data-title="'Tournament'" filter="{ 'name': 'text'}" class="text-center">{{tournament.name}}</td>
+                <td data-title="'Location'" filter="{ 'location': 'text'}" class="text-center">{{tournament.location}}</td>
+                <td data-title="'Venue'" filter="{ 'venue': 'text'}" class="text-center">{{tournament.venue}}</td>
+                <td data-title="'Start date'" filter="{ 'startDate': 'text' }" class="text-center">{{tournament.startDate | date : 'yyyy-MM-dd'}}</td>
+                <td data-title="'End date'" filter="{ 'endDate': 'text' }" class="text-center">{{tournament.endDate | date : 'yyyy-MM-dd'}}</td>
+                <td data-title="'Year'" filter="{ 'year': 'text' }" class="text-center">{{tournament.year}}</td>
                 <td data-title="'Actions'" class="text-center">
-                  <button authorize-section="['admin_users.update']"
+                  <button authorize-section="['tournaments.update']"
                           type="button"
                           class="btn btn-xs btn-warning"
-                          ng-click="tournamentsCtrl.edit_user(user)"
+                          ng-click="tournamentsCtrl.edit_tournament(tournament)"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Edit">
                     <i class="fa fa-pencil"></i>
                   </button>
-                  <button ng-if="user.enabled"
-                          authorize-section="['admin_users.remove']"
-                          ng-click="tournamentsCtrl.remove_user(user)"
+                  <button ng-if="tournament.enabled"
+                          authorize-section="['tournaments.remove']"
+                          ng-click="tournamentsCtrl.remove_tournament(tournament)"
                           class="btn btn-xs btn-primary"
                           data-toggle="modal"
-                          data-target="#manage_activation_admin_user_modal_form"
+                          data-target="#manage_activation_admin_tournament_modal_form"
                           title="Deactivate">
                     <i class="fa fa-power-off"></i>
                   </button>
-                  <button ng-if="!user.enabled"
-                          authorize-section="['admin_users.remove']"
-                          ng-click="tournamentsCtrl.remove_user(user)"
+                  <button ng-if="!tournament.enabled"
+                          authorize-section="['tournaments.remove']"
+                          ng-click="tournamentsCtrl.remove_tournament(tournament)"
                           class="btn btn-xs btn-danger"
                           data-toggle="modal"
-                          data-target="#manage_activation_admin_user_modal_form"
+                          data-target="#manage_activation_admin_tournament_modal_form"
                           title="Active">
                     <i class="fa fa-power-off"></i>
                   </button>
                 </td>
               </tr>
               
-              <tr ng-if="tournamentsCtrl.users.length == 0">
+              <tr ng-if="tournamentsCtrl.tournaments.length == 0">
                 <td class="text-center" colspan="7">{{messages.empty_records}}</td>
               </tr>
             </table>
@@ -81,6 +81,6 @@
   </div>
 </div>
 
-<!-- manage activation_admin_user_modal--> 
-<div ng-include src="'app/modules/users/admin/views/admin.users.manage.modal.html'"></div>
-<!-- /.delete_admin_user_modal-->
+<!-- manage activation_admin_tournament_modal--> 
+<div ng-include src="'app/modules/tournaments/views/tournaments.manage.modal.html'"></div>
+<!-- /.delete_admin_tournament_modal-->

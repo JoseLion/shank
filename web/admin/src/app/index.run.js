@@ -6,7 +6,7 @@
     .run(runBlock);
 
   /** @ngInject */
-  function runBlock($log, $rootScope, $state, Host, auth_service, socket) {
+  function runBlock($log, $rootScope, $state, Host, ApiHost, auth_service, socket) {
 
     $log.debug('runBlock end');
     
@@ -22,6 +22,7 @@
     $rootScope.$on('$destroy', stateChangeStart);
     
     $rootScope.current_user = {};
+    $rootScope.archive_path = ApiHost + 'archive/download';
     
     $rootScope.general_variables = {
       Host: Host,

@@ -19,7 +19,15 @@ let TournamentSchema = new mongoose.Schema({
 		number: Number,
 		day: Date,
 		pointsGiven: {type: Boolean, default: false}
-	}]
+	}],
+	mainPhoto: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Archive'
+	},
+	secondaryPhoto: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Archive'
+	}
 }, {
 	collection: 'tournaments',
 	timestamps: {

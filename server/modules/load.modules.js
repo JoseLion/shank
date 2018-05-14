@@ -2,7 +2,7 @@
 
 import adminUserModel from './admin_users/admin.users.model';
 import groupModel from './group/group.model';
-import tournamentModel from './tournament/tournament.model';
+import tournamentModel from './tournaments/tournaments.model';
 import archiveModel from './archive/archive.model';
 import leaderboardModel from './leaderboard/leaderboard.model';
 
@@ -14,7 +14,7 @@ import playerModel from './player/player.model';
 import authRoutes from './auth/auth.routes';
 import adminUsersRoutes from './admin_users/admin.users.routes';
 import groupRoute from './group/group.route';
-import tournamentRoute from './tournament/tournament.route';
+import tournamentRoute from './tournaments/tournaments.route';
 import archiveRoute from './archive/archive.route';
 import leaderboardRoute from './leaderboard/leaderboard.route';
 
