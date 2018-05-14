@@ -21,11 +21,12 @@
       });
   });
   
-  function tournamentsUpdateController($state, $timeout, tournaments_model, tournament, Upload, Notifier) {
+  function tournamentsUpdateController($state, $timeout, tournaments_model, tournament, date_utils, Notifier) {
     var vm = this;
     vm.tournament = tournament;
     console.log(vm.tournament, 'vm.tournament');
     vm.years = [];
+    var tournament_selected;
     
     var i;
     var start_year = 2016;
@@ -35,12 +36,18 @@
       start_year++;
     }
     
-    vm.dates = {
-      start_date_opened: false,
-      end_date_opened: false
-    };
+    parse_tournament();
     
-    vm.altInputFormats = ['M!/d!/yyyy'];
+    function parse_tournament() {
+      vm.tournament.start_date = date_utils.format_date(vm.tournament.startDate);
+      vm.tournament.end_date = date_utils.format_date(vm.tournament.endDate);
+      
+      var start_date_time =  new Date(vm.tournament.startDate);
+      vm.tournament.start_date_time = start_date_time.getUTCHours() + ':' + start_date_time.getUTCMinutes();
+      
+      var end_date_time =  new Date(vm.tournament.endDate);
+      vm.tournament.end_date_time = end_date_time.getUTCHours() + ':' + end_date_time.getUTCMinutes();
+    }
     
     vm.get_tournaments = function() {
       if (!vm.tournament.year) {
@@ -55,6 +62,16 @@
     };
     
     vm.get_tournaments();
+    
+    vm.assign_tournament_selected = function() {
+      if (vm.tournament.tournamentID) {
+        tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
+        tournament_selected.start_date = date_utils.format_date_utc(tournament_selected.startDate);
+        tournament_selected.end_date = date_utils.format_date_utc(tournament_selected.endDate);
+        
+        vm.tournament = Object.assign(vm.tournament, tournament_selected);
+      }
+    };
     
     vm.open_search_calendar = function(number) {
       
@@ -132,14 +149,19 @@
         return;
       }
       
-      tournaments_model.create_tournament(prepare_data(tournament_selected)).then(function() {
+      tournaments_model.update_tournament(prepare_data()).then(function() {
+        Notifier.success({custom_message: 'Tournament updated.'});
         $state.go('admin.tournaments.list');
       });
     };
     
-    function prepare_data(tournament_selected) {
-      vm.tournament = Object.assign(tournament_selected, vm.tournament);
-      return Object.assign({file1: vm.main_photo_file, file2: vm.secondary_photo_file}, vm.tournament);
+    function prepare_data() {
+      var start_date = date_utils.to_utc_unix(vm.tournament.start_date + ' ' + vm.tournament.start_date_time);
+      var end_date = date_utils.to_utc_unix(vm.tournament.end_date + ' ' + vm.tournament.end_date_time);
+      
+      vm.tournament.startDate = start_date;
+      vm.tournament.endDate = end_date;
+      return Object.assign(vm.tournament, {file1: vm.main_photo_file, file2: vm.secondary_photo_file});
     }
   }
 })();

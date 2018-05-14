@@ -10,7 +10,7 @@
           return $filter('translate')(error.custom_message);
         }
         
-        var message = 'Error al';
+        var message = 'Error to';
         var action = error.action;
         var element = error.element;
         var problems = error.problems;

@@ -29,13 +29,6 @@
       start_year++;
     }
     
-    vm.dates = {
-      start_date_opened: false,
-      end_date_opened: false
-    };
-    
-    vm.altInputFormats = ['M!/d!/yyyy'];
-    
     vm.get_tournaments = function() {
       if (!vm.tournament.year) {
         Notifier.warning({custom_message: 'Select a year'});
@@ -48,15 +41,15 @@
       });
     };
     
-    $scope.$watch("tournamentsCtrl.tournament.tournamentID", function() {
+    vm.assign_tournament_selected = function() {
       if (vm.tournament.tournamentID) {
         tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
-        tournament_selected.startDate = date_utils.format_date(tournament_selected.startDate, 'YYYY/MM/DD');
+        tournament_selected.start_date = date_utils.format_date(tournament_selected.startDate);
+        tournament_selected.end_date = date_utils.format_date(tournament_selected.endDate);
         
-        vm.tournament = Object.assign(tournament_selected, vm.tournament);
-        console.log(vm.tournament, 'vm.tournament');
+        vm.tournament = Object.assign(vm.tournament, tournament_selected);
       }
-    });
+    };
     
     vm.open_search_calendar = function(number) {
       
@@ -134,21 +127,42 @@
       //form_data.append('file1', vm.main_photo_file);
       //form_data.append('file2', vm.secondary_photo_file);
       
+      if (!is_valid_data()) {
+        return;
+      }
+      
       if (!tournament_selected) {
         Notifier.warning({custom_message: 'Tournament not found.'});
         return;
       }
       
-      //prepare_data();
-      console.log(prepare_data(), '*********************');
-      //tournaments_model.create_tournament(prepare_data(tournament_selected)).then(function() {
-      //  $state.go('admin.tournaments.list');
-      //});
+      tournaments_model.create_tournament(prepare_data(tournament_selected)).then(function() {
+        Notifier.success({custom_message: 'Tournament created.'});
+        $state.go('admin.tournaments.list');
+      });
     };
     
+    function is_valid_data() {
+      if (!vm.main_photo_file) {
+        Notifier.warning({custom_message: 'Select a main photo.'});
+        return false;
+      }
+      
+      if (!vm.secondary_photo_file) {
+        Notifier.warning({custom_message: 'Select a secondary photo.'});
+        return false;
+      }
+      
+      return true;
+    }
+    
     function prepare_data() {
-      vm.tournament.startDate = date_utils.to_unix(vm.tournament.startDate + ' ' + vm.tournament.start_date_time + ':00');
-      return Object.assign({file1: vm.main_photo_file, file2: vm.secondary_photo_file}, vm.tournament);
+      var start_date = date_utils.to_utc_unix(vm.tournament.start_date + ' ' + vm.tournament.start_date_time);
+      var end_date = date_utils.to_utc_unix(vm.tournament.end_date + ' ' + vm.tournament.end_date_time);
+      
+      vm.tournament.startDate = start_date;
+      vm.tournament.endDate = end_date;
+      return Object.assign(vm.tournament, {file1: vm.main_photo_file, file2: vm.secondary_photo_file});
     }
   }
 })();

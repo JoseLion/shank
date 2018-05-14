@@ -10,16 +10,17 @@
       scope: true,
       link: function(scope, elem, attrs) {
         var errors_messages = {
-          required: 'Campo requerido!',
-          number: ' El valor debe ser númerico!',
-          email: ' Debe ser un email válido!',
+          required: 'Required field!',
+          number: ' Only numbers!',
+          email: ' Invalid email!',
+          url: ' Invalid url!',
           minlength: get_ming_lenght_error(),
           maxlength: get_max_lenght_error(),
-          onlyletters: 'Solo puede contener letras!',
-          invalid_id_card: 'Cédula inválida!',
-          invalid_legal_ruc: 'Ruc inválido!',
-          invalid_password: 'Contraseña inválida!',
-          invalid_confirm_password: 'Contraseña no coinciden!'
+          onlyletters: 'Only letters!',
+          invalid_id_card: 'Invalid DNI!',
+          invalid_legal_ruc: 'Invalid Ruc!',
+          invalid_password: 'Invalid password!',
+          invalid_confirm_password: 'Password does not match!'
         };
         
         var element = angular.element(elem);

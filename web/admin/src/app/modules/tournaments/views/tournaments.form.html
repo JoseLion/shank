@@ -29,6 +29,7 @@
             name="tournament_tournament"
             ng-model="tournamentsCtrl.tournament.tournamentID"
             ng-options="tournament.tournamentID as tournament.name for tournament in tournamentsCtrl.tournaments"
+            ng-change="tournamentsCtrl.assign_tournament_selected()"
             required>
       <option value=""></option>
     </select>
@@ -41,7 +42,7 @@
     <input type="text"
            id="tournament_start_date"
            name="tournament_start_date"
-           ng-value="tournamentsCtrl.tournament.startDate | date : 'yyyy-MM-dd'"
+           ng-value="tournamentsCtrl.tournament.start_date"
            class="form-control"
            readonly />
   </div>
@@ -50,7 +51,11 @@
         <div class="input-group clockpicker" 
              clock-picker 
              data-autoclose="true">
-          <input ng-model="tournamentsCtrl.tournament.start_date_time" type="text" class="form-control">
+          <input validation
+                 ng-model="tournamentsCtrl.tournament.start_date_time"
+                 type="text"
+                 class="form-control"
+                 required>
           <span class="input-group-addon">
             <span class="glyphicon glyphicon-time"></span>
           </span>
@@ -65,7 +70,7 @@
     <input type="text"
            id="tournament_end_date"
            name="tournament_end_date"
-           ng-value="tournamentsCtrl.tournament.endDate | date : 'yyyy-MM-dd'"
+           ng-value="tournamentsCtrl.tournament.end_date"
            class="form-control"
            readonly />
   </div>
@@ -74,7 +79,11 @@
         <div class="input-group clockpicker" 
              clock-picker 
              data-autoclose="true">
-          <input ng-model="tournamentsCtrl.tournament.end_date_time" type="text" class="form-control">
+          <input validation
+                 ng-model="tournamentsCtrl.tournament.end_date_time"
+                 type="text"
+                 class="form-control"
+                 required>
           <span class="input-group-addon">
             <span class="glyphicon glyphicon-time"></span>
           </span>
@@ -123,7 +132,7 @@
   <label class="col-sm-4 control-label text-right" for="atourment_url">Url: </label>
   <div class="col-sm-4">
     <input validation
-           type="text"
+           type="url"
            id="atourment_url"
            name="atourment_url"
            ng-model="tournamentsCtrl.tournament.url"

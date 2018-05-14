@@ -13,6 +13,10 @@
       return base_model('create_tournament').multipart(params);
     }
     
+    model.update_tournament = function(params) {
+      return base_model('update_tournament').multipart(params);
+    }
+    
     return model;
   });
 })();

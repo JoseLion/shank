@@ -29,8 +29,19 @@
       return new_date;
     }
     
-    function to_unix(date) {
-      return moment(date).unix();
+    function to_utc_unix(date) {
+      var _date = date.split(" ");
+      var arr_date = _date[0].split("-");
+      var arr_time = _date[1].split(":");
+      
+      var year = arr_date[0] ? Number(arr_date[0]) : 1970;
+      var month = arr_date[1] ? (Number(arr_date[1]) - 1) : 0;
+      var day = arr_date[2] ? Number(arr_date[2]) : 1;
+      var hours = arr_time[0] ? Number(arr_time[0]) : 0;
+      var minutes = arr_time[1] ? Number(arr_time[1]) : 0;
+      var seconds = arr_time[2] ? Number(arr_time[2]) : 0;
+      
+      return new Date(Date.UTC(year, month, day, hours, minutes, seconds)).getTime();
     }
     
     return {
@@ -52,9 +63,8 @@
       add_days: function(date1, days) {
         return add_days(date1, days);
       },
-      to_unix: function(date) {
-        console.log(date, '--------------------');
-        return to_unix(date);
+      to_utc_unix: function(date) {
+        return to_utc_unix(date);
       }
     };
   });
