@@ -7,7 +7,7 @@ import handleMongoError from '../../service/handleMongoError';
 import apn from 'apn';
 import Constants from '../../config/constants';
 import * as FireBaseAdmin from 'firebase-admin';
-import ServiceAccount from '../../../app/android/app/google-services.json';
+import ServiceAccount from '../../certificates/google-services.json';
 /* -------------------------------------------- */
 
 const AppUser = mongoose.model('App_User');
