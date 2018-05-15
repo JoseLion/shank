@@ -75,7 +75,7 @@ export default function() {
           
           App_User
           .findOne({_id: user._id})
-          .select('_id fullName pushToken')
+          .select('_id fullName notifications')
           .exec((err, res_user) => {
             if (err) {
               res.server_error();

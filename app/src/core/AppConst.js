@@ -18,6 +18,7 @@ export const AUTH_TOKEN = "shank-auth-token";
 export const USER_PROFILE = 'shank-profile';
 export const TIME_OUT_NOTIFIER = 10000;
 export const APP_FB_ID = '1840743005946613';
+export const FCM_SENDER_ID = '804287418020';
 
 export const EVENTS = {
     realodGroups: 'EVT_REOAL_GROUPS'

@@ -57,7 +57,6 @@ export default class Login extends BaseComponent {
 		const login = await NoAuthModel.post('app_login', data).catch(this.handleError);
 		
 		if (login) {
-			console.log('login.token: ', login.token);
 			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
 			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(login.user));
 			this.setLoading(false);
