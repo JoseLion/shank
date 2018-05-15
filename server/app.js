@@ -64,8 +64,6 @@ mongoose.connect(database_uri, {})
   })
   .catch(err => console.log(`Database connection error: ${err.message}`));
 
-//customResponses(path.join(__dirname, '/modules/responses'));
-
 app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', ejs.renderFile);
@@ -85,7 +83,8 @@ app.use(function (req, res, next) {
 
 loadModules(app);
 
-app.use('/', express['static'](__dirname + '/../web/dist'));
+//execute admin client
+app.use('/', express['static'](__dirname + '/../web/admin/dist'));
 
 setPassport();
 
