@@ -156,11 +156,7 @@ export default class MainScreen extends BaseComponent {
 			const currentUserJson = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 			this.currentUser = JSON.parse(currentUserJson);
 
-			console.log("this.currentUser.pushToken: ", this.currentUser.pushToken);
-			if (this.currentUser.notifications == null) {
-				PushNotification.requestPermissions();
-			}
-
+			PushNotification.requestPermissions();
 			this.getGroups();
 		} else {
 			this.props.navigation.navigate('Login');
