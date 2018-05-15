@@ -12,7 +12,7 @@
     
     var stateChangeStart = $rootScope.$on('$stateChangeStart', function (event, toState) {
       if (!auth_service.isAuthenticated()) {
-        if (toState.name != 'login' && toState.name != 'forgot_password') {
+        if (toState.name != 'login' && toState.name != 'forgot_password' && toState.name != 'invitation') {
           event.preventDefault();
           $state.go('login');
         }
