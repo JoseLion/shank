@@ -9,7 +9,7 @@ import SortableList from 'react-native-sortable-list';
 
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, IsAndroid, Spinner } from '../BaseComponent';
-import { ClienHost } from '../../../config/variables';
+import { ClientHost } from '../../../config/variables';
 import handleError from 'Core/handleError';
 import Style from 'ShankStyle';
 import ViewStyle from './styles/groupStyle';
@@ -356,7 +356,7 @@ export default class Group extends BaseComponent {
 	}
 
 	inviteToJoin() {
-		const url = `http://${ClienHost}#/invite/${this.state.group._id}`;
+		const url = `http://${ClientHost}/#/invitation?group=${this.state.group._id}`;
 
 		Share.share({
 			message: `Join to our group '${this.state.group.name}' at ${url}`,
