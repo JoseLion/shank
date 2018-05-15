@@ -20,7 +20,7 @@
     
     vm.open_app = function() {
       if ($stateParams.group) {
-        window.location.href = 'comelevisionshank://group=' + $stateParams.group;
+        window.location.href = 'comlevelapshank://group=' + $stateParams.group;
       }
     };
 
