@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const GroupSchema = new mongoose.Schema({
-	status: {type: Boolean, default: true},
+	enabled: {type: Boolean, default: true},
 	owner: {type: mongoose.Schema.Types.ObjectId, ref: 'App_User'},
 	name: String,
 	bet: String,

@@ -15,7 +15,7 @@ const router = express.Router();
 
 export default function(app) {
 	router.get(`${basePath}/findMyGroups`, auth, async (request, response) => {
-		const groups = await Group.find({status: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+		const groups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
 		response.ok(groups);
 	});
 
@@ -81,7 +81,7 @@ export default function(app) {
 			});
 
 			await group.save().catch(handleMongoError);
-			const userGroups = await Group.find({status: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+			const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
 
 			response.ok(userGroups);
 		} else {

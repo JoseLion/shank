@@ -49,22 +49,22 @@
                           title="Edit">
                     <i class="fa fa-pencil"></i>
                   </button>
-                  <button ng-if="tournament.enabled"
+                  <button ng-if="tournament.status"
                           authorize-section="['tournaments.remove']"
-                          ng-click="tournamentsCtrl.remove_tournament(tournament)"
+                          ng-click="tournamentsCtrl.manage_tournament(tournament, 2)"
                           class="btn btn-xs btn-primary"
                           data-toggle="modal"
-                          data-target="#manage_activation_admin_tournament_modal_form"
+                          data-target="#manage_tournament_modal_form"
                           title="Deactivate">
                     <i class="fa fa-power-off"></i>
                   </button>
-                  <button ng-if="!tournament.enabled"
+                  <button ng-if="!tournament.status"
                           authorize-section="['tournaments.remove']"
-                          ng-click="tournamentsCtrl.remove_tournament(tournament)"
+                          ng-click="tournamentsCtrl.manage_tournament(tournament, 1)"
                           class="btn btn-xs btn-danger"
                           data-toggle="modal"
                           data-target="#manage_tournament_modal_form"
-                          title="Active">
+                          title="Activate">
                     <i class="fa fa-power-off"></i>
                   </button>
                 </td>

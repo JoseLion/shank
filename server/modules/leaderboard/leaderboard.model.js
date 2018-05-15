@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const LeaderboardSchema = new mongoose.Schema({
-	status: {type: Boolean, default: true},
+	enabled: {type: Boolean, default: true},
 	playerTournamentID: Number,
 	tournament: {type: mongoose.Schema.Types.ObjectId, ref: 'Tournament'},
 	player: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},

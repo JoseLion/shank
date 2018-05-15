@@ -9,6 +9,7 @@ import serverConfig from '../../config/server';
 
 const Tournament = mongoose.model('Tournament');
 const Archive = mongoose.model('Archive');
+const Group = mongoose.model('Group');
 const base_path = '/tournament'
 const router = express.Router();
 
@@ -33,6 +34,13 @@ export default function() {
 	router.route('/tournaments/:_id')
 	.get(auth, async (req, res) => {
 		let tournament = await Tournament.findOne(req.params).catch((err) => {res.server_error(err);});
+		
+		res.ok(tournament);
+	});
+	
+	router.route('/tournaments/:_id')
+	.put(auth, async (req, res) => {
+		let tournament = await Tournament.findByIdAndUpdate(req.params, req.body).catch((err) => {res.server_error(err);});
 		
 		res.ok(tournament);
 	});
@@ -96,11 +104,12 @@ export default function() {
 	.post(auth, multer().fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), (req, res) => {
 		try {
 			let promises = [];
-			let archive_one_id;
-			let archive_two_id;
 			
 			if (req.files['file1']) {
-				archive_one_id = mongoose.Types.ObjectId();
+				promises.push(Archive.findByIdAndRemove(req.body.mainPhoto).exec());
+				
+				let archive_one_id = mongoose.Types.ObjectId();
+				req.body.mainPhoto = archive_one_id;
 				
 				let archive_one = new Archive({
 					_id: archive_one_id,
@@ -114,7 +123,10 @@ export default function() {
 			}
 			
 			if (req.files['file2']) {
-				archive_two_id = mongoose.Types.ObjectId();
+				promises.push(Archive.findByIdAndRemove(req.body.secondaryPhoto).exec());
+				
+				let archive_two_id = mongoose.Types.ObjectId();
+				req.body.secondaryPhoto = archive_two_id;
 				
 				let archive_two = new Archive({
 					_id: archive_two_id,
@@ -127,24 +139,7 @@ export default function() {
 				promises.push(archive_two.save());
 			}
 			
-			if (archive_one_id && archive_two_id) {
-				promises.push(Archive.remove({_id: req.body.mainPhoto}).exec());
-				promises.push(Archive.remove({_id: req.body.secondaryPhoto}).exec());
-				let tournament = Tournament.update({_id: req.body._id}, Object.assign({mainPhoto: archive_one_id, secondaryPhoto: archive_two_id}, req.body));
-				
-				promises.push(tournament.exec());
-			}
-			else if (archive_one_id) {
-				promises.push(Archive.remove({_id: req.body.mainPhoto}).exec());
-				promises.push(Tournament.update({_id: req.body._id}, Object.assign({mainPhoto: archive_one_id}, req.body)).exec());
-			}
-			else if (archive_two_id) {
-				promises.push(Archive.remove({_id: req.body.secondaryPhoto}).exec());
-				promises.push(Tournament.update({_id: req.body._id}, Object.assign({secondaryPhoto: archive_two_id}, req.body)).exec());
-			}
-			else {
-				promises.push(Tournament.update({_id: req.body._id}, req.body).exec());
-			}
+			promises.push(Tournament.update({_id: req.body._id}, req.body).exec());
 			
 			Q.all(promises).then(() => {
 				res.ok({});
@@ -152,7 +147,25 @@ export default function() {
 				res.server_error(err);
 			});
     } catch (e) {
-			console.log(e, '----------------------');
+      res.server_error();
+    }
+	});
+	
+	router.route('/remove_tournaments')
+	.post(auth, async (req, res) => {
+		try {
+			let promises = [
+				Tournament.findByIdAndRemove(req.body._id).exec(),
+				Archive.findByIdAndRemove(req.body.mainPhoto).exec(),
+				Archive.findByIdAndRemove(req.body.secondaryPhoto).exec()
+			];
+			
+      Q.all(promises).spread((tournament) => {
+        res.ok(tournament);
+      }, (err) => {
+        res.server_error(err);
+      });
+    } catch (e) {
       res.server_error();
     }
 	});

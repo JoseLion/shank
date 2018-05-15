@@ -4,35 +4,30 @@
       <div class="inmodal">
         <form class="form-horizontal"
               name="form_exception_modal"
-              validate-form="tournamentsCtrl.delete_user()"
+              validate-form="tournamentsCtrl.update_tournament()"
               class="form-horizontal"
               role="form"
               novalidate>
           
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 ng-if="!tournamentsCtrl.user.enabled" class="modal-title">Activar usuario</h4>
-            <h4 ng-if="tournamentsCtrl.user.enabled" class="modal-title">Desactivar usuario</h4>
+            <h4 class="modal-title">{{tournamentsCtrl.modal_title}}</h4>
           </div>
           
           <div class="modal-body">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <div ng-if="!tournamentsCtrl.user.enabled" class="col-sm-12">
-                    Est&aacute; seguro que desea activar el usuario: {{tournamentsCtrl.user.name}} {{tournamentsCtrl.user.surname}}?
+                  <div class="col-sm-12">
+                    {{tournamentsCtrl.modal_body}}
                   </div>
-                  <div ng-if="tournamentsCtrl.user.enabled" class="col-sm-12">
-                    Est&aacute; seguro que desea desactivar el usuario: {{tournamentsCtrl.user.name}} {{tournamentsCtrl.user.surname}}?
-                  </div>                  
                 </div>
               </div>
             </div>
           </div>
           
           <div class="modal-footer">
-            <button ng-if="!tournamentsCtrl.user.enabled" type="submit" class="btn btn-primary">Activar</button>
-            <button ng-if="tournamentsCtrl.user.enabled" type="submit" class="btn btn-primary">Desactivar</button>            
+            <button type="submit" class="btn btn-primary">{{tournamentsCtrl.modal_button_action}}</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
           </div>
         </form>

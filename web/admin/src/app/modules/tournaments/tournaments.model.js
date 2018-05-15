@@ -17,6 +17,10 @@
       return base_model('update_tournament').multipart(params);
     }
     
+    model.remove_tournaments = function(params) {
+      return base_model('remove_tournaments').create(params);
+    }
+    
     return model;
   });
 })();

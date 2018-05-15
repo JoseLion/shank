@@ -31,7 +31,7 @@ let prepare_router = function(app) {
     
     try {
       Admin_User
-      .findOne({email: req.body.email, role: 1, enabled: true})
+      .findOne({email: req.body.email, enabled: true})
       .select('_id email name surname cell_phone')
       .exec((err, res_user) => {
         if (err) {

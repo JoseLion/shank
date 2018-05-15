@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const PlayerSchema = new mongoose.Schema({
-	status: {type: Boolean, default: true},
+	enabled: {type: Boolean, default: true},
 	playerID: Number,
 	firstName: String,
 	lastName: String,

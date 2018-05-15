@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 let TournamentSchema = new mongoose.Schema({
-	status: {type: Boolean, default: true},
+	enabled: {type: Boolean, default: true},
 	tournamentID: Number,
 	name: String,
 	startDate: Number,
