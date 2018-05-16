@@ -6,6 +6,7 @@ import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
 import Q from 'q';
 import serverConfig from '../../config/server';
+import leaderboard_service from '../leaderboard/leaderboard.service';
 
 const Tournament = mongoose.model('Tournament');
 const Archive = mongoose.model('Archive');
@@ -90,8 +91,10 @@ export default function() {
 			let tournament = new Tournament(Object.assign({mainPhoto: archive_one_id, secondaryPhoto: archive_two_id}, req.body));
 			promises.push(tournament.save());
 			
-			Q.all(promises).then(() => {
-				res.ok({});
+			Q.all(promises).spread((archive1_saved, archive2_saved, tournament_saved) => {
+				req.body._id = tournament_saved._id;
+				console.log(req.body);
+				leaderboard_service.load_leaderboard(req, res);
 			}, (err) => {
 				res.server_error(err);
 			});
@@ -142,7 +145,7 @@ export default function() {
 			promises.push(Tournament.update({_id: req.body._id}, req.body).exec());
 			
 			Q.all(promises).then(() => {
-				res.ok({});
+				leaderboard_service.load_leaderboard(req, res);
 			}, (err) => {
 				res.server_error(err);
 			});

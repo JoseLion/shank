@@ -33,6 +33,16 @@ export default {
 		
 		return json;
 	},
+	
+	get_leaderboard_by_tournament: async function(tournamentID) {
+		console.log("Fetching players from fantasydata.net...");
+		
+		const response = await fetch(`${fantasy_url}/Leaderboard/${tournamentID}`, options).catch(handleError);
+		let json = await response.json().catch(handleError);
+		json = normalizeKeys(json);
+		
+		return json;
+	},
 
 	updateLeaderboard: async function() {
 		const Leaderboard = mongoose.model('Leaderboard');

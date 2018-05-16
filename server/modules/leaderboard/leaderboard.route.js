@@ -14,7 +14,7 @@ export default function(app) {
 		response.ok(leaderboard);
 	});
 	
-	router.get('/load_leaderboard/:id', leaderboard_service.load_leaderboard);
+	router.post('/load_leaderboard', leaderboard_service.load_leaderboard);
 
 	return router;
 }
