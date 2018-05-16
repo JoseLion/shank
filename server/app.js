@@ -19,6 +19,8 @@ import AssignPoints from './service/assignPoints';
 
 import db_config from './config/database';
 
+import CronJobs from './service/cronJobs';
+
 //DeprecationWarning: Mongoose: mpromise (mongoose's default promise library)
 mongoose.Promise = global.Promise;
 
@@ -128,7 +130,7 @@ app.use(function (err, req, res, next) {
 
 /** THIS CODE SHOULD CHANGE, THIS IS A BURNT VERSION OF WHAT SHOULD BE DONE WHEN A TOURNAMENT IS ADDED TO THE DB **/
 
-async function createCrons(id) {
+/*async function createCrons(id) {
 	const Tournament = mongoose.model('Tournament');
 	const tournament = await Tournament.findOne({tournamentID: id}).catch(handleMongoError);
 
@@ -146,9 +148,16 @@ async function createCrons(id) {
 			});
 		});
 	}
-}
+}*/
 
 //createCrons(263);
+
+let cronJobs = new CronJobs();
+cronJobs.create('* * * * * *', 'test');
+
+setTimeout(function() {
+	global.job.stop();
+}, 5000);
 
 /** ----------------------------------------------------------------------------------------------------------- **/
 
