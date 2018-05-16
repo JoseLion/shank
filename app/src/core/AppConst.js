@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { ProductSKUs } from '../config/variables';
 
-export const LINKING_URI = 'comlevelapshank://';
+export const LINKING_URI = 'comelevisionshank://';
 export const SKUS = ProductSKUs;
 
 export const COLOR_BLUE = '#252D3B';
