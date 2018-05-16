@@ -48,7 +48,7 @@ export default function() {
 	router.route('/get_tournaments_from_fantasy')
 	.post(auth, async (req, res) => {
 		//let tournaments = await fantasy.get_tournaments(req.body.year);
-		let tournaments = require('./fantasy.data.json')
+		let tournaments = require('./fantasy.tournaments.data.json');
 		res.ok(tournaments);
 	});
 	
