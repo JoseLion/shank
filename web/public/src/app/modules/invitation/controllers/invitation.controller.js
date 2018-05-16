@@ -20,10 +20,11 @@
     
     vm.open_app = function() {
       if ($stateParams.group) {
-        alert($stateParams.group);
         window.location.href = 'comelevisionshank://group=' + $stateParams.group;
       }
     };
+    
+    vm.open_app();
 
     vm.open_android = function() {
       window.location.href = 'market://details?id=com.elevision.shank';
