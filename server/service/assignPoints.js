@@ -9,8 +9,8 @@ const App_Setting = mongoose.model('App_Setting');
 export default async function(tournamentId, roundNumber) {
 	let tournament = await Tournament.findById(tournamentId).catch(handleMongoError);
 	const tournamentLeaderboard = await Leaderboard.find({tournament: tournamentId, rank: {$ne: null}}).sort({rank: 1}).catch(handleMongoError);
-	const points = await App_Setting.find({code: /PTS.*/}).sort({value: -1}).catch(handleMongoError);
-	const fines = await App_Setting.find({code: /FND.*/}).sort({value: 1}).catch(handleMongoError);
+	const points = await App_Setting.findOne({code: /PTS.*/}).sort({value: -1}).catch(handleMongoError);
+	const fines = await App_Setting.findOne({code: /FND.*/}).sort({value: 1}).catch(handleMongoError);
 
 	let leaders = filterLeaders(tournamentLeaderboard);
 
@@ -35,10 +35,10 @@ export default async function(tournamentId, roundNumber) {
 									let hit = 0.0;
 
 									if (leaderboardCross.lastRoaster.length > 0 && cross.player != leaderboardCross.lastRoaster[i].player) {
-										let penalty = 1.0 - (parseFloat(fines[roundNumber - 1].value) / 100.0);
-										hit = (parseFloat(points[i].value) * penalty);
+										let penalty = 1.0 - (parseFloat(fines.values[roundNumber - 1]) / 100.0);
+										hit = (parseFloat(points.values[i]) * penalty);
 									} else {
-										hit = points[i].value;
+										hit = points.values[i];
 									}
 
 									roundScore += parseFloat(hit);
