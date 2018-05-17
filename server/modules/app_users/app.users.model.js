@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import configJWT from '../../config/jwt';
+import date_service from '../services/date.services';
 
 let App_UserSchema = new mongoose.Schema({
 	fullName: String,
@@ -16,11 +17,16 @@ let App_UserSchema = new mongoose.Schema({
 	}],
 	hash: String,
 	salt: String,
-	enabled: {type: Boolean, default: true}
-},
-{ timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}});
+	enabled: {type: Boolean, default: true},
+	created_at: Number,
+	updated_at: Number
+});
 
-App_UserSchema.pre('save', async function(next) {
+App_UserSchema.pre('save', function(next) {
+	if (!this.created_at) {
+		this.created_at = date_service.utc_unix_current_date();
+	}
+	this.updated_at = date_service.utc_unix_current_date();
 	next();
 });
 

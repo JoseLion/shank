@@ -23,6 +23,7 @@ import appUserRoute from './app_users/app.users.routes';
 import appSettingsRoute from './app_settings/app.settings.routes';
 import tournamentSettingsRoute from './tournament_settings/tournament.settings.routes';
 import platerRoute from './player/player.routes';
+import reportsRoute from './reports/reports.routes';
 import permissions from './permissions/permissions.routes';
 
 let api_prefix = '/api';
@@ -40,5 +41,6 @@ export default function(app) {
 	app.use(api_prefix, appSettingsRoute(app));
 	app.use(api_prefix, tournamentSettingsRoute(app));
 	app.use(api_prefix, platerRoute(app));
+	app.use(api_prefix, reportsRoute());
   app.use(api_prefix, permissions()); 
 }

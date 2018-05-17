@@ -7,6 +7,7 @@ import multer from 'multer';
 import Q from 'q';
 import serverConfig from '../../config/server';
 import leaderboard_service from '../leaderboard/leaderboard.service';
+import date_service from '../services/date.services';
 
 const Tournament = mongoose.model('Tournament');
 const Archive = mongoose.model('Archive');
@@ -16,7 +17,8 @@ const router = express.Router();
 
 export default function() {
 	router.get(`${base_path}/findAll`, auth, async (request, response) => {
-		let tournaments = await Tournament.find({endDate: {$gte: new Date().getTime()}}).sort({startDate: 1}).catch(handleMongoError);
+		console.log(date_service.utc_unix_current_date(), 'date_service_utc_unix_current_date');
+		let tournaments = await Tournament.find({endDate: {$gte: date_service.utc_unix_current_date()}}).sort({startDate: 1}).catch(handleMongoError);
 		response.ok(tournaments);
 	});
 
