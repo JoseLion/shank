@@ -4,9 +4,11 @@ import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
+import { EventRegister } from 'react-native-event-listeners';
 
 // Shank components:
 import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
+import handleError from 'Core/handleError';
 import LocalStyles from './styles/local';
 
 export default class Login extends BaseComponent {
@@ -18,16 +20,10 @@ export default class Login extends BaseComponent {
 		this.scrollToInput = this.scrollToInput.bind(this);
 		this.onLoginPressed = this.onLoginPressed.bind(this);
 		this.facebookService = this.facebookService.bind(this);
-		this.handleError = this.handleError.bind(this);
 		this.state = {
 			email: '',
-			password: '',
-			loading: false
+			password: ''
 		};
-	}
-
-	setLoading(loading) {
-		this.setState({loading: loading});
 	}
 
 	scrollToInput(reactNode) {
@@ -44,8 +40,10 @@ export default class Login extends BaseComponent {
 			BarMessages.showError('Please enter your Password.', this.validationMessage);
 			return;
 		}
+		
+		Keyboard.dismiss();
+		global.setLoading(true);
 
-		this.setLoading(true);
 		let data = {
 			email: this.state.email.toLowerCase(),
 			password: this.state.password,
@@ -54,15 +52,16 @@ export default class Login extends BaseComponent {
 	}
 
 	async onLoginPressedAsync(data) {
-		const login = await NoAuthModel.post('app_login', data).catch(this.handleError);
+		const login = await NoAuthModel.post('app_login', data).catch(handleError);
 		
 		if (login) {
 			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
 			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(login.user));
-			this.setLoading(false);
+			global.setLoading(false);
+			EventRegister.emit(AppConst.EVENTS.realodGroups);
 			this.props.navigation.navigate('Main');
 		} else {
-			this.setLoading(false);
+			global.setLoading(false);
 			BarMessages.showError("Incorrect user/password. Please try again!", this.validationMessage);
 		}
 	}
@@ -79,25 +78,25 @@ export default class Login extends BaseComponent {
 				}
 			};
 
-			const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(this.handleError);
+			const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(handleError);
 			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
 			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
-			this.setLoading(false);
+			global.setLoading(false);
 			this.props.navigation.navigate('Main');
 		} else {
-			this.handleError('Facebook account does not have an associated email!');
+			handleError('Facebook account does not have an associated email!');
 		}
 	}
 
 	async facebookService() {
 		const permissions = ['public_profile', 'email'];
-		this.setLoading(true);
+		global.setLoading(true);
 		let option = 'Signin';
 
-		const response = await LoginManager.logInWithReadPermissions(permissions).catch(this.handleError);
+		const response = await LoginManager.logInWithReadPermissions(permissions).catch(handleError);
 
 		if (response.isCancelled) {
-			this.handleError(`${option} with Facebook was cancelled!`);
+			handleError(`${option} with Facebook was cancelled!`);
 		} else {
 			let hasSamePermissions = true;
 
@@ -121,14 +120,9 @@ export default class Login extends BaseComponent {
 				const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => this.facebookCallBack(error, profile));
 				new GraphRequestManager().addRequest(infoRequest).start();
 			} else {
-				this.handleError(`Not enought permissions grnated to ${option} with Facebook!`);
+				handleError(`Not enought permissions grnated to ${option} with Facebook!`);
 			}
 		}
-	}
-
-	handleError(error) {
-		this.setLoading(false);
-		BarMessages.showError(error, this.validationMessage);
 	}
 
 	render() {
@@ -136,8 +130,6 @@ export default class Login extends BaseComponent {
 			<View style={{flex: 1}}>
 				<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={[MainStyles.background]}>
 					<View style={[MainStyles.container]} behavior="padding">
-						<Spinner visible={this.state.loading} animation="slide"/>
-						
 						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
 						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>ENTER YOUR EMAIL & PASSWORD TO{"\n"}LOG IN TO YOUR ACCOUNT</Text>
 						

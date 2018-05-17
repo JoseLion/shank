@@ -6,6 +6,7 @@ import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
 import Q from 'q';
 import serverConfig from '../../config/server';
+import CronJobs from '../../service/cronJobs';
 
 const Tournament = mongoose.model('Tournament');
 const Archive = mongoose.model('Archive');

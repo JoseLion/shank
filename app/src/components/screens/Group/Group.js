@@ -472,7 +472,7 @@ export default class Group extends BaseComponent {
 			const startTime = (startDate.getHours() * 60 * 60) + (startDate.getMinutes() * 60) + startDate.getSeconds;
 			const endTime = (endDate.getHours() * 60 * 60) + (endDate.getMinutes() * 60) + endDate.getSeconds;
 
-			if (time >= startTime && time <= endTime) {
+			if (today.getTime() >= startDate.getTime() && today.getTime() <= endDate.getTime() && time >= startTime && time <= endTime) {
 				return true;
 			}
 		}

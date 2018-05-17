@@ -53,7 +53,10 @@ if (testing_preview_or_production) {
 
 mongoose.connect(database_uri, {})
   .then(async() => {
-    console.log(`Database connected at ${database_uri}`);
+	console.log(`Database connected at ${database_uri}`);
+	
+	const cronJobs = new CronJobs();
+	cronJobs.restoreRunningJobs();
     
     /*let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
     console.log("Tournaments updated! (Total: " + tournaments.length + ")");
@@ -151,13 +154,6 @@ app.use(function (err, req, res, next) {
 }*/
 
 //createCrons(263);
-
-let cronJobs = new CronJobs();
-cronJobs.create('* * * * * *', 'test');
-
-setTimeout(function() {
-	global.job.stop();
-}, 5000);
 
 /** ----------------------------------------------------------------------------------------------------------- **/
 
