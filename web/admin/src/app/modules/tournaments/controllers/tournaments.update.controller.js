@@ -42,11 +42,11 @@
       vm.tournament.start_date = date_utils.format_date(vm.tournament.startDate);
       vm.tournament.end_date = date_utils.format_date(vm.tournament.endDate);
       
-      var start_date_time =  new Date(vm.tournament.startDate);
-      vm.tournament.start_date_time = start_date_time.getUTCHours() + ':' + start_date_time.getUTCMinutes();
+      var start_date_time =  moment(vm.tournament.startDate).utc().format("HH:mm");
+      vm.tournament.start_date_time = start_date_time;
       
-      var end_date_time =  new Date(vm.tournament.endDate);
-      vm.tournament.end_date_time = end_date_time.getUTCHours() + ':' + end_date_time.getUTCMinutes();
+      var end_date_time =  moment(vm.tournament.endDate).utc().format("HH:mm");
+      vm.tournament.end_date_time = end_date_time;
     }
     
     vm.get_tournaments = function() {
