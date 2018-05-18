@@ -78,7 +78,7 @@ class RoasterRow extends Component {
 						</View>
 
 						<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
-							<View style={{flex: 1}}>
+							<View style={{flex: 1, justifyContent: 'center'}}>
 								<Text style={[ViewStyle.roasterName]}>{this.state.roaster.player.firstName} {this.state.roaster.player.lastName}</Text>
 							</View>
 

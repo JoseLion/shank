@@ -54,7 +54,7 @@ export default class {
             global.runningJobs.push(cronJob);
             return cronJob;
         } catch (error) {
-            console.log("CronJobs Error: ", error);
+            console.error("CronJobs Error: ", error);
             return null;
         }
     }
