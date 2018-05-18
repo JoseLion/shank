@@ -11,8 +11,16 @@ export default class {
         }
     }
 
-    async create(cronTime, functionName) {
+    async create(cronTime, functionName, reference) {
         try {
+            if (functionName ==null || functionName == '') {
+                throw "The name of the function to excecute is required";
+            }
+
+            if (this[functionName] == null) {
+                throw `The function ${functionName} could not be found in cronJobs.js`;
+            }
+
             const cronJob = new CronJob({
                 cronTime: cronTime,
                 onTick: this[functionName],
@@ -38,7 +46,8 @@ export default class {
             cronJob.start();
             const job = await Job.create({
                 cronTime: cronTime,
-                onTick: functionName
+                onTick: functionName,
+                reference: reference
             }).catch(handleMongoError);
 
             cronJob._id = job._id;
@@ -80,13 +89,7 @@ export default class {
             cronJob._id = job._id;
             global.runningJobs.push(cronJob);
         });
-
-        console.log("global.runningJobs: ", global.runningJobs);
+        
         return true;
-    }
-
-    test() {
-        console.log('--------------- FIRE!!! ---------------');
-        this.stop();
     }
 }
