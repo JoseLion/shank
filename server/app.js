@@ -19,6 +19,8 @@ import AssignPoints from './service/assignPoints';
 
 import db_config from './config/database';
 
+import CronJobs from './service/cronJobs';
+
 //DeprecationWarning: Mongoose: mpromise (mongoose's default promise library)
 mongoose.Promise = global.Promise;
 
@@ -51,7 +53,10 @@ if (testing_preview_or_production) {
 
 mongoose.connect(database_uri, {})
   .then(async() => {
-    console.log(`Database connected at ${database_uri}`);
+	console.log(`Database connected at ${database_uri}`);
+	
+	const cronJobs = new CronJobs();
+	cronJobs.restoreRunningJobs();
     
     /*let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
     console.log("Tournaments updated! (Total: " + tournaments.length + ")");
@@ -128,7 +133,7 @@ app.use(function (err, req, res, next) {
 
 /** THIS CODE SHOULD CHANGE, THIS IS A BURNT VERSION OF WHAT SHOULD BE DONE WHEN A TOURNAMENT IS ADDED TO THE DB **/
 
-async function createCrons(id) {
+/*async function createCrons(id) {
 	const Tournament = mongoose.model('Tournament');
 	const tournament = await Tournament.findOne({tournamentID: id}).catch(handleMongoError);
 
@@ -146,7 +151,7 @@ async function createCrons(id) {
 			});
 		});
 	}
-}
+}*/
 
 //createCrons(263);
 

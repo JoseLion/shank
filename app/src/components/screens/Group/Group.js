@@ -6,6 +6,7 @@ import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
 import ActionSheet from 'react-native-actionsheet';
 import SortableList from 'react-native-sortable-list';
+import { EventRegister } from 'react-native-event-listeners';
 
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, IsAndroid, Spinner } from '../BaseComponent';
@@ -23,7 +24,12 @@ class RoasterRow extends Component {
 		super(props);
 		this.animateCell = this.animateCell.bind(this);
 		this.onPress = this.onPress.bind(this);
-		this.state = {roaster: this.props.roaster};
+		this.onLongPress = this.onLongPress.bind(this);
+		this.resetShadowStyle = this.resetShadowStyle.bind(this);
+		this.state = {
+			roaster: this.props.roaster,
+			shadowStyle: null
+		};
 	}
 
 	animateCell() {
@@ -58,6 +64,39 @@ class RoasterRow extends Component {
 		}
 	}
 
+	onLongPress() {
+		if (IsAndroid) {
+			this.setState({
+				shadowStyle: {
+					elevation: Style.EM(0.25),
+					marginRight: Style.EM(0.5),
+					marginBottom: Style.EM(0.75)
+				}
+			});
+		} else {
+			this.setState({
+				shadowStyle: {
+					shadowColor: "#000000"
+				}
+			});
+		}
+		
+
+		this.props.toggleRowActive();
+	}
+
+	resetShadowStyle() {
+		this.setState({shadowStyle: null});
+	}
+
+	componentDidMount() {
+		EventRegister.addEventListener(AppConst.EVENTS.resetShadowStyle, this.resetShadowStyle);
+	}
+
+	componentWillUnmount() {
+		EventRegister.removeEventListener(this.resetShadowStyle);
+	}
+
 	render() {
 		if (this.state.roaster && this.state.roaster.playerTournamentID) {
 			const changeButton = [
@@ -67,9 +106,9 @@ class RoasterRow extends Component {
 			];
 
 			const row = (
-				<TouchableHighlight style={[ViewStyle.cellMainView]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} onLongPress={this.props.toggleRowActive} {...this.props.sortHandlers}>
+				<TouchableHighlight style={[ViewStyle.cellMainView, this.state.shadowStyle]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} onLongPress={this.onLongPress} {...this.props.sortHandlers}>
 					<View style={[ViewStyle.cellSubview, {paddingVertical: '3%'}]}>
-						<View style={{flex: 1}}>
+						<View style={{flex: 1, shadowColor}}>
 							<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 						</View>
 
@@ -78,7 +117,7 @@ class RoasterRow extends Component {
 						</View>
 
 						<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
-							<View style={{flex: 1}}>
+							<View style={{flex: 1, justifyContent: 'center'}}>
 								<Text style={[ViewStyle.roasterName]}>{this.state.roaster.player.firstName} {this.state.roaster.player.lastName}</Text>
 							</View>
 
@@ -472,7 +511,7 @@ export default class Group extends BaseComponent {
 			const startTime = (startDate.getHours() * 60 * 60) + (startDate.getMinutes() * 60) + startDate.getSeconds;
 			const endTime = (endDate.getHours() * 60 * 60) + (endDate.getMinutes() * 60) + endDate.getSeconds;
 
-			if (time >= startTime && time <= endTime) {
+			if (today.getTime() >= startDate.getTime() && today.getTime() <= endDate.getTime() && time >= startTime && time <= endTime) {
 				return true;
 			}
 		}
@@ -577,6 +616,8 @@ export default class Group extends BaseComponent {
 										group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster = roaster;
 										this.setState({ group });
 									}
+
+									EventRegister.emit(AppConst.EVENTS.resetShadowStyle);
 								}}
 							/>
 						</View>

@@ -8,6 +8,8 @@ import Q from 'q';
 import serverConfig from '../../config/server';
 import leaderboard_service from '../leaderboard/leaderboard.service';
 import date_service from '../services/date.services';
+import CronJobs from '../../service/cronJobs';
+
 
 const Tournament = mongoose.model('Tournament');
 const Archive = mongoose.model('Archive');
@@ -91,6 +93,10 @@ export default function() {
 			
 			let tournament = new Tournament(Object.assign({mainPhoto: archive_one_id, secondaryPhoto: archive_two_id}, req.body));
 			promises.push(tournament.save());
+
+			const cronJobs = new CronJobs();
+			const startDate = new Date(tournament.startDate);
+			cronJobs.create(`00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`, 'pushStartReminder');
 			
 			Q.all(promises).spread((archive1_saved, archive2_saved, tournament_saved) => {
 				req.body._id = tournament_saved._id;

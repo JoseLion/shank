@@ -62,8 +62,7 @@ export default class Tournaments extends Component {
 	
 	async componentDidMount() {
 		global.setLoading(true);
-		const locale = Platform.OS == 'android' ? NativeModules.I18nManager.localeIdentifier : NativeModules.SettingsManager.settings.AppleLocale;
-		Moment.locale(locale);
+		//Moment.locale("en_US");
 		let tournaments = await BaseModel.get("tournament/findAll").catch(handleError);
 		let leaderboard = [];
 

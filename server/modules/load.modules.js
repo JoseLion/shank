@@ -5,6 +5,7 @@ import groupModel from './group/group.model';
 import tournamentModel from './tournaments/tournaments.model';
 import archiveModel from './archive/archive.model';
 import leaderboardModel from './leaderboard/leaderboard.model';
+import jobModel from './jobs/job.model';
 
 import profileModel from './profiles/profiles.model';
 import appUserModel from './app_users/app.users.model';
