@@ -5,6 +5,7 @@ import android.content.res.Resources;
 
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
@@ -39,6 +40,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new SvgPackage(),
                     new ReactNativePushNotificationPackage(),
                     new LinearGradientPackage(),
                     new PickerPackage(),

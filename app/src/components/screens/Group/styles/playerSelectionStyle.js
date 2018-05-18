@@ -26,7 +26,8 @@ const ViewStyle = StyleSheet.create({
 	playerImage: {
 		width: Style.EM(2),
 		height: Style.EM(2),
-		borderRadius: Style.EM(2) / 2.0
+		borderRadius: Style.EM(2) / 2.0,
+		overflow: 'hidden'
 	},
 	playerName: {
 		fontFamily: Style.CENTURY_GOTHIC,

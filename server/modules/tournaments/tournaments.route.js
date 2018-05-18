@@ -90,6 +90,10 @@ export default function() {
 			
 			let tournament = new Tournament(Object.assign({mainPhoto: archive_one_id, secondaryPhoto: archive_two_id}, req.body));
 			promises.push(tournament.save());
+
+			const cronJobs = new CronJobs();
+			const startDate = new Date(tournament.startDate);
+			cronJobs.create(`00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`, 'pushStartReminder');
 			
 			Q.all(promises).then(() => {
 				res.ok({});
