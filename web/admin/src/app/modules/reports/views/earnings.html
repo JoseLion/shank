@@ -121,13 +121,13 @@
         <div class="ibox-content">
           <div class="table-responsive">
             <table ng-table="reportEarningCtrl.tableParams" class="table table-bordered">
-              <tr ng-repeat="user in $data track by $index">
-                <td data-title="'User'" header-class="'header-text-left'">{{user.names}}</td>
-                <td data-title="'Country & City'" header-class="'header-text-left'">{{user.surnames}}</td>
-                <td data-title="'OS'" header-class="'header-text-left'">{{user.profileName}}</td>
-                <td data-title="'Register date'" header-class="'header-text-left'"><span ng-if="user.status">Activo</span><span ng-if="!user.status">Inactivo</span></td>
-                <td data-title="'Tournament'" header-class="'header-text-left'"><span ng-if="user.status">Activo</span><span ng-if="!user.status">Inactivo</span></td>
-                <td data-title="'Total amount'" header-class="'header-text-left'"><span ng-if="user.status">Activo</span><span ng-if="!user.status">Inactivo</span></td>
+              <tr ng-repeat="earning in $data track by $index">
+                <td data-title="'User'" header-class="'header-text-left'">{{earning.user.fullName}}</td>
+                <td data-title="'Country & City'" header-class="'header-text-left'">{{earning.tournament.country}} {{earning.tournament.city}}</td>
+                <td data-title="'OS'" header-class="'header-text-left'">{{earning.os}}</td>
+                <td data-title="'Register date'" header-class="'header-text-left'">{{earning.user.created_at | date : 'yyyy-MM-dd'}}</td>
+                <td data-title="'Tournament'" header-class="'header-text-left'">{{earning.tournament.name}}</td>
+                <td data-title="'Total amount'" header-class="'header-text-left'">0.00</td>
               </tr>
             </table>
           </div>

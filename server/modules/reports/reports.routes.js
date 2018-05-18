@@ -22,7 +22,7 @@ export default function() {
 			 }
 		 },
 		 { "$unwind": "$tournament" },
-		 { "$project" : { "tournament" : 1,  "tournaments.leaderboard.user" : 1} },
+		 { "$project" : { "tournament": 1, "tournaments.leaderboard.user": 1} },
 		 { "$lookup": {
 				 "from": "app_users",
 				 "localField": "tournaments.leaderboard.user",
@@ -31,7 +31,18 @@ export default function() {
 			 }
 		 },
 		 { "$unwind": "$user" },
-		 { "$project" : { "user" : {"_id": "$user._id", "fullName": "$user.fullName"},  "tournament" : {"_id": "$tournament._id", "name": "$tournament.name"} }},
+		 { "$project" : {
+					"user" : {
+						"_id": "$user._id", "fullName": "$user.fullName", "created_at": "$user.created_at"
+					},
+					"tournament": {
+						"_id": "$tournament._id",
+						"name": "$tournament.name",
+						"country": "$tournament.country",
+						"city": "$tournament.city"
+					}
+				}
+			}
 		])
 		.exec((err, data) => {
 			if (err) {

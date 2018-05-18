@@ -11,20 +11,25 @@
         title: 'Earnings',
         templateUrl: 'app/modules/reports/views/earnings.html',
         controller: 'ReportsController',
-        controllerAs: 'reportEarningCtrl'
+        controllerAs: 'reportEarningCtrl',
+        resolve: {
+          earnings: function(reports_model) {
+            return reports_model.get_earnings();
+          }
+        }
       });
   });
   
-  function ReportsController(NgTableParams) {
+  function ReportsController(NgTableParams, earnings) {
     var vm = this;
-    vm.users = [];
+    vm.earnings = earnings;
     
     set_pagination();
     
     function set_pagination() {
       vm.tableParams = new NgTableParams({
       }, {
-        dataset: vm.users
+        dataset: vm.earnings
       });
     }
   }

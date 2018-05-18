@@ -17,7 +17,6 @@ const router = express.Router();
 
 export default function() {
 	router.get(`${base_path}/findAll`, auth, async (request, response) => {
-		console.log(date_service.utc_unix_current_date(), 'date_service_utc_unix_current_date');
 		let tournaments = await Tournament.find({endDate: {$gte: date_service.utc_unix_current_date()}}).sort({startDate: 1}).catch(handleMongoError);
 		response.ok(tournaments);
 	});
