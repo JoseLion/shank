@@ -184,7 +184,6 @@ export default ViewStyle = StyleSheet.create({
         backgroundColor: AppConst.COLOR_WHITE
     },
     cellSubview: {
-        borderBottomWidth: 1,
         borderBottomColor: AppConst.COLOR_GRAY,
         paddingVertical: '7.5%',
         flexDirection: 'row',
