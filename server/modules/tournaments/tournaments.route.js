@@ -94,9 +94,9 @@ export default function() {
 			let tournament = new Tournament(Object.assign({mainPhoto: archive_one_id, secondaryPhoto: archive_two_id}, req.body));
 			promises.push(tournament.save());
 
-			const cronJobs = new CronJobs();
 			const startDate = new Date(tournament.startDate);
-			cronJobs.create(`00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`, 'pushStartReminder');
+			const cronTime = `00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`;
+			CronJobs.create({ cronTime, functionName: 'tournamentStartReminder', args: tournament._id });
 			
 			Q.all(promises).spread((archive1_saved, archive2_saved, tournament_saved) => {
 				req.body._id = tournament_saved._id;
@@ -150,6 +150,11 @@ export default function() {
 			}
 			
 			promises.push(Tournament.update({_id: req.body._id}, req.body).exec());
+
+			const startDate = new Date(tournament.startDate);
+			const cronTime = `00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`;
+			CronJobs.remove({reference: req.body._id});
+			CronJobs.create({ cronTime, functionName: 'tournamentStartReminder', args: req.body._id });
 			
 			Q.all(promises).then(() => {
 				leaderboard_service.load_leaderboard(req, res);

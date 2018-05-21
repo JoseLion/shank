@@ -6,6 +6,7 @@ import multer from 'multer';
 
 //DELETE AFTER TEST
 import AssignPoints from '../../service/assignPoints';
+import PushNotification from '../../service/pushNotification';
 
 const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
@@ -39,7 +40,6 @@ export default function(app) {
 		}
 
 		/* --------------------------------- SHOULD BE DELETED --------------------------------- */
-		const PushNotification = import('../../service/pushNotification');
 		const appUsers = await AppUser.find({});
 		const pushNotification = new PushNotification();
 		

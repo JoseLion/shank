@@ -1,17 +1,16 @@
 import { CronJob } from 'cron';
 import mongoose from 'mongoose';
 import handleMongoError from './handleMongoError';
+import PushNotiications from './pushNotification';
 
 const Job = mongoose.model('Job');
 
 export default class {
     constructor() {
-        if (global.runningJobs == null) {
-            global.runningJobs = [];
-        }
+
     }
 
-    async create(cronTime, functionName, reference) {
+    static async create({ cronTime, functionName, reference, args } = new Object()) {
         try {
             if (functionName ==null || functionName == '') {
                 throw "The name of the function to excecute is required";
@@ -23,7 +22,13 @@ export default class {
 
             const cronJob = new CronJob({
                 cronTime: cronTime,
-                onTick: this[functionName],
+                onTick: function() {
+                    const shouldContinue = this[functionName](...args);
+
+                    if (!shouldContinue) {
+                        this.stop();
+                    }
+                },
                 onComplete: async function() {
                     let index;
                     global.runningJobs.forEach((job, i) => {
@@ -40,7 +45,7 @@ export default class {
                     await Job.remove({_id: this._id}).catch(handleMongoError);
                 },
                 start: false,
-                timeZone: 'America/Guayaquil'
+                timeZone: 'Atlantic/Reykjavik'
             });
 
             cronJob.start();
@@ -54,12 +59,35 @@ export default class {
             global.runningJobs.push(cronJob);
             return cronJob;
         } catch (error) {
-            console.error("CronJobs Error: ", error);
-            return null;
+            throw "CronJobs Error: " + error;
         }
     }
 
-    async restoreRunningJobs() {
+    static async remove({ cronTime, onTick, reference } = new Object()) {
+        try {
+            const job = await Job.findOne(arguments[0]).catch(handleMongoError);
+
+            if (job) {
+                let index;
+                global.runningJobs.forEach((running, i) => {
+                    if (running._id === job._id) {
+                        index = i;
+                        return;
+                    }
+                });
+
+                if (index > -1) {
+                    global.runningJobs.splice(index, 0);
+                }
+                
+                job.remove();
+            }
+        } catch (error) {
+            throw "CronJobs Error: " + error;
+        }
+    }
+
+    static async restoreRunningJobs() {
         const jobs = await Job.find().catch(handleMongoError);
 
         jobs.forEach(job => {
@@ -91,5 +119,35 @@ export default class {
         });
         
         return true;
+    }
+
+    /**
+     * FUNCTION TO BE EXCECUTED BY JOBS
+     */
+
+    tournamentStartReminder(id) {
+        try {
+            const pushNotifications = new PushNotiications();
+            const Tournament = mongoose.model('Tournament');
+            const Group = mongoose.model('Group');
+            const tournament = Tournament.findById(id).catch(handleMongoError);
+            const group = Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            const startDate = new Date(tournament.startDate);
+
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach(leaderboardCross => {
+                    leaderboardCross.user.notifications.forEach(pushObj => {
+                        pushNotifications.send({
+                            token: pushObj.token,
+                            os: pushObj.os,
+                            alert: `Roster alert: Remember to make your picks before the tournament starts: Tomorrow at ${startDate.getUTCHours()}:${startDate.getUTCMinutes()}. It’s time to make your picks for this week’s tournament`
+                        });
+                    });
+                });
+            });
+        } catch (error) {
+            throw "Exception: tournamentStartReminder(id) -> " + error;
+        }
+        
     }
 }
