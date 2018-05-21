@@ -38,6 +38,18 @@ export default function(app) {
 			response.server_error();
 		}
 
+		/* --------------------------------- SHOULD BE DELETED --------------------------------- */
+		const PushNotification = import('../../service/pushNotification');
+		const appUsers = await AppUser.find({});
+		const pushNotification = new PushNotification();
+		
+		appUsers.asyncForEach(async appUser => {
+			appUser.notifications.asyncForEach(async notifObj => {
+				pushNotification.send({token: notifObj.token, os: notifObj.os, alert: `A new group named '${group.name}' was created by ${owner.fullName}`});
+			});
+		});
+		/* -------------------------------------------------------------------------------------- */
+
 		response.ok(group);
 	});
 

@@ -33,8 +33,8 @@ export default async function(tournamentId, roundNumber) {
 
 								if (found != null && found.length > 0) {
 									let hit = 0.0;
-
-									if (leaderboardCross.lastRoaster.length > 0 && cross.player != leaderboardCross.lastRoaster[i]) {
+									
+									if (leaderboardCross.lastRoaster.length > 0 && String(cross._id) != String(leaderboardCross.lastRoaster[i])) {
 										let penalty = 1.0 - (parseFloat(fines.values[roundNumber - 1]) / 100.0);
 										hit = (parseFloat(points.values[i]) * penalty);
 									} else {
