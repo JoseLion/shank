@@ -14,7 +14,11 @@
         controllerAs: 'invitationCtrl',
         resolve: {
           invitation: function(acquisitions_model) {
-            return acquisitions_model.create({});
+            if ($stateParams.group) {
+              return acquisitions_model.create({});
+            }
+            
+            return {};
           }
         }
       });
