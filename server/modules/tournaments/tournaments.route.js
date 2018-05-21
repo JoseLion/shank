@@ -100,7 +100,6 @@ export default function() {
 				CronJobs.create({ cronTime, functionName: 'tournamentStartReminder', args: tournament_saved._id });
 				
 				req.body._id = tournament_saved._id;
-				console.log(req.body);
 				leaderboard_service.load_leaderboard(req, res);
 			}, (err) => {
 				res.server_error(err);
