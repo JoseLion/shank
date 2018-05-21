@@ -10,7 +10,7 @@ import PushNotification from '../../service/pushNotification';
 
 const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
-const App_User = mongoose.model('App_User');
+const AppUser = mongoose.model('App_User');
 const basePath = '/group';
 const router = express.Router();
 
@@ -22,7 +22,7 @@ export default function(app) {
 
 	router.post(`${basePath}/create`, auth, multer().single('file'), async (request, response) => {
 		let group = JSON.parse(request.body.group);
-		let owner = await App_User.findOne({_id: request.payload._id}).catch(handleMongoError);
+		let owner = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
 		let archive = await Archive.create({
 			name: request.file.originalname,
 			type: request.file.mimetype,
@@ -83,7 +83,7 @@ export default function(app) {
 	});
 
 	router.get(`${basePath}/addUserToGroup/:id`, auth, async (request, response) => {
-		let user = await App_User.findOne({_id: request.payload._id}).catch(handleMongoError);
+		let user = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
 		let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
 		if (group != null) {
