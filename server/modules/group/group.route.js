@@ -122,13 +122,14 @@ export default function(app) {
 		response.ok(group);
 	});
 
-	/* TESTING - DELETE AFTER */
+	/* ----------------- THIS SOULD BE DELETED ----------------- */
 	router.get(`${basePath}/assignPoints/:tournamentID/:round`, async (request, response) => {
 		const Tournament = mongoose.model('Tournament');
 		let tournament = await Tournament.findOne({tournamentID: parseInt(request.params.tournamentID)}).catch(handleMongoError);
 		AssignPoints(tournament._id, request.params.round);
 		response.ok();
 	});
+	/* -------------------------------------------------------- */
 
 	return router;
 }
