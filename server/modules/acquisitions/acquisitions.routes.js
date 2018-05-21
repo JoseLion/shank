@@ -21,6 +21,9 @@ export default function() {
 					res.ok({});
 				});
 			}
+			else {
+				res.ok({});
+			}
 		});
 	});
 	
