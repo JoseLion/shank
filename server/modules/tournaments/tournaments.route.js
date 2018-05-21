@@ -6,7 +6,10 @@ import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
 import Q from 'q';
 import serverConfig from '../../config/server';
+import leaderboard_service from '../leaderboard/leaderboard.service';
+import date_service from '../services/date.services';
 import CronJobs from '../../service/cronJobs';
+
 
 const Tournament = mongoose.model('Tournament');
 const Archive = mongoose.model('Archive');
@@ -16,7 +19,7 @@ const router = express.Router();
 
 export default function() {
 	router.get(`${base_path}/findAll`, auth, async (request, response) => {
-		let tournaments = await Tournament.find({endDate: {$gte: new Date().getTime()}}).sort({startDate: 1}).catch(handleMongoError);
+		let tournaments = await Tournament.find({endDate: {$gte: date_service.utc_unix_current_date()}}).sort({startDate: 1}).catch(handleMongoError);
 		response.ok(tournaments);
 	});
 
@@ -49,7 +52,7 @@ export default function() {
 	router.route('/get_tournaments_from_fantasy')
 	.post(auth, async (req, res) => {
 		//let tournaments = await fantasy.get_tournaments(req.body.year);
-		let tournaments = require('./fantasy.data.json')
+		let tournaments = require('./fantasy.tournaments.data.json');
 		res.ok(tournaments);
 	});
 	
@@ -95,8 +98,10 @@ export default function() {
 			const startDate = new Date(tournament.startDate);
 			cronJobs.create(`00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`, 'pushStartReminder');
 			
-			Q.all(promises).then(() => {
-				res.ok({});
+			Q.all(promises).spread((archive1_saved, archive2_saved, tournament_saved) => {
+				req.body._id = tournament_saved._id;
+				console.log(req.body);
+				leaderboard_service.load_leaderboard(req, res);
 			}, (err) => {
 				res.server_error(err);
 			});
@@ -147,7 +152,7 @@ export default function() {
 			promises.push(Tournament.update({_id: req.body._id}, req.body).exec());
 			
 			Q.all(promises).then(() => {
-				res.ok({});
+				leaderboard_service.load_leaderboard(req, res);
 			}, (err) => {
 				res.server_error(err);
 			});

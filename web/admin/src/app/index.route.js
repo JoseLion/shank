@@ -40,6 +40,12 @@
         title: 'Administration',
         template: '<div ui-view></div>'
       })
+      .state('admin.reports', {
+        url: '/reports',
+        abstract: true,
+        title: 'Reports',
+        template: '<div ui-view></div>'
+      })
       .state('home', {
         url: '/home',
         templateUrl: 'app/main/main.html',

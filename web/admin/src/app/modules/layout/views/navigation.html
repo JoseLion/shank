@@ -121,6 +121,32 @@
                              || state.includes('admin.profiles.update'))}">
         <a ui-sref="admin.profiles.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Profiles</span> </a>
       </li>
+      
+      <li ng-class="{active: (state.includes('admin.admin_users.list')
+                             || state.includes('admin.admin_users.create')
+                             || state.includes('admin.admin_users.update')
+                             || state.includes('admin.store_users.list')
+                             || state.includes('admin.store_users.update')
+                             || state.includes('admin.store_users.update'))}">
+        <a href="#">
+          <i class="fa fa-users"></i>
+          <span class="nav-label">Reports</span>
+          <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse"
+          ng-class="{in: (state.includes('admin.admin_users.list')
+                             || state.includes('admin.admin_users.create')
+                             || state.includes('admin.admin_users.update')
+                             || state.includes('admin.store_users.list')
+                             || state.includes('admin.store_users.create')
+                             || state.includes('admin.store_users.update'))}">
+          <li ng-class="{active: (state.includes('admin.users.list')
+                                  || state.includes('admin.admin_users.create')
+                                  || state.includes('admin.admin_users.update'))}">
+            <a ui-sref="admin.reports.earnings"><i class="fa fa-user"></i> <span class="nav-label">Earnings</span></a>
+          </li>
+        </ul>
+      </li>
     </ul>
   </div>
 </nav>

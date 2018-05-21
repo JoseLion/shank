@@ -1,8 +1,10 @@
-let mongoose = require('mongoose'),
-Player = mongoose.model('Player'),
-path = '/players',
-router = require('../core/routes.js')(Player, path),
-auth = require('../../config/auth');
+let mongoose = require('mongoose');
+let Player = mongoose.model('Player');
+let path = '/players';
+let router = require('../core/routes.js')(Player, path);
+let auth = require('../../config/auth');
+import fantasy from '../../service/fantasy';
+var fs = require("fs");
 
 module.exports = (app) => {
   router
@@ -68,6 +70,29 @@ module.exports = (app) => {
       console.error('FATAL! ', e);
       res.server_error();
       return;
+    }
+  })
+  .get('/load_players', async (req, res) => {
+    try {
+      //https://gyandeeps.com/json-file-write/
+      //let players = await fantasy.get_players(req.body.year);
+      let players = require('./fantasy.players.data.json');
+      
+      console.log(players.length, '-----------');
+      players.asyncForEach(async player => {
+        //console.log("--------------------");
+        let player_in = await Player.findOne({playerID: player.playerID}).catch(err => {console.log(err);});
+        
+        if (player_in) {
+          player_in.set(player);
+          await player_in.save().catch((err) => {console.log(err);});
+        }
+        else {
+          await Player.create(player).catch((err) => {console.log(err);});
+        }
+      });
+    } catch (e) {
+      res.server_error();
     }
   });
 

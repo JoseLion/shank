@@ -2,7 +2,7 @@ let mongoose = require('mongoose');
 let Admin_User = mongoose.model('Admin_User');
 let mail_service = require('../services/mail.services');
 let string_utils = require('../utils/string.utils');
-let users_service = require('./users.service.js');
+let users_service = require('./users.service');
 let auth = require('../../config/auth');
 
 let router = require('../core/routes.js')(Admin_User, '/admin_users');
