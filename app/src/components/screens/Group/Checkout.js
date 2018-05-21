@@ -67,9 +67,7 @@ export default class Checkout extends BaseComponent {
 
 			if (wasPaymentSuccessful) {
 				global.setLoading(true);
-
-
-
+				
 				const body = {
 					originalRoaster: this.state.originalRoaster.filter(player => (isNaN(player._id) || parseInt(player._id) > 0)),
 					roaster: this.state.roaster,

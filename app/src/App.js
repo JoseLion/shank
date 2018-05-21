@@ -30,7 +30,6 @@ export default class ShankApp extends Component {
 		PushNotification.getApplicationIconBadgeNumber(badgeCount => {
 			if (badgeCount > 0) {
 				PushNotification.setApplicationIconBadgeNumber(0);
-				notification.finish(PushNotificationIOS.FetchResult.NoData);
 			}
 		});
 	}

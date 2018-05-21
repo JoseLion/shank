@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DropdownAlert from 'react-native-dropdownalert';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import { EventRegister } from 'react-native-event-listeners';
+import { NavigationActions } from 'react-navigation';
 
 // Shank components:
 import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
@@ -20,6 +21,7 @@ export default class Login extends BaseComponent {
 		this.scrollToInput = this.scrollToInput.bind(this);
 		this.onLoginPressed = this.onLoginPressed.bind(this);
 		this.facebookService = this.facebookService.bind(this);
+		this.finishLogin = this.finishLogin.bind(this);
 		this.state = {
 			email: '',
 			password: ''
@@ -31,18 +33,17 @@ export default class Login extends BaseComponent {
 	}
 
 	onLoginPressed() {
-		if(!this.state.email) {
+		if (!this.state.email) {
 			BarMessages.showError('Please enter your Email.', this.validationMessage);
 			return;
 		}
 
-		if(!this.state.password) {
+		if (!this.state.password) {
 			BarMessages.showError('Please enter your Password.', this.validationMessage);
 			return;
 		}
 		
 		Keyboard.dismiss();
-		global.setLoading(true);
 
 		let data = {
 			email: this.state.email.toLowerCase(),
@@ -52,77 +53,103 @@ export default class Login extends BaseComponent {
 	}
 
 	async onLoginPressedAsync(data) {
+		global.setLoading(true);
 		const login = await NoAuthModel.post('app_login', data).catch(handleError);
 		
 		if (login) {
 			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
 			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(login.user));
-			global.setLoading(false);
-			EventRegister.emit(AppConst.EVENTS.realodGroups);
-			this.props.navigation.navigate('Main');
-		} else {
-			global.setLoading(false);
-			BarMessages.showError("Incorrect user/password. Please try again!", this.validationMessage);
+			this.finishLogin();
+			return;
 		}
+		
+		global.setLoading(false);
+		BarMessages.showError("Incorrect user/password. Please try again!", this.validationMessage);
 	}
 
 	async facebookCallBack(error, profile) {
-		if (profile.email) {
-			let data = {
-				fullName: profile.name,
-				email: profile.email,
-				facebookId: profile.id,
-				photo: {
-					name: 'facebook',
-					path: profile.picture.data.url
-				}
-			};
+		try {
+			if (profile.email) {
+				let data = {
+					fullName: profile.name,
+					email: profile.email,
+					facebookId: profile.id,
+					photo: {
+						name: 'facebook',
+						path: profile.picture.data.url
+					}
+				};
 
-			const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(handleError);
-			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
-			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
-			global.setLoading(false);
-			this.props.navigation.navigate('Main');
-		} else {
-			handleError('Facebook account does not have an associated email!');
+				const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(handleError);
+				await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
+				await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
+				this.finishLogin();
+			} else {
+				handleError('Facebook account does not have an associated email!');
+			}
+		} catch (error) {
+			handleError(error);
 		}
 	}
 
 	async facebookService() {
-		const permissions = ['public_profile', 'email'];
-		global.setLoading(true);
-		let option = 'Signin';
+		try {
+			const permissions = ['public_profile', 'email'];
+			global.setLoading(true);
+			let option = 'Signin';
 
-		const response = await LoginManager.logInWithReadPermissions(permissions).catch(handleError);
+			const response = await LoginManager.logInWithReadPermissions(permissions).catch(handleError);
 
-		if (response.isCancelled) {
-			handleError(`${option} with Facebook was cancelled!`);
-		} else {
-			let hasSamePermissions = true;
+			if (response == null) {
+				handleError("No response from Facebook, please try again later");
+				return;
+			}
 
-			for (let i = 0; i < response.grantedPermissions.length; i++) {
-				let found = false;
+			if (response.isCancelled) {
+				handleError(`${option} with Facebook was cancelled!`);
+				return;
+			} else {
+				let hasSamePermissions = true;
 
-				for (let j = 0; j < permissions.length; j++) {
-					if (response.grantedPermissions[i] == permissions[j]) {
-						found = true;
+				for (let i = 0; i < response.grantedPermissions.length; i++) {
+					let found = false;
+
+					for (let j = 0; j < permissions.length; j++) {
+						if (response.grantedPermissions[i] == permissions[j]) {
+							found = true;
+							break;
+						}
+					}
+
+					if (!found) {
+						hasSamePermissions = false;
 						break;
 					}
 				}
-
-				if (!found) {
-					hasSamePermissions = false;
-					break;
+				
+				if (hasSamePermissions) {
+					const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => {
+						this.facebookCallBack(error, profile);
+					});
+					const request = new GraphRequestManager().addRequest(infoRequest);
+					request.start();
+				} else {
+					handleError(`Not enought permissions granted to ${option} with Facebook!`);
 				}
 			}
-
-			if (hasSamePermissions) {
-				const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => this.facebookCallBack(error, profile));
-				new GraphRequestManager().addRequest(infoRequest).start();
-			} else {
-				handleError(`Not enought permissions grnated to ${option} with Facebook!`);
-			}
+		} catch (error) {
+			handleError(error);
 		}
+	}
+
+	finishLogin() {
+		global.setLoading(false);
+		EventRegister.emit(AppConst.EVENTS.realodGroups);
+
+		this.props.navigation.dispatch(NavigationActions.reset({
+			index: 0,
+			actions: [NavigationActions.navigate({routeName: 'Main'})],
+		}));
 	}
 
 	render() {

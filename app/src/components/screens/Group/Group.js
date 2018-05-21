@@ -68,31 +68,33 @@ class RoasterRow extends Component {
 	}
 
 	onLongPress() {
-		const separatorWith = 0;
-		const shadowStyle = {
-			elevation: Style.EM(0.25),
-			marginLeft: this.state.popLeft,
-			marginBottom: this.state.popBottom,
-			shadowColor: AppConst.COLOR_GRAY,
-			shadowOffset: {
-				width: Style.EM(-0.5),
-				height: Style.EM(-0.75)
-			},
-			shadowOpacity: 0.75,
-			shadowRadius: Style.EM(0.25)
-		};
+		if (this.props.isEditable) {
+			const separatorWith = 0;
+			const shadowStyle = {
+				elevation: Style.EM(0.25),
+				marginLeft: this.state.popLeft,
+				marginBottom: this.state.popBottom,
+				shadowColor: AppConst.COLOR_GRAY,
+				shadowOffset: {
+					width: Style.EM(-0.5),
+					height: Style.EM(-0.75)
+				},
+				shadowOpacity: 0.75,
+				shadowRadius: Style.EM(0.25)
+			};
 
-		this.setState({ shadowStyle, separatorWith });
-		
-		Animated.timing(this.state.popLeft, {
-			duration: 150,
-			toValue: Style.EM(0.5)
-		}).start();
+			this.setState({ shadowStyle, separatorWith });
+			
+			Animated.timing(this.state.popLeft, {
+				duration: 150,
+				toValue: Style.EM(0.5)
+			}).start();
 
-		Animated.timing(this.state.popBottom, {
-			duration: 150,
-			toValue: Style.EM(0.75)
-		}).start();
+			Animated.timing(this.state.popBottom, {
+				duration: 150,
+				toValue: Style.EM(0.75)
+			}).start();
+		}
 
 		this.props.toggleRowActive();
 	}
@@ -315,9 +317,11 @@ export default class Group extends BaseComponent {
 		this.managePlayers = this.managePlayers.bind(this);
 		this.managePlayersCallback = this.managePlayersCallback.bind(this);
 		this.shouldShowCheckout = this.shouldShowCheckout.bind(this);
+		this.shouldShowSave = this.shouldShowSave.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
 		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
 		this.isRoundOnCourse = this.isRoundOnCourse.bind(this);
+		this.updateRoaster = this.updateRoaster.bind(this);
 		this.state = {
 			group: {},
 			currentUser: {},
@@ -483,6 +487,26 @@ export default class Group extends BaseComponent {
 		return hasChanged;
 	}
 
+	shouldShowSave() {
+		let hasChanged = false;
+
+		if (this.state.group.tournament) {
+			const today = new Date();
+			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+
+			if (today.getTime() <= startDate.getTime() && !this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].isRoasterEmpty) {
+				for (let i = 0; i < this.state.userRoaster.length; i++) {
+					if (this.state.userRoaster[i]._id != this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[i]._id) {
+						hasChanged = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return hasChanged;
+	}
+
 	goToCheckout() {
 		let today = new Date();
 		let round = 0;
@@ -534,6 +558,31 @@ export default class Group extends BaseComponent {
 		}
 
 		return false;
+	}
+
+	async updateRoaster() {
+		global.setLoading(true);
+
+		let round = 0;
+
+		for (let i = 0; i < this.state.group.tournaments[this.state.tournamentIndex].tournament.rounds.length; i++) {
+			let day = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.rounds[i].day);
+
+			if (today.getFullYear() == day.getFullYear() && today.getMonth() == day.getMonth() && today.getDate() == day.getDate()) {
+				round = i + 1;
+				break;
+			}
+		}
+
+		const body = {
+			originalRoaster: [],
+			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster,
+			round: round
+		};
+		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(handleError);
+
+		this.setState({ group });
+		global.setLoading(false);
 	}
 
 	async componentDidMount() {
@@ -645,6 +694,14 @@ export default class Group extends BaseComponent {
 					<View style={[ViewStyle.checkoutButtonView, {flex: 0.2}]}>
 						<TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
 							<Text style={MainStyles.buttonText}>Checkout</Text>
+						</TouchableOpacity>
+					</View>
+				: null}
+
+				{this.shouldShowSave() ?
+					<View style={[ViewStyle.checkoutButtonView, {flex: 0.2}]}>
+						<TouchableOpacity onPress={this.updateRoaster} style={[MainStyles.button, MainStyles.success]}>
+							<Text style={MainStyles.buttonText}>Save</Text>
 						</TouchableOpacity>
 					</View>
 				: null}

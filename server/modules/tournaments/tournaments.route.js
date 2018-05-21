@@ -151,7 +151,7 @@ export default function() {
 			
 			promises.push(Tournament.update({_id: req.body._id}, req.body).exec());
 
-			const startDate = new Date(tournament.startDate);
+			const startDate = new Date(req.body.startDate);
 			const cronTime = `00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`;
 			CronJobs.remove({reference: req.body._id});
 			CronJobs.create({ cronTime, functionName: 'tournamentStartReminder', args: req.body._id });
