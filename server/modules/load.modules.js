@@ -11,6 +11,7 @@ import profileModel from './profiles/profiles.model';
 import appUserModel from './app_users/app.users.model';
 import appSettingsModel from './app_settings/app.settings.model';
 import playerModel from './player/player.model';
+import acquisitionModel from './acquisitions/acquisitions.model';
 
 import authRoutes from './auth/auth.routes';
 import adminUsersRoutes from './admin_users/admin.users.routes';
@@ -25,6 +26,7 @@ import appSettingsRoute from './app_settings/app.settings.routes';
 import tournamentSettingsRoute from './tournament_settings/tournament.settings.routes';
 import platerRoute from './player/player.routes';
 import reportsRoute from './reports/reports.routes';
+import acquisitionRoute from './acquisitions/acquisitions.routes';
 import permissions from './permissions/permissions.routes';
 
 let api_prefix = '/api';
@@ -43,5 +45,6 @@ export default function(app) {
 	app.use(api_prefix, tournamentSettingsRoute(app));
 	app.use(api_prefix, platerRoute(app));
 	app.use(api_prefix, reportsRoute());
+	app.use(api_prefix, acquisitionRoute());
   app.use(api_prefix, permissions()); 
 }

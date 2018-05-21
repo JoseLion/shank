@@ -11,7 +11,12 @@
         title: 'Invitation',
         templateUrl: 'app/modules/invitation/views/invitation.html',
         controller: 'InvitationController',
-        controllerAs: 'invitationCtrl'
+        controllerAs: 'invitationCtrl',
+        resolve: {
+          invitation: function(acquisitions_model) {
+            return acquisitions_model.create({});
+          }
+        }
       });
   });
   
