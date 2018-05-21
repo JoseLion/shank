@@ -17,6 +17,12 @@
           $state.go('login');
         }
       }
+      else {
+        if (toState.name === 'login' || toState.name === 'forgot_password') {
+          event.preventDefault();
+          $state.go('admin.dashboard');
+        }
+      }
     });
     
     $rootScope.$on('$destroy', stateChangeStart);

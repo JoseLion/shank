@@ -12,6 +12,10 @@
       return base_model('get_earnings_xlsx').create(params);
     }
     
+    model.get_funnel = function(params) {
+      return base_model('get_funnel').create(params);
+    }
+    
     return model;
   });
 })();

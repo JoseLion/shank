@@ -2,7 +2,7 @@ let mongoose = require('mongoose');
 import date_service from '../services/date.services';
 
 let AcquisitionSchema = new mongoose.Schema({
-  client_ip: String,
+	client_ip: {type: String, unique: true, required: true, index: true},
   user_agent: String,
 	created_at: Number,
 	updated_at: Number

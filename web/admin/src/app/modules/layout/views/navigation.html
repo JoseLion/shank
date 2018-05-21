@@ -145,6 +145,11 @@
                                   || state.includes('admin.admin_users.update'))}">
             <a ui-sref="admin.reports.earnings"><i class="fa fa-user"></i> <span class="nav-label">Earnings</span></a>
           </li>
+          <li ng-class="{active: (state.includes('admin.users.list')
+                                  || state.includes('admin.admin_users.create')
+                                  || state.includes('admin.admin_users.update'))}">
+            <a ui-sref="admin.reports.funnel"><i class="fa fa-user"></i> <span class="nav-label">Funnel</span></a>
+          </li>
         </ul>
       </li>
     </ul>

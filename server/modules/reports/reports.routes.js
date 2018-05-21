@@ -8,7 +8,8 @@ import auth from '../../config/auth';
 import xlsx from 'node-xlsx';
 
 let router = express.Router();
-let App_User = mongoose.model('App_User');
+const Acquisition = mongoose.model('Acquisition');
+const App_User = mongoose.model('App_User');
 const Group = mongoose.model('Group');
 
 export default function() {
@@ -69,7 +70,31 @@ export default function() {
 		let buffer = xlsx.build([{name: "mySheetName", data: data}]); // Returns a buffer
 		/* send to client */
 		res.status(200).end(buffer, 'binary');
-	});	
+	});
+	
+	router.post('/get_funnel', auth, (req, res) => {
+		try {
+			let promises = [
+				Acquisition.count({}).exec(),
+				App_User.count({}).exec()
+			];
+			
+			Q.all(promises).spread((acquisition, app_user) => {
+				let data = {
+					acquisition: acquisition,
+					activation: app_user,
+					retention: 1,
+					referral: 2,
+					revnue: 2
+				};
+				res.ok(data);
+			}, (err) => {
+				res.server_error(err);
+			});
+    } catch (e) {
+      res.server_error();
+    }
+	});
 	
 	return router;
 }
