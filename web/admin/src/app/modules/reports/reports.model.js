@@ -8,6 +8,10 @@
       return base_model('get_earnings').create(params);
     }
     
+    model.get_earnings_xlsx = function(params) {
+      return base_model('get_earnings_xlsx').create(params);
+    }
+    
     return model;
   });
 })();

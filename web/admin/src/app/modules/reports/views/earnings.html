@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="wrapper wrapper-content animated fadeInRight without-padding-bottom">
+<div class="wrapper wrapper-content animated fadeInRight without-padding-bottom" style="position: relative; z-index: 20;">
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox-content">
@@ -55,14 +55,14 @@
                                id="search_from_date"
                                name="search_from_date"
                                uib-datepicker-popup="yyyy-MM-dd"
-                               ng-model="quoteListCtrl.search_params.from_date"
-                               is-open="quoteListCtrl.dates.from_date_opened"
-                               datepicker-options="quoteListCtrl.dateOptions"
-                               alt-input-formats="quoteListCtrl.altInputFormats" />
+                               ng-model="reportEarningCtrl.search_params.from_date"
+                               is-open="reportEarningCtrl.dates.from_date_opened"
+                               datepicker-options="reportEarningCtrl.dateOptions"
+                               alt-input-formats="reportEarningCtrl.altInputFormats" />
                         <span class="input-group-btn">
                           <button type="button"
                                   class="btn btn-default"
-                                  ng-click="quoteListCtrl.open_search_calendar(1)">
+                                  ng-click="reportEarningCtrl.open_search_calendar(1)">
                             <i class="glyphicon glyphicon-calendar"></i>
                           </button>
                         </span>
@@ -79,14 +79,14 @@
                                id="search_to_date"
                                name="search_to_date"
                                uib-datepicker-popup="yyyy-MM-dd"
-                               ng-model="quoteListCtrl.search_params.to_date"
-                               is-open="quoteListCtrl.dates.to_date_opened"
-                               datepicker-options="quoteListCtrl.dateOptions"
-                               alt-input-formats="quoteListCtrl.altInputFormats" />
+                               ng-model="reportEarningCtrl.search_params.to_date"
+                               is-open="reportEarningCtrl.dates.to_date_opened"
+                               datepicker-options="reportEarningCtrl.dateOptions"
+                               alt-input-formats="['M!/d!/yyyy']" />
                         <span class="input-group-btn">
                           <button type="button"
                                   class="btn btn-default"
-                                  ng-click="quoteListCtrl.open_search_calendar(2)">
+                                  ng-click="reportEarningCtrl.open_search_calendar(2)">
                             <i class="glyphicon glyphicon-calendar"></i>
                           </button>
                         </span>
@@ -119,15 +119,24 @@
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-12 text-right">
+              <button type="button" class="btn btn-primary" ng-click="reportEarningCtrl.get_earnings_xlsx()">
+                <i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Excel
+              </button>
+              <div class="space-10"></div>
+            </div>
+          </div>
+          
           <div class="table-responsive">
             <table ng-table="reportEarningCtrl.tableParams" class="table table-bordered">
               <tr ng-repeat="earning in $data track by $index">
                 <td data-title="'User'" header-class="'header-text-left'">{{earning.user.fullName}}</td>
-                <td data-title="'Country & City'" header-class="'header-text-left'">{{earning.tournament.country}} {{earning.tournament.city}}</td>
+                <td data-title="'Country & City'" header-class="'header-text-left'">{{earning.user.name}} {{earning.user.surname}}</td>
                 <td data-title="'OS'" header-class="'header-text-left'">{{earning.os}}</td>
                 <td data-title="'Register date'" header-class="'header-text-left'">{{earning.user.created_at | date : 'yyyy-MM-dd'}}</td>
                 <td data-title="'Tournament'" header-class="'header-text-left'">{{earning.tournament.name}}</td>
-                <td data-title="'Total amount'" header-class="'header-text-left'">0.00</td>
+                <td data-title="'Total amount'" class="text-right">{{earning.leaderboard.total_amount | format_number}}</td>
               </tr>
             </table>
           </div>
