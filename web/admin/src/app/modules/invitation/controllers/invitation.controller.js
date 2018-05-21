@@ -13,7 +13,7 @@
         controller: 'InvitationController',
         controllerAs: 'invitationCtrl',
         resolve: {
-          invitation: function(acquisitions_model) {
+          invitation: function($stateParams, acquisitions_model) {
             if ($stateParams.group) {
               return acquisitions_model.create({});
             }
