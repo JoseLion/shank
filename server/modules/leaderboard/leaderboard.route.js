@@ -10,7 +10,7 @@ let leaderboard_service = require('./leaderboard.service');
 
 export default function(app) {
 	router.get(`${basePath}/findByTournament/:id`, auth, async (request, response) => {
-		const leaderboard = await Leaderboard.find({tournament: request.params.id}).populate('player').catch(handleMongoError);
+		const leaderboard = await Leaderboard.find({tournament: request.params.id}).sort({rank: 1}).populate('player').catch(handleMongoError);
 		response.ok(leaderboard);
 	});
 	

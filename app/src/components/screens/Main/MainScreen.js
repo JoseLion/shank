@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View, Linking } from 'react-native';
+import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View, Linking, ScrollView, RefreshControl } from 'react-native';
 import Swipeable from 'react-native-swipeable';
 import { EventRegister } from 'react-native-event-listeners';
 import PushNotification from 'react-native-push-notification';
@@ -122,7 +122,6 @@ export default class MainScreen extends BaseComponent {
 			try {
 				const url = event.url != null ? event.url : event;
 				const split = url.split('://');
-				console.log("split: ", split);
 				
 				if (split.length > 1) {
 					let data = qs.parse(split[split.length - 1]);
@@ -154,7 +153,7 @@ export default class MainScreen extends BaseComponent {
 				Linking.getInitialURL().then(this.handleUrlEvent).catch(handleError);
 				this.realodGroupsEvent = EventRegister.addEventListener(AppConst.EVENTS.realodGroups, async () => {
 					global.setLoading(true);
-					await this.getGroups
+					await this.getGroups();
 					global.setLoading(false);
 				});
 				
@@ -232,10 +231,10 @@ export default class MainScreen extends BaseComponent {
 			);
 		} else {
 			return (
-				<View style={ViewStyle.noDataContainer}>
+				<ScrollView contentContainerStyle={ViewStyle.noDataContainer} refreshControl={<RefreshControl refreshing={this.state.groupsRefreshing} onRefresh={this.refreshGroups} />}>
 					<Text style={ViewStyle.noDataText}>Tap the {'"+"'} button to create{'\n'}or join a group</Text>
 					<DropdownAlert ref={ref => this.dropDown = ref} />
-				</View>
+				</ScrollView>
 			);
 		}
 	}

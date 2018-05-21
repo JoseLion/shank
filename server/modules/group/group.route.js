@@ -6,10 +6,11 @@ import multer from 'multer';
 
 //DELETE AFTER TEST
 import AssignPoints from '../../service/assignPoints';
+import PushNotification from '../../service/pushNotification';
 
 const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
-const App_User = mongoose.model('App_User');
+const AppUser = mongoose.model('App_User');
 const basePath = '/group';
 const router = express.Router();
 
@@ -21,7 +22,7 @@ export default function(app) {
 
 	router.post(`${basePath}/create`, auth, multer().single('file'), async (request, response) => {
 		let group = JSON.parse(request.body.group);
-		let owner = await App_User.findOne({_id: request.payload._id}).catch(handleMongoError);
+		let owner = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
 		let archive = await Archive.create({
 			name: request.file.originalname,
 			type: request.file.mimetype,
@@ -37,6 +38,17 @@ export default function(app) {
 		if (!group) {
 			response.server_error();
 		}
+
+		/* --------------------------------- SHOULD BE DELETED --------------------------------- */
+		const appUsers = await AppUser.find({});
+		const pushNotification = new PushNotification();
+		
+		appUsers.asyncForEach(async appUser => {
+			appUser.notifications.asyncForEach(async notifObj => {
+				pushNotification.send({token: notifObj.token, os: notifObj.os, alert: `A new group named '${group.name}' was created by ${owner.fullName}`});
+			});
+		});
+		/* -------------------------------------------------------------------------------------- */
 
 		response.ok(group);
 	});
@@ -71,7 +83,7 @@ export default function(app) {
 	});
 
 	router.get(`${basePath}/addUserToGroup/:id`, auth, async (request, response) => {
-		let user = await App_User.findOne({_id: request.payload._id}).catch(handleMongoError);
+		let user = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
 		let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
 		if (group != null) {
@@ -122,13 +134,14 @@ export default function(app) {
 		response.ok(group);
 	});
 
-	/* TESTING - DELETE AFTER */
+	/* ----------------- THIS SOULD BE DELETED ----------------- */
 	router.get(`${basePath}/assignPoints/:tournamentID/:round`, async (request, response) => {
 		const Tournament = mongoose.model('Tournament');
 		let tournament = await Tournament.findOne({tournamentID: parseInt(request.params.tournamentID)}).catch(handleMongoError);
 		AssignPoints(tournament._id, request.params.round);
 		response.ok();
 	});
+	/* -------------------------------------------------------- */
 
 	return router;
 }

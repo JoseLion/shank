@@ -38,6 +38,13 @@ if (!Array.prototype.asyncForEach) {
   }
 }
 
+/**
+ * Global initializers
+ */
+if (global.runningJobs == null) {
+	global.runningJobs = [];
+}
+
 let app = express();
 
 let environment = app.get('env');
@@ -54,9 +61,7 @@ if (testing_preview_or_production) {
 mongoose.connect(database_uri, {})
   .then(async() => {
 	console.log(`Database connected at ${database_uri}`);
-	
-	const cronJobs = new CronJobs();
-	cronJobs.restoreRunningJobs();
+	CronJobs.restoreRunningJobs();
     
     /*let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
     console.log("Tournaments updated! (Total: " + tournaments.length + ")");

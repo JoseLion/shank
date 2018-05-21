@@ -68,14 +68,14 @@ export default class Tournaments extends Component {
 
 		if (tournaments == null || tournaments.length == 0) {
 			tournaments = [
-				{_id: -1, name: 'US Open', bigImage: GolfCourse},
-				{_id: -2, name: 'Masters Tournament', smallImage: Static1},
-				{_id: -3, name: 'British Open', smallImage: Static2}
+				{_id: -1, name: 'US Open', mainPhoto: GolfCourse},
+				{_id: -2, name: 'Masters Tournament', secondaryPhoto: Static1},
+				{_id: -3, name: 'British Open', secondaryPhoto: Static2}
 			];
 		} else {
 			tournaments.forEach(tournament => {
-				tournament.bigImage = {uri: FileHost + tournament.bigImage};
-				tournament.smallImage = {uri: FileHost + tournament.smallImage};
+				tournament.mainPhoto = {uri: FileHost + tournament.mainPhoto};
+				tournament.secondaryPhoto = {uri: FileHost + tournament.secondaryPhoto};
 			});
 
 			leaderboard = await BaseModel.get('leaderboard/findByTournament/' + tournaments[0]._id).catch(handleError);
@@ -90,7 +90,7 @@ export default class Tournaments extends Component {
 		return (
 			<ScrollView contentContainerStyle={ViewStyle.mainScroll}>
 				<View style={ViewStyle.headerView}>
-					<ImageLoad style={ViewStyle.headerImage} source={this.state.header.bigImage} resizeMode={'contain'} resizeMethod={'resize'}
+					<ImageLoad style={ViewStyle.headerImage} source={this.state.header.mainPhoto} resizeMode={'contain'} resizeMethod={'resize'}
 					placeholderSource={Placeholder} placeholderStyle={ViewStyle.headerPlaceholder}>
 						<LinearGradient style={ViewStyle.headerGradient} colors={['transparent', 'rgba(0, 0, 0, 0.5)']} locations={[0.4, 1]} />
 					</ImageLoad>
@@ -176,7 +176,7 @@ class GridItem extends Component {
 			<TouchableHighlight style={this.props.style} underlayColor={AppConst.COLOR_WHITE} onPress={this.openLink}>
 				<View style={ViewStyle.gridItemView}>
 					<View style={ViewStyle.gridItemImageView}>
-						<ImageLoad style={ViewStyle.gridItemImage} source={this.state.tournament.smallImage} resizeMode={'cover'} resizeMethod={'resize'}
+						<ImageLoad style={ViewStyle.gridItemImage} source={this.state.tournament.secondaryPhoto} resizeMode={'cover'} resizeMethod={'resize'}
 						placeholderSource={Placeholder} placeholderStyle={ViewStyle.gridItemPlaceholder}>
 							<LinearGradient style={ViewStyle.gridItemGradient} colors={['transparent', 'rgba(0, 0, 0, 0.5)']} locations={[0.4, 1]} />
 						</ImageLoad>

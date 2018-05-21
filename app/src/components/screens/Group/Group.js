@@ -28,7 +28,10 @@ class RoasterRow extends Component {
 		this.resetShadowStyle = this.resetShadowStyle.bind(this);
 		this.state = {
 			roaster: this.props.roaster,
-			shadowStyle: null
+			shadowStyle: null,
+			separatorWith: 1,
+			popLeft: new Animated.Value(0.0),
+			popBottom: new Animated.Value(0.0)
 		};
 	}
 
@@ -65,36 +68,50 @@ class RoasterRow extends Component {
 	}
 
 	onLongPress() {
-		if (IsAndroid) {
-			this.setState({
-				shadowStyle: {
-					elevation: Style.EM(0.25),
-					marginRight: Style.EM(0.5),
-					marginBottom: Style.EM(0.75)
-				}
-			});
-		} else {
-			this.setState({
-				shadowStyle: {
-					shadowColor: "#000000"
-				}
-			});
+		if (this.props.isEditable) {
+			const separatorWith = 0;
+			const shadowStyle = {
+				elevation: Style.EM(0.25),
+				marginLeft: this.state.popLeft,
+				marginBottom: this.state.popBottom,
+				shadowColor: AppConst.COLOR_GRAY,
+				shadowOffset: {
+					width: Style.EM(-0.5),
+					height: Style.EM(-0.75)
+				},
+				shadowOpacity: 0.75,
+				shadowRadius: Style.EM(0.25)
+			};
+
+			this.setState({ shadowStyle, separatorWith });
+			
+			Animated.timing(this.state.popLeft, {
+				duration: 150,
+				toValue: Style.EM(0.5)
+			}).start();
+
+			Animated.timing(this.state.popBottom, {
+				duration: 150,
+				toValue: Style.EM(0.75)
+			}).start();
 		}
-		
 
 		this.props.toggleRowActive();
 	}
 
 	resetShadowStyle() {
-		this.setState({shadowStyle: null});
+		console.log("reset!!!!!");
+		this.state.popBottom.setValue(0);
+		this.state.popLeft.setValue(0);
+		this.setState({shadowStyle: null, separatorWith: 1});
 	}
 
 	componentDidMount() {
-		EventRegister.addEventListener(AppConst.EVENTS.resetShadowStyle, this.resetShadowStyle);
+		this.resetShadowEvent = EventRegister.addEventListener('EVT_RESET_SHADOW_STYLE', this.resetShadowStyle);
 	}
 
 	componentWillUnmount() {
-		EventRegister.removeEventListener(this.resetShadowStyle);
+		EventRegister.removeEventListener(this.resetShadowEvent);
 	}
 
 	render() {
@@ -106,39 +123,41 @@ class RoasterRow extends Component {
 			];
 
 			const row = (
-				<TouchableHighlight style={[ViewStyle.cellMainView, this.state.shadowStyle]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} onLongPress={this.onLongPress} {...this.props.sortHandlers}>
-					<View style={[ViewStyle.cellSubview, {paddingVertical: '3%'}]}>
-						<View style={{flex: 1, shadowColor}}>
-							<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
-						</View>
-
-						<View style={{flex: 2, marginRight: '2%'}}>
-							<Image source={{uri: this.state.roaster.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.roasterImage} />
-						</View>
-
-						<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
-							<View style={{flex: 1, justifyContent: 'center'}}>
-								<Text style={[ViewStyle.roasterName]}>{this.state.roaster.player.firstName} {this.state.roaster.player.lastName}</Text>
-							</View>
-
-							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-								<View style={{flex: 1}}>
-									<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.state.roaster.rank > 0 ? this.state.roaster.rank : '-'}`}</Text>
-								</View>
-
-								<View style={{flex: 1}}>
-									<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.state.roaster.totalScore == null ? '-' : this.state.roaster.totalScore}`}</Text>
-								</View>
-							</View>
-						</View>
-
-						{this.props.isEditable ?
+				<Animated.View style={[{backgroundColor: AppConst.COLOR_WHITE, flex: 1}, this.state.shadowStyle]}>
+					<TouchableHighlight style={ViewStyle.cellMainView} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} onLongPress={this.onLongPress} {...this.props.sortHandlers}>
+						<View style={[ViewStyle.cellSubview, {paddingVertical: '3%', borderBottomWidth: this.state.separatorWith}]}>
 							<View style={{flex: 1}}>
-								<Image source={SortBarsIcon} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
+								<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 							</View>
-						: null}
-					</View>
-				</TouchableHighlight>
+
+							<View style={{flex: 2, marginRight: '2%'}}>
+								<Image source={{uri: this.state.roaster.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.roasterImage} />
+							</View>
+
+							<View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
+								<View style={{flex: 1, justifyContent: 'center'}}>
+									<Text style={[ViewStyle.roasterName]}>{this.state.roaster.player.firstName} {this.state.roaster.player.lastName}</Text>
+								</View>
+
+								<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+									<View style={{flex: 1}}>
+										<Text style={[ViewStyle.roasterInfo]}>{`TR: ${this.state.roaster.rank > 0 ? this.state.roaster.rank : '-'}`}</Text>
+									</View>
+
+									<View style={{flex: 1}}>
+										<Text style={[ViewStyle.roasterInfo]}>{`Pts: ${this.state.roaster.totalScore == null ? '-' : this.state.roaster.totalScore}`}</Text>
+									</View>
+								</View>
+							</View>
+
+							{this.props.isEditable ?
+								<View style={{flex: 1}}>
+									<Image source={SortBarsIcon} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.sortImage} />
+								</View>
+							: null}
+						</View>
+					</TouchableHighlight>
+				</Animated.View>
 			);
 
 			if (this.props.isEditable) {
@@ -298,9 +317,11 @@ export default class Group extends BaseComponent {
 		this.managePlayers = this.managePlayers.bind(this);
 		this.managePlayersCallback = this.managePlayersCallback.bind(this);
 		this.shouldShowCheckout = this.shouldShowCheckout.bind(this);
+		this.shouldShowSave = this.shouldShowSave.bind(this);
 		this.goToCheckout = this.goToCheckout.bind(this);
 		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
 		this.isRoundOnCourse = this.isRoundOnCourse.bind(this);
+		this.updateRoaster = this.updateRoaster.bind(this);
 		this.state = {
 			group: {},
 			currentUser: {},
@@ -466,6 +487,26 @@ export default class Group extends BaseComponent {
 		return hasChanged;
 	}
 
+	shouldShowSave() {
+		let hasChanged = false;
+
+		if (this.state.group.tournament) {
+			const today = new Date();
+			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+
+			if (today.getTime() <= startDate.getTime() && !this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].isRoasterEmpty) {
+				for (let i = 0; i < this.state.userRoaster.length; i++) {
+					if (this.state.userRoaster[i]._id != this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster[i]._id) {
+						hasChanged = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return hasChanged;
+	}
+
 	goToCheckout() {
 		let today = new Date();
 		let round = 0;
@@ -517,6 +558,31 @@ export default class Group extends BaseComponent {
 		}
 
 		return false;
+	}
+
+	async updateRoaster() {
+		global.setLoading(true);
+
+		let round = 0;
+
+		for (let i = 0; i < this.state.group.tournaments[this.state.tournamentIndex].tournament.rounds.length; i++) {
+			let day = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.rounds[i].day);
+
+			if (today.getFullYear() == day.getFullYear() && today.getMonth() == day.getMonth() && today.getDate() == day.getDate()) {
+				round = i + 1;
+				break;
+			}
+		}
+
+		const body = {
+			originalRoaster: [],
+			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster,
+			round: round
+		};
+		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(handleError);
+
+		this.setState({ group });
+		global.setLoading(false);
 	}
 
 	async componentDidMount() {
@@ -606,6 +672,8 @@ export default class Group extends BaseComponent {
 								renderRow={({data, index}) => (
 									<RoasterRow roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />
 								)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
+									EventRegister.emit('EVT_RESET_SHADOW_STYLE');
+
 									if (this.nextOrder) {
 										let roaster = [];
 										this.nextOrder.forEach(order => {
@@ -616,8 +684,6 @@ export default class Group extends BaseComponent {
 										group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster = roaster;
 										this.setState({ group });
 									}
-
-									EventRegister.emit(AppConst.EVENTS.resetShadowStyle);
 								}}
 							/>
 						</View>
@@ -628,6 +694,14 @@ export default class Group extends BaseComponent {
 					<View style={[ViewStyle.checkoutButtonView, {flex: 0.2}]}>
 						<TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
 							<Text style={MainStyles.buttonText}>Checkout</Text>
+						</TouchableOpacity>
+					</View>
+				: null}
+
+				{this.shouldShowSave() ?
+					<View style={[ViewStyle.checkoutButtonView, {flex: 0.2}]}>
+						<TouchableOpacity onPress={this.updateRoaster} style={[MainStyles.button, MainStyles.success]}>
+							<Text style={MainStyles.buttonText}>Save</Text>
 						</TouchableOpacity>
 					</View>
 				: null}
