@@ -6,6 +6,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PushNotification from 'react-native-push-notification';
 import BaseModel from 'Core/BaseModel';
+import { EventRegister } from 'react-native-event-listeners';
 import * as AppConst from 'Core/AppConst';
 import handleError from 'Core/handleError';
 
@@ -42,7 +43,7 @@ export default class ShankApp extends Component {
 
 	componentWillMount() {
 		AppState.addEventListener('change', this.handleAppStateChange);
-
+		
 		PushNotification.configure({
 			onRegister: async notifObj => {
 				try {
@@ -83,18 +84,20 @@ export default class ShankApp extends Component {
 
 	componentDidMount() {
 		this.resetIconBadgeNumber();
+		this.handleErrorEvent = EventRegister.addEventListener(AppConst.EVENTS.showErrorMessageBar, error => this.dropDownRef.alertWithType('error', 'Error', error));
 	}
 
 	componentWillUnmount() {
 		AppState.removeEventListener('change', this.handleAppStateChange);
+		EventRegister.removeEventListener(this.handleErrorEvent);
 	}
 	
 	render() {
 		return (
 			<View style={{width: '100%', height: '100%'}}>
+				<DropdownAlert ref={ref => this.dropDownRef = ref} />
 				<StatusBar barStyle="light-content" backgroundColor={AppConst.COLOR_BLUE} />
 				<Spinner visible={this.state.showSpinner} animation='slide' />
-				<DropdownAlert ref={ref => global.dropDownRef = ref} />
 				<AppNavigator />
 			</View>
 		);

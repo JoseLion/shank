@@ -21,6 +21,7 @@ export const APP_FB_ID = '1840743005946613';
 export const FCM_SENDER_ID = '804287418020';
 
 export const EVENTS = {
+    showErrorMessageBar: 'EVT_SHOW_ERROR_MESSAGE_BAR',
     realodGroups: 'EVT_REOAL_GROUPS',
     resetShadowStyle: 'EVT_RESET_SHADOW_STYLE'
 };

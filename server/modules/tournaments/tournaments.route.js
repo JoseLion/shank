@@ -96,8 +96,12 @@ export default function() {
 			
 			Q.all(promises).spread((archive1_saved, archive2_saved, tournament_saved) => {
 				const startDate = new Date(tournament_saved.startDate);
-				const cronTime = `00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`;
-				CronJobs.create({ cronTime, functionName: 'tournamentStartReminder', args: tournament_saved._id });
+				const remindTime = `00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`;
+				CronJobs.create({ cronTime: remindTime, functionName: 'tournamentStartReminder', args: tournament_saved._id });
+
+				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
+				const beginTime = `${beginDate.getSeconds()} ${beginDate.getMinutes()} ${beginDate.getHours()} ${beginDate.getDate()} ${beginDate.getMonth()} ${beginDate.getDay()}`;
+				CronJobs.create({cronTime: beginTime, functionName: 'tournamentAboutToBegin', args: tournament_saved._id});
 				
 				req.body._id = tournament_saved._id;
 				leaderboard_service.load_leaderboard(req, res);
@@ -155,6 +159,11 @@ export default function() {
 				const cronTime = `00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`;
 				CronJobs.remove({reference: req.body._id});
 				CronJobs.create({ cronTime, functionName: 'tournamentStartReminder', args: req.body._id });
+
+				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
+				const beginTime = `${beginDate.getSeconds()} ${beginDate.getMinutes()} ${beginDate.getHours()} ${beginDate.getDate()} ${beginDate.getMonth()} ${beginDate.getDay()}`;
+				CronJobs.remove({reference: req.body._id});
+				CronJobs.create({cronTime: beginTime, functionName: 'tournamentAboutToBegin', args: req.body._id});
 			  
 				leaderboard_service.load_leaderboard(req, res);
 			}, (err) => {
