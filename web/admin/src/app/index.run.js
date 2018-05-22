@@ -32,7 +32,7 @@
     
     $rootScope.general_variables = {
       Host: Host,
-      copyright: "Copyright Shank " + new Date().getFullYear() + "."
+      copyright: "Shank " + new Date().getFullYear() + "."
     };
     
     $rootScope.messages = {
