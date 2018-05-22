@@ -41,11 +41,20 @@ export default class SplashScreen extends BaseComponent {
 				const isFisrtOpen = await AsyncStorage.getItem(AppConst.FIRST_TIME);
 
 				if (isFisrtOpen) {
-					this.props.navigation.dispatch(NavigationActions.reset({
-						index: 0,
-						actions: [NavigationActions.navigate({routeName: 'Main'})],
-					}));
-				} else {
+					if (await AsyncStorage.getItem(AppConst.AUTH_TOKEN)) {
+						this.props.navigation.dispatch(NavigationActions.reset({
+							index: 0,
+							actions: [NavigationActions.navigate({routeName: 'Main'})],
+						}));
+					}
+					else {
+						this.props.navigation.dispatch(NavigationActions.reset({
+							index: 0,
+							actions: [NavigationActions.navigate({routeName: 'Login'})],
+						}));
+					}
+				}
+				else {
 					await AsyncStorage.setItem(AppConst.FIRST_TIME, 'no');
 
 					this.props.navigation.dispatch(NavigationActions.reset({
