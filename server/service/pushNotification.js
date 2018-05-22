@@ -50,7 +50,8 @@ export default class {
                 token: token,
                 notification: {
                     title: "Shank",
-                    body: alert
+                    body: alert,
+                    sound: 'notification_sound'
                 },
                 data: payload
             };

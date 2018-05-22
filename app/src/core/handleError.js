@@ -1,4 +1,5 @@
-import DropdownAlert from 'react-native-dropdownalert';
+import { EventRegister } from 'react-native-event-listeners';
+import * as AppConst from 'Core/AppConst';
 
 export default function(error) {
     if (error == null) {
@@ -18,5 +19,6 @@ export default function(error) {
     }
 
     global.setLoading(false);
-    global.dropDownRef.alertWithType('error', 'Error', error);
+    EventRegister.emit(AppConst.EVENTS.showErrorMessageBar, error);
+    throw error;
 }

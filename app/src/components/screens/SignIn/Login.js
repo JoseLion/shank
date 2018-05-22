@@ -34,12 +34,12 @@ export default class Login extends BaseComponent {
 
 	onLoginPressed() {
 		if (!this.state.email) {
-			BarMessages.showError('Please enter your Email.', this.validationMessage);
+			handleError("Please enter your Email.");
 			return;
 		}
 
 		if (!this.state.password) {
-			BarMessages.showError('Please enter your Password.', this.validationMessage);
+			handleError("Please enter your Password.");
 			return;
 		}
 		
@@ -98,7 +98,11 @@ export default class Login extends BaseComponent {
 			global.setLoading(true);
 			let option = 'Signin';
 
-			const response = await LoginManager.logInWithReadPermissions(permissions).catch(handleError);
+			const response = await LoginManager.logInWithReadPermissions(permissions).catch(error => {
+				console.log("FACEBOOK ERROR: ", error);
+				handleError(error);
+			});
+
 
 			if (response == null) {
 				handleError("No response from Facebook, please try again later");
@@ -138,6 +142,7 @@ export default class Login extends BaseComponent {
 				}
 			}
 		} catch (error) {
+			console.log(error);
 			handleError(error);
 		}
 	}
@@ -184,7 +189,7 @@ export default class Login extends BaseComponent {
 					</View>
 				</KeyboardAwareScrollView>
 
-				<DropdownAlert ref={ref => this.validationMessage = ref} />
+				
 			</View>
 		);
 	}
