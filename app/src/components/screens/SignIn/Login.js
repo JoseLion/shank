@@ -1,6 +1,6 @@
 // React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard } from 'react-native';
+import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
@@ -160,36 +160,61 @@ export default class Login extends BaseComponent {
 	render() {
 		return (
 			<View style={{flex: 1}}>
-				<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={[MainStyles.background]}>
-					<View style={[MainStyles.container]} behavior="padding">
-						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
-						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>ENTER YOUR EMAIL & PASSWORD TO{"\n"}LOG IN TO YOUR ACCOUNT</Text>
-						
-						<View style={[LocalStyles.formContainer]}>
-							<TextInput keyboardType={'email-address'} returnKeyType={"next"} underlineColorAndroid="transparent" style={MainStyles.formInput} onChangeText={(email) => this.setState({email})} value={this.state.email} placeholder={'Email'} onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { this.refs.password.focus(); }} />
+				<KeyboardAwareScrollView
+				  ref='scroll'
+					enableOnAndroid={true}
+					extraHeight={10}
+					style={[MainStyles.background]}
+					keyboardShouldPersistTaps="always">
+					
+					<TouchableWithoutFeedback onPress={() => dismissKeyboard()} style={{ flex: 1 }}>
+						<View style={[MainStyles.container]} behavior="padding">
+							<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
+							<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>ENTER YOUR EMAIL & PASSWORD TO{"\n"}LOG IN TO YOUR ACCOUNT</Text>
 							
-							<TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={MainStyles.formInput} onChangeText={(password) => this.setState({password})} value={this.state.password} placeholder={'Password'} onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { Keyboard.dismiss() }} secureTextEntry={true} ref='password' />
-
-							<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={() => this.onLoginPressed()}>
-								<Text style={MainStyles.buttonText}>Log in</Text>
-							</TouchableHighlight>
-
-							<TouchableHighlight style={[MainStyles.button, MainStyles.facebook]} onPress={this.facebookService}>
-								<Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
-							</TouchableHighlight>
-
-							<TouchableOpacity style={[MainStyles.buttonLink]} onPress={() => super.navigateToScreen('Register')}>
-								<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Create new account</Text>
-							</TouchableOpacity>
-
-							<View style={MainStyles.buttonLink}>
-								<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Forgot my password</Text>
+							<View style={[LocalStyles.formContainer]}>
+								<TextInput
+									keyboardType={'email-address'}
+									returnKeyType={"next"}
+									underlineColorAndroid="transparent"
+									style={MainStyles.formInput}
+									onChangeText={(email) => this.setState({email})}
+									value={this.state.email}
+									placeholder={'Email'}
+									onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }}
+									onSubmitEditing={(event) => { this.refs.password.focus(); }} />
+								
+								<TextInput
+									ref='password'
+									returnKeyType={"next"}
+									underlineColorAndroid="transparent"
+									style={MainStyles.formInput}
+									secureTextEntry={true}
+									onChangeText={(password) => this.setState({password})}
+									value={this.state.password}
+									placeholder={'Password'}
+									onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }}
+									onSubmitEditing={() => this.onLoginPressed()}/>
+	
+								<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={() => this.onLoginPressed()}>
+									<Text style={MainStyles.buttonText}>Log in</Text>
+								</TouchableHighlight>
+	
+								<TouchableHighlight style={[MainStyles.button, MainStyles.facebook]} onPress={this.facebookService}>
+									<Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
+								</TouchableHighlight>
+	
+								<TouchableOpacity style={[MainStyles.buttonLink]} onPress={() => super.navigateToScreen('Register')}>
+									<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Create new account</Text>
+								</TouchableOpacity>
+	
+								<View style={MainStyles.buttonLink}>
+									<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Forgot my password</Text>
+								</View>
 							</View>
 						</View>
-					</View>
+					</TouchableWithoutFeedback>
 				</KeyboardAwareScrollView>
-
-				
 			</View>
 		);
 	}
