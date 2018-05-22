@@ -20,11 +20,7 @@ export default class MainScreen extends BaseComponent {
 
 	static navigationOptions = ({navigation}) => {
 		let goToScreen = async (screen) => {
-			if (await AsyncStorage.getItem(AppConst.AUTH_TOKEN)) {
-				navigation.navigate(screen);
-			} else {
-				navigation.navigate('Login');
-			}
+			navigation.navigate(screen);
 		}
 
 		return {
