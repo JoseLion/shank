@@ -142,7 +142,6 @@ export default class Login extends BaseComponent {
 				}
 			}
 		} catch (error) {
-			console.log(error);
 			handleError(error);
 		}
 	}

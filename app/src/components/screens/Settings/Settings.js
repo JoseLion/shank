@@ -1,6 +1,7 @@
 // React components:
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, Image, TouchableHighlight, AsyncStorage, FlatList } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 
 // Shank components:
 import NoAuthModel from 'Core/NoAuthModel';
@@ -50,9 +51,12 @@ export default class Settings extends Component {
 
 	async removeStorage() {
 		global.setLoading(true);
-		let token = await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
+		await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
 		global.setLoading(false);
-		this.props.navigation.navigate('Main');
+		this.props.navigation.dispatch(NavigationActions.reset({
+			index: 0,
+			actions: [NavigationActions.navigate({routeName: 'Login'})],
+		}));
 	}
 
 	async actionForRow(index) {

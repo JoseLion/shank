@@ -20,5 +20,4 @@ export default function(error) {
 
     global.setLoading(false);
     EventRegister.emit(AppConst.EVENTS.showErrorMessageBar, error);
-    throw error;
 }

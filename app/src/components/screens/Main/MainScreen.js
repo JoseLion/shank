@@ -58,8 +58,10 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	async getGroups() {
+		global.setLoading(true);
 		const groups = await BaseModel.get('group/findMyGroups').catch(handleError);
 		this.setState({ groups });
+		global.setLoading(false);
 	}
 
 	getGroupUserStat(group, key) {
@@ -137,8 +139,6 @@ export default class MainScreen extends BaseComponent {
 
 	async componentDidMount() {
 		try {
-			global.setLoading(true);
-
 			if (!this.state.auth) {
 				const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(handleError);
 				this.setState({ auth });
@@ -148,9 +148,7 @@ export default class MainScreen extends BaseComponent {
 				Linking.addEventListener('url', this.handleUrlEvent);
 				Linking.getInitialURL().then(this.handleUrlEvent).catch(handleError);
 				this.realodGroupsEvent = EventRegister.addEventListener(AppConst.EVENTS.realodGroups, async () => {
-					global.setLoading(true);
 					await this.getGroups();
-					global.setLoading(false);
 				});
 				
 				const currentUserJson = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
@@ -173,8 +171,6 @@ export default class MainScreen extends BaseComponent {
 					this.setState({ auth });
 				}
 			});
-
-			global.setLoading(false);
 		} catch (error) {
 			handleError(error);
 		}
