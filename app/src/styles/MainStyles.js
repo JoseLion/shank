@@ -32,10 +32,6 @@ export default MainStyles = StyleSheet.create({
     textError: {
         color: AppConst.COLOR_RED
     },
-
-
-
-
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -95,11 +91,6 @@ export default MainStyles = StyleSheet.create({
         paddingBottom: Style.EM(0.5),
         paddingTop: Style.EM(0.5)
     },
-    buttonText: {
-        fontFamily: Style.CENTURY_GOTHIC,
-        color: AppConst.COLOR_WHITE,
-        fontSize: Style.EM(1)
-    },
     buttonLink: {
         alignItems: 'center',
         backgroundColor: 'transparent',
@@ -111,18 +102,6 @@ export default MainStyles = StyleSheet.create({
         color: AppConst.COLOR_BLUE,
         fontSize: Style.EM(1),
         marginTop: Style.EM(0.5)
-    },
-    primary: {
-        backgroundColor: AppConst.COLOR_BLUE
-    },
-    success: {
-        backgroundColor: AppConst.COLOR_SUCCESS
-    },
-    textSuccess: {
-        color: AppConst.COLOR_SUCCESS
-    },
-    textError: {
-        color: AppConst.COLOR_RED
     },
     facebook: {
         backgroundColor: '#3B5998'
@@ -341,5 +320,33 @@ export default MainStyles = StyleSheet.create({
         backgroundColor: "#CED0CE",
         marginBottom: "5%",
         marginHorizontal: '10%'
-    }
+    },
+  inRow: {
+    flexDirection: 'row',
+  },
+  inColumn: {
+    flexDirection: 'column',
+  },
+  space5: {
+    height: 5,
+  },
+  space10: {
+    height: 10,
+  },
+  space20: {
+    height: 20,
+  },
+  center: {
+    alignItems: 'center', //Center Horizontal
+    justifyContent: 'center', //Center Verticalmente
+  },
+  formLabel: {
+    marginBottom: 5,
+    fontFamily: Style.CENTURY_GOTHIC,
+    fontSize: 15,
+    color: 'rgba(112, 163, 77, 1)',
+  },
+  greenColor: {
+    color: 'rgba(112, 163, 77, 1)'
+  }
 });

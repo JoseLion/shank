@@ -79,6 +79,23 @@ export default function(app) {
 
         return response.ok();
     });
-
+    
+    router.get('/app_profile', auth, async (req, res) => {
+      if (!req.payload._id) {
+        return res.server_error('Unauthorized.');
+      }
+  
+      AppUser
+      .findById(req.payload._id)
+      .select('_id fullName email photo country')
+      .exec(function (err, user) {
+        if (err) {
+          return res.server_error(err);
+        }
+        console.log(user, '-------------');
+        res.ok(user);
+      });
+    });
+    
     return router;
 }
