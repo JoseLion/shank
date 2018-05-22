@@ -6,6 +6,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import { EventRegister } from 'react-native-event-listeners';
 import { NavigationActions } from 'react-navigation';
+import dismissKeyboard from 'dismissKeyboard';
 
 // Shank components:
 import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
