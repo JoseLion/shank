@@ -159,18 +159,6 @@ export default class MainScreen extends BaseComponent {
 			} else {
 				this.props.navigation.navigate('Login');
 			}
-
-			this.didFocusListener = this.props.navigation.addListener('didFocus', async payload => {
-				if (!this.state.auth) {
-					const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(handleError);
-
-					if (!auth) {
-						return this.props.navigation.navigate('Login');
-					}
-
-					this.setState({ auth });
-				}
-			});
 		} catch (error) {
 			handleError(error);
 		}
@@ -178,7 +166,6 @@ export default class MainScreen extends BaseComponent {
 
 	componentWillUnmount() {
 		Linking.removeEventListener('url', e => {});
-		this.didFocusListener.remove();
 		EventRegister.removeEventListener(this.realodGroupsEvent);
 	}
 

@@ -9,7 +9,7 @@ import { NavigationActions } from 'react-navigation';
 import dismissKeyboard from 'dismissKeyboard';
 
 // Shank components:
-import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, MainStyles, AppConst, Spinner } from '../BaseComponent';
 import handleError from 'Core/handleError';
 import LocalStyles from './styles/local';
 
@@ -65,7 +65,7 @@ export default class Login extends BaseComponent {
 		}
 		
 		global.setLoading(false);
-		BarMessages.showError("Incorrect user/password. Please try again!", this.validationMessage);
+		handleError("Incorrect user/password. Please try again!");
 	}
 
 	async facebookCallBack(error, profile) {
@@ -181,19 +181,17 @@ export default class Login extends BaseComponent {
 									onChangeText={(email) => this.setState({email})}
 									value={this.state.email}
 									placeholder={'Email'}
-									onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }}
 									onSubmitEditing={(event) => { this.refs.password.focus(); }} />
 								
 								<TextInput
 									ref='password'
-									returnKeyType={"next"}
+									returnKeyType={"done"}
 									underlineColorAndroid="transparent"
 									style={MainStyles.formInput}
 									secureTextEntry={true}
 									onChangeText={(password) => this.setState({password})}
 									value={this.state.password}
 									placeholder={'Password'}
-									onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }}
 									onSubmitEditing={() => this.onLoginPressed()}/>
 	
 								<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={() => this.onLoginPressed()}>
