@@ -87,13 +87,29 @@ export default function(app) {
 		let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
 		if (group != null) {
-			group.tournaments.forEach(tournament => {
-				const rank = tournament.leaderboard.length + 1;
-				tournament.leaderboard.push({ user, rank });
+			let isUserInGroup = false;
+			group.tournaments.forEach(tournamentCross => {
+				tournamentCross.leaderboard.forEach(leaderboardCross => {
+					if (leaderboardCross.user === user._id) {
+						isUserInGroup = true;
+						return;
+					}
+				});
+
+				if (isUserInGroup) {
+					return;
+				}
 			});
 
-			await group.save().catch(handleMongoError);
-			const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+			if (!isUserInGroup) {
+				group.tournaments.forEach(tournament => {
+					const rank = tournament.leaderboard.length + 1;
+					tournament.leaderboard.push({ user, rank });
+				});
+
+				await group.save().catch(handleMongoError);
+				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+			}
 
 			response.ok(userGroups);
 		} else {

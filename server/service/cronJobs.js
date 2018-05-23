@@ -148,6 +148,30 @@ export default class {
         } catch (error) {
             throw "Exception: tournamentStartReminder(id) -> " + error;
         }
-        
+    }
+
+    tournamentAboutToBegin(id) {
+        try {
+            const pushNotifications = new PushNotiications();
+            const Tournament = mongoose.model('Tournament');
+            const Group = mongoose.model('Group');
+            const tournament = Tournament.findById(id).catch(handleMongoError);
+            const group = Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            const startDate = new Date(tournament.startDate);
+
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach(leaderboardCross => {
+                    leaderboardCross.user.notifications.forEach(pushObj => {
+                        pushNotifications.send({
+                            token: pushObj.token,
+                            os: pushObj.os,
+                            alert: `Don’t forget that the tournament starts today`
+                        });
+                    });
+                });
+            });
+        } catch (error) {
+            throw "Exception: tournamentStartReminder(id) -> " + error;
+        }
     }
 }

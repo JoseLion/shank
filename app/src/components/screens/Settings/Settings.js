@@ -1,6 +1,7 @@
 // React components:
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, Image, TouchableHighlight, AsyncStorage, FlatList } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 
 // Shank components:
 import NoAuthModel from 'Core/NoAuthModel';
@@ -36,7 +37,7 @@ export default class Settings extends Component {
 
 	constructor(props) {
 		super(props);
-		this.removeStorage = this.removeStorage.bind(this);
+		this.logout = this.logout.bind(this);
 		this.actionForRow - this.actionForRow.bind(this);
 		this.state = {
 			data: [
@@ -48,11 +49,12 @@ export default class Settings extends Component {
 		};
 	}
 
-	async removeStorage() {
-		global.setLoading(true);
-		let token = await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
-		global.setLoading(false);
-		this.props.navigation.navigate('Main');
+	async logout() {
+		await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
+		this.props.navigation.dispatch(NavigationActions.reset({
+			index: 0,
+			actions: [NavigationActions.navigate({routeName: 'Login'})],
+		}));
 	}
 
 	async actionForRow(index) {
@@ -84,7 +86,7 @@ export default class Settings extends Component {
 				<View style={ViewStyle.mainSubview}>
 					<FlatList style={ViewStyle.list} data={this.state.data} keyExtractor={item => item.name} renderItem={({item, index}) => <SettingsRow data={item} onPress={() => this.actionForRow(index)} /> }/>
 
-					<TouchableOpacity style={[MainStyles.button, MainStyles.error, {width: '80%'}]} onPress={this.removeStorage}>
+					<TouchableOpacity style={[MainStyles.button, MainStyles.error, {width: '80%'}]} onPress={this.logout}>
 						<Text style={MainStyles.buttonText}>Log Out</Text>
 					</TouchableOpacity>
 				</View>

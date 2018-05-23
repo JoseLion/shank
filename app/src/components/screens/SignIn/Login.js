@@ -1,14 +1,15 @@
 // React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard } from 'react-native';
+import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import { EventRegister } from 'react-native-event-listeners';
 import { NavigationActions } from 'react-navigation';
+import dismissKeyboard from 'dismissKeyboard';
 
 // Shank components:
-import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages, Spinner } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, MainStyles, AppConst, Spinner } from '../BaseComponent';
 import handleError from 'Core/handleError';
 import LocalStyles from './styles/local';
 
@@ -34,12 +35,12 @@ export default class Login extends BaseComponent {
 
 	onLoginPressed() {
 		if (!this.state.email) {
-			BarMessages.showError('Please enter your Email.', this.validationMessage);
+			handleError("Please enter your Email.");
 			return;
 		}
 
 		if (!this.state.password) {
-			BarMessages.showError('Please enter your Password.', this.validationMessage);
+			handleError("Please enter your Password.");
 			return;
 		}
 		
@@ -64,11 +65,16 @@ export default class Login extends BaseComponent {
 		}
 		
 		global.setLoading(false);
-		BarMessages.showError("Incorrect user/password. Please try again!", this.validationMessage);
+		handleError("Incorrect user/password. Please try again!");
 	}
 
 	async facebookCallBack(error, profile) {
 		try {
+			if (error) {
+				handleError(error);
+				return;
+			}
+
 			if (profile.email) {
 				let data = {
 					fullName: profile.name,
@@ -97,7 +103,7 @@ export default class Login extends BaseComponent {
 			const permissions = ['public_profile', 'email'];
 			global.setLoading(true);
 			let option = 'Signin';
-
+			
 			const response = await LoginManager.logInWithReadPermissions(permissions).catch(handleError);
 
 			if (response == null) {
@@ -108,34 +114,31 @@ export default class Login extends BaseComponent {
 			if (response.isCancelled) {
 				handleError(`${option} with Facebook was cancelled!`);
 				return;
-			} else {
-				let hasSamePermissions = true;
+			}
 
-				for (let i = 0; i < response.grantedPermissions.length; i++) {
-					let found = false;
+			let hasSamePermissions = true;
 
-					for (let j = 0; j < permissions.length; j++) {
-						if (response.grantedPermissions[i] == permissions[j]) {
-							found = true;
-							break;
-						}
-					}
+			for (let i = 0; i < response.grantedPermissions.length; i++) {
+				let found = false;
 
-					if (!found) {
-						hasSamePermissions = false;
+				for (let j = 0; j < permissions.length; j++) {
+					if (response.grantedPermissions[i] == permissions[j]) {
+						found = true;
 						break;
 					}
 				}
-				
-				if (hasSamePermissions) {
-					const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => {
-						this.facebookCallBack(error, profile);
-					});
-					const request = new GraphRequestManager().addRequest(infoRequest);
-					request.start();
-				} else {
-					handleError(`Not enought permissions granted to ${option} with Facebook!`);
+
+				if (!found) {
+					hasSamePermissions = false;
+					break;
 				}
+			}
+			
+			if (hasSamePermissions) {
+				const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => this.facebookCallBack(error, profile));
+				new GraphRequestManager().addRequest(infoRequest).start();
+			} else {
+				handleError(`Not enought permissions granted to ${option} with Facebook!`);
 			}
 		} catch (error) {
 			handleError(error);
@@ -155,36 +158,59 @@ export default class Login extends BaseComponent {
 	render() {
 		return (
 			<View style={{flex: 1}}>
-				<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={[MainStyles.background]}>
-					<View style={[MainStyles.container]} behavior="padding">
-						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
-						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>ENTER YOUR EMAIL & PASSWORD TO{"\n"}LOG IN TO YOUR ACCOUNT</Text>
-						
-						<View style={[LocalStyles.formContainer]}>
-							<TextInput keyboardType={'email-address'} returnKeyType={"next"} underlineColorAndroid="transparent" style={MainStyles.formInput} onChangeText={(email) => this.setState({email})} value={this.state.email} placeholder={'Email'} onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { this.refs.password.focus(); }} />
+				<KeyboardAwareScrollView
+				  ref='scroll'
+					enableOnAndroid={true}
+					extraHeight={10}
+					style={[MainStyles.background]}
+					keyboardShouldPersistTaps="always">
+					
+					<TouchableWithoutFeedback onPress={() => dismissKeyboard()} style={{ flex: 1 }}>
+						<View style={[MainStyles.container]} behavior="padding">
+							<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
+							<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>ENTER YOUR EMAIL & PASSWORD TO{"\n"}LOG IN TO YOUR ACCOUNT</Text>
 							
-							<TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={MainStyles.formInput} onChangeText={(password) => this.setState({password})} value={this.state.password} placeholder={'Password'} onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { Keyboard.dismiss() }} secureTextEntry={true} ref='password' />
-
-							<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={() => this.onLoginPressed()}>
-								<Text style={MainStyles.buttonText}>Log in</Text>
-							</TouchableHighlight>
-
-							<TouchableHighlight style={[MainStyles.button, MainStyles.facebook]} onPress={this.facebookService}>
-								<Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
-							</TouchableHighlight>
-
-							<TouchableOpacity style={[MainStyles.buttonLink]} onPress={() => super.navigateToScreen('Register')}>
-								<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Create new account</Text>
-							</TouchableOpacity>
-
-							<View style={MainStyles.buttonLink}>
-								<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Forgot my password</Text>
+							<View style={[LocalStyles.formContainer]}>
+								<TextInput
+									keyboardType={'email-address'}
+									returnKeyType={"next"}
+									underlineColorAndroid="transparent"
+									style={MainStyles.formInput}
+									onChangeText={(email) => this.setState({email})}
+									value={this.state.email}
+									placeholder={'Email'}
+									onSubmitEditing={(event) => { this.refs.password.focus(); }} />
+								
+								<TextInput
+									ref='password'
+									returnKeyType={"done"}
+									underlineColorAndroid="transparent"
+									style={MainStyles.formInput}
+									secureTextEntry={true}
+									onChangeText={(password) => this.setState({password})}
+									value={this.state.password}
+									placeholder={'Password'}
+									onSubmitEditing={() => this.onLoginPressed()}/>
+	
+								<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={() => this.onLoginPressed()}>
+									<Text style={MainStyles.buttonText}>Log in</Text>
+								</TouchableHighlight>
+	
+								<TouchableHighlight style={[MainStyles.button, MainStyles.facebook]} onPress={this.facebookService}>
+									<Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
+								</TouchableHighlight>
+	
+								<TouchableOpacity style={[MainStyles.buttonLink]} onPress={() => super.navigateToScreen('Register')}>
+									<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Create new account</Text>
+								</TouchableOpacity>
+	
+								<View style={MainStyles.buttonLink}>
+									<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Forgot my password</Text>
+								</View>
 							</View>
 						</View>
-					</View>
+					</TouchableWithoutFeedback>
 				</KeyboardAwareScrollView>
-
-				<DropdownAlert ref={ref => this.validationMessage = ref} />
 			</View>
 		);
 	}

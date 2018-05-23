@@ -325,7 +325,7 @@ export default class Group extends BaseComponent {
 		this.state = {
 			group: {},
 			currentUser: {},
-			sheetNames: ['Cancel'],
+			sheetNames: [],
 			tournamentIndex: 0,
 			currentUserIndex: 0
 		};
@@ -410,7 +410,8 @@ export default class Group extends BaseComponent {
 	}
 
 	tournamentSelected(index) {
-		if (index != this.state.sheetNames.length - 1) {
+		console.log("index: ", index);
+		if (index > 0 && index < this.state.sheetNames.length - 1) {
 			this.setState({tournamentIndex: index});
 		}
 	}
@@ -602,7 +603,7 @@ export default class Group extends BaseComponent {
 	render() {
 		return (
 			<View style={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}}>
-				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.state.sheetNames} cancelButtonIndex={this.state.sheetNames.length} onPress={this.tournamentSelected} />
+				<ActionSheet ref={sheet => this.actionSheet = sheet} title={'Select a tournament'} options={this.state.sheetNames} onPress={this.tournamentSelected} />
 
 				<View style={{flex: 0.7}}>
 					<View style={[ViewStyle.groupInformation]}>
