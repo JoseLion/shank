@@ -9,6 +9,7 @@ let App_UserSchema = new mongoose.Schema({
 	photo: {type: mongoose.Schema.Types.ObjectId, ref: 'Archive'},
 	gender: String,
 	country: String,
+	register_os: String,
 	email: {type: String, unique: true, required: true, index: true},
 	isFacebookUser: {type: Boolean, default: false},
 	notifications: [{

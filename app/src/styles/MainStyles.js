@@ -1,8 +1,10 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 import Style from 'ShankStyle';
 import * as AppConst from 'Core/AppConst';
 
+const isAndroid = Platform.OS == 'android' ? true : false;
 const width = Dimensions.get('window').width;
+const containerWidth = width > 500 ? 500 : width;
 
 export default MainStyles = StyleSheet.create({
     button: {
@@ -32,10 +34,6 @@ export default MainStyles = StyleSheet.create({
     textError: {
         color: AppConst.COLOR_RED
     },
-
-
-
-
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -95,11 +93,6 @@ export default MainStyles = StyleSheet.create({
         paddingBottom: Style.EM(0.5),
         paddingTop: Style.EM(0.5)
     },
-    buttonText: {
-        fontFamily: Style.CENTURY_GOTHIC,
-        color: AppConst.COLOR_WHITE,
-        fontSize: Style.EM(1)
-    },
     buttonLink: {
         alignItems: 'center',
         backgroundColor: 'transparent',
@@ -111,18 +104,6 @@ export default MainStyles = StyleSheet.create({
         color: AppConst.COLOR_BLUE,
         fontSize: Style.EM(1),
         marginTop: Style.EM(0.5)
-    },
-    primary: {
-        backgroundColor: AppConst.COLOR_BLUE
-    },
-    success: {
-        backgroundColor: AppConst.COLOR_SUCCESS
-    },
-    textSuccess: {
-        color: AppConst.COLOR_SUCCESS
-    },
-    textError: {
-        color: AppConst.COLOR_RED
     },
     facebook: {
         backgroundColor: '#3B5998'
@@ -341,5 +322,102 @@ export default MainStyles = StyleSheet.create({
         backgroundColor: "#CED0CE",
         marginBottom: "5%",
         marginHorizontal: '10%'
-    }
+    },
+  newMainContainer: {
+    flex: 1
+  },
+  inRow: {
+    flexDirection: 'row',
+  },
+  inColumn: {
+    flexDirection: 'column',
+  },
+  space5: {
+    height: 5,
+  },
+  space10: {
+    height: 10,
+  },
+  space20: {
+    height: 20,
+  },
+  center: {
+    alignItems: 'center', //Center Horizontal
+    justifyContent: 'center', //Center Verticalmente
+  },
+  form: {
+    flex: 1,
+    paddingTop: 0,
+    paddingLeft: 30,
+    paddingBottom: 30,
+    paddingRight: 30,
+    width: containerWidth,
+    justifyContent: 'space-between',
+  },
+  formLabel: {
+    marginBottom: 5,
+    fontFamily: Style.CENTURY_GOTHIC,
+    fontSize: 15,
+    color: 'rgba(112, 163, 77, 1)',
+  },
+  formInputText: {
+    height: 45,
+    fontFamily: Style.CENTURY_GOTHIC,
+    borderColor: AppConst.COLOR_GRAY,
+    borderRadius: 0,
+    borderWidth: 1,
+    color: AppConst.COLOR_BLUE,
+    fontSize: Style.EM(1),
+    marginBottom: Style.EM(0.5),
+    marginTop: Style.EM(0.5),
+    paddingBottom: Style.EM(0.75),
+    paddingLeft: Style.EM(1),
+    paddingRight: Style.EM(1),
+    paddingTop: Style.EM(0.75)
+  },
+  greenColor: {
+    color: 'rgba(112, 163, 77, 1)'
+  },
+  dropdown: {
+		width: (containerWidth * 0.81),
+		borderWidth: 1,
+		borderRadius: 0,
+    borderColor: AppConst.COLOR_GRAY
+	},
+	dropdownButton: {
+		marginVertical: 10,
+		marginHorizontal: 6,
+		fontSize: Style.EM(1),
+		color: AppConst.COLOR_BLUE,
+    fontFamily: Style.CENTURY_GOTHIC,
+		textAlignVertical: 'center',
+    borderColor: 'blue'
+	},
+	dropdownStyle: {
+		width: 230,
+		height: 150,
+		borderWidth: 1,
+		borderRadius: 3,
+		borderColor: AppConst.COLOR_GRAY
+	},
+	dropdownTextStyle: {
+		fontFamily: Style.CENTURY_GOTHIC,
+		fontSize: Style.EM(1),
+		color: AppConst.COLOR_GRAY
+	},
+  imageButton: {
+		alignItems: 'center',
+		paddingVertical: Style.EM(1.5)
+	},
+  image: {
+		width: Style.EM(7),
+		height: Style.EM(7),
+		borderRadius: Style.EM(7) / 2.0,
+		marginBottom: Style.EM(0.5)
+	},
+  imageText: {
+		fontFamily: Style.CENTURY_GOTHIC,
+		fontSize: Style.FONT_14,
+		color: AppConst.COLOR_GRAY
+	}
 });
