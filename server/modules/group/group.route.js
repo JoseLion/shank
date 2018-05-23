@@ -54,12 +54,21 @@ export default function(app) {
 	});
 
 	router.get(`${basePath}/findOne/:id`, auth, async (request, response) => {
-		const group = await Group.findOne({_id: request.params.id})
-			.populate('tournaments.tournament')
-			.populate('tournaments.leaderboard.user')
-			.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
-		.catch(handleMongoError);
-		response.ok(group);
+		try {
+			const group = await Group.findOne({_id: request.params.id})
+									.populate('tournaments.tournament')
+									.populate('tournaments.leaderboard.user')
+									.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
+									.catch(handleMongoError);
+
+			if (!group) {
+				return response.reset_content("Sorry! This group has been deleted");
+			}
+
+			response.ok(group);
+		} catch (error) {
+			response.server_error(error);
+		}
 	});
 
 	router.get(`${basePath}/removeUserFromGroup/:userId/:groupId`, async (request, response) => {
@@ -83,10 +92,14 @@ export default function(app) {
 	});
 
 	router.get(`${basePath}/addUserToGroup/:id`, auth, async (request, response) => {
-		let user = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
-		let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
+		try {
+			let user = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
+			let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
-		if (group != null) {
+			if (!group) {
+				return response.reset_content("Sorry! The group could not be found...");
+			}
+
 			let isUserInGroup = false;
 			group.tournaments.forEach(tournamentCross => {
 				tournamentCross.leaderboard.forEach(leaderboardCross => {
@@ -112,8 +125,8 @@ export default function(app) {
 			}
 
 			response.ok(userGroups);
-		} else {
-			response.server_error("Sorry! The group could not be found...");
+		} catch (error) {
+			response.server_error(error);
 		}
 	});
 
@@ -125,29 +138,43 @@ export default function(app) {
 	});
 
 	router.post(`${basePath}/updateMyRoaster/:groupId/:tournamentId`, auth, async (request, response) => {
-		let group = await Group.findById(request.params.groupId).catch(handleMongoError);
+		try {
+			let isUserInGroup = false;
+			let group = await Group.findById(request.params.groupId).catch(handleMongoError);
 
-		group.tournaments.forEach(cross => {
-			if (cross.tournament == request.params.tournamentId) {
-				cross.leaderboard.forEach(obj => {
-					if (obj.user == request.payload._id) {
-						obj.roaster = request.body.roaster;
-
-						if (request.body.movements > 0) {
-							obj.checkouts.push(request.body);
-						}
-					}
-				});
+			if (!group) {
+				return response.reset_content("Sorry! This group has been deleted");
 			}
-		});
 
-		group = await group.save().catch(handleMongoError);
-		group = await Group.findOne({_id: group._id})
-			.populate('tournaments.tournament')
-			.populate('tournaments.leaderboard.user')
-			.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
-		.catch(handleMongoError);
-		response.ok(group);
+			group.tournaments.forEach(tournamentCross => {
+				if (tournamentCross.tournament == request.params.tournamentId) {
+					tournamentCross.leaderboard.forEach(cross => {
+						if (cross.user == request.payload._id) {
+							isUserInGroup = true;
+							cross.roaster = request.body.roaster;
+
+							if (request.body.movements > 0) {
+								cross.checkouts.push(request.body);
+							}
+						}
+					});
+				}
+			});
+
+			if (!isUserInGroup) {
+				return response.reset_content("Sorry! You were removed from this group");
+			}
+
+			group = await group.save().catch(handleMongoError);
+			group = await Group.findOne({_id: group._id})
+				.populate('tournaments.tournament')
+				.populate('tournaments.leaderboard.user')
+				.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
+			.catch(handleMongoError);
+			response.ok(group);
+		} catch (error) {
+			response.server_error(error);
+		}
 	});
 
 	/* ----------------- THIS SOULD BE DELETED ----------------- */

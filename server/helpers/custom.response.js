@@ -34,3 +34,8 @@ express.response.server_error = function(error) {
 	this.status(500);
 	this.json({response: {}, error: error || 'We\'re sorry, a server error occurred. Please wait a bit and try again.'});
 };
+
+express.response.reset_content = function(response) {
+	this.status(205);
+	this.json({response: response || "Something went wrong... Please reload!", error: ''});
+}

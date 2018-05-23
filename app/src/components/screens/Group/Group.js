@@ -350,7 +350,10 @@ export default class Group extends BaseComponent {
 				}
 			});
 
-			group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
+			if (group.owner == this.state.currentUser._id) {
+				group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
+			}
+			
 			const userRoaster = group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster;
 			this.setState({ group, sheetNames, userRoaster });
 		} catch(error) {

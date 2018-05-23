@@ -69,6 +69,7 @@ let BaseModel = {
         };
 
         const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
+        console.log("response: ", response);
         const json = await response.json().catch( error => { throw parsingResponseError; } );
         if (json.error !== '') throw json.error;
         else return json.response;
