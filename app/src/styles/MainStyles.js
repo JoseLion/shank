@@ -1,8 +1,10 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 import Style from 'ShankStyle';
 import * as AppConst from 'Core/AppConst';
 
+const isAndroid = Platform.OS == 'android' ? true : false;
 const width = Dimensions.get('window').width;
+const containerWidth = width > 500 ? 500 : width;
 
 export default MainStyles = StyleSheet.create({
     button: {
@@ -321,6 +323,9 @@ export default MainStyles = StyleSheet.create({
         marginBottom: "5%",
         marginHorizontal: '10%'
     },
+  newMainContainer: {
+    flex: 1
+  },
   inRow: {
     flexDirection: 'row',
   },
@@ -340,13 +345,59 @@ export default MainStyles = StyleSheet.create({
     alignItems: 'center', //Center Horizontal
     justifyContent: 'center', //Center Verticalmente
   },
+  form: {
+    flex: 1,
+    padding: 30,
+    width: containerWidth,
+    justifyContent: 'space-between',
+  },
   formLabel: {
     marginBottom: 5,
     fontFamily: Style.CENTURY_GOTHIC,
     fontSize: 15,
     color: 'rgba(112, 163, 77, 1)',
   },
+  formInputText: {
+    height: 45,
+    borderColor: AppConst.COLOR_GRAY,
+    borderRadius: 0,
+    borderWidth: 1,
+    color: AppConst.COLOR_BLUE,
+    fontSize: Style.EM(1),
+    marginBottom: Style.EM(0.5),
+    marginTop: Style.EM(0.5),
+    paddingBottom: Style.EM(0.75),
+    paddingLeft: Style.EM(1),
+    paddingRight: Style.EM(1),
+    paddingTop: Style.EM(0.75)
+  },
   greenColor: {
     color: 'rgba(112, 163, 77, 1)'
-  }
+  },
+  dropdown: {
+		width: (containerWidth * 0.81),
+		borderWidth: 1,
+		borderRadius: 0,
+    borderColor: AppConst.COLOR_GRAY
+	},
+	dropdownButton: {
+		marginVertical: 10,
+		marginHorizontal: 6,
+		fontSize: Style.EM(1),
+		color: AppConst.COLOR_BLUE,
+		textAlignVertical: 'center',
+    borderColor: 'blue'
+	},
+	dropdownStyle: {
+		width: 230,
+		height: 150,
+		borderWidth: 1,
+		borderRadius: 3,
+		borderColor: AppConst.COLOR_GRAY
+	},
+	dropdownTextStyle: {
+		fontFamily: 'Helvetica Neue',
+		fontSize: Style.EM(1),
+		color: AppConst.COLOR_GRAY
+	}
 });
