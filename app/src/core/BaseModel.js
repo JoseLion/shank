@@ -1,65 +1,17 @@
-'use strict';
-
-import React from 'react';
 import { AsyncStorage } from 'react-native';
+import { ApiHost, AuthToken } from '../config/variables';
 
-import * as ApiUtils from './ApiUtils';
-import * as AppConst from './AppConst';
-import { Host, ApiHost, AuthToken } from '../config/variables';
+const notLogged = 'Not Logged.';
 
-let internetError = 'No fue posible acceder al internet de su teléfono.';
-let requestServerError = 'No fue posible comunicar con el servidor.';
-let parsingResponseError = 'Error al analizar la respuesta del servidor.';
-let notLogged = 'Not Logged.';
+export default class BaseMode {
 
-let BaseModel = {
+    constructor() {
+        
+    }
 
-    async post(resource, params) {
-        let token = await AsyncStorage.getItem(AuthToken);
-        if (!token) throw notLogged;
-
-        const data = JSON.stringify(params);
-        let options = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-            body: data
-        }
-
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
-
-    async multipart(resource, data) {
-        let token = await AsyncStorage.getItem(AuthToken);
-        if (!token) throw notLogged;
-
-        let options = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + token,
-            },
-            body: data
-        }
-
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
-
-    async get(resource) {
-        let token = await AsyncStorage.getItem(AuthToken);
-        if (!token) { throw notLogged; }
-
-        let options = {
+    static async get(resource) {
+        const token = await getAuthToken();
+        const options = {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -68,139 +20,48 @@ let BaseModel = {
             }
         };
 
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        console.log("response: ", response);
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
-
-    async put(resource, params) {
-        let token = await AsyncStorage.getItem(AuthToken);
-        if (!token) { throw notLogged; }
-
-        const data = JSON.stringify(params);
-        let options = {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-            body: data
-        };
-
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
-
-    async delete(resource, params) {
-        let token = await AsyncStorage.getItem(AuthToken);
-        if (!token) { throw notLogged; }
-
-        const data = JSON.stringify(params);
-        let options = {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-            body: data
-        };
-
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
-
-
-
-
-
-    // REMOVE ALL BELLOW
-
-    async createPhoto(resource, params) {
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
+        const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
+        const json = await response.json().catch(handleParsingError);
+        
+        if (response.status !== 200) {
+            throw {
+                message: json.error,
+                status: response.status
+            };
         }
 
-        let options = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-            body: params
-        }
-
-        await fetch(ApiHost + resource, options)
-        .then((responseData) => {
-            // Log the response form the server
-            // Here we get what we sent to Postman back
-            console.log(responseData);
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    },
-
-    async create(resource, params) {
-
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
-        }
-
+        return json.response;
+    }
+    
+    static async post(resource, params) {
+        const token = await this.getAuthToken();
         const data = JSON.stringify(params);
-
-        let options = {
+        const options = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token,
             },
-            body: data
+            body: data,
         }
 
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
+        const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
+        const json = await response.json().catch(handleParsingError);
 
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
-        if (json.error !== '') {
-            throw json.error;
+        if (response.status !== 200) {
+            throw {
+                message: json.error,
+                status: response.status
+            };
         }
-        else {
-            return json.response;
-        }
-    },
-    //TODO: REFACTOR MULTIPART
-    async multiPartCreate(resource, params) {
+        
+        return json.response;
+    }
 
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
-        }
-
-        const data = JSON.stringify(params);
-
-        let options = {
+    static async multipart(resource, data) {
+        const token = await this.getAuthToken();
+        const options = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -210,103 +71,62 @@ let BaseModel = {
             body: data
         }
 
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
-
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
-        if (json.error !== '') {
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
-    },
-
-    async update(resource, params) {
-
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
+        const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
+        const json = await response.json().catch(handleParsingError);
+        
+        if (response.status !== 200) {
+            throw {
+                message: json.error,
+                status: response.status
+            };
         }
 
+        return json.response;
+    }
+
+    async delete(resource, params) {
+        const token = await this.getAuthToken();
         const data = JSON.stringify(params);
-
-        let options = {
-            method: 'PUT',
+        const options = {
+            method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token,
             },
             body: data
+        };
+
+        const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
+        const json = await response.json().catch(handleParsingError);
+        
+        if (response.status !== 200) {
+            throw {
+                message: json.error,
+                status: response.status
+            };
         }
+        
+        return json.response;
+    }
+}
 
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
+async function getAuthToken() {
+    const token = await AsyncStorage.getItem(AuthToken).catch(error => {throw error});
+    
+    if (!token) {
+        throw "Session has expired... Please login!";
+    }
 
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
+    return token;
+}
 
-        if (json.error !== '') {
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
-    },
+function handleFetchError(error) {
+    console.log("ERROR FETCHING: ", error);
+    throw "We were unable to connect to the server";
+}
 
-    async remove(resource) {
-
-        let token = await AsyncStorage.getItem(AuthToken);
-
-        if (!token) {
-            throw notLogged;
-        }
-
-        let options = {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            }
-        }
-
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
-
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
-        if (json.error !== '') {
-            //return Promise.reject(new Error(json.error));
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
-    },
-};
-
-export {BaseModel as default};
+function handleParsingError(error) {
+    console.log("ERROR PARSING JSON: ", error);
+    throw "There was an error reading the response from the server";
+}

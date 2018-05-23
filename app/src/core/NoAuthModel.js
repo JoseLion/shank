@@ -2,7 +2,6 @@
 
 import React from 'react';
 
-import * as ApiUtils from './ApiUtils';
 import * as AppConst from './AppConst';
 import { Host, ApiHost, AuthToken } from '../config/variables';
 
