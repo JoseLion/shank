@@ -43,7 +43,7 @@ export default class Login extends BaseComponent {
 			handleError("Please enter your Password.");
 			return;
 		}
-		
+
 		Keyboard.dismiss();
 
 		let data = {
@@ -56,14 +56,14 @@ export default class Login extends BaseComponent {
 	async onLoginPressedAsync(data) {
 		global.setLoading(true);
 		const login = await NoAuthModel.post('app_login', data).catch(handleError);
-		
+
 		if (login) {
 			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, login.token);
 			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(login.user));
 			this.finishLogin();
 			return;
 		}
-		
+
 		global.setLoading(false);
 		handleError("Incorrect user/password. Please try again!");
 	}
@@ -131,7 +131,7 @@ export default class Login extends BaseComponent {
 						break;
 					}
 				}
-				
+
 				if (hasSamePermissions) {
 					const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => {
 						this.facebookCallBack(error, profile);
@@ -166,12 +166,12 @@ export default class Login extends BaseComponent {
 					extraHeight={10}
 					style={[MainStyles.background]}
 					keyboardShouldPersistTaps="always">
-					
+
 					<TouchableWithoutFeedback onPress={() => dismissKeyboard()} style={{ flex: 1 }}>
 						<View style={[MainStyles.container]} behavior="padding">
 							<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
 							<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>ENTER YOUR EMAIL & PASSWORD TO{"\n"}LOG IN TO YOUR ACCOUNT</Text>
-							
+
 							<View style={[LocalStyles.formContainer]}>
 								<TextInput
 									keyboardType={'email-address'}
@@ -182,7 +182,7 @@ export default class Login extends BaseComponent {
 									value={this.state.email}
 									placeholder={'Email'}
 									onSubmitEditing={(event) => { this.refs.password.focus(); }} />
-								
+
 								<TextInput
 									ref='password'
 									returnKeyType={"done"}
@@ -193,19 +193,19 @@ export default class Login extends BaseComponent {
 									value={this.state.password}
 									placeholder={'Password'}
 									onSubmitEditing={() => this.onLoginPressed()}/>
-	
+
 								<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={() => this.onLoginPressed()}>
 									<Text style={MainStyles.buttonText}>Log in</Text>
 								</TouchableHighlight>
-	
+
 								<TouchableHighlight style={[MainStyles.button, MainStyles.facebook]} onPress={this.facebookService}>
 									<Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
 								</TouchableHighlight>
-	
+
 								<TouchableOpacity style={[MainStyles.buttonLink]} onPress={() => super.navigateToScreen('Register')}>
 									<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Create new account</Text>
 								</TouchableOpacity>
-	
+
 								<View style={MainStyles.buttonLink}>
 									<Text style={[MainStyles.buttonLinkText, LocalStyles.buttonLinkText]}>Forgot my password</Text>
 								</View>

@@ -347,7 +347,10 @@ export default MainStyles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    padding: 30,
+    paddingTop: 0,
+    paddingLeft: 30,
+    paddingBottom: 30,
+    paddingRight: 30,
     width: containerWidth,
     justifyContent: 'space-between',
   },
@@ -359,6 +362,7 @@ export default MainStyles = StyleSheet.create({
   },
   formInputText: {
     height: 45,
+    fontFamily: Style.CENTURY_GOTHIC,
     borderColor: AppConst.COLOR_GRAY,
     borderRadius: 0,
     borderWidth: 1,
@@ -385,6 +389,7 @@ export default MainStyles = StyleSheet.create({
 		marginHorizontal: 6,
 		fontSize: Style.EM(1),
 		color: AppConst.COLOR_BLUE,
+    fontFamily: Style.CENTURY_GOTHIC,
 		textAlignVertical: 'center',
     borderColor: 'blue'
 	},
@@ -396,8 +401,23 @@ export default MainStyles = StyleSheet.create({
 		borderColor: AppConst.COLOR_GRAY
 	},
 	dropdownTextStyle: {
-		fontFamily: 'Helvetica Neue',
+		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.EM(1),
+		color: AppConst.COLOR_GRAY
+	},
+  imageButton: {
+		alignItems: 'center',
+		paddingVertical: Style.EM(1.5)
+	},
+  image: {
+		width: Style.EM(7),
+		height: Style.EM(7),
+		borderRadius: Style.EM(7) / 2.0,
+		marginBottom: Style.EM(0.5)
+	},
+  imageText: {
+		fontFamily: Style.CENTURY_GOTHIC,
+		fontSize: Style.FONT_14,
 		color: AppConst.COLOR_GRAY
 	}
 });

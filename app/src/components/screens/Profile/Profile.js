@@ -1,20 +1,20 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, Text, View, TouchableOpacity, Image, TextInput, TouchableHighlight, Alert, TouchableWithoutFeedback} from 'react-native';
-import MainStyles from 'MainStyles';
+import {StyleSheet, Text, View, TouchableOpacity, Image, TextInput, TouchableHighlight, Alert, TouchableWithoutFeedback, ActionSheetIOS} from 'react-native';
 import LocalStyles from './styles/local';
-import BaseModel from 'Core/BaseModel';
 import Notifier from 'Core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import * as AppConst from 'Core/AppConst';
-import * as BarMessages from 'Core/BarMessages';
+import ImagePicker from 'react-native-image-crop-picker';
+import DropdownAlert from 'react-native-dropdownalert';
+
 import LoadingIndicator from '../../common/LoadingIndicator';
 import { ApiHost } from '../../../config/variables';
-import { BaseComponent } from '../BaseComponent';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid } from '../BaseComponent';
 import RadioButton from 'radio-button-react-native';
 import dismissKeyboard from 'dismissKeyboard';
 import ModalDropdown from 'react-native-modal-dropdown';
+import ActionSheet from 'react-native-actionsheet';
 
 export default class ProfileScreen extends BaseComponent {
 	static navigationOptions = {title: 'User Profile'};
@@ -22,6 +22,9 @@ export default class ProfileScreen extends BaseComponent {
 	constructor(props) {
 		super(props);
 		this._handleUpdatePress = this._handleUpdatePress.bind(this);
+		this.openImageSheet = this.openImageSheet.bind(this);
+		this.selectPicture = this.selectPicture.bind(this);
+
 		this.state = {
 			loading: true,
 			fullName: '',
@@ -29,125 +32,114 @@ export default class ProfileScreen extends BaseComponent {
 			country: '',
 			gender: '',
 			photo: null,
-			genders: ['Male', 'Female', 'Other']
-		}
+			genders: ['Male', 'Female', 'Other'],
+			defaultValue: 'Gender ...',
+			genderSelected: -1,
+			photoUri: null
+		};
+		this.photoOptions = ['Open your gallery', 'Take a picture', 'Cancel'];
 	}
 
 	setLoading(loading) {
 		this.setState({loading: loading});
 	}
 
-	_renderImage = () => {
-
-		let {userImage} = this.state;
-
-		if (userImage) {
-			return <Image source={{uri: userImage}} style={LocalStyles.groupImage} />;
-		}
-
-		let addPhoto = require('../../../../resources/add_edit_photo.png');
-
-		if (!userImage && !this.state.photo) {
-			return  <Image source={addPhoto} style={LocalStyles.groupImage} />;
-		}
-
-		let photo_path = ApiHost + 'archive/download/' + this.state.photo;
-		console.log(photo_path, 'photo_path');
-
-		return <Image source={{uri: photo_path }} style={LocalStyles.groupImage} />;
-	}
-
-	_handleUpdatePress(userId) {
+	async _handleUpdatePress(userId) {
 		if (!this.state.fullName) {
-			Notifier.message({title: 'User Update', message: 'username cant be empty'});
+			this.handleError("Username cant be empty");
 			return;
 		}
 
 		if (!this.state.email) {
-			Notifier.message({title: 'User Update', message: 'email cant be empty'});
-			return;
-		}
-
-		if (!this.state.userImage && !this.state.photo) {
-			Notifier.message({title: 'User Update', message: 'Please select a profile photo (tap on the empty image)'});
+			this.handleError("Email cant be empty");
 			return;
 		}
 
 		this.setLoading(true);
 
-		if (this.state.userImage) {
+		let json_profile_data = {_id: this.state._id, fullName: this.state.fullName, country: this.state.country, gender: this.state.gender};
 
-			let localUri = this.state.userImage;
-			let filename = localUri.split('/').pop();
+		if (this.state.photoUri) {
 
+			let filename = this.state.photoUri.split('/').pop();
 			let match = /\.(\w+)$/.exec(filename);
-			let type = match ? `image/${match[1]}` : `image`;
+			let type = match ? `image/${match[1]}` : 'image';
 
-			let data = new FormData();
-			data.append('file', {uri: localUri, name: filename, type: type});
-			let user_data = JSON.stringify({fullName: this.state.fullName});
-			data.append('user', user_data);
-
-			BaseModel.createPhoto('updateUser', data).then((response) => {
-				this.setLoading(false);
-				this.props.navigation.dispatch({type: 'Main'})
-			})
-			.catch((error) => {
-				this.setLoading(false);
-				Notifier.message({title: 'ERROR', message: error});
-			});
+			let formData = new FormData();
+			let user_data = JSON.stringify(json_profile_data);
+			formData.append('user', user_data);
+			formData.append('file', {uri: this.state.photoUri, type: type, name: filename});
+			await BaseModel.multipart('update_profile_with_image', formData).catch(this.handleError);
+			this.setLoading(false);
+			this.dropdown.alertWithType('success', 'Success', 'Profile updated');
 		}
 		else {
+			await BaseModel.post('update_profile', json_profile_data).catch(this.handleError);
 			this.setLoading(false);
-
-			BaseModel.update('users/' + this.state._id, {fullName: this.state.fullName}).then((response) => {
-				this.setLoading(false);
-				this.props.navigation.dispatch({type: 'Main'})
-			})
-			.catch((error) => {
-				this.setLoading(false);
-				Notifier.message({title: 'ERROR', message: error});
-			});
+			this.dropdown.alertWithType('success', 'Success', 'Profile updated');
+			//this.props.navigation.dispatch({type: 'Main'});
 		}
 	}
 
-	async _pickImage() {
-		/*let result = await ImagePicker.launchImageLibraryAsync({
-			allowsEditing: true,
-			aspect: [4, 3],
-		});
-
-		if (!result.cancelled) {
-			this.setState({userImage: result.uri});
-		}*/
-	};
-
-	async _takePicture() {
-		/*let result = await ImagePicker.launchCameraAsync({
-			allowsEditing: true,
-			aspect: [4, 3],
-		});
-
-		if (!result.cancelled) {
-			this.setState({userImage: result.uri});
-		}*/
+	handleError(error) {
+		this.setState({isLoading: false});
+		this.dropdown.alertWithType('error', "Error", error);
 	}
 
 	componentDidMount() {
-		BaseModel.get('app_profile/').then((response) => {
+		BaseModel.get('app_profile').then((response) => {
+			let index = this.state.genders.indexOf(response.gender);
+
 			this.setState({
 				loading: false,
 				_id: response._id,
 				fullName: response.fullName,
 				email: response.email,
 				photo: response.photo,
-				country: response.country
+				country: response.country,
+				gender: response.gender,
+				defaultValue: response.gender,
+				genderSelected: index
 			})
 		})
 		.catch((error) => {
 			this.setLoading(false);
-			Notifier.message({title: 'ERROR', message: error});
 		});
+	}
+
+	openImageSheet() {
+		if (IsAndroid) {
+			this.actionSheet.show();
+		} else {
+			ActionSheetIOS.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
+		}
+	}
+
+	async selectPicture(index) {
+		let response;
+		const options = {
+			width: 200,
+			height: 200,
+			cropping: true,
+			mediaType: 'photo'
+		}
+
+		switch (index) {
+			case 0:
+				response = await ImagePicker.openPicker(options);
+				break;
+
+			case 1:
+				response = await ImagePicker.openCamera(options);
+				break;
+
+			default:
+				break;
+		}
+
+		if (response) {
+			this.setState({photoUri: response.path});
+		}
 	}
 
   handleGender = (value) => {
@@ -156,9 +148,25 @@ export default class ProfileScreen extends BaseComponent {
 
 	selectGender = (idx, value) => {
     this.setState({
-      gender: this.state.genders[idx]
+      gender: value
     });
   }
+
+	getPhotoSource() {
+		if (this.state.photoUri) {
+			return {uri: this.state.photoUri};
+		}
+
+		if (this.state.photo) {
+			return {uri: ApiHost + 'archive/download/' + this.state.photo};
+		}
+
+		return require('../../../../resources/add_edit_photo.png');
+	}
+
+	_renderImage = () => {
+		return <Image source={this.getPhotoSource()} style={MainStyles.image} />;
+	}
 
 	render() {
 
@@ -182,16 +190,11 @@ export default class ProfileScreen extends BaseComponent {
 					<TouchableWithoutFeedback onPress={() => dismissKeyboard()} style={{ flex: 1 }}>
 						<View style={MainStyles.form}>
 							<Spinner visible={this.state.loading} animation="slide"/>
-							<TouchableOpacity style={[LocalStyles.addPhotoLogo, MainStyles.inputTopSeparation]} onPress={() => {
-								Alert.alert('RESPONSE', 'Choose how to get your picture', [
-									{text: 'Open your gallery', onPress: () => this._pickImage()},
-									{text: 'Take a picture', onPress: () => this._takePicture()}
-								], {cancelable: true});
-							}}>
+							<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.selectPicture} />
 
+							<TouchableOpacity style={[MainStyles.imageButton]} onPress={this.openImageSheet}>
 								{user_photo}
-
-								<Text style={[MainStyles.centerText, MainStyles.greenMedShankFont]}>Add or Update your photo</Text>
+								<Text style={MainStyles.imageText}>{this.state.photo || this.state.photoUri ? 'Change photo' : 'Add photo'}</Text>
 							</TouchableOpacity>
 
 							<TextInput
@@ -226,24 +229,26 @@ export default class ProfileScreen extends BaseComponent {
 
 							<ModalDropdown style={MainStyles.dropdown}
 								textStyle={MainStyles.dropdownButton}
-								defaultValue='Gender ...'
+								defaultIndex={this.state.genderSelected}
+								defaultValue={this.state.defaultValue}
 								dropdownStyle={MainStyles.dropdownStyle}
                 dropdownTextStyle={MainStyles.dropdownTextStyle}
 								options={this.state.genders}
 								onSelect={(idx, value) => this.selectGender(idx, value)}
 							/>
-							
+
 							<View style={MainStyles.space10} />
 
 							<View style={MainStyles.center}>
 								<TouchableHighlight
 								  onPress={() => this._handleUpdatePress(navigation.state.params.currentUser._id)}
-									style={[MainStyles.button, MainStyles.success, {width: '90%'}]}>
-									<Text style={MainStyles.buttonText}>Update Profile</Text>
+									style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
+									<Text style={MainStyles.buttonText}>Save</Text>
 								</TouchableHighlight>
 							</View>
 
 							<View style={MainStyles.space10} />
+							<DropdownAlert ref={ref => this.dropdown = ref} />
 						</View>
 					</TouchableWithoutFeedback>
 				</KeyboardAwareScrollView>
