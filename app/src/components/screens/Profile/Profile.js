@@ -207,16 +207,10 @@ export default class ProfileScreen extends BaseComponent {
 								placeholder={'Name'}
 								onSubmitEditing={() => this.country.focus()}/>
 
-							<TextInput
-								ref={ref => this.email = ref}
-								keyboardType={'email-address'}
-								returnKeyType={"next"}
-								underlineColorAndroid="transparent"
-								editable={false}
-								style={MainStyles.formInputText}
-								onChangeText={(email) => this.setState({email})}
-								value={this.state.email}
-								placeholder={'Email'} />
+							<Text
+								style={MainStyles.formInputText}>
+								{this.state.email}
+							</Text>
 
 							<TextInput
 								ref={ref => this.country = ref}

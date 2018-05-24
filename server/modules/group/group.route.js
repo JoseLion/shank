@@ -56,7 +56,6 @@ export default function(app) {
 
 	router.post(`${basePath}/update`, auth, multer().single('file'), async (req, res) => {
 		let group = JSON.parse(req.body.group);
-		console.log(group, '-----------------------------');
 		try {
 			let promises = [];
 			let archive_id;

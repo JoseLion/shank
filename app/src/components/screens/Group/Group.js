@@ -304,7 +304,7 @@ export default class Group extends BaseComponent {
 			title: 'GROUP',
 			headerRight: (
 				<View style={[MainStyles.inRow, ViewStyle.editButton]}>
-					<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
+					<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.addTournament}>
 						<Icon name="md-add" size={30} color="#fff" />
 					</TouchableOpacity>
 					
@@ -604,9 +604,14 @@ export default class Group extends BaseComponent {
 		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 		this.setState({currentUser: JSON.parse(currentUser)});
 		this.setGroupData(group);
-		this.props.navigation.setParams({editGroup: () => {
-			this.props.navigation.navigate('EditGroup', {group: this.state.group});
-		}});
+		this.props.navigation.setParams({
+			editGroup: () => {
+				this.props.navigation.navigate('EditGroup', {group: this.state.group});
+			},
+			addTournament: () => {
+				this.props.navigation.navigate('AddTournament', {group: this.state.group});
+			},
+		});
 
 		global.setLoading(false);
 	}

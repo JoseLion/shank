@@ -26,19 +26,17 @@ import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid 
 import { ApiHost } from '../../../config/variables';
 import ViewStyle from './styles/addGroupStyle'
 
-export default class EditGroup extends BaseComponent {
+export default class AddTournament extends BaseComponent {
 
-	static navigationOptions = {title: 'EDIT GROUP'};
+	static navigationOptions = {title: 'ADD TOURNAMENT'};
 
 	constructor(props) {
 		super(props);
 		this.photoOptions = ['Open your gallery', 'Take a picture', 'Cancel'];
 		this.updateGroup = this.updateGroup.bind(this);
 		this.openTournamentsSheet = this.openTournamentsSheet.bind(this);
-		this.openImageSheet = this.openImageSheet.bind(this);
-		this.selectPicture = this.selectPicture.bind(this);
 		this.getPhotoSource = this.getPhotoSource.bind(this);
-		this.editGroup = this.editGroup.bind(this);
+		this.addTournament = this.addTournament.bind(this);
 		this.handleError = this.handleError.bind(this);
 		this.state = {
 			isLoading: false,
@@ -50,6 +48,7 @@ export default class EditGroup extends BaseComponent {
 	}
 
 	updateGroup(key, value) {
+		console.log(value, '************************');
 		let group = {...this.state.group};
 		group[key] = value;
 		this.setState({group: group});
@@ -65,45 +64,10 @@ export default class EditGroup extends BaseComponent {
 		});
 	}
 
-	openImageSheet() {
-		if (IsAndroid) {
-			this.actionSheet.show();
-		} else {
-			ActionSheetIOS.showActionSheetWithOptions({options: this.photoOptions, cancelButtonIndex: 2}, index => this.selectPicture(index));
-		}
-	}
-
 	async getAllTournaments() {
 		this.setState({isLoading: true});
 		const tournamentsData = await BaseModel.get('tournament/findAll').catch(this.handleError);
 		this.setState({isLoading: false, tournaments: tournamentsData});
-	}
-
-	async selectPicture(index) {
-		let response;
-		const options = {
-			width: 200,
-			height: 200,
-			cropping: true,
-			mediaType: 'photo'
-		}
-
-		switch (index) {
-			case 0:
-				response = await ImagePicker.openPicker(options);
-				break;
-
-			case 1:
-				response = await ImagePicker.openCamera(options);
-				break;
-
-			default:
-				break;
-		}
-
-		if (response) {
-			this.setState({photoUri: response.path});
-		}
 	}
 
 	getPhotoSource() {
@@ -118,7 +82,7 @@ export default class EditGroup extends BaseComponent {
 		return require('../../../../resources/add_edit_photo.png');
 	}
 
-	async editGroup() {
+	async addTournament() {
 
 		if (!this.state.group.name) {
 			this.handleError("Group name is required!");
@@ -136,14 +100,6 @@ export default class EditGroup extends BaseComponent {
 		}
 
 		let formData = new FormData();
-		
-		if (this.state.photoUri) {
-			let filename = this.state.photoUri.split('/').pop();
-			let match = /\.(\w+)$/.exec(filename);
-			let type = match ? `image/${match[1]}` : 'image';
-
-			formData.append('file', {uri: this.state.photoUri, type: type, name: filename});
-		}
 
 		let group_data_to_update = {
 			_id: this.state.group._id,
@@ -190,28 +146,29 @@ export default class EditGroup extends BaseComponent {
 					<TouchableWithoutFeedback onPress={() => dismissKeyboard()} style={{ flex: 1 }}>
 						<View style={MainStyles.form}>
 							<Spinner visible={this.state.isLoading} animation='fade'/>
-							<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.selectPicture} />
 
-							<TouchableOpacity style={[MainStyles.imageButton]} onPress={this.openImageSheet}>
+							<View style={[MainStyles.imageButton]}>
 								<Image source={this.getPhotoSource()} style={MainStyles.image}></Image>
-								<Text style={ViewStyle.imageText}>{this.state.group.photo || this.state.photoUri ? 'Change photo' : 'Add photo'}</Text>
-							</TouchableOpacity>
-
-							<TextInput
-								ref={ref => this.group_name = ref}
-								returnKeyType={'next'}
-								underlineColorAndroid='transparent'
-								style={ViewStyle.nameInput}
-								onChangeText={name => this.updateGroup('name', name)}
-								value={this.state.group.name}
-								placeholder={'Group name'}
-								onSubmitEditing={() => this.bet.focus()}/>
+							</View>
 
 							<Text
-								style={[ViewStyle.pickerView, MainStyles.mainFontFamily]}>
-								{this.state.group.tournaments[0].tournament.name}
+								style={[ViewStyle.nameInput, MainStyles.mainFontFamily]}>
+								{this.state.group.name}
 							</Text>
 
+							{IsAndroid ?
+								<View style={[ViewStyle.pickerView, ViewStyle.androidPicker]}>
+									<Picker itemStyle={[ViewStyle.pickerText]} selectedValue={this.state.group.tournaments[0] && this.state.group.tournaments[0].tournament} onValueChange={tournament => this.updateGroup('tournaments', [{ tournament }])}>
+										<Picker.Item color={AppConst.COLOR_GRAY} value='' label='Pick a tournament' />
+										{tournamentList}
+									</Picker>
+								</View>
+							:
+								<TouchableOpacity style={ViewStyle.pickerView} onPress={() => this.openTournamentsSheet()}>
+									<Text style={[ViewStyle.pickerText, !this.state.group.tournaments[0] ? {color: AppConst.COLOR_GRAY} : null]}>{this.state.group.tournaments[0] ? this.state.group.tournaments[0].tournament.name : 'Pick a tournament'}</Text>
+								</TouchableOpacity>
+							}
+							
 							<TextInput
 							  ref={ref => this.bet = ref}
 							  underlineColorAndroid='transparent'
@@ -223,7 +180,7 @@ export default class EditGroup extends BaseComponent {
 								numberOfLines={3} />
 
 							<TouchableHighlight
-								onPress={this.editGroup}
+								onPress={this.addTournament}
 								style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
 								<Text style={[MainStyles.buttonText]}>Save Changes</Text>
 							</TouchableHighlight>
