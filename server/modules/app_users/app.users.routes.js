@@ -106,12 +106,13 @@ export default function(app) {
           return res.server_error('Unauthorized.');
         }
 
+        let user = JSON.parse(request.body.user);
+
         let promises = [];
   			let archive_id;
 
         if (req.file) {
   				archive_id = mongoose.Types.ObjectId();
-          req.body.photo = archive_id;
 
   				let archive_one = new Archive({
   					_id: archive_id,
@@ -121,17 +122,18 @@ export default function(app) {
   					data: req.file.buffer
   				});
 
-          if (req.body.photo) {
-            promises.push(Archive.findByIdAndRemove(req.body.photo).exec());
+          if (user.photo) {
+            promises.push(Archive.findByIdAndRemove(user.photo).exec());
           }
 
-  				promises.push(archive_one.save());
+          promises.push(archive_one.save());
+          user.photo = archive_id;
   			}
 
-        promises.push(AppUser.update({_id: req.payload._id}, req.body).exec());
+        promises.push(AppUser.update({_id: req.payload._id}, user).exec());
 
         Q.all(promises).then(() => {
-          res.ok(req.body);
+          res.ok(user);
   			}, (err) => {
   				res.server_error(err);
   			});

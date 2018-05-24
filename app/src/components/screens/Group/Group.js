@@ -17,6 +17,8 @@ import ViewStyle from './styles/groupStyle';
 
 import DownCaretIcon from 'Res/down-caret-icon.png';
 import SortBarsIcon from 'Res/sort-bars.png';
+import Icon from 'react-native-vector-icons/Ionicons';
+import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 
 class RoasterRow extends Component {
 
@@ -297,15 +299,25 @@ class LeaderboardRow extends Component {
 
 export default class Group extends BaseComponent {
 	
-	static navigationOptions = ({navigation}) => ({
-		title: 'GROUP'/*,
-		headerRight: (
-			<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
-				<Text style={ViewStyle.editButtonText}>Edit</Text>
-			</TouchableOpacity>
-		)*/
-	});
+	static navigationOptions = ({navigation}) => {
+		return {
+			title: 'GROUP',
+			headerRight: (
+				<View style={[MainStyles.inRow, ViewStyle.editButton]}>
+					<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
+						<Icon name="md-add" size={30} color="#fff" />
+					</TouchableOpacity>
+					
+					<View style={{width: 5}}/>
 
+					<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
+						<IconFontAwesome name="pencil" size={25} color="#fff" />
+					</TouchableOpacity>
+				</View>
+			)
+	}
+};
+	
 	constructor(props) {
 		super(props);
 		this.getCurrentUserStat = this.getCurrentUserStat.bind(this);
@@ -593,7 +605,7 @@ export default class Group extends BaseComponent {
 		this.setState({currentUser: JSON.parse(currentUser)});
 		this.setGroupData(group);
 		this.props.navigation.setParams({editGroup: () => {
-			this.props.navigation.navigate('AddGroup', {group: this.state.group});
+			this.props.navigation.navigate('EditGroup', {group: this.state.group});
 		}});
 
 		global.setLoading(false);
