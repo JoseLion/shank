@@ -3,6 +3,26 @@ import Style from 'ShankStyle';
 import * as AppConst from 'Core/AppConst';
 
 export default ViewStyle = StyleSheet.create({
+    nosDataView: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: AppConst.COLOR_GRAY,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    noDataMessage: {
+        fontFamily: Style.CENTURY_GOTHIC_BOLD,
+        fontSize: Style.FONT_20,
+        color: AppConst.COLOR_WHITE,
+        elevation: 1,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 1,
+            height: 1
+        },
+        shadowOpacity: 0.6,
+        shadowRadius: 1
+    },
     editButton: {
         height: '100%',
         justifyContent: 'center',

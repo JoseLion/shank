@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StatusBar, AsyncStorage, PushNotificationIOS, AppState } from 'react-native';
 import AppNavigator from './components/navigators/AppNavigator';
+import { NavigationActions } from 'react-navigation';
 import { YellowBox } from 'react-native';
 import DropdownAlert from 'react-native-dropdownalert';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -9,6 +10,7 @@ import BaseModel from 'Core/BaseModel';
 import { EventRegister } from 'react-native-event-listeners';
 import * as AppConst from 'Core/AppConst';
 import handleError from 'Core/handleError';
+import LoadingIndicator from './components/common/LoadingIndicator';
 
 YellowBox.ignoreWarnings([
 	'Warning: isMounted(...) is deprecated',
@@ -16,12 +18,19 @@ YellowBox.ignoreWarnings([
 	'Class RCTCxxModule was not exported'
 ]);
 
+global.setLoading = function(flag) {
+    EventRegister.emit("EVT_SET_LOADING", flag);
+}
+
 export default class ShankApp extends Component {
 	
 	constructor(props) {
 		super(props);
 		this.resetIconBadgeNumber = this.resetIconBadgeNumber.bind(this);
 		this.handleAppStateChange = this.handleAppStateChange.bind(this);
+		this.logout = this.logout.bind(this);
+        this.showError = this.showError.bind(this);
+        this.setLoading = this.setLoading.bind(this);
 		this.state = {
 			showSpinner: false
 		}
@@ -41,8 +50,29 @@ export default class ShankApp extends Component {
 		}
 	}
 
+	logout() {
+		AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
+		setTimeout(() => {
+			this.navigation.dispatch(NavigationActions.reset({
+				index: 0,
+				actions: [NavigationActions.navigate({routeName: 'Login'})],
+			}));
+		}, 0);
+	}
+
+	showError(error) {
+        this.dropDownRef.alertWithType('error', 'Error', error);
+    }
+    
+    setLoading(showSpinner) {
+        this.setState({ showSpinner });
+    }
+
 	componentWillMount() {
-		AppState.addEventListener('change', this.handleAppStateChange);
+        AppState.addEventListener('change', this.handleAppStateChange);
+        EventRegister.addEventListener("EVT_SET_LOADING", this.setLoading);
+		EventRegister.addEventListener(AppConst.EVENTS.logout, this.logout);
+		EventRegister.addEventListener(AppConst.EVENTS.showErrorMessageBar, this.showError);
 		
 		PushNotification.configure({
 			onRegister: async notifObj => {
@@ -78,27 +108,26 @@ export default class ShankApp extends Component {
 			popInitialNotification: true,
 			requestPermissions: false
 		});
-
-		global.setLoading = flag => this.setState({showSpinner: flag});
 	}
 
 	componentDidMount() {
-		this.resetIconBadgeNumber();
-		this.handleErrorEvent = EventRegister.addEventListener(AppConst.EVENTS.showErrorMessageBar, error => this.dropDownRef.alertWithType('error', 'Error', error));
+        this.resetIconBadgeNumber();
 	}
 
 	componentWillUnmount() {
 		AppState.removeEventListener('change', this.handleAppStateChange);
-		EventRegister.removeEventListener(this.handleErrorEvent);
+		EventRegister.removeAllListeners();
 	}
 	
 	render() {
 		return (
 			<View style={{width: '100%', height: '100%'}}>
-				<DropdownAlert ref={ref => this.dropDownRef = ref} />
+                <DropdownAlert ref={ref => this.dropDownRef = ref} zIndex={9999} onClose={() => this.setLoading(false)} />
 				<StatusBar barStyle="light-content" backgroundColor={AppConst.COLOR_BLUE} />
-				<Spinner visible={this.state.showSpinner} animation='slide' />
-				<AppNavigator />
+                <LoadingIndicator visible={this.state.showSpinner} />
+				{/* <Spinner visible={this.state.showSpinner} animation='none' /> */}
+				
+				<AppNavigator ref={ref => this.navigation = ref} />
 			</View>
 		);
 	}

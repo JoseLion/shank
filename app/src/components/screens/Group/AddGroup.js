@@ -8,9 +8,10 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { EventRegister } from 'react-native-event-listeners';
 
 // Shank components:
-import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid } from '../BaseComponent';
-import { ApiHost } from '../../../config/variables';
+import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid, FileHost } from '../BaseComponent';
+import handleError from 'Core/handleError';
 import ViewStyle from './styles/addGroupStyle'
+import AddEditPhoto from 'Res/add_edit_photo.png';
 
 export default class AddGroup extends BaseComponent {
 
@@ -25,9 +26,7 @@ export default class AddGroup extends BaseComponent {
 		this.selectPicture = this.selectPicture.bind(this);
 		this.getPhotoSource = this.getPhotoSource.bind(this);
 		this.createGroup = this.createGroup.bind(this);
-		this.handleError = this.handleError.bind(this);
 		this.state = {
-			isLoading: false,
 			tournaments: [],
 			group: this.props.navigation.state.params && this.props.navigation.state.params.group ? this.props.navigation.state.params.group : {tournaments: []},
 			isEditing: this.props.navigation.state.params && this.props.navigation.state.params.group
@@ -59,9 +58,10 @@ export default class AddGroup extends BaseComponent {
 	}
 
 	async getAllTournaments() {
-		this.setState({isLoading: true});
-		const tournamentsData = await BaseModel.get('tournament/findAll').catch(this.handleError);
-		this.setState({isLoading: false, tournaments: tournamentsData});
+		global.setLoading(true);
+		const tournaments = await BaseModel.get('tournament/findAll').catch(handleError);
+        this.setState({ tournaments });
+        global.setLoading(false);
 	}
 
 	async selectPicture(index) {
@@ -93,34 +93,34 @@ export default class AddGroup extends BaseComponent {
 
 	getPhotoSource() {
 		if (this.state.group.photo) {
-			return {uri: ApiHost + 'archive/download/' + this.state.group.photo};
+			return {uri: FileHost + this.state.group.photo};
 		} else {
 			if (this.state.photoUri) {
 				return {uri: this.state.photoUri};
 			} else {
-				return require('../../../../resources/add_edit_photo.png');
+				return AddEditPhoto;
 			}
 		}
 	}
 
 	async createGroup() {
 		if (!this.state.photoUri) {
-			this.handleError("Group photo is required!");
+			handleError("Group photo is required!");
 			return;
 		}
 
 		if (!this.state.group.name) {
-			this.handleError("Group name is required!");
+			handleError("Group name is required!");
 			return;
 		}
 
 		if (!this.state.group.tournaments[0]) {
-			this.handleError("Group tournament is required!");
+			handleError("Group tournament is required!");
 			return;
 		}
 
 		if (!this.state.group.bet) {
-			this.handleError("Group bet is required!");
+			handleError("Group bet is required!");
 			return;
 		}
 
@@ -132,16 +132,11 @@ export default class AddGroup extends BaseComponent {
 		formData.append('group', JSON.stringify(this.state.group));
 		formData.append('file', {uri: this.state.photoUri, type: type, name: filename});
 
-		this.setState({isLoading: true});
-		let group = await BaseModel.multipart('group/create', formData).catch(this.handleError);
-		this.setState({isLoading: false});
+		global.setLoading(true);
+		await BaseModel.multipart('group/create', formData).catch(handleError);
+		global.setLoading(false);
 		this.props.navigation.goBack(null);
-		EventRegister.emit(AppConst.EVENTS.realodGroups);
-	}
-
-	handleError(error) {
-		this.setState({isLoading: false});
-		this.dropDown.alertWithType('error', "Error", error);
+		EventRegister.emit(AppConst.EVENTS.realoadGroups);
 	}
 
 	componentDidMount() {
@@ -159,7 +154,6 @@ export default class AddGroup extends BaseComponent {
 
 		return (
 			<ScrollView contentContainerStyle={{alignItems: 'center', paddingHorizontal: Style.EM(3)}}>
-				<Spinner visible={this.state.isLoading} animation='fade'/>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.photoOptions} cancelButtonIndex={2} onPress={this.selectPicture} />
 
 				<TouchableOpacity style={ViewStyle.imageButton} onPress={this.openImageSheet}>

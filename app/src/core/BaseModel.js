@@ -1,5 +1,7 @@
 import { AsyncStorage } from 'react-native';
 import { ApiHost, AuthToken } from '../config/variables';
+import { EventRegister } from 'react-native-event-listeners';
+import { AppConst } from '../components/screens/BaseComponent';
 
 const notLogged = 'Not Logged.';
 
@@ -24,6 +26,10 @@ export default class BaseMode {
         const json = await response.json().catch(handleParsingError);
         
         if (response.status !== 200) {
+            if (response.status === 401) {
+                EventRegister.emit(AppConst.EVENTS.logout);
+            }
+
             throw {
                 message: json.error,
                 status: response.status
@@ -34,7 +40,7 @@ export default class BaseMode {
     }
     
     static async post(resource, params) {
-        const token = await this.getAuthToken();
+        const token = await getAuthToken();
         const data = JSON.stringify(params);
         const options = {
             method: 'POST',
@@ -60,7 +66,7 @@ export default class BaseMode {
     }
 
     static async multipart(resource, data) {
-        const token = await this.getAuthToken();
+        const token = await getAuthToken();
         const options = {
             method: 'POST',
             headers: {
@@ -85,7 +91,7 @@ export default class BaseMode {
     }
 
     async delete(resource, params) {
-        const token = await this.getAuthToken();
+        const token = await getAuthToken();
         const data = JSON.stringify(params);
         const options = {
             method: 'DELETE',
