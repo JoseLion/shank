@@ -44,8 +44,8 @@ export const TabNav = TabNavigator({
 			marginTop: 0
 		},
 		tabStyle: {
-			paddingTop: '4%',
-			paddingBottom: '3%',
+			paddingBottom: '15%',
+			marginTop: '5%'
 		}
 	}
 });

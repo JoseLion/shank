@@ -58,10 +58,7 @@ export default class MainScreen extends BaseComponent {
 	}
 
 	async getGroups() {
-		global.setLoading(true);
-		const groups = await BaseModel.get('group/findMyGroups').catch(handleError);
-		this.setState({ groups });
-		global.setLoading(false);
+        return await BaseModel.get('group/findMyGroups').catch(handleError);
 	}
 
 	getGroupUserStat(group, key) {
@@ -125,17 +122,15 @@ export default class MainScreen extends BaseComponent {
 					let data = qs.parse(split[split.length - 1]);
 							
 					if (data.group) {
-						global.setLoading(true);
-						const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`);
+						const groups = await BaseModel.get(`group/addUserToGroup/${data.group}`).catch(handleError);
 						this.setState({ groups });
-						global.setLoading(false);
 					}
 				}
 			} catch (error) {
 				handleError(error);
 			}
 		}
-	}
+    }
 
 	async componentDidMount() {
 		try {
@@ -147,15 +142,19 @@ export default class MainScreen extends BaseComponent {
 			if (this.state.auth) {
 				Linking.addEventListener('url', this.handleUrlEvent);
 				Linking.getInitialURL().then(this.handleUrlEvent).catch(handleError);
-				this.realodGroupsEvent = EventRegister.addEventListener(AppConst.EVENTS.realodGroups, async () => {
-					await this.getGroups();
-				});
+				this.realoadGroupsEvent = EventRegister.addEventListener(AppConst.EVENTS.realoadGroups, async () => {
+                    const groups = await this.getGroups();
+                    this.setState({ groups });
+                });
 				
 				const currentUserJson = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 				this.currentUser = JSON.parse(currentUserJson);
 
-				PushNotification.requestPermissions();
-				await this.getGroups();
+                PushNotification.requestPermissions();
+                global.setLoading(true);
+                const groups = await this.getGroups();
+                this.setState({ groups });
+                global.setLoading(false);
 			} else {
 				this.props.navigation.navigate('Login');
 			}
@@ -166,7 +165,7 @@ export default class MainScreen extends BaseComponent {
 
 	componentWillUnmount() {
 		Linking.removeEventListener('url', e => {});
-		EventRegister.removeEventListener(this.realodGroupsEvent);
+		EventRegister.removeEventListener(this.realoadGroupsEvent);
 	}
 
 	render() {

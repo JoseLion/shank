@@ -11,6 +11,7 @@ import ViewStyle from './styles/checkoutStyle';
 
 // Images
 import ExchangeIcon from '../../../../resources/exchange-icon.png';
+import { EventRegister } from 'react-native-event-listeners';
 
 export default class Checkout extends BaseComponent {
 
@@ -75,11 +76,19 @@ export default class Checkout extends BaseComponent {
 					payment: this.state.total,
 					movements: this.movements
 				};
-				const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(handleError);
+				const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(error => {
+					if (error.status === 205) {
+						EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
+					}
 
-				this.props.navigation.state.params.managePlayersCallback(group, false);
-				global.setLoading(false);
-				this.props.navigation.goBack();
+					handleError(error);
+				});
+
+				if (group) {
+					this.props.navigation.state.params.managePlayersCallback(group, false);
+					global.setLoading(false);
+					this.props.navigation.goBack();
+				}
 			}
 		} catch(error) {
 			handleError(error);

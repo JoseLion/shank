@@ -17,6 +17,7 @@ import ViewStyle from './styles/groupStyle';
 
 import DownCaretIcon from 'Res/down-caret-icon.png';
 import SortBarsIcon from 'Res/sort-bars.png';
+import { COLOR_WHITE } from 'Core/AppConst';
 
 class RoasterRow extends Component {
 
@@ -322,6 +323,7 @@ export default class Group extends BaseComponent {
 		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
 		this.isRoundOnCourse = this.isRoundOnCourse.bind(this);
 		this.updateRoaster = this.updateRoaster.bind(this);
+		this.loadGroupData = this.loadGroupData.bind(this);
 		this.state = {
 			group: {},
 			currentUser: {},
@@ -583,27 +585,63 @@ export default class Group extends BaseComponent {
 			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster,
 			round: round
 		};
-		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(handleError);
+		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(error => {
+			if (error.status === 205) {
+				EventRegister.emit(AppConst.EVENTS.realoadGroups);
+			}
 
-		this.setState({ group });
-		global.setLoading(false);
+			handleError(error);
+		});
+
+		if (group) {
+			this.setState({ group });
+			global.setLoading(false);
+		}
+	}
+
+	async loadGroupData() {
+		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => {
+			if (error.status === 205) {
+				EventRegister.emit(AppConst.EVENTS.realoadGroups);
+				this.setState({noGroupData: true, errorMessage: error.message});
+			}
+
+			handleError(error);
+		});
+		
+		if (group) {
+			this.setGroupData(group);
+		}
 	}
 
 	async componentDidMount() {
 		global.setLoading(true);
 
-		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(handleError);
 		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 		this.setState({currentUser: JSON.parse(currentUser)});
-		this.setGroupData(group);
+		await this.loadGroupData();
 		this.props.navigation.setParams({editGroup: () => {
 			this.props.navigation.navigate('AddGroup', {group: this.state.group});
 		}});
 
+		this.reloadEvent = EventRegister.addEventListener(AppConst.EVENTS.reloadCurrentGroup, this.loadGroupData);
+
 		global.setLoading(false);
 	}
 
+	componentWillUnmount() {
+		EventRegister.removeEventListener(this.reloadEvent);
+	}
+
 	render() {
+		if (this.state.noGroupData) {
+			return (
+				<View style={ViewStyle.nosDataView}>
+					<Text style={ViewStyle.noDataMessage}>{this.state.errorMessage}</Text>
+				</View>
+			);
+		}
+
 		return (
 			<View style={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}}>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} title={'Select a tournament'} options={this.state.sheetNames} onPress={this.tournamentSelected} />

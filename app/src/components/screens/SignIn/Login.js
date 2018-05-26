@@ -76,20 +76,20 @@ export default class Login extends BaseComponent {
 			}
 
 			if (profile.email) {
-				let data = {
+				const data = {
 					fullName: profile.name,
 					email: profile.email,
 					facebookId: profile.id,
-					photo: {
-						name: 'facebook',
-						path: profile.picture.data.url
-					}
+					photoUrl: profile.picture.data.url
 				};
 
 				const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(handleError);
-				await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
-				await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
-				this.finishLogin();
+				
+				if (userInfo) {
+					await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token).catch(handleError);
+					await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user)).catch(handleError);
+					this.finishLogin();
+				}
 			} else {
 				handleError('Facebook account does not have an associated email!');
 			}
@@ -147,8 +147,6 @@ export default class Login extends BaseComponent {
 
 	finishLogin() {
 		global.setLoading(false);
-		EventRegister.emit(AppConst.EVENTS.realodGroups);
-
 		this.props.navigation.dispatch(NavigationActions.reset({
 			index: 0,
 			actions: [NavigationActions.navigate({routeName: 'Main'})],

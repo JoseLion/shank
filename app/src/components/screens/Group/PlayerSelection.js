@@ -184,7 +184,13 @@ export default class PlayerSelection extends BaseComponent {
 		} else {
 			global.setLoading(true);
 			const tournamentId = this.state.group.tournaments[this.state.tournamentIndex].tournament._id;
-			const group = await BaseModel.post(`group/updateMyRoaster/${this.state.group._id}/${tournamentId}`, {roaster: this.roaster}).catch(handleError);
+			const group = await BaseModel.post(`group/updateMyRoaster/${this.state.group._id}/${tournamentId}`, {roaster: this.roaster}).catch(error => {
+				if (error.status === 205) {
+					EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
+				}
+
+				handleError(error);
+			});
 			
 			this.props.navigation.state.params.managePlayersCallback(group, false);
 			global.setLoading(false);
