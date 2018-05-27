@@ -101,7 +101,6 @@ class RoasterRow extends Component {
 	}
 
 	resetShadowStyle() {
-		console.log("reset!!!!!");
 		this.state.popBottom.setValue(0);
 		this.state.popLeft.setValue(0);
 		this.setState({shadowStyle: null, separatorWith: 1});
@@ -254,7 +253,9 @@ class GroupTabBar extends Component {
 class LeaderboardRow extends Component {
 	
 	constructor(props) {
-		super(props);
+        super(props);
+        this.getLeaderboardRow = this.getLeaderboardRow.bind(this);
+        this.onRemovePressed = this.onRemovePressed.bind(this);
 		this.state = {
 			group: this.props.group,
 			currentUser: this.props.currentUser,
@@ -275,18 +276,26 @@ class LeaderboardRow extends Component {
 				</View>
 			</TouchableHighlight>
 		);
-	}
+    }
+    
+    onRemovePressed() {
+        if (this.swipe) {
+            this.swipe.recenter();
+        }
+
+        this.props.onRemove(this.state.item);
+    }
 
 	render() {
 		if (this.state.item.user && this.state.group.owner == this.state.currentUser._id && this.state.group.owner != this.state.item.user._id) {
 			const removeButton = [
-				<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={()=> this.props.onRemove(this.state.item)}>
+				<TouchableHighlight style={[ViewStyle.swipeButton, {backgroundColor: AppConst.COLOR_RED}]} onPress={this.onRemovePressed}>
 					<Text style={[ViewStyle.swipeButtonText]}>Remove</Text>
 				</TouchableHighlight>
 			];
 
 			return (
-				<Swipeable rightButtons={removeButton} rightButtonWidth={120}>
+				<Swipeable onRef={ref => this.swipe = ref} rightButtons={removeButton} rightButtonWidth={120}>
 					{this.getLeaderboardRow(this.state.item)}
 				</Swipeable>
 			);
@@ -439,11 +448,34 @@ export default class Group extends BaseComponent {
 		}).catch(handleError);
 	}
 
-	async removeUserFromGroup(cross) {
-		global.setLoading(true);
-		const group = await BaseModel.delete(`group/removeUserFromGroup/${this.state.item.user._id}/${this.state.group._id}`).catch(handleError);
-		this.setGroupData(group);
-		global.setLoading(false);
+	removeUserFromGroup(cross) {
+        Alert.alert("Are you sure?", "The user will be permanently removed from the group", [
+            {text: 'Cancel', style: 'cancel'},
+            {text: 'Remove', style: 'destructive', onPress: async () => {
+                global.setLoading(true);
+                const response = await BaseModel.post(`group/removeUser`, {groupId: this.state.group._id, userId: cross.user._id}).catch(handleError);
+                
+                if (response) {
+                    let index = -1;
+                    this.state.group.tournaments[this.state.tournamentIndex].leaderboard.forEach((leaderboardCross, i) => {
+                        if (leaderboardCross.user && leaderboardCross.user._id == cross.user._id) {
+                            index = i;
+                            return;
+                        }
+                    });
+
+                    if (index > -1) {
+                        let group = Object.assign({}, this.state.group);
+                        group.tournaments[this.state.tournamentIndex].leaderboard.splice(index, 1);
+                        this.setState({ group });
+                    }
+                    
+                    
+                }
+
+                global.setLoading(false);
+            }}
+        ]);
 	}
 
 	managePlayers(row, index) {
@@ -648,7 +680,7 @@ export default class Group extends BaseComponent {
 
 				<View style={{flex: 0.7}}>
 					<View style={[ViewStyle.groupInformation]}>
-						<Image source={{uri: FileHost + this.state.group.photo}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.groupImage} />
+						<Image source={{uri: FileHost + this.state.group.photo}} style={ViewStyle.groupImage} />
 
 						<View style={ViewStyle.groupHeader}>
 							<View>

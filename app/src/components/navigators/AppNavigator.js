@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
-import { BackHandler, TouchableOpacity, Image, Text } from 'react-native';
+import { BackHandler, TouchableOpacity, Image, Text, Platform } from 'react-native';
 import Style from 'ShankStyle';
 
 import * as AppConst from 'Core/AppConst';
@@ -44,8 +44,8 @@ export const TabNav = TabNavigator({
 			marginTop: 0
 		},
 		tabStyle: {
-			paddingBottom: '15%',
-			marginTop: '5%'
+			paddingBottom: Platform.OS == 'ios' ? '15%' : Style.EM(0.3),
+			marginTop: Platform.OS == 'ios' ? '5%' : Style.EM(0.1)
 		}
 	}
 });
