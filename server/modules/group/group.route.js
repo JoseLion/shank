@@ -71,26 +71,6 @@ export default function(app) {
 		}
 	});
 
-	router.get(`${basePath}/removeUserFromGroup/:userId/:groupId`, async (request, response) => {
-		let group = await Group.findOne({_id: request.params.groupId}).catch(handleMongoError);
-
-		group.tournaments.forEach(cross => {
-			let index;
-
-			cross.leaderboard.forEach((obj, i) => {
-				if (obj.user == request.params.userId) {
-					index = i;
-					return;
-				}
-			});
-
-			cross.leaderboard.splice(index, 1);
-		});
-
-		group = await group.save().catch(handleMongoError);
-		response.ok(group);
-	});
-
 	router.get(`${basePath}/addUserToGroup/:id`, auth, async (request, response) => {
 		try {
 			let user = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
@@ -130,12 +110,92 @@ export default function(app) {
 		}
 	});
 
-	router.delete(`${basePath}/delete/:id`, async (request, response) => {
-		const group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
-		await Archive.findOneAndRemove({_id: group.photo}).catch(handleMongoError);
-		await group.remove().catch(handleMongoError);
-		response.ok();
-	});
+	router.delete(`${basePath}/delete/:id`, auth, async (request, response) => {
+        try {
+            const group = await Group.findById(request.params.id).catch(handleMongoError);
+
+            if (!group) {
+                response.reset_content("This group has already been removed!");
+                return;
+            }
+
+            await Archive.findByIdAndRemove(group.photo).catch(handleMongoError);
+            await group.remove().catch(handleMongoError);
+            response.ok();
+        } catch (error) {
+            response.server_error(error);
+        }
+    });
+    
+    router.delete(`${basePath}/exit/:id`, auth, async (request, response) => {
+        try {
+            let index = -1;
+            const group = await Group.findById(request.params.id).catch(handleMongoError);
+
+            if (!group) {
+                response.reset_content("This group has already been removed!");
+                return;
+            }
+
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach((cross, i) => {
+                    if (cross.user == request.payload._id) {
+                        index = i;
+                        return;
+                    }
+                });
+
+                if (index > -1) {
+                    tournamentCross.leaderboard.splice(index, 1);
+                }
+            });
+
+            if (index == -1) {
+                response.reset_content("You have already been removed from the group!");
+                return;
+            }
+
+            await group.save().catch(handleMongoError);
+            response.ok();
+        } catch (error) {
+            response.server_error(error);
+        }
+    });
+
+    router.post(`${basePath}/removeUser`, auth, async (request, response) => {
+        try {
+            let index = -1;
+            const group = await Group.findById(request.body.groupId).catch(handleMongoError);
+
+            if (!group) {
+                response.reset_content("This group no longer exists!");
+                return;
+            }
+
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach((cross, i) => {
+                    if (cross.user == request.body.userId) {
+                        index = i;
+                        return;
+                    }
+                });
+
+                if (index > -1) {
+                    tournamentCross.leaderboard.splice(index, 1);
+                }
+            });
+
+            if (index == -1) {
+                response.reset_content("The user is no longer part of this group!");
+                return;
+            }
+
+            await group.save().catch(handleMongoError);
+            response.ok();
+        } catch (error) {
+            response.server_error(error);
+        }
+    });
 
 	router.post(`${basePath}/updateMyRoaster/:groupId/:tournamentId`, auth, async (request, response) => {
 		try {
@@ -143,7 +203,8 @@ export default function(app) {
 			let group = await Group.findById(request.params.groupId).catch(handleMongoError);
 
 			if (!group) {
-				return response.reset_content("Sorry! This group has been deleted");
+                response.reset_content("Sorry! This group has been deleted");
+                return;
 			}
 
 			group.tournaments.forEach(tournamentCross => {
@@ -162,7 +223,8 @@ export default function(app) {
 			});
 
 			if (!isUserInGroup) {
-				return response.reset_content("Sorry! You were removed from this group");
+                response.reset_content("Sorry! You were removed from this group");
+                return;
 			}
 
 			group = await group.save().catch(handleMongoError);

@@ -90,7 +90,7 @@ export default class BaseMode {
         return json.response;
     }
 
-    async delete(resource, params) {
+    static async delete(resource, params) {
         const token = await getAuthToken();
         const data = JSON.stringify(params);
         const options = {
