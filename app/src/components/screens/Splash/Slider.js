@@ -22,13 +22,13 @@ export default class SliderScreen extends BaseComponent {
 
 	constructor(props) {
 		super(props);
-		this.goToMainScreen = this.goToMainScreen.bind(this);
+		this.getStarted = this.getStarted.bind(this);
 	}
 
-	goToMainScreen() {
+	getStarted() {
 		this.props.navigation.dispatch(NavigationActions.reset({
 			index: 0,
-			actions: [NavigationActions.navigate({routeName: 'Main'})],
+			actions: [NavigationActions.navigate({routeName: 'Login'})],
 		}));
 	}
 
@@ -46,7 +46,7 @@ export default class SliderScreen extends BaseComponent {
 				<View style={ViewStyle.slide}>
 					<Image style={ViewStyle.coverImage} source={ImgSlideThree}></Image>
 					
-					<TouchableHighlight style={[MainStyles.button, MainStyles.tertiary, ViewStyle.startButton]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.goToMainScreen}>
+					<TouchableHighlight style={[MainStyles.button, MainStyles.tertiary, ViewStyle.startButton]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.getStarted}>
 						<Text style={MainStyles.buttonLinkText}>Let{"\'"}s get start</Text>
 					</TouchableHighlight>
 				</View>

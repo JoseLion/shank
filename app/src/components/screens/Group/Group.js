@@ -540,7 +540,7 @@ export default class Group extends BaseComponent {
 	shouldShowSave() {
 		let hasChanged = false;
 
-		if (this.state.group.tournament) {
+		if (this.state.group.tournaments) {
 			const today = new Date();
 			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
 
@@ -647,7 +647,6 @@ export default class Group extends BaseComponent {
 		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => {
 			if (error.status === AppConst.VALIDATION_ERROR_CODE) {
 				EventRegister.emit(AppConst.EVENTS.realoadGroups);
-				this.setState({noGroupData: true, errorMessage: error.message});
 			}
 
 			handleError(error);
@@ -655,7 +654,9 @@ export default class Group extends BaseComponent {
 		
 		if (group) {
 			this.setGroupData(group);
-		}
+		} else {
+            this.setState({noGroupData: true, errorMessage: error.message});
+        }
 	}
 
 	async componentDidMount() {
