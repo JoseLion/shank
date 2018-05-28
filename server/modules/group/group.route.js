@@ -142,9 +142,12 @@ export default function(app) {
 
 				await group.save().catch(handleMongoError);
 				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+				response.ok(userGroups);
+			}
+			else {
+				response.ok();
 			}
 
-			response.ok(userGroups);
 		} catch (error) {
 			response.server_error(error);
 		}
