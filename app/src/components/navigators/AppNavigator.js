@@ -14,6 +14,8 @@ import Main from '../screens/Main/MainScreen';
 import Profile from '../screens/Profile/Profile';
 import Tournament from '../screens/Tournament/Tournament';
 import AddGroup from '../screens/Group/AddGroup';
+import EditGroup from '../screens/Group/EditGroup';
+import AddTournament from '../screens/Group/AddTournament';
 import Group from '../screens/Group/Group';
 import PlayerSelection from '../screens/Group/PlayerSelection';
 import Checkout from '../screens/Group/Checkout';
@@ -58,6 +60,8 @@ export default AppNavigator = StackNavigator({
 	Main: { screen: TabNav },
 	Profile: { screen: Profile },
 	AddGroup: { screen: AddGroup },
+	EditGroup: { screen: EditGroup },
+	AddTournament: {screen: AddTournament},
 	Group: { screen: Group },
 	PlayerSelection: { screen: PlayerSelection },
 	Checkout: { screen: Checkout },

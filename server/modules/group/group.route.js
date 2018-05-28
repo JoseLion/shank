@@ -3,6 +3,7 @@ import express from 'express';
 import auth from '../../config/auth';
 import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
+import Q from 'q';
 
 //DELETE AFTER TEST
 import AssignPoints from '../../service/assignPoints';
@@ -53,6 +54,60 @@ export default function(app) {
 		response.ok(group);
 	});
 
+	router.post(`${basePath}/update`, auth, multer().single('file'), async (req, res) => {
+		let group = JSON.parse(req.body.group);
+		try {
+			let promises = [];
+			let archive_id;
+
+			if (req.file) {
+				archive_id = mongoose.Types.ObjectId();
+
+				let archive_one = new Archive({
+					_id: archive_id,
+					name: req.file.originalname,
+					type: req.file.mimetype,
+					size: req.file.size,
+					data: req.file.buffer
+				});
+
+				if (group.photo) {
+					promises.push(Archive.findByIdAndRemove(group.photo).exec());
+				}
+
+				promises.push(archive_one.save());
+				group.photo = archive_id;
+			}
+
+			promises.push(Group.update({_id: group._id}, group).exec());
+
+			Q.all(promises).then(() => {
+				res.ok(group);
+			}, (err) => {
+				res.server_error(err);
+			});
+		} catch (error) {
+			return res.server_error(error);
+		}
+	});
+
+	router.post(`${basePath}/addTournament`, auth, async (req, res) => {
+		try {
+			let new_tournament = req.body.new_tournament;
+			new_tournament.leaderboard[0].user = req.payload._id;
+			
+			Group.update({"_id": req.body._id}, { $push: { tournaments: new_tournament} }, function(err, group) {
+				if (err) {
+					return res.server_error(err);
+				}
+
+				res.ok(req.body);
+			});
+		} catch (error) {
+			return res.server_error(error);
+		}
+	});
+
 	router.get(`${basePath}/findOne/:id`, auth, async (request, response) => {
 		try {
 			const group = await Group.findOne({_id: request.params.id})
@@ -83,7 +138,7 @@ export default function(app) {
 			let isUserInGroup = false;
 			group.tournaments.forEach(tournamentCross => {
 				tournamentCross.leaderboard.forEach(leaderboardCross => {
-					if (leaderboardCross.user === user._id) {
+					if (String(leaderboardCross.user) === String(user._id)) {
 						isUserInGroup = true;
 						return;
 					}
@@ -102,9 +157,13 @@ export default function(app) {
 
 				await group.save().catch(handleMongoError);
 				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+				response.ok(userGroups);
+			}
+			else {
+				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+				response.ok(userGroups);
 			}
 
-			response.ok(userGroups);
 		} catch (error) {
 			response.server_error(error);
 		}
