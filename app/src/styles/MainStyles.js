@@ -419,5 +419,14 @@ export default MainStyles = StyleSheet.create({
 		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_14,
 		color: AppConst.COLOR_GRAY
-	}
+    },
+	navButton: {
+		height: '100%',
+		paddingHorizontal: Style.EM(1),
+		justifyContent: 'center',
+		alignItems: 'center'
+    },
+    mainFontFamily: {
+        fontFamily: Style.CENTURY_GOTHIC
+    }
 });

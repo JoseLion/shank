@@ -1,10 +1,10 @@
 package com.shank;
 
 import android.app.Application;
-import android.content.res.Resources;
 
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -45,7 +45,8 @@ public class MainApplication extends Application implements ReactApplication {
                     new LinearGradientPackage(),
                     new PickerPackage(),
                     new InAppBillingBridgePackage(LICENSE_KEY),
-                    new FBSDKPackage(mCallbackManager)
+                    new FBSDKPackage(mCallbackManager),
+                    new VectorIconsPackage()
             );
         }
 

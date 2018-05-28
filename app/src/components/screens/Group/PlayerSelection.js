@@ -185,7 +185,7 @@ export default class PlayerSelection extends BaseComponent {
 			global.setLoading(true);
 			const tournamentId = this.state.group.tournaments[this.state.tournamentIndex].tournament._id;
 			const group = await BaseModel.post(`group/updateMyRoaster/${this.state.group._id}/${tournamentId}`, {roaster: this.roaster}).catch(error => {
-				if (error.status === 205) {
+				if (error.status === AppConst.VALIDATION_ERROR_CODE) {
 					EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
 				}
 

@@ -17,6 +17,8 @@ import ViewStyle from './styles/groupStyle';
 
 import DownCaretIcon from 'Res/down-caret-icon.png';
 import SortBarsIcon from 'Res/sort-bars.png';
+import Icon from 'react-native-vector-icons/Ionicons';
+import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import { COLOR_WHITE } from 'Core/AppConst';
 
 class RoasterRow extends Component {
@@ -307,15 +309,25 @@ class LeaderboardRow extends Component {
 
 export default class Group extends BaseComponent {
 	
-	static navigationOptions = ({navigation}) => ({
-		title: 'GROUP'/*,
-		headerRight: (
-			<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
-				<Text style={ViewStyle.editButtonText}>Edit</Text>
-			</TouchableOpacity>
-		)*/
-	});
+	static navigationOptions = ({navigation}) => {
+		return {
+			title: 'GROUP',
+			headerRight: (
+				<View style={[MainStyles.inRow, ViewStyle.editButton]}>
+					<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
+						<Icon name="md-add" size={30} color="#fff" />
+					</TouchableOpacity>
+					
+					<View style={{width: 5}}/>
 
+					<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
+						<IconFontAwesome name="pencil" size={25} color="#fff" />
+					</TouchableOpacity>
+				</View>
+			)
+	}
+};
+	
 	constructor(props) {
 		super(props);
 		this.getCurrentUserStat = this.getCurrentUserStat.bind(this);
@@ -618,7 +630,7 @@ export default class Group extends BaseComponent {
 			round: round
 		};
 		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(error => {
-			if (error.status === 205) {
+			if (error.status === AppConst.VALIDATION_ERROR_CODE) {
 				EventRegister.emit(AppConst.EVENTS.realoadGroups);
 			}
 
@@ -633,7 +645,7 @@ export default class Group extends BaseComponent {
 
 	async loadGroupData() {
 		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => {
-			if (error.status === 205) {
+			if (error.status === AppConst.VALIDATION_ERROR_CODE) {
 				EventRegister.emit(AppConst.EVENTS.realoadGroups);
 				this.setState({noGroupData: true, errorMessage: error.message});
 			}
@@ -653,7 +665,7 @@ export default class Group extends BaseComponent {
 		this.setState({currentUser: JSON.parse(currentUser)});
 		await this.loadGroupData();
 		this.props.navigation.setParams({editGroup: () => {
-			this.props.navigation.navigate('AddGroup', {group: this.state.group});
+			this.props.navigation.navigate('EditGroup', {group: this.state.group});
 		}});
 
 		this.reloadEvent = EventRegister.addEventListener(AppConst.EVENTS.reloadCurrentGroup, this.loadGroupData);
@@ -668,7 +680,7 @@ export default class Group extends BaseComponent {
 	render() {
 		if (this.state.noGroupData) {
 			return (
-				<View style={ViewStyle.nosDataView}>
+				<View style={ViewStyle.noDataView}>
 					<Text style={ViewStyle.noDataMessage}>{this.state.errorMessage}</Text>
 				</View>
 			);

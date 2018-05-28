@@ -3,6 +3,7 @@ import express from 'express';
 import auth from '../../config/auth';
 import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
+import Q from 'q';
 
 //DELETE AFTER TEST
 import AssignPoints from '../../service/assignPoints';
@@ -51,6 +52,45 @@ export default function(app) {
 		/* -------------------------------------------------------------------------------------- */
 
 		response.ok(group);
+	});
+
+	router.post(`${basePath}/update`, auth, multer().single('file'), async (req, res) => {
+		let group = JSON.parse(req.body.group);
+		console.log(group, '-----------------------------');
+		try {
+			let promises = [];
+			let archive_id;
+
+			if (req.file) {
+				archive_id = mongoose.Types.ObjectId();
+
+				let archive_one = new Archive({
+					_id: archive_id,
+					name: req.file.originalname,
+					type: req.file.mimetype,
+					size: req.file.size,
+					data: req.file.buffer
+				});
+
+				if (group.photo) {
+					promises.push(Archive.findByIdAndRemove(group.photo).exec());
+				}
+
+				promises.push(archive_one.save());
+				group.photo = archive_id;
+			}
+
+			promises.push(Group.update({_id: group._id}, group).exec());
+
+			Q.all(promises).then(() => {
+				res.ok(group);
+			}, (err) => {
+				res.server_error(err);
+			});
+		} catch (error) {
+			console.log(error, '------------------');
+			return res.server_error(error);
+		}
 	});
 
 	router.get(`${basePath}/findOne/:id`, auth, async (request, response) => {
