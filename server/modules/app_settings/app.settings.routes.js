@@ -106,7 +106,8 @@ module.exports = function (app) {
         app_settings_service.get_web_links(req, res);
       });
     }
-  });
+  })
+  .get('/get_weblinks', app_settings_service.get_web_links);
   
   return router;
 };

@@ -1,13 +1,20 @@
 // React components:
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, Image, TouchableHighlight, AsyncStorage, FlatList } from 'react-native';
+import {
+	TouchableOpacity,
+	Text,
+	View,
+	Image,
+	TouchableHighlight,
+	AsyncStorage,
+	FlatList,
+	Linking
+} from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
 // Shank components:
-import NoAuthModel from 'Core/NoAuthModel';
-import * as AppConst from 'Core/AppConst';
+import { BaseComponent, BaseModel, FileHost, MainStyles, AppConst, IsAndroid, Spinner } from '../BaseComponent';
 import handleError from 'Core/handleError';
-import MainStyles from 'MainStyles';
 import ViewStyle from './styles/settingsStyle';
 
 import RighCaretIcon from 'Res/right-caret-icon.png';
@@ -45,9 +52,39 @@ export default class Settings extends Component {
 				{id: 1, name: 'Privacy Policy'},
 				{id: 2, name: 'Terms of Service'},
 				{id: 3, name: 'Rules'}
-			]
+			],
+			settingData: null
 		};
 	}
+
+  componentDidMount() {
+		this.loadInitialData();
+	}
+	
+	async loadInitialData() {
+		const data = await BaseModel.get("get_weblinks").catch(error => {
+			handleError(error);
+		});
+		
+		if (data) {
+			this.setState({settingData: data});
+		}
+	}
+
+  openLink(index) {
+		let url = this.state.settingData.values[index];
+		
+		if (url) {
+			Linking.canOpenURL(url).then(supported => {
+				if (supported) {
+					Linking.openURL(url);
+				}
+				else {
+					console.log('Don\'t know how to open URI: ' + this.props.url);
+				}
+			});
+		}
+  }
 
 	async logout() {
 		await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
@@ -67,11 +104,18 @@ export default class Settings extends Component {
 				if (user) {
 					this.props.navigation.navigate('Profile', {currentUser: JSON.parse(user)});
 				}
-				
 				break;
 			}
-
-			default: {
+			case 1: {
+				this.openLink(0);
+				break;
+			}
+			case 2: {
+				this.openLink(1);
+				break;
+			}
+			case 3: {
+				this.openLink(2);
 				break;
 			}
 		}
@@ -84,7 +128,12 @@ export default class Settings extends Component {
 		return (
 			<View style={ViewStyle.mainContainer}>
 				<View style={ViewStyle.mainSubview}>
-					<FlatList style={ViewStyle.list} data={this.state.data} keyExtractor={item => item.name} renderItem={({item, index}) => <SettingsRow data={item} onPress={() => this.actionForRow(index)} /> }/>
+					<FlatList
+						style={ViewStyle.list}
+						data={this.state.data}
+						keyExtractor={item => item.name}
+						renderItem={({item, index}) => <SettingsRow data={item}
+						onPress={() => this.actionForRow(index)} /> }/>
 
 					<TouchableOpacity style={[MainStyles.button, MainStyles.error, {width: '80%'}]} onPress={this.logout}>
 						<Text style={MainStyles.buttonText}>Log Out</Text>
