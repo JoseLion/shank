@@ -87,7 +87,23 @@ export default function(app) {
 				res.server_error(err);
 			});
 		} catch (error) {
-			console.log(error, '------------------');
+			return res.server_error(error);
+		}
+	});
+
+	router.post(`${basePath}/addTournament`, auth, async (req, res) => {
+		try {
+			let new_tournament = req.body.new_tournament;
+			new_tournament.leaderboard[0].user = req.payload._id;
+			
+			Group.update({"_id": req.body._id}, { $push: { tournaments: new_tournament} }, function(err, group) {
+				if (err) {
+					return res.server_error(err);
+				}
+
+				res.ok(req.body);
+			});
+		} catch (error) {
 			return res.server_error(error);
 		}
 	});

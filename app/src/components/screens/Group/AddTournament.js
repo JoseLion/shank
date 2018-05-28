@@ -43,25 +43,12 @@ export default class AddTournament extends BaseComponent {
 			tournaments: [],
 			group: this.props.navigation.state.params && this.props.navigation.state.params.group ? this.props.navigation.state.params.group : {tournaments: []},
 			isEditing: this.props.navigation.state.params && this.props.navigation.state.params.group,
-			photoUri: null
+			tournament_selected: null
 		};
 	}
 
-	updateGroup(key, value) {
-		console.log(value, '************************');
-		let group = {...this.state.group};
-		group[key] = value;
-		this.setState({group: group});
-	}
-
-	openTournamentsSheet() {
-		const names = this.state.tournaments.map(tournament => tournament.name);
-		names.push('Cancel');
-		ActionSheetIOS.showActionSheetWithOptions({options: names, cancelButtonIndex: names.length - 1}, index => {
-			if (index != names.length - 1) {
-				this.updateGroup('tournaments', [{tournament: this.state.tournaments[index]}]);
-			}
-		});
+	componentDidMount() {
+		this.getAllTournaments();
 	}
 
 	async getAllTournaments() {
@@ -70,11 +57,27 @@ export default class AddTournament extends BaseComponent {
 		this.setState({isLoading: false, tournaments: tournamentsData});
 	}
 
-	getPhotoSource() {
-		if (this.state.photoUri) {
-			return {uri: this.state.photoUri};
-		}
+	updateGroup(key, value) {
+		let group = {...this.state.group};
+		group[key] = value;
+		this.setState({group: group});
+	}
 
+	selectTournament(value) {
+		this.setState({tournament_selected: value});
+	}
+
+	openTournamentsSheet() {
+		const names = this.state.tournaments.map(tournament => tournament.name);
+		names.push('Cancel');
+		ActionSheetIOS.showActionSheetWithOptions({options: names, cancelButtonIndex: names.length - 1}, index => {
+			if (index != names.length - 1) {
+				this.selectTournament(this.state.tournaments[index]);
+			}
+		});
+	}
+
+	getPhotoSource() {
 		if (this.state.group.photo) {
 			return {uri: ApiHost + 'archive/download/' + this.state.group.photo};
 		}
@@ -89,7 +92,7 @@ export default class AddTournament extends BaseComponent {
 			return;
 		}
 
-		if (!this.state.group.tournaments[0]) {
+		if (!this.state.tournament_selected) {
 			this.handleError("Group tournament is required!");
 			return;
 		}
@@ -99,19 +102,27 @@ export default class AddTournament extends BaseComponent {
 			return;
 		}
 
-		let formData = new FormData();
+		console.log(this.state.group, '--------------------------------------------');
 
 		let group_data_to_update = {
 			_id: this.state.group._id,
-			name: this.state.group.name,
 			bet: this.state.group.bet,
-			photo: this.state.group.photo
+			new_tournament: {
+				tournament: this.state.tournament_selected._id,
+				leaderboard : [ 
+					{
+						score : 0,
+						rank : 1,
+						roaster : [],
+						lastRoaster : [],
+						checkouts : []
+					}
+				]
+			}
 		};
 
-		formData.append('group', JSON.stringify(group_data_to_update));
-
 		this.setState({isLoading: true});
-		let group = await BaseModel.multipart('group/update', formData).catch(this.handleError);
+		let group = await BaseModel.post('group/addTournament', group_data_to_update).catch(this.handleError);
 		this.setState({isLoading: false});
 		this.props.navigation.pop();
 		// EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
@@ -120,10 +131,6 @@ export default class AddTournament extends BaseComponent {
 	handleError(error) {
 		this.setState({isLoading: false});
 		this.dropDown.alertWithType('error', "Error", error);
-	}
-
-	componentDidMount() {
-		this.getAllTournaments();
 	}
 
 	render() {
@@ -158,14 +165,19 @@ export default class AddTournament extends BaseComponent {
 
 							{IsAndroid ?
 								<View style={[ViewStyle.pickerView, ViewStyle.androidPicker]}>
-									<Picker itemStyle={[ViewStyle.pickerText]} selectedValue={this.state.group.tournaments[0] && this.state.group.tournaments[0].tournament} onValueChange={tournament => this.updateGroup('tournaments', [{ tournament }])}>
+									<Picker 
+										itemStyle={[ViewStyle.pickerText]}
+										selectedValue={this.state.tournament_selected}
+										onValueChange={(tournament) => this.selectTournament(tournament)}>
 										<Picker.Item color={AppConst.COLOR_GRAY} value='' label='Pick a tournament' />
 										{tournamentList}
 									</Picker>
 								</View>
-							:
+								:
 								<TouchableOpacity style={ViewStyle.pickerView} onPress={() => this.openTournamentsSheet()}>
-									<Text style={[ViewStyle.pickerText, !this.state.group.tournaments[0] ? {color: AppConst.COLOR_GRAY} : null]}>{this.state.group.tournaments[0] ? this.state.group.tournaments[0].tournament.name : 'Pick a tournament'}</Text>
+									<Text style={[ViewStyle.pickerText, !this.state.tournament_selected ? {color: AppConst.COLOR_GRAY} : null]}>
+									 {this.state.tournament_selected ? this.state.tournament_selected.name : 'Pick a tournament'}
+									</Text>
 								</TouchableOpacity>
 							}
 							
