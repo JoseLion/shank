@@ -118,8 +118,28 @@ export default function(app) {
 									.catch(handleMongoError);
 
 			if (!group) {
-				return response.reset_content("Sorry! This group has been deleted");
-			}
+                response.reset_content("Sorry! This group has been deleted");
+                return ;
+            }
+            
+            let isUserInGroup = false;
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach(cross => {
+                    if (String(cross.user.id) === String(request.payload._id)) {
+                        isUserInGroup = true;
+                        return;
+                    }
+                });
+
+                if (isUserInGroup) {
+                    return;
+                }
+            });
+
+            if (!isUserInGroup) {
+                response.reset_content("Sorry! You habe been removed from this group");
+                return;
+            }
 
 			response.ok(group);
 		} catch (error) {
@@ -282,7 +302,7 @@ export default function(app) {
 			group.tournaments.forEach(tournamentCross => {
 				if (tournamentCross.tournament == request.params.tournamentId) {
 					tournamentCross.leaderboard.forEach(cross => {
-						if (cross.user == request.payload._id) {
+						if (String(cross.user) == String(request.payload._id)) {
 							isUserInGroup = true;
 							cross.roaster = request.body.roaster;
 
