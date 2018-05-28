@@ -57,7 +57,6 @@ export default function(app) {
 
 	router.post(`${basePath}/update`, auth, multer().single('file'), async (req, res) => {
 		let group = JSON.parse(req.body.group);
-		console.log(group, '-----------------------------');
 		try {
 			let promises = [];
 			let archive_id;
@@ -89,7 +88,23 @@ export default function(app) {
 				res.server_error(err);
 			});
 		} catch (error) {
-			console.log(error, '------------------');
+			return res.server_error(error);
+		}
+	});
+
+	router.post(`${basePath}/addTournament`, auth, async (req, res) => {
+		try {
+			let new_tournament = req.body.new_tournament;
+			new_tournament.leaderboard[0].user = req.payload._id;
+			
+			Group.update({"_id": req.body._id}, { $push: { tournaments: new_tournament} }, function(err, group) {
+				if (err) {
+					return res.server_error(err);
+				}
+
+				res.ok(req.body);
+			});
+		} catch (error) {
 			return res.server_error(error);
 		}
 	});
@@ -124,7 +139,7 @@ export default function(app) {
 			let isUserInGroup = false;
 			group.tournaments.forEach(tournamentCross => {
 				tournamentCross.leaderboard.forEach(leaderboardCross => {
-					if (leaderboardCross.user === user._id) {
+					if (String(leaderboardCross.user) === String(user._id)) {
 						isUserInGroup = true;
 						return;
 					}
@@ -143,9 +158,13 @@ export default function(app) {
 
 				await group.save().catch(handleMongoError);
 				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+				response.ok(userGroups);
+			}
+			else {
+				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+				response.ok(userGroups);
 			}
 
-			response.ok(userGroups);
 		} catch (error) {
 			response.server_error(error);
 		}
