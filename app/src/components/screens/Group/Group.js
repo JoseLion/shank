@@ -313,16 +313,22 @@ export default class Group extends BaseComponent {
 		return {
 			title: 'GROUP',
 			headerRight: (
-				<View style={[MainStyles.inRow, ViewStyle.editButton]}>
-					<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.addTournament}>
-						<Icon name="md-add" size={30} color="#fff" />
-					</TouchableOpacity>
-					
-					<View style={{width: 5}}/>
+				<View>
+					{navigation.state.params.displayGroupOptions?
+						<View style={[MainStyles.inRow, ViewStyle.editButton]}>
+							<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.addTournament}>
+								<Icon name="md-add" size={30} color="#fff" />
+							</TouchableOpacity>
 
-					<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
-						<IconFontAwesome name="pencil" size={25} color="#fff" />
-					</TouchableOpacity>
+							<View style={{width: 5}}/>
+
+							<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
+								<IconFontAwesome name="pencil" size={25} color="#fff" />
+							</TouchableOpacity>
+						</View>
+						:
+						null
+					}
 				</View>
 			)
 		}
@@ -350,7 +356,8 @@ export default class Group extends BaseComponent {
 			currentUser: {},
 			sheetNames: [],
 			tournamentIndex: 0,
-			currentUserIndex: 0
+			currentUserIndex: 0,
+			displayGroupOptions: false
 		};
 	}
 
@@ -664,6 +671,10 @@ export default class Group extends BaseComponent {
 		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 		this.setState({currentUser: JSON.parse(currentUser)});
 		await this.loadGroupData();
+
+		if (this.state.group.owner == this.state.currentUser._id) {
+			this.setState({displayGroupOptions: true});
+		}
 		
 		this.props.navigation.setParams({
 			editGroup: () => {
@@ -672,6 +683,7 @@ export default class Group extends BaseComponent {
 			addTournament: () => {
 				this.props.navigation.navigate('AddTournament', {group: this.state.group});
 			},
+			displayGroupOptions: this.state.displayGroupOptions
 		});
 
 		this.reloadEvent = EventRegister.addEventListener(AppConst.EVENTS.reloadCurrentGroup, this.loadGroupData);
@@ -715,11 +727,13 @@ export default class Group extends BaseComponent {
 						</View>
 
 						<View style={{flex: 2}}>
-							{this.state.group.owner == this.state.currentUser._id ?
+							{this.state.displayGroupOptions ?
 								<TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
 									<Text style={MainStyles.buttonText}>Invite</Text>
 								</TouchableOpacity>
-							: null}
+								:
+								null
+							}
 						</View>
 					</View>
 
