@@ -618,7 +618,7 @@ export default class Group extends BaseComponent {
 			round: round
 		};
 		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(error => {
-			if (error.status === 205) {
+			if (error.status === AppConst.VALIDATION_ERROR_CODE) {
 				EventRegister.emit(AppConst.EVENTS.realoadGroups);
 			}
 
@@ -633,7 +633,7 @@ export default class Group extends BaseComponent {
 
 	async loadGroupData() {
 		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => {
-			if (error.status === 205) {
+			if (error.status === AppConst.VALIDATION_ERROR_CODE) {
 				EventRegister.emit(AppConst.EVENTS.realoadGroups);
 				this.setState({noGroupData: true, errorMessage: error.message});
 			}
@@ -668,7 +668,7 @@ export default class Group extends BaseComponent {
 	render() {
 		if (this.state.noGroupData) {
 			return (
-				<View style={ViewStyle.nosDataView}>
+				<View style={ViewStyle.noDataView}>
 					<Text style={ViewStyle.noDataMessage}>{this.state.errorMessage}</Text>
 				</View>
 			);

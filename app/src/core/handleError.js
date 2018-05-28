@@ -2,9 +2,8 @@ import { EventRegister } from 'react-native-event-listeners';
 import * as AppConst from 'Core/AppConst';
 
 export default function(error) {
-    setTimeout(() => {
-        global.setLoading(false);
-    }, 0);
+    console.log("HANDLE ERROR EXCEPTION: ", error);
+    global.setLoading(false);
 
     if (error == null) {
         error = "Could not determine error";
@@ -23,5 +22,4 @@ export default function(error) {
     }
 
     EventRegister.emit(AppConst.EVENTS.showErrorMessageBar, error);
-    console.log("HANDLE ERROR EXCEPTION: ", error);
 }

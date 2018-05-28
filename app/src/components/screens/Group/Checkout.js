@@ -77,7 +77,7 @@ export default class Checkout extends BaseComponent {
 					movements: this.movements
 				};
 				const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(error => {
-					if (error.status === 205) {
+					if (error.status === AppConst.VALIDATION_ERROR_CODE) {
 						EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
 					}
 
