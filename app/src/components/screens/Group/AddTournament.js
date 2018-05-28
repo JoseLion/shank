@@ -102,8 +102,6 @@ export default class AddTournament extends BaseComponent {
 			return;
 		}
 
-		console.log(this.state.group, '--------------------------------------------');
-
 		let group_data_to_update = {
 			_id: this.state.group._id,
 			bet: this.state.group.bet,
@@ -125,7 +123,7 @@ export default class AddTournament extends BaseComponent {
 		let group = await BaseModel.post('group/addTournament', group_data_to_update).catch(this.handleError);
 		this.setState({isLoading: false});
 		this.props.navigation.pop();
-		// EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
+		EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
 	}
 
 	handleError(error) {

@@ -158,7 +158,7 @@ export default class EditGroup extends BaseComponent {
 		let group = await BaseModel.multipart('group/update', formData).catch(this.handleError);
 		this.setState({isLoading: false});
 		this.props.navigation.pop();
-		// EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
+		EventRegister.emit(AppConst.EVENTS.reloadCurrentGroup);
 	}
 
 	handleError(error) {
