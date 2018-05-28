@@ -123,7 +123,7 @@ export default function(app) {
 			let isUserInGroup = false;
 			group.tournaments.forEach(tournamentCross => {
 				tournamentCross.leaderboard.forEach(leaderboardCross => {
-					if (leaderboardCross.user === user._id) {
+					if (String(leaderboardCross.user) === String(user._id)) {
 						isUserInGroup = true;
 						return;
 					}
@@ -145,7 +145,8 @@ export default function(app) {
 				response.ok(userGroups);
 			}
 			else {
-				response.ok();
+				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+				response.ok(userGroups);
 			}
 
 		} catch (error) {
