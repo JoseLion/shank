@@ -19,9 +19,12 @@ export const USER_PROFILE = 'shank-profile';
 export const TIME_OUT_NOTIFIER = 10000;
 export const APP_FB_ID = '1840743005946613';
 export const FCM_SENDER_ID = '804287418020';
+export const VALIDATION_ERROR_CODE = 501;
 
 export const EVENTS = {
+    logout: 'EVT_LOGOUT',
     showErrorMessageBar: 'EVT_SHOW_ERROR_MESSAGE_BAR',
-    realodGroups: 'EVT_REOAL_GROUPS',
-    resetShadowStyle: 'EVT_RESET_SHADOW_STYLE'
+    realoadGroups: 'EVT_REOAL_GROUPS',
+    resetShadowStyle: 'EVT_RESET_SHADOW_STYLE',
+    reloadCurrentGroup: 'EVT_RELOAD_CURRENT_GROUP'
 };

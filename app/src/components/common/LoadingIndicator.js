@@ -1,26 +1,34 @@
 import React, { Component } from 'react';
+import { View, ActivityIndicator, Animated } from 'react-native';
 
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import * as AppConst from 'Core/AppConst';
+export default class LoadingIndicator extends Component {
+    
+    constructor(props) {
+        super(props);
+        this.state = {
+            showLoading: this.props.visible,
+            opacity: new Animated.Value(0.0)
+        };
+    }
 
-class LoadingIndicator extends Component {
-  render () {
-    return (
-      <View style={{flex: 1}}>
-        <View style={{flex: 1, backgroundColor: AppConst.COLOR_GRAY}}>
-          <ActivityIndicator
-            color={'#fff'}
-            style={{paddingTop: 100}}
-            size="large"
-          />
-        </View>
-      </View>
-    )
-  }
+    static getDerivedStateFromProps(props, state) {
+        if (props.visible) {
+            Animated.timing(state.opacity, {toValue: 0.5, duration: 260, delay: 10}).start();
+        }
+
+        state.showLoading = props.visible;
+        return state;
+    }
+
+    render() {
+        if (this.state.showLoading) {
+            return (
+                <Animated.View style={{justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#000', opacity: this.state.opacity, zIndex: 9998}}>
+                    <ActivityIndicator animating={this.state.showLoading} color={'#fff'} size="large" />
+                </Animated.View>
+            );
+        }
+
+        return null;
+    }
 }
-
-const styles = StyleSheet.create({
-
-});
-
-export default LoadingIndicator;

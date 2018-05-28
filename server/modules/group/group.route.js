@@ -94,84 +94,189 @@ export default function(app) {
 	});
 
 	router.get(`${basePath}/findOne/:id`, auth, async (request, response) => {
-		const group = await Group.findOne({_id: request.params.id})
-			.populate('tournaments.tournament')
-			.populate('tournaments.leaderboard.user')
-			.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
-		.catch(handleMongoError);
-		response.ok(group);
+		try {
+			const group = await Group.findOne({_id: request.params.id})
+									.populate('tournaments.tournament')
+									.populate('tournaments.leaderboard.user')
+									.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
+									.catch(handleMongoError);
+
+			if (!group) {
+				return response.reset_content("Sorry! This group has been deleted");
+			}
+
+			response.ok(group);
+		} catch (error) {
+			response.server_error(error);
+		}
 	});
 
-	router.get(`${basePath}/removeUserFromGroup/:userId/:groupId`, async (request, response) => {
-		let group = await Group.findOne({_id: request.params.groupId}).catch(handleMongoError);
+	router.get(`${basePath}/addUserToGroup/:id`, auth, async (request, response) => {
+		try {
+			let user = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
+			let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
-		group.tournaments.forEach(cross => {
-			let index;
+			if (!group) {
+				return response.reset_content("Sorry! The group could not be found...");
+			}
 
-			cross.leaderboard.forEach((obj, i) => {
-				if (obj.user == request.params.userId) {
-					index = i;
+			let isUserInGroup = false;
+			group.tournaments.forEach(tournamentCross => {
+				tournamentCross.leaderboard.forEach(leaderboardCross => {
+					if (leaderboardCross.user === user._id) {
+						isUserInGroup = true;
+						return;
+					}
+				});
+
+				if (isUserInGroup) {
 					return;
 				}
 			});
 
-			cross.leaderboard.splice(index, 1);
-		});
+			if (!isUserInGroup) {
+				group.tournaments.forEach(tournament => {
+					const rank = tournament.leaderboard.length + 1;
+					tournament.leaderboard.push({ user, rank });
+				});
 
-		group = await group.save().catch(handleMongoError);
-		response.ok(group);
-	});
-
-	router.get(`${basePath}/addUserToGroup/:id`, auth, async (request, response) => {
-		let user = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
-		let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
-
-		if (group != null) {
-			group.tournaments.forEach(tournament => {
-				const rank = tournament.leaderboard.length + 1;
-				tournament.leaderboard.push({ user, rank });
-			});
-
-			await group.save().catch(handleMongoError);
-			const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+				await group.save().catch(handleMongoError);
+				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+			}
 
 			response.ok(userGroups);
-		} else {
-			response.server_error("Sorry! The group could not be found...");
+		} catch (error) {
+			response.server_error(error);
 		}
 	});
 
-	router.delete(`${basePath}/delete/:id`, async (request, response) => {
-		const group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
-		await Archive.findOneAndRemove({_id: group.photo}).catch(handleMongoError);
-		await group.remove().catch(handleMongoError);
-		response.ok();
-	});
+	router.delete(`${basePath}/delete/:id`, auth, async (request, response) => {
+        try {
+            const group = await Group.findById(request.params.id).catch(handleMongoError);
+
+            if (!group) {
+                response.reset_content("This group has already been removed!");
+                return;
+            }
+
+            await Archive.findByIdAndRemove(group.photo).catch(handleMongoError);
+            await group.remove().catch(handleMongoError);
+            response.ok();
+        } catch (error) {
+            response.server_error(error);
+        }
+    });
+    
+    router.delete(`${basePath}/exit/:id`, auth, async (request, response) => {
+        try {
+            let index = -1;
+            const group = await Group.findById(request.params.id).catch(handleMongoError);
+
+            if (!group) {
+                response.reset_content("This group has already been removed!");
+                return;
+            }
+
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach((cross, i) => {
+                    if (cross.user == request.payload._id) {
+                        index = i;
+                        return;
+                    }
+                });
+
+                if (index > -1) {
+                    tournamentCross.leaderboard.splice(index, 1);
+                }
+            });
+
+            if (index == -1) {
+                response.reset_content("You have already been removed from the group!");
+                return;
+            }
+
+            await group.save().catch(handleMongoError);
+            response.ok();
+        } catch (error) {
+            response.server_error(error);
+        }
+    });
+
+    router.post(`${basePath}/removeUser`, auth, async (request, response) => {
+        try {
+            let index = -1;
+            const group = await Group.findById(request.body.groupId).catch(handleMongoError);
+
+            if (!group) {
+                response.reset_content("This group no longer exists!");
+                return;
+            }
+
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach((cross, i) => {
+                    if (cross.user == request.body.userId) {
+                        index = i;
+                        return;
+                    }
+                });
+
+                if (index > -1) {
+                    tournamentCross.leaderboard.splice(index, 1);
+                }
+            });
+
+            if (index == -1) {
+                response.reset_content("The user is no longer part of this group!");
+                return;
+            }
+
+            await group.save().catch(handleMongoError);
+            response.ok();
+        } catch (error) {
+            response.server_error(error);
+        }
+    });
 
 	router.post(`${basePath}/updateMyRoaster/:groupId/:tournamentId`, auth, async (request, response) => {
-		let group = await Group.findById(request.params.groupId).catch(handleMongoError);
+		try {
+			let isUserInGroup = false;
+			let group = await Group.findById(request.params.groupId).catch(handleMongoError);
 
-		group.tournaments.forEach(cross => {
-			if (cross.tournament == request.params.tournamentId) {
-				cross.leaderboard.forEach(obj => {
-					if (obj.user == request.payload._id) {
-						obj.roaster = request.body.roaster;
-
-						if (request.body.movements > 0) {
-							obj.checkouts.push(request.body);
-						}
-					}
-				});
+			if (!group) {
+                response.reset_content("Sorry! This group has been deleted");
+                return;
 			}
-		});
 
-		group = await group.save().catch(handleMongoError);
-		group = await Group.findOne({_id: group._id})
-			.populate('tournaments.tournament')
-			.populate('tournaments.leaderboard.user')
-			.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
-		.catch(handleMongoError);
-		response.ok(group);
+			group.tournaments.forEach(tournamentCross => {
+				if (tournamentCross.tournament == request.params.tournamentId) {
+					tournamentCross.leaderboard.forEach(cross => {
+						if (cross.user == request.payload._id) {
+							isUserInGroup = true;
+							cross.roaster = request.body.roaster;
+
+							if (request.body.movements > 0) {
+								cross.checkouts.push(request.body);
+							}
+						}
+					});
+				}
+			});
+
+			if (!isUserInGroup) {
+                response.reset_content("Sorry! You were removed from this group");
+                return;
+			}
+
+			group = await group.save().catch(handleMongoError);
+			group = await Group.findOne({_id: group._id})
+				.populate('tournaments.tournament')
+				.populate('tournaments.leaderboard.user')
+				.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
+			.catch(handleMongoError);
+			response.ok(group);
+		} catch (error) {
+			response.server_error(error);
+		}
 	});
 
 	/* ----------------- THIS SOULD BE DELETED ----------------- */

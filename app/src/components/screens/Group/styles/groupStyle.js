@@ -1,8 +1,32 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import Style from 'ShankStyle';
 import * as AppConst from 'Core/AppConst';
 
+const isAndroid = Platform.OS == 'android';
+
 export default ViewStyle = StyleSheet.create({
+    noDataView: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: AppConst.COLOR_WHITE,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: '20%'
+    },
+    noDataMessage: {
+        textAlign: 'center',
+        paddingVertical: 20,
+        fontFamily: Style.CENTURY_GOTHIC_BOLD,
+        fontSize: Style.FONT_18,
+        color: AppConst.COLOR_WHITE,
+        textShadowOffset: {
+            width: 1.5,
+            height: 1.5
+        },
+        textShadowColor: 'rgba(0, 0, 0, 1.0)',
+        textShadowRadius: isAndroid ? 15 : 3,
+        shadowOpacity: 0.1
+    },
     editButton: {
         height: '100%',
         justifyContent: 'center',

@@ -109,11 +109,11 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
 	app.use(function (err, req, res, next) {
 		if (err.code === 'invalid_token') {
-			return res.unauthorized(err.status);
+			return res.unauthorized('Session expired... Please login!');
 		}
 
 		if (err.code === 'permission_denied') {
-			return res.forbidden(err.status);
+			return res.forbidden();
 		}
 
 		res.status(err.status || 500).json({response: {}, error: err.message});

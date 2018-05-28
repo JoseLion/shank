@@ -19,6 +19,7 @@ import DownCaretIcon from 'Res/down-caret-icon.png';
 import SortBarsIcon from 'Res/sort-bars.png';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
+import { COLOR_WHITE } from 'Core/AppConst';
 
 class RoasterRow extends Component {
 
@@ -102,7 +103,6 @@ class RoasterRow extends Component {
 	}
 
 	resetShadowStyle() {
-		console.log("reset!!!!!");
 		this.state.popBottom.setValue(0);
 		this.state.popLeft.setValue(0);
 		this.setState({shadowStyle: null, separatorWith: 1});
@@ -255,7 +255,9 @@ class GroupTabBar extends Component {
 class LeaderboardRow extends Component {
 	
 	constructor(props) {
-		super(props);
+        super(props);
+        this.getLeaderboardRow = this.getLeaderboardRow.bind(this);
+        this.onRemovePressed = this.onRemovePressed.bind(this);
 		this.state = {
 			group: this.props.group,
 			currentUser: this.props.currentUser,
@@ -276,18 +278,26 @@ class LeaderboardRow extends Component {
 				</View>
 			</TouchableHighlight>
 		);
-	}
+    }
+    
+    onRemovePressed() {
+        if (this.swipe) {
+            this.swipe.recenter();
+        }
+
+        this.props.onRemove(this.state.item);
+    }
 
 	render() {
 		if (this.state.item.user && this.state.group.owner == this.state.currentUser._id && this.state.group.owner != this.state.item.user._id) {
 			const removeButton = [
-				<TouchableHighlight style={[ViewStyle.swipeButton]} onPress={()=> this.props.onRemove(this.state.item)}>
+				<TouchableHighlight style={[ViewStyle.swipeButton, {backgroundColor: AppConst.COLOR_RED}]} onPress={this.onRemovePressed}>
 					<Text style={[ViewStyle.swipeButtonText]}>Remove</Text>
 				</TouchableHighlight>
 			];
 
 			return (
-				<Swipeable rightButtons={removeButton} rightButtonWidth={120}>
+				<Swipeable onRef={ref => this.swipe = ref} rightButtons={removeButton} rightButtonWidth={120}>
 					{this.getLeaderboardRow(this.state.item)}
 				</Swipeable>
 			);
@@ -334,10 +344,11 @@ export default class Group extends BaseComponent {
 		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
 		this.isRoundOnCourse = this.isRoundOnCourse.bind(this);
 		this.updateRoaster = this.updateRoaster.bind(this);
+		this.loadGroupData = this.loadGroupData.bind(this);
 		this.state = {
 			group: {},
 			currentUser: {},
-			sheetNames: ['Cancel'],
+			sheetNames: [],
 			tournamentIndex: 0,
 			currentUserIndex: 0
 		};
@@ -362,7 +373,10 @@ export default class Group extends BaseComponent {
 				}
 			});
 
-			group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
+			if (group.owner == this.state.currentUser._id) {
+				group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
+			}
+			
 			const userRoaster = group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster;
 			this.setState({ group, sheetNames, userRoaster });
 		} catch(error) {
@@ -422,7 +436,8 @@ export default class Group extends BaseComponent {
 	}
 
 	tournamentSelected(index) {
-		if (index != this.state.sheetNames.length - 1) {
+		console.log("index: ", index);
+		if (index > 0 && index < this.state.sheetNames.length - 1) {
 			this.setState({tournamentIndex: index});
 		}
 	}
@@ -445,11 +460,34 @@ export default class Group extends BaseComponent {
 		}).catch(handleError);
 	}
 
-	async removeUserFromGroup(cross) {
-		global.setLoading(true);
-		const group = await BaseModel.delete(`group/removeUserFromGroup/${this.state.item.user._id}/${this.state.group._id}`).catch(handleError);
-		this.setGroupData(group);
-		global.setLoading(false);
+	removeUserFromGroup(cross) {
+        Alert.alert("Are you sure?", "The user will be permanently removed from the group", [
+            {text: 'Cancel', style: 'cancel'},
+            {text: 'Remove', style: 'destructive', onPress: async () => {
+                global.setLoading(true);
+                const response = await BaseModel.post(`group/removeUser`, {groupId: this.state.group._id, userId: cross.user._id}).catch(handleError);
+                
+                if (response) {
+                    let index = -1;
+                    this.state.group.tournaments[this.state.tournamentIndex].leaderboard.forEach((leaderboardCross, i) => {
+                        if (leaderboardCross.user && leaderboardCross.user._id == cross.user._id) {
+                            index = i;
+                            return;
+                        }
+                    });
+
+                    if (index > -1) {
+                        let group = Object.assign({}, this.state.group);
+                        group.tournaments[this.state.tournamentIndex].leaderboard.splice(index, 1);
+                        this.setState({ group });
+                    }
+                    
+                    
+                }
+
+                global.setLoading(false);
+            }}
+        ]);
 	}
 
 	managePlayers(row, index) {
@@ -591,34 +629,70 @@ export default class Group extends BaseComponent {
 			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster,
 			round: round
 		};
-		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(handleError);
+		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(error => {
+			if (error.status === AppConst.VALIDATION_ERROR_CODE) {
+				EventRegister.emit(AppConst.EVENTS.realoadGroups);
+			}
 
-		this.setState({ group });
-		global.setLoading(false);
+			handleError(error);
+		});
+
+		if (group) {
+			this.setState({ group });
+			global.setLoading(false);
+		}
+	}
+
+	async loadGroupData() {
+		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(error => {
+			if (error.status === AppConst.VALIDATION_ERROR_CODE) {
+				EventRegister.emit(AppConst.EVENTS.realoadGroups);
+				this.setState({noGroupData: true, errorMessage: error.message});
+			}
+
+			handleError(error);
+		});
+		
+		if (group) {
+			this.setGroupData(group);
+		}
 	}
 
 	async componentDidMount() {
 		global.setLoading(true);
 
-		const group = await BaseModel.get("group/findOne/" + this.props.navigation.state.params.groupId).catch(handleError);
 		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 		this.setState({currentUser: JSON.parse(currentUser)});
-		this.setGroupData(group);
+		await this.loadGroupData();
 		this.props.navigation.setParams({editGroup: () => {
 			this.props.navigation.navigate('EditGroup', {group: this.state.group});
 		}});
 
+		this.reloadEvent = EventRegister.addEventListener(AppConst.EVENTS.reloadCurrentGroup, this.loadGroupData);
+
 		global.setLoading(false);
 	}
 
+	componentWillUnmount() {
+		EventRegister.removeEventListener(this.reloadEvent);
+	}
+
 	render() {
+		if (this.state.noGroupData) {
+			return (
+				<View style={ViewStyle.noDataView}>
+					<Text style={ViewStyle.noDataMessage}>{this.state.errorMessage}</Text>
+				</View>
+			);
+		}
+
 		return (
 			<View style={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}}>
-				<ActionSheet ref={sheet => this.actionSheet = sheet} options={this.state.sheetNames} cancelButtonIndex={this.state.sheetNames.length} onPress={this.tournamentSelected} />
+				<ActionSheet ref={sheet => this.actionSheet = sheet} title={'Select a tournament'} options={this.state.sheetNames} onPress={this.tournamentSelected} />
 
 				<View style={{flex: 0.7}}>
 					<View style={[ViewStyle.groupInformation]}>
-						<Image source={{uri: FileHost + this.state.group.photo}} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.groupImage} />
+						<Image source={{uri: FileHost + this.state.group.photo}} style={ViewStyle.groupImage} />
 
 						<View style={ViewStyle.groupHeader}>
 							<View>
