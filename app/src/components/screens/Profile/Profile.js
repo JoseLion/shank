@@ -148,7 +148,8 @@ export default class ProfileScreen extends BaseComponent {
 
 	selectGender = (idx, value) => {
     this.setState({
-      gender: value
+			gender: value,
+			defaultValue: value
     });
   }
 
