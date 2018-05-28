@@ -12,6 +12,7 @@ import PushNotification from '../../service/pushNotification';
 const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
 const AppUser = mongoose.model('App_User');
+const Tournament = mongoose.model('Tournament');
 const basePath = '/group';
 const router = express.Router();
 
@@ -117,8 +118,28 @@ export default function(app) {
 									.catch(handleMongoError);
 
 			if (!group) {
-				return response.reset_content("Sorry! This group has been deleted");
-			}
+                response.reset_content("Sorry! This group has been deleted");
+                return ;
+            }
+            
+            let isUserInGroup = false;
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach(cross => {
+                    if (String(cross.user.id) === String(request.payload._id)) {
+                        isUserInGroup = true;
+                        return;
+                    }
+                });
+
+                if (isUserInGroup) {
+                    return;
+                }
+            });
+
+            if (!isUserInGroup) {
+                response.reset_content("Sorry! You habe been removed from this group");
+                return;
+            }
 
 			response.ok(group);
 		} catch (error) {
@@ -264,12 +285,24 @@ export default function(app) {
 			if (!group) {
                 response.reset_content("Sorry! This group has been deleted");
                 return;
-			}
+            }
+            
+            /*const tournament = Tournament.findById(request.params.tournamentId).catch(handleMongoError);
+            const today = new Date();
+            const time = (today.getHours() * 60 * 60 * 1000) + (today.getMinutes() * 60 * 1000) + (today.getSeconds() * 1000) + today.getMilliseconds();
+            const startDate = new Date(tournament.startDate);
+            const startTime = (startDate.getHours() * 60 * 60 * 1000) + (startDate.getMinutes() * 60 * 1000) + (startDate.getSeconds() * 1000) + startDate.getMilliseconds();
+            const endDate = new Date(tournament.endDate);
+            const endTime = (endDate.getHours() * 60 * 60 * 1000) + (endDate.getMinutes() * 60 * 1000) + (endDate.getSeconds() * 1000) + endDate.getMilliseconds();
+            
+            if (today.getTime() > endDate.getTime() || (time > startTime && time < endTime)) {
+                response.reset_content("Sorry! The roster cannot be edited during the round")
+            }*/
 
 			group.tournaments.forEach(tournamentCross => {
 				if (tournamentCross.tournament == request.params.tournamentId) {
 					tournamentCross.leaderboard.forEach(cross => {
-						if (cross.user == request.payload._id) {
+						if (String(cross.user) == String(request.payload._id)) {
 							isUserInGroup = true;
 							cross.roaster = request.body.roaster;
 

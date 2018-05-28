@@ -9,7 +9,7 @@ const ClientHost = `${endPoint}:88`;
 
 const AuthToken = 'shank-auth-token';
 const ProductSKUs = [
-    'shank.roaster.update.1',
+    'shank.roaster.update.1', //android.test.purchased
     'shank.roaster.update.2',
     'shank.roaster.update.3',
     'shank.roaster.update.4',
