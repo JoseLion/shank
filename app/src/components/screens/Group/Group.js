@@ -637,7 +637,7 @@ export default class Group extends BaseComponent {
 			roaster: this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster,
 			round: round
 		};
-		const group = await BaseModel.post(`group/updateMyRoaster/${this.props.navigation.state.params.groupId}/${this.props.navigation.state.params.tournamentId}`, body).catch(error => {
+		const group = await BaseModel.post(`group/updateMyRoaster/${this.state.group._id}/${this.state.group.tournaments[this.state.tournamentIndex].tournament._id}`, body).catch(error => {
 			if (error.status === AppConst.VALIDATION_ERROR_CODE) {
 				EventRegister.emit(AppConst.EVENTS.realoadGroups);
 			}
