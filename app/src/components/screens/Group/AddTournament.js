@@ -54,7 +54,25 @@ export default class AddTournament extends BaseComponent {
 	async getAllTournaments() {
 		this.setState({isLoading: true});
 		const tournamentsData = await BaseModel.get('tournament/findAll').catch(this.handleError);
-		this.setState({isLoading: false, tournaments: tournamentsData});
+		
+		let new_tournaments = [];
+		let is_used_tournament = false;
+
+		tournamentsData.map((tournament) => {
+			is_used_tournament = false;
+
+			this.state.group.tournaments.map((tournament_in) => {
+				if (tournament._id == tournament_in.tournament._id) {
+					is_used_tournament = true;
+				}
+			});
+
+			if (!is_used_tournament) {
+				new_tournaments.push(tournament);
+			}
+		});
+		
+		this.setState({isLoading: false, tournaments: new_tournaments});
 	}
 
 	updateGroup(key, value) {
