@@ -1,7 +1,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, Text, View, TouchableOpacity, Image, TextInput, TouchableHighlight, Alert, TouchableWithoutFeedback, ActionSheetIOS} from 'react-native';
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	Image,
+	TextInput,
+	TouchableHighlight,
+	Alert,
+	TouchableWithoutFeedback,
+	ActionSheetIOS,
+	Dimensions,
+	Picker
+} from 'react-native';
 import LocalStyles from './styles/local';
+import Style from '../../../styles/ShankStyle';
 import Notifier from 'Core/Notifier';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -13,8 +27,10 @@ import { ApiHost } from '../../../config/variables';
 import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid } from '../BaseComponent';
 import RadioButton from 'radio-button-react-native';
 import dismissKeyboard from 'dismissKeyboard';
-import ModalDropdown from 'react-native-modal-dropdown';
 import ActionSheet from 'react-native-actionsheet';
+import {Select, Option} from "react-native-chooser";
+
+const width = Dimensions.get('window').width;
 
 export default class ProfileScreen extends BaseComponent {
 	static navigationOptions = {title: 'User Profile'};
@@ -27,15 +43,15 @@ export default class ProfileScreen extends BaseComponent {
 
 		this.state = {
 			loading: true,
+			displayLoading: false,
 			fullName: '',
 			email: '',
 			country: '',
-			gender: '',
+			gender: 'Gender',
 			photo: null,
-			genders: ['Male', 'Female', 'Other'],
-			defaultValue: 'Gender ...',
-			genderSelected: -1,
-			photoUri: null
+			genders: [{name: 'Male'}, {name: 'Female'}, {name: 'Other'}],
+			photoUri: null,
+			countries: []
 		};
 		this.photoOptions = ['Open your gallery', 'Take a picture', 'Cancel'];
 	}
@@ -44,7 +60,7 @@ export default class ProfileScreen extends BaseComponent {
 		this.setState({loading: loading});
 	}
 
-	async _handleUpdatePress(userId) {
+	async _handleUpdatePress() {
 		if (!this.state.fullName) {
 			this.handleError("Username cant be empty");
 			return;
@@ -87,18 +103,15 @@ export default class ProfileScreen extends BaseComponent {
 
 	componentDidMount() {
 		BaseModel.get('app_profile').then((response) => {
-			let index = this.state.genders.indexOf(response.gender);
-
 			this.setState({
 				loading: false,
-				_id: response._id,
-				fullName: response.fullName,
-				email: response.email,
-				photo: response.photo,
-				country: response.country,
-				gender: response.gender,
-				defaultValue: response.gender,
-				genderSelected: index
+				_id: response.user._id,
+				fullName: response.user.fullName,
+				email: response.user.email,
+				photo: response.user.photo,
+				country: response.user.country,
+				gender: response.user.gender,
+				countries: response.countries
 			})
 		})
 		.catch((error) => {
@@ -141,16 +154,17 @@ export default class ProfileScreen extends BaseComponent {
 		}
 	}
 
-  handleGender = (value) => {
-    this.setState({ gender : value });
-  };
-
-	selectGender = (idx, value) => {
+	onSelectCountry = (value, label) => {
     this.setState({
-			gender: value,
-			defaultValue: value
+			country: value.name
     });
-  }
+	}
+
+	onSelectGender = (value, label) => {
+    this.setState({
+			gender: value.name
+    });
+	}
 
 	getPhotoSource() {
 		if (this.state.photoUri) {
@@ -170,7 +184,7 @@ export default class ProfileScreen extends BaseComponent {
 
 	render() {
 
-		if (this.state.loading) {
+		if (this.state.displayLoading) {
 			return (
 				<LoadingIndicator />
 				);
@@ -178,6 +192,14 @@ export default class ProfileScreen extends BaseComponent {
 
 		let navigation = this.props.navigation;
 		let user_photo = this._renderImage();
+
+		let countryList = this.state.countries.map((country) => {
+			return (<Picker.Item style={[MainStyles.pickerText]} key={country.name} value={country.name} label={country.name} />);
+		});
+
+		let genderList = this.state.genders.map((gender) => {
+			return (<Picker.Item style={[MainStyles.pickerText]} key={gender.name} value={gender.name} label={gender.name} />);
+		});
 
 		return (
 			<View style={MainStyles.newMainContainer}>
@@ -212,30 +234,29 @@ export default class ProfileScreen extends BaseComponent {
 								{this.state.email}
 							</Text>
 
-							<TextInput
-								ref={ref => this.country = ref}
-								returnKeyType={"next"}
-								underlineColorAndroid="transparent"
-								style={MainStyles.formInputText}
-								onChangeText={(country) => this.setState({country})}
-								value={this.state.country}
-								placeholder={'Country'} />
+							<View style={[MainStyles.pickerView]}>
+								<Picker 
+									itemStyle={[MainStyles.pickerText]}
+									selectedValue={this.state.country}
+									onValueChange={(itemValue, itemIndex) => this.setState({country: itemValue})}>
+									<Picker.Item color={AppConst.COLOR_GRAY} value='' label='Country' />
+									{countryList}
+								</Picker>
+							</View>
 
-							<ModalDropdown style={MainStyles.dropdown}
-								textStyle={MainStyles.dropdownButton}
-								defaultIndex={this.state.genderSelected}
-								defaultValue={this.state.defaultValue}
-								dropdownStyle={MainStyles.dropdownStyle}
-                dropdownTextStyle={MainStyles.dropdownTextStyle}
-								options={this.state.genders}
-								onSelect={(idx, value) => this.selectGender(idx, value)}
-							/>
-
-							<View style={MainStyles.space10} />
+							<View style={[MainStyles.pickerView]}>
+								<Picker
+									itemStyle={[MainStyles.pickerText]}
+									selectedValue={this.state.gender}
+									onValueChange={(itemValue, itemIndex) => this.setState({gender: itemValue})}>
+									<Picker.Item fontFamily={Style.CENTURY_GOTHIC} color={AppConst.COLOR_GRAY} value='' label='Gender' />
+									{genderList}
+								</Picker>
+							</View>
 
 							<View style={MainStyles.center}>
 								<TouchableHighlight
-								  onPress={() => this._handleUpdatePress(navigation.state.params.currentUser._id)}
+								  onPress={() => this._handleUpdatePress()}
 									style={[MainStyles.button, MainStyles.success, {width: '100%'}]}>
 									<Text style={MainStyles.buttonText}>Save</Text>
 								</TouchableHighlight>

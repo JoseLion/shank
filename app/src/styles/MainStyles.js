@@ -379,14 +379,14 @@ export default MainStyles = StyleSheet.create({
     color: 'rgba(112, 163, 77, 1)'
   },
   dropdown: {
-		width: (containerWidth * 0.81),
+		width: '100%',
 		borderWidth: 1,
 		borderRadius: 0,
     borderColor: AppConst.COLOR_GRAY
 	},
 	dropdownButton: {
-		marginVertical: 10,
-		marginHorizontal: 6,
+		marginVertical: 2,
+		marginHorizontal: 4,
 		fontSize: Style.EM(1),
 		color: AppConst.COLOR_BLUE,
     fontFamily: Style.CENTURY_GOTHIC,
@@ -428,5 +428,20 @@ export default MainStyles = StyleSheet.create({
     },
     mainFontFamily: {
         fontFamily: Style.CENTURY_GOTHIC
-    }
+    },
+	pickerView: {
+        width: '100%',
+        height: 45,
+        borderColor: AppConst.COLOR_GRAY,
+        borderRadius: 0,
+        borderWidth: 1,
+        marginBottom: Style.EM(0.5),
+        marginTop: Style.EM(0.5),
+        paddingBottom: Style.EM(0.5),
+        paddingLeft: Style.EM(0.5),
+    },
+	pickerText: {
+		fontFamily: Style.CENTURY_GOTHIC,
+		fontSize: Style.FONT_16
+	}
 });

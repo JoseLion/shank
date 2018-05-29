@@ -3,6 +3,7 @@ import express from 'express';
 import auth from '../../config/auth';
 import handleMongoError from '../../service/handleMongoError';
 import PushNotification from '../../service/pushNotification';
+import country_service from '../services/country.services';
 import multer from 'multer';
 import Request from 'request';
 import Q from 'q';
@@ -105,16 +106,23 @@ export default function (app) {
             return res.server_error('Unauthorized.');
         }
 
-        AppUser
-            .findById(req.payload._id)
-            .select('_id fullName email photo country gender')
-            .exec(function (err, user) {
-                if (err) {
-                    return res.server_error(err);
-                }
+        let countries = await country_service.get_all_countries();
 
-                res.ok(user);
-            });
+        AppUser
+        .findById(req.payload._id)
+        .select('_id fullName email photo country gender')
+        .exec(function (err, user) {
+            if (err) {
+                return res.server_error(err);
+            }
+            
+            let response = {
+                user: user,
+                countries: countries
+            };
+            
+            res.ok(response);
+        });
     });
 
     router.post('/update_profile_with_image', auth, multer().single('file'), async (req, res) => {
