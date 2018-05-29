@@ -123,7 +123,7 @@ export default function (app) {
                 return res.server_error('Unauthorized.');
             }
 
-            let user = JSON.parse(request.body.user);
+            let user = JSON.parse(req.body.user);
 
             let promises = [];
   			let archive_id;
@@ -174,7 +174,7 @@ export default function (app) {
                     res.ok(req.body);
                 })
         } catch (error) {
-            return response.server_error(error);
+            return res.server_error(error);
         }
     });
 

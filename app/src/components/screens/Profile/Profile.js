@@ -82,7 +82,6 @@ export default class ProfileScreen extends BaseComponent {
 	}
 
 	handleError(error) {
-		this.setState({isLoading: false});
 		this.dropdown.alertWithType('error', "Error", error);
 	}
 
