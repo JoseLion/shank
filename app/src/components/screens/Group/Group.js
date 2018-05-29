@@ -336,7 +336,8 @@ export default class Group extends BaseComponent {
 	
 	constructor(props) {
 		super(props);
-		this.getCurrentUserStat = this.getCurrentUserStat.bind(this);
+        this.getCurrentUserStat = this.getCurrentUserStat.bind(this);
+        this.getLeaderboardLength =this.getLeaderboardLength.bind(this);
 		this.getDaysObj = this.getDaysObj.bind(this);
 		this.showActionSheet = this.showActionSheet.bind(this);
 		this.tournamentSelected = this.tournamentSelected.bind(this);
@@ -404,7 +405,21 @@ export default class Group extends BaseComponent {
 		}
 
 		return stat;
-	}
+    }
+    
+    getLeaderboardLength() {
+        let length;
+
+        if (this.state.group.tournaments) {
+            length = this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length;
+
+            if (this.state.group.owner == this.state.currentUser._id) {
+                length--;
+            }
+        }
+
+        return length;
+    }
 
 	getDaysObj() {
 		if (this.state.group.tournaments) {
@@ -756,7 +771,7 @@ export default class Group extends BaseComponent {
 						</View>
 						
 						<View style={[ViewStyle.statView]}>
-							<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank')}/{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].leaderboard.length - 1}</Text></View>
+							<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank')}/{this.getLeaderboardLength()}</Text></View>
 							<View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
 						</View>
 
