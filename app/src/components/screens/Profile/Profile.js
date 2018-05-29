@@ -28,7 +28,6 @@ import { BaseComponent, BaseModel, MainStyles, AppConst, BarMessages, IsAndroid 
 import RadioButton from 'radio-button-react-native';
 import dismissKeyboard from 'dismissKeyboard';
 import ActionSheet from 'react-native-actionsheet';
-import {Select, Option} from "react-native-chooser";
 
 const width = Dimensions.get('window').width;
 
