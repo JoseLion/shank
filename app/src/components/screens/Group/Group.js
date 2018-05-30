@@ -383,8 +383,10 @@ export default class Group extends BaseComponent {
                 }
             });
 
+            console.log("group.tournaments[this.state.tournamentIndex].leaderboard: ", group.tournaments[this.state.tournamentIndex].leaderboard);
 			group.tournaments[this.state.tournamentIndex].leaderboard.forEach((cross, i) => {
-				if (cross.user._id == this.state.currentUser._id) {
+                console.log("cross: ", cross);
+				if (cross.user && cross.user._id == this.state.currentUser._id) {
                     this.setState({currentUserIndex: i});
                     return;
 				}
@@ -463,7 +465,7 @@ export default class Group extends BaseComponent {
 	}
 
 	tournamentSelected(index) {
-		if (index > 0 && index < this.state.sheetNames.length - 1) {
+		if (index >= 0 && index < this.state.sheetNames.length - 1) {
 			this.setState({tournamentIndex: index});
 		}
 	}

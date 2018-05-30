@@ -41,19 +41,22 @@ export default class {
             notif.sound = 'ping.aiff';
             notif.alert = alert;
             notif.payload = payload;
-            notif.topic = 'com.elevision.shank';
+            notif.topic = Constants.BUNDLE_ID;
             response = await this.apnProvider.send(notif, token);
         }
 
         if (os === 'android') {
             const message = {
                 token: token,
-                notification: {
-                    title: "Shank",
-                    body: alert,
-                    sound: 'notification_sound'
-                },
-                data: payload
+                android: {
+                    data: payload,
+                    //restrictedPackageName: Constants.BUNDLE_ID,
+                    notification: {
+                        title: 'Shank',
+                        body: alert,
+                        //sound: 'notification_sound'
+                    }
+                }
             };
 
             response = await FireBaseAdmin.messaging().send(message);

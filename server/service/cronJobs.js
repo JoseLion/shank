@@ -18,7 +18,7 @@ export default class {
             }
 
             if (this[functionName] == null) {
-                throw `The function ${functionName} could not be found in cronJobs.js`;
+                throw `The static function ${functionName} could not be found in cronJobs.js`;
             }
 
             const cronJob = new CronJob({
@@ -58,6 +58,7 @@ export default class {
 
             cronJob._id = job._id;
             global.runningJobs.push(cronJob);
+            console.log("RUNNING JOBS: ", global.runningJobs);
             return cronJob;
         } catch (error) {
             throw "CronJobs Error: " + error;
@@ -82,6 +83,7 @@ export default class {
                 }
                 
                 job.remove();
+                console.log("RUNNING JOBS: ", global.runningJobs);
             }
         } catch (error) {
             throw "CronJobs Error: " + error;
@@ -126,7 +128,7 @@ export default class {
      * FUNCTION TO BE EXCECUTED BY JOBS
      */
 
-    tournamentStartReminder(id) {
+    static tournamentStartReminder(id) {
         try {
             const pushNotifications = new PushNotiications();
             const Tournament = mongoose.model('Tournament');
@@ -153,7 +155,7 @@ export default class {
         }
     }
 
-    tournamentAboutToBegin(id) {
+    static tournamentAboutToBegin(id) {
         try {
             const pushNotifications = new PushNotiications();
             const Tournament = mongoose.model('Tournament');
@@ -180,7 +182,7 @@ export default class {
         }
     }
 
-    async assignPoints({ tournamentId, round }) {
+    static async assignPoints({ tournamentId, round }) {
         try {
             
         } catch (error) {

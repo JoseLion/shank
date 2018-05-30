@@ -90,15 +90,16 @@ export default function (app) {
         }
     });
 
-    router.get(`/apns/send/:id`, async (request, response) => {
-        const appUser = await AppUser.findById(request.params.id);
-        const pushNotification = new PushNotification();
+    router.get(`/apns/send/:token`, async (request, response) => {
+        try {
+            const pushNotification = new PushNotification();
+            pushNotification.send({ token: request.params.token, os: 'android', alert: 'Vamos a la tienda Fer!' });
 
-        appUser.notifications.asyncForEach(async notifObj => {
-            pushNotification.send({ token: notifObj.token, os: notifObj.os, alert: 'New message from Shank' });
-        });
-
-        return response.ok();
+            response.ok('OK');
+        } catch (error) {
+            response.server_error(error);
+        }
+        
     });
 
     router.get('/app_profile', auth, async (req, res) => {

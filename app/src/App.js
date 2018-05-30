@@ -32,7 +32,7 @@ export default class ShankApp extends Component {
         this.showError = this.showError.bind(this);
         this.setLoading = this.setLoading.bind(this);
 		this.state = {
-			showSpinner: false
+			showLoading: false
 		}
 	}
 
@@ -64,8 +64,8 @@ export default class ShankApp extends Component {
         this.dropDownRef.alertWithType('error', 'Error', error);
     }
     
-    setLoading(showSpinner) {
-        this.setState({ showSpinner });
+    setLoading(showLoading) {
+        this.setState({ showLoading });
     }
 
 	componentWillMount() {
@@ -124,8 +124,7 @@ export default class ShankApp extends Component {
 			<View style={{width: '100%', height: '100%'}}>
                 <DropdownAlert ref={ref => this.dropDownRef = ref} zIndex={9999} onClose={() => this.setLoading(false)} />
 				<StatusBar barStyle="light-content" backgroundColor={AppConst.COLOR_BLUE} />
-                <LoadingIndicator visible={this.state.showSpinner} />
-				{/* <Spinner visible={this.state.showSpinner} animation='none' /> */}
+                <LoadingIndicator visible={this.state.showLoading} />
 				
 				<AppNavigator ref={ref => this.navigation = ref} />
 			</View>
