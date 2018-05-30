@@ -183,7 +183,7 @@ export default function() {
 			promises.push(Tournament.update({_id: req.body._id}, req.body).exec());
 			
 			Q.all(promises).then(() => {
-				const startDate = new Date(req.body.startDate);
+				const startDate = new Date(Number(req.body.startDate));
                 
                 const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
                 console.log("remindDate: ", remindDate);
@@ -208,7 +208,7 @@ export default function() {
                     args: req.body._id
                 });
 
-                const endDate = new Date(req.body.endDate);
+                const endDate = new Date(Number(req.body.endDate));
                 req.body.rounds.forEach(round => {
                     const day = new Date(round.day);
                     const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getMonth()} ${day.getUTCDay()}`;
