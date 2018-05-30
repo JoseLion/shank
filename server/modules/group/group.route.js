@@ -124,7 +124,6 @@ export default function(app) {
             let isUserInGroup = false;
             group.tournaments.forEach(tournamentCross => {
                 tournamentCross.leaderboard.forEach(cross => {
-                    console.log("cross: ", cross);
                     if (String(cross.user._id) === String(request.payload._id)) {
                         isUserInGroup = true;
                         return;

@@ -87,7 +87,12 @@ export default class Settings extends Component {
   }
 
 	async logout() {
-		await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
+        global.setLoading(true);
+        const pushToken = await AsyncStorage.getItem(AppConst.PUSH_TOKEN).catch(handleError);
+        await BaseModel.post('app_user/logout', { pushToken }).catch(handleError);
+        await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
+        global.setLoading(false);
+        
 		this.props.navigation.dispatch(NavigationActions.reset({
 			index: 0,
 			actions: [NavigationActions.navigate({routeName: 'Login'})],

@@ -50,13 +50,18 @@ export default class ShankApp extends Component {
 		}
 	}
 
-	logout() {
-		AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
+	async logout() {
+        global.setLoading(true);
+        const pushToken = await AsyncStorage.getItem(AppConst.PUSH_TOKEN).catch(handleError);
+        await BaseModel.post('app_user/logout', { pushToken }).catch(handleError);
+        await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
+        global.setLoading(false);
+        
 		setTimeout(() => {
 			this.navigation.dispatch(NavigationActions.reset({
 				index: 0,
 				actions: [NavigationActions.navigate({routeName: 'Login'})],
-			}));
+            }));
 		}, 0);
 	}
 
@@ -92,7 +97,8 @@ export default class ShankApp extends Component {
 
 					if (!tokenPresent) {
 						currentUser.notifications = await BaseModel.post('app_user/registerNotificationsToken', notifObj);
-						await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(currentUser));
+                        await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(currentUser));
+                        await AsyncStorage.setItem(AppConst.PUSH_TOKEN, notifObj.token);
 					}
 				} catch (error) {
 					handleError(error);

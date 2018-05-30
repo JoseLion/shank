@@ -57,7 +57,6 @@ export default function (app) {
                 return response.ok({user: found, token: found.generateJwt()});
             } else {
                 const photoData = await imageUrlToBytes(request.body.photoUrl);
-                console.log("photoData: ", photoData);
                 const archive = await Archive.create({
                     name: `facebook-${request.body.facebookId}.${photoData.type.split('/')[1]}`,
                     type: photoData.type,
@@ -90,16 +89,15 @@ export default function (app) {
         }
     });
 
-    router.get(`/apns/send/:token`, async (request, response) => {
-        try {
-            const pushNotification = new PushNotification();
-            pushNotification.send({ token: request.params.token, os: 'android', alert: 'Vamos a la tienda Fer!' });
+    router.get(`/apns/send/:id`, async (request, response) => {
+        const appUser = await AppUser.findById(request.params.id);
+        const pushNotification = new PushNotification();
 
-            response.ok('OK');
-        } catch (error) {
-            response.server_error(error);
-        }
-        
+        appUser.notifications.asyncForEach(async notifObj => {
+            pushNotification.send({ token: notifObj.token, os: notifObj.os, alert: 'New message from Shank' });
+        });
+
+        return response.ok();
     });
 
     router.get('/app_profile', auth, async (req, res) => {
@@ -184,6 +182,35 @@ export default function (app) {
                 })
         } catch (error) {
             return res.server_error(error);
+        }
+    });
+
+    router.post(`${basePath}/logout`, auth, async (request, response) => {
+        try {
+            if (request.payload && request.payload._id && request.body.pushToken) {
+                let appUser = await AppUser.findById(request.payload._id).catch(handleMongoError);
+
+                if (appUser) {
+                    let index = -1;
+
+                    appUser.notifications.forEach((notif, i) => {
+                        if (notif.token == request.body.pushToken) {
+                            index = i;
+                            return;
+                        }
+                    });
+  
+                    if (index > -1) {
+                        appUser.notifications.splice(index, 1);
+                        await appUser.save();
+                    }
+                }
+            }
+  
+            response.ok();
+        } catch (error) {
+            console.error(error);
+            response.server_error(error);
         }
     });
 

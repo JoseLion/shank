@@ -50,11 +50,11 @@ export default class {
                 token: token,
                 android: {
                     data: payload,
-                    //restrictedPackageName: Constants.BUNDLE_ID,
+                    restrictedPackageName: Constants.BUNDLE_ID,
                     notification: {
                         title: 'Shank',
                         body: alert,
-                        //sound: 'notification_sound'
+                        sound: 'notification_sound'
                     }
                 }
             };
