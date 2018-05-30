@@ -57,7 +57,6 @@
       var total = dataPoint[0].y;
       for(var i = 0; i < dataPoint.length; i++) {
         //console.log(chart.options.data[0].dataPoints[i], 'chart.options.data[0].dataPoints[i]');
-        console.log(dataPoint[i]);
         if(i === 0) {
           chart.options.data[0].dataPoints[i].percentage = dataPoint[i].y;
         } else {
