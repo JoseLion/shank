@@ -24,7 +24,7 @@
     var vm = this;
     
     if (_.isEmpty(web_link)) {
-      vm.web_link = {code: 'WLK', name: 'Web links', values: [{}, {}, {}]};
+      vm.web_link = {code: 'WLK', name: 'Web links', values: [{name: 'Privacy Policy'}, {name: 'Terms of Service'}, {name: 'Rules'}]};
     }
     else {
       format_data_to_display(web_link);
@@ -34,9 +34,27 @@
       vm.web_link = angular.copy(_web_links);
       vm.web_link.values = [];
       
-      _.each(_web_links.values, function(link) {
-        vm.web_link.values.push({value: link});
+      _.each(_web_links.values, function(link, index) {
+        vm.web_link.values.push(build_values(link, index));
       });
+    }
+    
+    function build_values(link, index) {
+      var data = {value: link};
+      
+      switch(index) {
+        case 0:
+          data.name = 'Privacy Policy';
+          break;
+        case 1:
+          data.name = 'Terms of Service';
+          break;
+        case 2:
+          data.name = 'Rules';
+          break;
+      }
+      
+      return data;
     }
     
     vm.save = function() {
