@@ -94,8 +94,10 @@ export default function() {
 			promises.push(tournament.save());
 			
 			Q.all(promises).spread((archive1_saved, archive2_saved, tournament_saved) => {
-				const startDate = new Date(tournament_saved.startDate);
-				const remindTime = `00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`;
+                const startDate = new Date(tournament_saved.startDate);
+                
+                const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
+				const remindTime = `${remindDate.getSeconds()} ${remindDate.getMinutes()} ${remindDate.getHours()} ${remindDate.getDate() - 1} ${remindDate.getMonth()} ${remindDate.getDay()}`;
 				CronJobs.create({
                     cronTime: remindTime,
                     functionName: 'tournamentStartReminder',
