@@ -382,10 +382,8 @@ export default class Group extends BaseComponent {
                     tournamentCross.leaderboard.push({_id: -1});
                 }
             });
-
-            console.log("group.tournaments[this.state.tournamentIndex].leaderboard: ", group.tournaments[this.state.tournamentIndex].leaderboard);
+            
 			group.tournaments[this.state.tournamentIndex].leaderboard.forEach((cross, i) => {
-                console.log("cross: ", cross);
 				if (cross.user && cross.user._id == this.state.currentUser._id) {
                     this.setState({currentUserIndex: i});
                     return;
