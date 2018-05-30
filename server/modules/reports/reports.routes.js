@@ -12,6 +12,7 @@ let router = express.Router();
 const Acquisition = mongoose.model('Acquisition');
 const App_User = mongoose.model('App_User');
 const Group = mongoose.model('Group');
+const Referred = mongoose.model('Referred');
 
 export default function() {
 	router.post('/get_earnings', auth, (req, res) => {
@@ -172,6 +173,28 @@ export default function() {
 			.select({_id:1, name:1, tournaments:1, "tournaments.tournament":1, "tournaments.leaderboard.score":1, "tournaments.leaderboard.rank":1, "tournaments.leaderboard.user": 1})
 			.populate('tournaments.tournament', "_id name")
 			.populate('tournaments.leaderboard.user', "_id fullName")
+			.exec((err, data) => {
+				if (err) {
+					return res.server_error(err.message);
+				}
+				
+				res.ok(data);
+			});
+    } catch (e) {
+      res.server_error();
+    }
+	});
+	
+	router.post('/get_referrals', auth, (req, res) => {
+		try {
+			if (!req.payload._id) {
+				return res.unauthorized();
+			}
+			
+			Referred
+			.find()
+			.populate('host', "_id fullName")
+			.populate('guests.leaderboard.user', "_id fullName")
 			.exec((err, data) => {
 				if (err) {
 					return res.server_error(err.message);
