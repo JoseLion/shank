@@ -365,25 +365,30 @@ export default class Group extends BaseComponent {
 	setGroupData(group) {
 		try {
 			const sheetNames = group.tournaments.map(cross => cross.tournament.name);
-			sheetNames.push('Cancel');
+            sheetNames.push('Cancel');
+            
+            group.tournaments.forEach(tournamentCross => {
+                tournamentCross.leaderboard.forEach((cross, i) => {
+                    if (cross.roaster.length == 0) {
+                        cross.isRoasterEmpty = true;
+
+                        for (let i = -1; i >= -5; i--) {
+                            cross.roaster.push({_id: i});
+                        }
+                    }
+                });
+
+                if (group.owner == this.state.currentUser._id) {
+                    tournamentCross.leaderboard.push({_id: -1});
+                }
+            });
 
 			group.tournaments[this.state.tournamentIndex].leaderboard.forEach((cross, i) => {
-				if (cross.roaster.length == 0) {
-					cross.isRoasterEmpty = true;
-
-					for (let i = -1; i >= -5; i--) {
-						cross.roaster.push({_id: i});
-					}
-				}
-
 				if (cross.user._id == this.state.currentUser._id) {
-					this.setState({currentUserIndex: i});
+                    this.setState({currentUserIndex: i});
+                    return;
 				}
 			});
-
-			if (group.owner == this.state.currentUser._id) {
-				group.tournaments[this.state.tournamentIndex].leaderboard.push({_id: -1});
-			}
 			
 			const userRoaster = group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster;
 			this.setState({ group, sheetNames, userRoaster });
@@ -458,7 +463,6 @@ export default class Group extends BaseComponent {
 	}
 
 	tournamentSelected(index) {
-		console.log("index: ", index);
 		if (index > 0 && index < this.state.sheetNames.length - 1) {
 			this.setState({tournamentIndex: index});
 		}
