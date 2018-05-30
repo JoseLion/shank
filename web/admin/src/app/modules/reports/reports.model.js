@@ -16,6 +16,10 @@
       return base_model('get_funnel').create(params);
     }
     
+    model.get_app_users = function(params) {
+      return base_model('get_app_users').create(params);
+    }
+    
     return model;
   });
 })();

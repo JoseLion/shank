@@ -1,0 +1,133 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>Reports</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a ui-sref="admin.dashboard">Dashboard</a>
+      </li>
+      <li class="active">
+        <strong>App Users</strong>
+      </li>
+    </ol>
+  </div>
+  
+  <div class="col-lg-2">
+  </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight without-padding-bottom" style="position: relative; z-index: 20;">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox-content">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <strong>Search</strong>
+          </div>
+          
+          <div class="panel-body">
+            <form class="form-horizontal"
+                  role="form"
+                  ng-submit="appUserCtrl.find_app_users()"
+                  novalidate>
+      
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="col-md-3 control-label" for="search_from_date">Date: </label>
+                    <div class="col-md-4">
+                      <div class="input-group">
+                        <input type="text"
+                               class="form-control"
+                               placeholder="FROM"
+                               id="search_from_date"
+                               name="search_from_date"
+                               uib-datepicker-popup="yyyy-MM-dd"
+                               ng-model="appUserCtrl.search_params.from_date"
+                               is-open="appUserCtrl.dates.from_date_opened"
+                               datepicker-options="appUserCtrl.dateOptions"
+                               alt-input-formats="appUserCtrl.altInputFormats" />
+                        <span class="input-group-btn">
+                          <button type="button"
+                                  class="btn btn-default"
+                                  ng-click="appUserCtrl.open_search_calendar(1)">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-1 col-sm-12 no-padding">&nbsp;</div>
+                    
+                    <div class="col-md-4">
+                      <div class="input-group">
+                        <input type="text"
+                               class="form-control"
+                               placeholder="TO"
+                               id="search_to_date"
+                               name="search_to_date"
+                               uib-datepicker-popup="yyyy-MM-dd"
+                               ng-model="appUserCtrl.search_params.to_date"
+                               is-open="appUserCtrl.dates.to_date_opened"
+                               datepicker-options="appUserCtrl.dateOptions"
+                               alt-input-formats="['M!/d!/yyyy']" />
+                        <span class="input-group-btn">
+                          <button type="button"
+                                  class="btn btn-default"
+                                  ng-click="appUserCtrl.open_search_calendar(2)">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="row form-group">
+                  <div class="col-md-12">
+                    <div class="col-md-12 text-right">
+                      <button type="button" class="btn btn-w-m btn-default" ng-click="appUserCtrl.clear_search_params()">Clear</button>
+                      <button type="submit" class="btn btn-w-m btn-primary">Search</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-12 text-right">
+              <button type="button" class="btn btn-primary" ng-click="appUserCtrl.get_users_xlsx()">
+                <i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Excel
+              </button>
+              <div class="space-10"></div>
+            </div>
+          </div>
+          
+          <div class="table-responsive">
+            <table ng-table="appUserCtrl.tableParams" class="table table-bordered">
+              <tr ng-repeat="user in $data track by $index">
+                <td data-title="'User'" header-class="'header-text-left'">{{user.fullName}}</td>
+                <td data-title="'Gender'" header-class="'header-text-left'">{{user.gender}}</td>
+                <td data-title="'Country'" header-class="'header-text-left'">{{user.country}}</td>
+                <td data-title="'Channel'" header-class="'header-text-left'">{{user.channel}}</td>
+                <td data-title="'Register date'" header-class="'header-text-left'">{{user.created_at | date : 'yyyy-MM-dd'}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

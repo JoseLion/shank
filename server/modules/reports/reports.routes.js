@@ -2,10 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Q from 'q';
 import _ from 'underscore';
+import xlsx from 'node-xlsx';
 
 import handleMongoError from '../../service/handleMongoError';
 import auth from '../../config/auth';
-import xlsx from 'node-xlsx';
+import date_service from '../services/date.services';
 
 let router = express.Router();
 const Acquisition = mongoose.model('Acquisition');
@@ -125,6 +126,35 @@ export default function() {
 				res.ok(data);
 			}, (err) => {
 				res.server_error(err);
+			});
+    } catch (e) {
+      res.server_error();
+    }
+	});
+	
+	router.post('/get_app_users', auth, (req, res) => {
+		try {
+			if (!req.payload._id) {
+				return res.unauthorized();
+			}
+			
+			let params_filter = {};
+			
+			if (req.body.from_date) {
+				let from_date = date_service.to_utc_unix(req.body.from_date + " 00:00:00");
+				let to_date = date_service.to_utc_unix(req.body.to_date + " 23:59:59");
+				params_filter = {"created_at": {"$gte": from_date, "$lt": to_date}};
+			}
+			
+			App_User
+			.find(params_filter)
+			.select("_id fullName gender country email isFacebookUser created_at")
+			.exec((err, data) => {
+				if (err) {
+					return res.server_error(err.message);
+				}
+				
+				res.ok(data);
 			});
     } catch (e) {
       res.server_error();
