@@ -35,7 +35,7 @@ export default {
 	},
 	
 	get_leaderboard_by_tournament: async function(tournamentID) {
-		console.log("Fetching players from fantasydata.net...");
+		console.log(`Fetching leaderboard of tournament ${tournamentID} from fantasydata.net...`);
 		
 		const response = await fetch(`${fantasy_url}/Leaderboard/${tournamentID}`, options).catch(handleError);
 		let json = await response.json().catch(handleError);

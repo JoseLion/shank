@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import handleMongoError from './handleMongoError';
+import Fantasy from './fantasy';
 
 const Tournament = mongoose.model('Tournament');
 const Leaderboard = mongoose.model('Leaderboard');

@@ -98,7 +98,7 @@ export default function() {
                 
                 const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
                 console.log("remindDate: ", remindDate);
-				const remindTime = `${remindDate.getSeconds()} ${remindDate.getMinutes()} ${remindDate.getHours()} ${remindDate.getDate()} ${remindDate.getMonth()} ${remindDate.getDay()}`;
+				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getMonth()} ${remindDate.getUTCDay()}`;
 				CronJobs.create({
                     cronTime: remindTime,
                     functionName: 'tournamentStartReminder',
@@ -107,7 +107,7 @@ export default function() {
                 });
 
 				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
-				const beginTime = `${beginDate.getSeconds()} ${beginDate.getMinutes()} ${beginDate.getHours()} ${beginDate.getDate()} ${beginDate.getMonth()} ${beginDate.getDay()}`;
+				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getMonth()} ${beginDate.getUTCDay()}`;
                 CronJobs.create({
                     cronTime: beginTime,
                     functionName: 'tournamentAboutToBegin',
@@ -118,7 +118,7 @@ export default function() {
                 const endDate = new Date(tournament_saved.endDate);
                 tournament_saved.rounds.forEach(round => {
                     const day = new Date(round.day);
-                    const cronTime = `${endDate.getSeconds()} ${endDate.getMinutes()} ${endDate.getHours()} ${day.getDate()} ${day.getMonth()} ${day.getDay()}`;
+                    const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getMonth()} ${day.getUTCDay()}`;
                     
                     CronJobs.create({
                         cronTime,
@@ -187,7 +187,7 @@ export default function() {
                 
                 const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
                 console.log("remindDate: ", remindDate);
-				const remindTime = `${remindDate.getSeconds()} ${remindDate.getMinutes()} ${remindDate.getHours()} ${remindDate.getDate()} ${remindDate.getMonth()} ${remindDate.getDay()}`;
+				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getMonth()} ${remindDate.getUTCDay()}`;
                 
                 CronJobs.remove({reference: `TSR-${req.body._id}`});
 				CronJobs.create({
@@ -198,7 +198,7 @@ export default function() {
                 });
 
 				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
-				const beginTime = `${beginDate.getSeconds()} ${beginDate.getMinutes()} ${beginDate.getHours()} ${beginDate.getDate()} ${beginDate.getMonth()} ${beginDate.getDay()}`;
+				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getMonth()} ${beginDate.getUTCDay()}`;
                 
                 CronJobs.remove({reference: `TAB-${req.body._id}`});
 				CronJobs.create({
@@ -211,7 +211,7 @@ export default function() {
                 const endDate = new Date(req.body.endDate);
                 req.body.rounds.forEach(round => {
                     const day = new Date(round.day);
-                    const cronTime = `${endDate.getSeconds()} ${endDate.getMinutes()} ${endDate.getHours()} ${day.getDate()} ${day.getMonth()} ${day.getDay()}`;
+                    const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getMonth()} ${day.getUTCDay()}`;
                     
                     CronJobs.remove({reference: `ASP-${req.body._id}`});
                     CronJobs.create({
