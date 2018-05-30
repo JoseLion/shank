@@ -132,8 +132,8 @@
             <table ng-table="reportEarningCtrl.tableParams" class="table table-bordered">
               <tr ng-repeat="earning in $data track by $index">
                 <td data-title="'User'" header-class="'header-text-left'">{{earning.user.fullName}}</td>
-                <td data-title="'Country & City'" header-class="'header-text-left'">{{earning.user.name}} {{earning.user.surname}}</td>
-                <td data-title="'OS'" header-class="'header-text-left'">{{earning.os}}</td>
+                <td data-title="'Country'" header-class="'header-text-left'">{{earning.user.country}}</td>
+                <td data-title="'OS'" header-class="'header-text-left'">{{earning.user.register_os}}</td>
                 <td data-title="'Register date'" header-class="'header-text-left'">{{earning.user.created_at | date : 'yyyy-MM-dd'}}</td>
                 <td data-title="'Tournament'" header-class="'header-text-left'">{{earning.tournament.name}}</td>
                 <td data-title="'Total amount'" class="text-right">{{earning.leaderboard.total_amount | format_number}}</td>
