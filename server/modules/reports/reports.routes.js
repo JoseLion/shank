@@ -161,5 +161,28 @@ export default function() {
     }
 	});
 	
+	router.post('/get_ranking_by_tournament', auth, (req, res) => {
+		try {
+			if (!req.payload._id) {
+				return res.unauthorized();
+			}
+			
+			Group
+			.find({"tournaments.tournament": {$eq: req.body.tournament}})
+			.select({_id:1, name:1, tournaments:1, "tournaments.tournament":1, "tournaments.leaderboard.score":1, "tournaments.leaderboard.rank":1, "tournaments.leaderboard.user": 1})
+			.populate('tournaments.tournament', "_id name")
+			.populate('tournaments.leaderboard.user', "_id fullName")
+			.exec((err, data) => {
+				if (err) {
+					return res.server_error(err.message);
+				}
+				
+				res.ok(data);
+			});
+    } catch (e) {
+      res.server_error();
+    }
+	});
+	
 	return router;
 }
