@@ -12,6 +12,7 @@
     'admin.permissions',
     'admin.tournament.settings',
     'admin.app.settings',
+    'admin.app.users',
     'admin.tournaments',
     'admin.reports',
     'public.invitation'
