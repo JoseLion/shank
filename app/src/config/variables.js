@@ -1,7 +1,7 @@
 // shank.levelaptesting.com
 // 192.168.10.152
-const endPoint = '192.168.10.152';
-const port = '3000';
+const endPoint = 'shank.levelaptesting.com';
+const port = '88';
 const Host = `http://${endPoint}:${port}/`; 
 const ApiHost = Host + 'api/';
 const FileHost = ApiHost + "archive/download/";

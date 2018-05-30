@@ -59,7 +59,7 @@ export default class {
                 }
             };
 
-            response = await FireBaseAdmin.messaging().send(message);
+            response = await FireBaseAdmin.messaging().send(message).catch(error => console.error("Exception[FireBaseAdmin.messaging().send(...)]: ", error));
         }
 
         return response;
