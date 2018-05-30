@@ -58,7 +58,7 @@ export default class {
 
             cronJob._id = job._id;
             global.runningJobs.push(cronJob);
-            console.log("RUNNING JOBS: ", global.runningJobs);
+            console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime));
             return cronJob;
         } catch (error) {
             throw "CronJobs Error: " + error;
@@ -83,7 +83,7 @@ export default class {
                 }
                 
                 job.remove();
-                console.log("RUNNING JOBS: ", global.runningJobs);
+                console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime));
             }
         } catch (error) {
             throw "CronJobs Error: " + error;
@@ -113,12 +113,13 @@ export default class {
                     await Job.remove({_id: this._id}).catch(handleMongoError);
                 },
                 start: false,
-                timeZone: 'America/Guayaquil'
+                timeZone: 'Atlantic/Reykjavik'
             });
 
             cronJob.start();
             cronJob._id = job._id;
             global.runningJobs.push(cronJob);
+            console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime));
         });
         
         return true;

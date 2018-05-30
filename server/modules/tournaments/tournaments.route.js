@@ -97,7 +97,8 @@ export default function() {
                 const startDate = new Date(tournament_saved.startDate);
                 
                 const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
-				const remindTime = `${remindDate.getSeconds()} ${remindDate.getMinutes()} ${remindDate.getHours()} ${remindDate.getDate() - 1} ${remindDate.getMonth()} ${remindDate.getDay()}`;
+                console.log("remindDate: ", remindDate);
+				const remindTime = `${remindDate.getSeconds()} ${remindDate.getMinutes()} ${remindDate.getHours()} ${remindDate.getDate()} ${remindDate.getMonth()} ${remindDate.getDay()}`;
 				CronJobs.create({
                     cronTime: remindTime,
                     functionName: 'tournamentStartReminder',
@@ -183,11 +184,14 @@ export default function() {
 			
 			Q.all(promises).then(() => {
 				const startDate = new Date(req.body.startDate);
-				const cronTime = `00 00 16 ${startDate.getDate() - 1} ${startDate.getMonth()} ${startDate.getDay()}`;
+                
+                const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
+                console.log("remindDate: ", remindDate);
+				const remindTime = `${remindDate.getSeconds()} ${remindDate.getMinutes()} ${remindDate.getHours()} ${remindDate.getDate()} ${remindDate.getMonth()} ${remindDate.getDay()}`;
                 
                 CronJobs.remove({reference: `TSR-${req.body._id}`});
 				CronJobs.create({
-                    cronTime,
+                    cronTime: remindTime,
                     functionName: 'tournamentStartReminder',
                     reference: `TSR-${req.body._id}`,
                     args: req.body._id
