@@ -2,6 +2,7 @@ import { CronJob } from 'cron';
 import mongoose from 'mongoose';
 import handleMongoError from './handleMongoError';
 import PushNotiications from './pushNotification';
+import AssignPoints from './assignPoints';
 
 const Job = mongoose.model('Job');
 
@@ -131,22 +132,24 @@ export default class {
             const Tournament = mongoose.model('Tournament');
             const Group = mongoose.model('Group');
             const tournament = Tournament.findById(id).catch(handleMongoError);
-            const group = Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            const groups = Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
             const startDate = new Date(tournament.startDate);
 
-            group.tournaments.forEach(tournamentCross => {
-                tournamentCross.leaderboard.forEach(leaderboardCross => {
-                    leaderboardCross.user.notifications.forEach(pushObj => {
-                        pushNotifications.send({
-                            token: pushObj.token,
-                            os: pushObj.os,
-                            alert: `Roster alert: Remember to make your picks before the tournament starts: Tomorrow at ${startDate.getUTCHours()}:${startDate.getUTCMinutes()}. It’s time to make your picks for this week’s tournament`
+            groups.forEach(group => {
+                group.tournaments.forEach(tournamentCross => {
+                    tournamentCross.leaderboard.forEach(leaderboardCross => {
+                        leaderboardCross.user.notifications.forEach(pushObj => {
+                            pushNotifications.send({
+                                token: pushObj.token,
+                                os: pushObj.os,
+                                alert: `Roster alert: Remember to make your picks before the tournament starts: Tomorrow at ${startDate.getUTCHours()}:${startDate.getUTCMinutes()}. It’s time to make your picks for this week’s tournament`
+                            });
                         });
                     });
-                });
+                }); 
             });
         } catch (error) {
-            throw "Exception: tournamentStartReminder(id) -> " + error;
+            throw "Exception[tournamentStartReminder(id)]: " + error;
         }
     }
 
@@ -156,22 +159,50 @@ export default class {
             const Tournament = mongoose.model('Tournament');
             const Group = mongoose.model('Group');
             const tournament = Tournament.findById(id).catch(handleMongoError);
-            const group = Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            const groups = Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
             const startDate = new Date(tournament.startDate);
 
+            groups.forEach(group => {
+                group.tournaments.forEach(tournamentCross => {
+                    tournamentCross.leaderboard.forEach(leaderboardCross => {
+                        leaderboardCross.user.notifications.forEach(pushObj => {
+                            pushNotifications.send({
+                                token: pushObj.token,
+                                os: pushObj.os,
+                                alert: `Don’t forget that the tournament starts today`
+                            });
+                        });
+                    });
+                });
+            });
+        } catch (error) {
+            throw "Exception[tournamentStartReminder(id)]: " + error;
+        }
+    }
+
+    async assignPoints({ tournamentId, round }) {
+        try {
+            
+        } catch (error) {
+            throw "Exception[assignPoints({ tournamentId, round })]: " + error;
+        }
+        await AssignPoints(tournamentId, round);
+
+        const Group = mongoose.model('Group');
+        const groups = Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+
+        groups.forEach(group => {
             group.tournaments.forEach(tournamentCross => {
                 tournamentCross.leaderboard.forEach(leaderboardCross => {
                     leaderboardCross.user.notifications.forEach(pushObj => {
                         pushNotifications.send({
                             token: pushObj.token,
                             os: pushObj.os,
-                            alert: `Don’t forget that the tournament starts today`
+                            alert: `The results of round ${round} are already. Look at your score`
                         });
                     });
                 });
             });
-        } catch (error) {
-            throw "Exception: tournamentStartReminder(id) -> " + error;
-        }
+        });
     }
 }

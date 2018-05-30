@@ -6,7 +6,6 @@ import multer from 'multer';
 import Q from 'q';
 
 //DELETE AFTER TEST
-import AssignPoints from '../../service/assignPoints';
 import PushNotification from '../../service/pushNotification';
 
 const Group = mongoose.model('Group');
@@ -330,15 +329,6 @@ export default function(app) {
 			response.server_error(error);
 		}
 	});
-
-	/* ----------------- THIS SOULD BE DELETED ----------------- */
-	router.get(`${basePath}/assignPoints/:tournamentID/:round`, async (request, response) => {
-		const Tournament = mongoose.model('Tournament');
-		let tournament = await Tournament.findOne({tournamentID: parseInt(request.params.tournamentID)}).catch(handleMongoError);
-		AssignPoints(tournament._id, request.params.round);
-		response.ok();
-	});
-	/* -------------------------------------------------------- */
 
 	return router;
 }
