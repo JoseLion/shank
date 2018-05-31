@@ -16,6 +16,14 @@
       return base_model('get_funnel').create(params);
     }
     
+    model.get_app_users = function(params) {
+      return base_model('get_app_users').create(params);
+    }
+    
+    model.get_ranking_by_tournament = function(params) {
+      return base_model('get_ranking_by_tournament').create(params);
+    }
+    
     return model;
   });
 })();

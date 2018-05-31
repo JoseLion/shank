@@ -39,8 +39,8 @@
     parse_tournament();
     
     function parse_tournament() {
-      vm.tournament.start_date = date_utils.format_date(vm.tournament.startDate);
-      vm.tournament.end_date = date_utils.format_date(vm.tournament.endDate);
+      vm.tournament.start_date = moment(vm.tournament.startDate).utc().format("YYYY-MM-DD");
+      vm.tournament.end_date = moment(vm.tournament.endDate).utc().format("YYYY-MM-DD");
       
       var start_date_time =  moment(vm.tournament.startDate).utc().format("HH:mm");
       vm.tournament.start_date_time = start_date_time;
@@ -66,8 +66,8 @@
     vm.assign_tournament_selected = function() {
       if (vm.tournament.tournamentID) {
         tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
-        tournament_selected.start_date = date_utils.format_date_utc(tournament_selected.startDate);
-        tournament_selected.end_date = date_utils.format_date_utc(tournament_selected.endDate);
+        tournament_selected.start_date = moment(tournament_selected.startDate).utc().format("YYYY-MM-DD");
+        tournament_selected.end_date = moment(tournament_selected.endDate).utc().format("YYYY-MM-DD");
         
         vm.tournament = Object.assign(vm.tournament, tournament_selected);
       }

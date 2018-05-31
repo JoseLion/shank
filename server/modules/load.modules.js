@@ -12,6 +12,7 @@ import appUserModel from './app_users/app.users.model';
 import appSettingsModel from './app_settings/app.settings.model';
 import playerModel from './player/player.model';
 import acquisitionModel from './acquisitions/acquisitions.model';
+import referredModel from './referrals/referrals.model';
 
 import authRoutes from './auth/auth.routes';
 import adminUsersRoutes from './admin_users/admin.users.routes';

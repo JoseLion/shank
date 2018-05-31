@@ -44,8 +44,8 @@
     vm.assign_tournament_selected = function() {
       if (vm.tournament.tournamentID) {
         tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
-        tournament_selected.start_date = date_utils.format_date(tournament_selected.startDate);
-        tournament_selected.end_date = date_utils.format_date(tournament_selected.endDate);
+        tournament_selected.start_date = moment(tournament_selected.startDate).utc().format("YYYY-MM-DD");
+        tournament_selected.end_date = moment(tournament_selected.endDate).utc().format("YYYY-MM-DD");
         
         vm.tournament = Object.assign(vm.tournament, tournament_selected);
       }
