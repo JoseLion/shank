@@ -24,7 +24,7 @@
   function tournamentsUpdateController($state, $timeout, tournaments_model, tournament, date_utils, Notifier) {
     var vm = this;
     vm.tournament = tournament;
-    console.log(vm.tournament, 'vm.tournament');
+    
     vm.years = [];
     var tournament_selected;
     

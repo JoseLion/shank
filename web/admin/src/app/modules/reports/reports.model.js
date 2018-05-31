@@ -24,6 +24,10 @@
       return base_model('get_ranking_by_tournament').create(params);
     }
     
+    model.get_referrals = function(params) {
+      return base_model('get_referrals').create(params);
+    }
+    
     return model;
   });
 })();

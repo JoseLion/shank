@@ -1,5 +1,7 @@
 (function() {
   'use strict';
   
-  angular.module('admin.reports', []);
+  angular.module('admin.reports', [
+    'ui.tree'
+  ]);
 })();

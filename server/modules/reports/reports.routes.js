@@ -194,7 +194,11 @@ export default function() {
 			Referred
 			.find()
 			.populate('host', "_id fullName")
-			.populate('guests.leaderboard.user', "_id fullName")
+			.populate({
+				path: 'guests.user',
+				select: '_id fullName',
+				model: App_User
+			})
 			.exec((err, data) => {
 				if (err) {
 					return res.server_error(err.message);

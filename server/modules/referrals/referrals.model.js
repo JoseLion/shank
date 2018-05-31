@@ -16,6 +16,8 @@ let ReferredSchema = new mongoose.Schema({
 	enabled: {type: Boolean, default: true},
 	created_at: Number,
 	updated_at: Number
+}, {
+	collection: 'referrals'
 });
 
 ReferredSchema.pre('save', function(next) {
