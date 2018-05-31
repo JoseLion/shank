@@ -13,6 +13,7 @@ const Acquisition = mongoose.model('Acquisition');
 const App_User = mongoose.model('App_User');
 const Group = mongoose.model('Group');
 const Referred = mongoose.model('Referred');
+const Player = mongoose.model('Player');
 
 export default function() {
 	router.post('/get_earnings', auth, (req, res) => {
@@ -198,6 +199,58 @@ export default function() {
 				path: 'guests.user',
 				select: '_id fullName',
 				model: App_User
+			})
+			.exec((err, data) => {
+				if (err) {
+					return res.server_error(err.message);
+				}
+				
+				res.ok(data);
+			});
+    } catch (e) {
+      res.server_error();
+    }
+	});
+	
+	router.post('/get_player_payments', auth, (req, res) => {
+		try {
+			if (!req.payload._id) {
+				return res.unauthorized();
+			}
+			
+			Group
+			.find()
+			.select({
+				_id: 1,
+				name: 1,
+				tournaments: 1,
+				"tournaments.tournament": 1,
+				"tournaments.leaderboard.user": 1,
+				"tournaments.leaderboard.checkouts": 1,
+				"tournaments.leaderboard.checkouts.originalRoaster": 1,
+				"tournaments.leaderboard.checkouts.roaster": 1,
+				"tournaments.leaderboard.checkouts.round": 1,
+				"tournaments.leaderboard.checkouts.payment": 1
+			})
+			.populate('tournaments.tournament', "_id name")
+			.populate('tournaments.leaderboard.user', "_id fullName")
+			.populate({
+				path: 'tournaments.leaderboard.checkouts.originalRoaster',
+				select: '_id playerTournamentID player',
+				populate: {
+					path: 'player',
+					select: '_id firstName lastName',
+					model: Player
+				}
+			})
+			.populate({
+				path: 'tournaments.leaderboard.checkouts.roaster',
+				select: '_id playerTournamentID player',
+				populate: {
+					path: 'player',
+					select: '_id firstName lastName',
+					model: Player
+				}
 			})
 			.exec((err, data) => {
 				if (err) {

@@ -28,6 +28,10 @@
       return base_model('get_referrals').create(params);
     }
     
+    model.get_player_payments = function(params) {
+      return base_model('get_player_payments').create(params);
+    }
+    
     return model;
   });
 })();
