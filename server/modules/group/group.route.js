@@ -5,9 +5,6 @@ import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
 import Q from 'q';
 
-//DELETE AFTER TEST
-import PushNotification from '../../service/pushNotification';
-
 const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
 const AppUser = mongoose.model('App_User');
@@ -39,17 +36,6 @@ export default function(app) {
 		if (!group) {
 			response.server_error();
 		}
-
-		/* --------------------------------- SHOULD BE DELETED --------------------------------- */
-		const appUsers = await AppUser.find({});
-		const pushNotification = new PushNotification();
-		
-		appUsers.asyncForEach(async appUser => {
-			appUser.notifications.asyncForEach(async notifObj => {
-				pushNotification.send({token: notifObj.token, os: notifObj.os, alert: `A new group named '${group.name}' was created by ${owner.fullName}`});
-			});
-		});
-		/* -------------------------------------------------------------------------------------- */
 
 		response.ok(group);
 	});
