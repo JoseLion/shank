@@ -99,6 +99,14 @@ export default class {
             const jobs = await Job.find().catch(handleMongoError);
 
             jobs.forEach(job => {
+                if (job.functionName ==null || job.functionName == '') {
+                    throw "The name of the function to excecute is required";
+                }
+    
+                if (self[job.functionName] == null || typeof self[job.functionName] !== 'function') {
+                    throw `The static function ${functionName} could not be found in cronJobs.js`;
+                }
+
                 const cronJob = new CronJob({
                     cronTime: job.cronTime,
                     onTick: function() {

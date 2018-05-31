@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import date_service from '../services/date.services';
 
 const GroupSchema = new mongoose.Schema({
 	enabled: {type: Boolean, default: true},
@@ -19,7 +20,8 @@ const GroupSchema = new mongoose.Schema({
 				roaster: [{type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard'}],
 				round: {type: Number, default: 0},
 				payment: {type: Number, default: 0},
-				movements: {type: Number, default: 0}
+                movements: {type: Number, default: 0},
+                payment_date: {type: Number, default: date_service.utc_unix_current_date()}
 			}]
 		}]
 	}]

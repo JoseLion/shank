@@ -61,7 +61,6 @@ if (testing_preview_or_production) {
 mongoose.connect(database_uri, {}).then(async() => {
 	console.log(`Database connected at ${database_uri}`);
     await CronJobs.restoreRunningJobs();
-    await fantasy.update_leaderboard(288).catch(error => console.error(error));
 }).catch(err => console.log(`Database connection error: ${err.message}`));
 
 app.use(cors());

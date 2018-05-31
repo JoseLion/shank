@@ -1,6 +1,6 @@
 // React components:
 import React, { Component } from 'react';
-import { Text, View, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, Share, AsyncStorage, Animated, Easing, Alert } from 'react-native';
+import { Text, View, ScrollView, RefreshControl, TouchableHighlight, Image, FlatList, TouchableOpacity, ActionSheetIOS, Picker, Share, AsyncStorage, Animated, Easing, Alert } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Swipeable from 'react-native-swipeable';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -351,8 +351,10 @@ export default class Group extends BaseComponent {
 		this.isBeforeEndDate = this.isBeforeEndDate.bind(this);
 		this.isRoundOnCourse = this.isRoundOnCourse.bind(this);
 		this.updateRoaster = this.updateRoaster.bind(this);
-		this.loadGroupData = this.loadGroupData.bind(this);
+        this.loadGroupData = this.loadGroupData.bind(this);
+        this.refreshGroup = this.refreshGroup.bind(this);
 		this.state = {
+            isRefreshing: false,
 			group: {},
 			currentUser: {},
 			sheetNames: [],
@@ -428,9 +430,9 @@ export default class Group extends BaseComponent {
 
 	getDaysObj() {
 		if (this.state.group.tournaments) {
-			let today = new Date();
-			let startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
-			let endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
+			const today = new Date();
+			const startDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.startDate);
+			const endDate = new Date(this.state.group.tournaments[this.state.tournamentIndex].tournament.endDate);
 			
 			if (today.getTime() < startDate.getTime()) {
 				return {
@@ -687,7 +689,13 @@ export default class Group extends BaseComponent {
 		} else {
             this.setState({noGroupData: true});
         }
-	}
+    }
+    
+    async refreshGroup() {
+        this.setState({isRefreshing: true});
+        await this.loadGroupData();
+        this.setState({isRefreshing: false});
+    }
 
 	async componentDidMount() {
 		global.setLoading(true);
@@ -729,10 +737,10 @@ export default class Group extends BaseComponent {
 		}
 
 		return (
-			<View style={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}}>
+			<ScrollView contentContainerStyle={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}} refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshGroup} />}>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} title={'Select a tournament'} options={this.state.sheetNames} onPress={this.tournamentSelected} />
 
-				<View style={{flex: 0.7}}>
+				<View style={{flex: 7}}>
 					<View style={[ViewStyle.groupInformation]}>
 						<Image source={{uri: FileHost + this.state.group.photo}} style={ViewStyle.groupImage} />
 
@@ -787,7 +795,7 @@ export default class Group extends BaseComponent {
 					</View>
 				</View>
 
-				<View style={{flex: 1}}>
+				<View style={{flex: 10}}>
 					<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={AppConst.COLOR_BLUE} tabBarInactiveTextColor={AppConst.COLOR_BLUE} renderTabBar={() => <GroupTabBar />}>
 						<View tabLabel='Leaderboard' style={[ViewStyle.tabViewContainer]}>
 							<Text style={[ViewStyle.rankColumnText]}>Rank</Text>
@@ -822,7 +830,7 @@ export default class Group extends BaseComponent {
 				</View>
 
 				{this.shouldShowCheckout() ?
-					<View style={[ViewStyle.checkoutButtonView, {flex: 0.2}]}>
+					<View style={[ViewStyle.checkoutButtonView, {flex: 2}]}>
 						<TouchableOpacity onPress={this.goToCheckout} style={[MainStyles.button, MainStyles.success]}>
 							<Text style={MainStyles.buttonText}>Checkout</Text>
 						</TouchableOpacity>
@@ -830,7 +838,7 @@ export default class Group extends BaseComponent {
 				: null}
 
 				{this.shouldShowSave() ?
-					<View style={[ViewStyle.checkoutButtonView, {flex: 0.2}]}>
+					<View style={[ViewStyle.checkoutButtonView, {flex: 2}]}>
 						<TouchableOpacity onPress={this.updateRoaster} style={[MainStyles.button, MainStyles.success]}>
 							<Text style={MainStyles.buttonText}>Save</Text>
 						</TouchableOpacity>
@@ -838,7 +846,7 @@ export default class Group extends BaseComponent {
 				: null}
 
 				<DropdownAlert ref={ref => this.dropDownRef = ref} />
-			</View>
+			</ScrollView>
 		);
 	}
 }

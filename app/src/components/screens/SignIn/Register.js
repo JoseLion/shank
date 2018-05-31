@@ -1,13 +1,11 @@
-// React components:
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
+import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import DropdownAlert from 'react-native-dropdownalert';
+import handleError from 'Core/handleError';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
+import { NavigationActions } from 'react-navigation';
 
-// Shank components:
-import { BaseComponent, NoAuthModel, MainStyles, AppConst, BarMessages } from '../BaseComponent';
+import { BaseComponent, NoAuthModel, MainStyles, AppConst } from '../BaseComponent';
 import LocalStyles from './styles/local';
 
 export default class Register extends BaseComponent {
@@ -23,132 +21,139 @@ export default class Register extends BaseComponent {
 			name: '',
 			email: '',
 			password: '',
-			repeatedPassword: '',
-			loading: false
+			repeatedPassword: ''
 		};
-	}
+    }
+    
+	scrollToInput(reactNode) {
+        this.refs.scroll.scrollToFocusedInput(reactNode);
+    }
 
-	setLoading(loading) { this.setState({loading: loading}); }
-	scrollToInput(reactNode) { this.refs.scroll.scrollToFocusedInput(reactNode); }
-	onRegisterPressed() {
+	async onRegisterPressed() {
 		if (!this.state.fullName) {
-			BarMessages.showError('Please enter your Name.', this.validationMessage);
+			handleError('Please enter your name.');
 			return;
 		}
 
 		if (!this.state.email) {
-			BarMessages.showError('Please enter your Email.', this.validationMessage);
+			handleError('Please enter your email');
 			return;
 		}
 
 		if (!this.state.password) {
-			BarMessages.showError('Please enter your password.', this.validationMessage);
+			handleError('Please enter your password');
 			return;
 		}
 
 		if (this.state.password != this.state.repeatedPassword) {
-			BarMessages.showError('Passwords must match.', this.validationMessage);
+			handleError('Passwords must match');
 			return;
 		}
 
-		this.setLoading(true);
+		global.setLoading(true);
 		let data = {
 			fullName: this.state.fullName,
 			email: this.state.email.toLowerCase(),
-			password: this.state.password,
+            password: this.state.password,
+            register_os: Platform.OS
 		};
-		this.onRegisterPressedAsync(data);
-	};
-
-
-	onRegisterPressedAsync = async (data) => {
-		await NoAuthModel.create('app_user/register', data)
-		.then((response) => {
-			this.setLoading(false);
-			AsyncStorage.setItem(AppConst.AUTH_TOKEN, response.token);
-			AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(response.user));
-			this.props.navigation.navigate('Main');
-		}).catch((error) => {
-			this.setLoading(false);
-			BarMessages.showError(error, this.validationMessage);
-		});
+        
+        const response = await NoAuthModel.create('app_user/register', data).catch(handleError);
+        await AsyncStorage.setItem(AppConst.AUTH_TOKEN, response.token);
+        await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(response.user));
+        this.finishSignup();
 	};
 
 	async facebookCallBack(error, profile) {
-		if (error) {
-			return this.handleError(`Facebook error: ${error}`);
-		}
+        try {
+            if (error) {
+                handleError(error);
+                return;
+            }
 
-		if (profile && profile.email) {
-			let data = {
-				fullName: profile.name,
-				email: profile.email,
-				facebookId: profile.id,
-				photo: {
-					name: 'facebook',
-					path: profile.picture.data.url
-				}
-			};
+            if (profile && profile.email) {
+                let data = {
+                    fullName: profile.name,
+                    email: profile.email,
+                    facebookId: profile.id,
+                    photoUrl: profile.picture.data.url
+                };
 
-			const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(this.handleError);
-			await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
-			await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
-			this.setLoading(false);
-			this.props.navigation.navigate('Main');
-		} else {
-			this.handleError('Facebook account does not have an associated email!');
-		}
+                const userInfo = await NoAuthModel.post('app_user/facebookSignin', data).catch(handleError);
+                
+                if (userInfo) {
+                    await AsyncStorage.setItem(AppConst.AUTH_TOKEN, userInfo.token);
+                    await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(userInfo.user));
+                    this.finishSignup();
+                }
+            } else {
+                handleError('Facebook account does not have an associated email!');
+            }
+        } catch (error) {
+            handleError(error);
+        }
 	}
 
 	async facebookService(error, profile) {
-		const permissions = ['public_profile', 'email'];
-		this.setLoading(true);
-		let option = 'Signup';
+        try {
+            const permissions = ['public_profile', 'email'];
+            global.setLoading(true);
+            let option = 'Signup';
 
-		const response = await LoginManager.logInWithReadPermissions(permissions).catch(this.handleError);
+            const response = await LoginManager.logInWithReadPermissions(permissions).catch(handleError);
 
-		if (response.isCancelled) {
-			this.handleError(`${option} with Facebook was cancelled!`);
-		} else {
-			let hasSamePermissions = true;
+            if (response == null) {
+                handleError("No response from Facebook, please try again later");
+                return;
+            }
 
-			for (let i = 0; i < response.grantedPermissions.length; i++) {
-				let found = false;
+            if (response.isCancelled) {
+                handleError(`${option} with Facebook was cancelled!`);
+                return;
+            }
 
-				for (let j = 0; j < permissions.length; j++) {
-					if (response.grantedPermissions[i] == permissions[j]) {
-						found = true;
-						break;
-					}
-				}
+            let hasSamePermissions = true;
 
-				if (!found) {
-					hasSamePermissions = false;
-					break;
-				}
-			}
+            for (let i = 0; i < response.grantedPermissions.length; i++) {
+                let found = false;
 
-			if (hasSamePermissions) {
-				const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => this.facebookCallBack(error, profile));
-				new GraphRequestManager().addRequest(infoRequest).start();
-			} else {
-				this.handleError(`Not enought permissions grnated to ${option} with Facebook!`);
-			}
-		}
-	}
+                for (let j = 0; j < permissions.length; j++) {
+                    if (response.grantedPermissions[i] == permissions[j]) {
+                        found = true;
+                        break;
+                    }
+                }
 
-	handleError(error) {
-		this.setLoading(false);
-		BarMessages.showError(error, this.validationMessage);
-	}
+                if (!found) {
+                    hasSamePermissions = false;
+                    break;
+                }
+            }
+
+            if (hasSamePermissions) {
+                const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => this.facebookCallBack(error, profile));
+                new GraphRequestManager().addRequest(infoRequest).start();
+            } else {
+                handleError(`Not enought permissions grnated to ${option} with Facebook!`);
+            }
+        } catch (error) {
+            handleError(error);
+        }
+    }
+    
+    finishSignup() {
+        global.setLoading(false);
+        this.props.navigation.dispatch(NavigationActions.reset({
+			index: 0,
+			actions: [NavigationActions.navigate({routeName: 'Main'})],
+		}));
+    }
 
 	render() {
 		return (
 			<View style={{flex: 1}}>
 				<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={[MainStyles.background]}>
 					<View style={[MainStyles.container]} behavior="padding">
-						<Spinner visible={this.state.loading} animation="slide" />
-						
 						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
 						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>LET{"\'"}S START BY CREATING AN ACCOUNT</Text>
 						<View style={[LocalStyles.formContainer]}>
@@ -164,7 +169,7 @@ export default class Register extends BaseComponent {
 							<TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(repeatedPassword) => this.setState({repeatedPassword})} value={this.state.repeatedPassword}
 							onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { Keyboard.dismiss() }} placeholder={'Repeat your password'} ref='pass2' secureTextEntry={true} />
 
-							<TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={() => this.onRegisterPressed()}>
+							<TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this.onRegisterPressed}>
 								<Text style={[MainStyles.buttonText]}>Register</Text>
 							</TouchableOpacity>
 
@@ -174,8 +179,6 @@ export default class Register extends BaseComponent {
 						</View>
 					</View>
 				</KeyboardAwareScrollView>
-
-				<DropdownAlert ref={ref => this.validationMessage = ref} />
 			</View>
 		);
 	}

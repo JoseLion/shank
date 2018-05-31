@@ -38,16 +38,13 @@ export const TabNav = TabNavigator({
 			height: 0
 		},
 		style: {
-			backgroundColor: AppConst.COLOR_BLUE
+            backgroundColor: AppConst.COLOR_BLUE,
+            paddingVertical: Platform.OS == 'ios' ? Style.EM(0.75) : 0
 		},
 		labelStyle: {
 			fontFamily: Style.CENTURY_GOTHIC_BOLD,
-			fontSize: Style.FONT_15,
+			fontSize: Style.FONT_14,
 			marginTop: 0
-		},
-		tabStyle: {
-			paddingBottom: Platform.OS == 'ios' ? '15%' : Style.EM(0.3),
-			marginTop: Platform.OS == 'ios' ? '5%' : Style.EM(0.1)
 		}
 	}
 });

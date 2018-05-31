@@ -15,7 +15,13 @@ const router = express.Router();
 
 export default function(app) {
 	router.get(`${basePath}/findMyGroups`, auth, async (request, response) => {
-		const groups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+        const groups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+        const today = Date.now();
+
+        groups.forEach(group => {
+            group.tournaments.sort(sortByMostActive);
+        });
+
 		response.ok(groups);
 	});
 
@@ -149,6 +155,7 @@ export default function(app) {
                 return;
             }
 
+            group.tournaments.sort(sortByMostActive);
 			response.ok(group);
 		} catch (error) {
             console.error(error);
@@ -341,4 +348,36 @@ export default function(app) {
 	});
 
 	return router;
+}
+
+function sortByMostActive(a, b) {
+    const today = Date.now();
+    const a1 = new Date(a.tournament.startDate);
+    const a2 = new Date(a.tournament.endDate);
+    const a3 = a1 - today;
+    const b1 = new Date(b.tournament.startDate);
+    const b2 = new Date(b.tournament.endDate);
+    const b3 = b1 - today;
+
+    if (today >= a1 && today <= a2) {
+        return -1;
+    }
+
+    if (today >= b1 && today <= b2) {
+        return 1
+    }
+
+    if (a3 < 0 && b3 < 0) {
+        return 0;
+    }
+
+    if (a3 < 0) {
+        return 1;
+    }
+
+    if (b3 < 0) {
+        return -1;
+    }
+
+    return a3 - b3;
 }

@@ -30,7 +30,8 @@ export default class Tournaments extends Component {
         this.loadData = this.loadData.bind(this);
         this.refreshData = this.refreshData.bind(this);
 		this.getFormattedDate = this.getFormattedDate.bind(this);
-		this.tournamentHasStarted = this.tournamentHasStarted.bind(this);
+        this.tournamentHasStarted = this.tournamentHasStarted.bind(this);
+        this.openMainLink = this.openMainLink.bind(this);
 		this.state = {
             isRefreshing: false,
 			header: {},
@@ -91,6 +92,20 @@ export default class Tournaments extends Component {
 
 		return false;
     }
+
+    async openMainLink() {
+        if (this.state.header.url) {
+			let canOpen = await Linking.canOpenURL(this.state.header.url).catch(handleError);
+
+			if (canOpen) {
+				return Linking.openURL(this.state.header.url).catch(handleError);
+			}
+
+			return handleError("Unable to open URL! The URL might not be valid.");
+		}
+
+		handleError("The URL was not found!");
+    }
 	
 	async componentDidMount() {
 		global.setLoading(true);
@@ -101,29 +116,31 @@ export default class Tournaments extends Component {
 	render() {
 		return (
 			<ScrollView contentContainerStyle={ViewStyle.mainScroll} refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshData} />}>
-				<View style={ViewStyle.headerView}>
-					<ImageLoad style={ViewStyle.headerImage} source={this.state.header.mainPhoto} resizeMode={'contain'} resizeMethod={'resize'}
-					placeholderSource={Placeholder} placeholderStyle={ViewStyle.headerPlaceholder}>
-						<LinearGradient style={ViewStyle.headerGradient} colors={['transparent', 'rgba(0, 0, 0, 0.5)']} locations={[0.4, 1]} />
-					</ImageLoad>
+				<TouchableHighlight underlayColor={AppConst.COLOR_WHITE} onPress={this.openMainLink}>
+                    <View style={ViewStyle.headerView}>
+                        <ImageLoad style={ViewStyle.headerImage} source={this.state.header.mainPhoto} resizeMode={'contain'} resizeMethod={'resize'}
+                        placeholderSource={Placeholder} placeholderStyle={ViewStyle.headerPlaceholder}>
+                            <LinearGradient style={ViewStyle.headerGradient} colors={['transparent', 'rgba(0, 0, 0, 0.5)']} locations={[0.4, 1]} />
+                        </ImageLoad>
 
-					<View style={ViewStyle.headerDetailView}>
-						<Text style={ViewStyle.headerName}>{this.state.header.name}</Text>
+                        <View style={ViewStyle.headerDetailView}>
+                            <Text style={ViewStyle.headerName}>{this.state.header.name}</Text>
 
-						<View style={{flexDirection: 'row', marginVertical: '2%'}}>
-							<View style={{flex: 2, paddingRight: '1%'}}>
-								<Text style={ViewStyle.headerSubtitle}>{this.state.header.venue ? 'Course/Location' : null}</Text>
-								<Text style={ViewStyle.headerText}>{this.state.header.venue}</Text>
-								<Text style={ViewStyle.headerText}>{this.state.header.location}</Text>
-							</View>
+                            <View style={{flexDirection: 'row', marginVertical: '2%'}}>
+                                <View style={{flex: 2, paddingRight: '1%'}}>
+                                    <Text style={ViewStyle.headerSubtitle}>{this.state.header.venue ? 'Course/Location' : null}</Text>
+                                    <Text style={ViewStyle.headerText}>{this.state.header.venue}</Text>
+                                    <Text style={ViewStyle.headerText}>{this.state.header.location}</Text>
+                                </View>
 
-							<View style={{flex: 1, paddingLeft: '1%'}}>
-								<Text style={ViewStyle.headerSubtitle}>{this.state.header.startDate ? 'Dates' : null}</Text>
-								<Text style={ViewStyle.headerText}>{this.getFormattedDate(this.state.header)}</Text>
-							</View>
-						</View>
-					</View>
-				</View>
+                                <View style={{flex: 1, paddingLeft: '1%'}}>
+                                    <Text style={ViewStyle.headerSubtitle}>{this.state.header.startDate ? 'Dates' : null}</Text>
+                                    <Text style={ViewStyle.headerText}>{this.getFormattedDate(this.state.header)}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+				</TouchableHighlight>
 
 				<Text style={ViewStyle.leaderboardTitle}>Leaderboard</Text>
 				{this.state.leaderboard.length > 0 && this.tournamentHasStarted() ?

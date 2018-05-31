@@ -16,7 +16,7 @@ const router = express.Router();
 export default function (app) {
     router.post(`${basePath}/register`, async (request, response) => {
         try {
-            const found = await AppUser.findOne({ email: request.body.email });
+            const found = await AppUser.findOne({email: request.body.email});
 
             if (found) {
                 return response.server_error('This email is already used in another account');
@@ -26,7 +26,7 @@ export default function (app) {
             appUser.setPassword(request.body.password);
             appUser = await appUser.save();
 
-            return response.ok({ user: appUser, token: appUser.generateJwt() });
+            return response.ok({user: appUser, token: appUser.generateJwt()});
         } catch (error) {
             return response.server_error(error);
         }
