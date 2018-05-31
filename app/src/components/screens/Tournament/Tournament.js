@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Image, Text, TouchableHighlight, Platform, NativeModules, FlatList, Linking } from 'react-native';
+import { ScrollView, View, Image, Text, TouchableHighlight, Platform, NativeModules, FlatList, Linking, RefreshControl } from 'react-native';
 import ImageLoad from "react-native-image-placeholder";
 import LinearGradient from "react-native-linear-gradient";
 import Moment from 'moment';
@@ -26,15 +26,47 @@ export default class Tournaments extends Component {
 	};
 
 	constructor(props) {
-		super(props);
+        super(props);
+        this.loadData = this.loadData.bind(this);
+        this.refreshData = this.refreshData.bind(this);
 		this.getFormattedDate = this.getFormattedDate.bind(this);
 		this.tournamentHasStarted = this.tournamentHasStarted.bind(this);
 		this.state = {
+            isRefreshing: false,
 			header: {},
 			tournaments: [],
 			leaderboard: []
 		};
-	}
+    }
+    
+    async loadData() {
+        let tournaments = await BaseModel.get("tournament/findAll").catch(handleError);
+		let leaderboard = [];
+
+		if (tournaments == null || tournaments.length == 0) {
+			tournaments = [
+				{_id: -1, name: 'US Open', mainPhoto: GolfCourse},
+				{_id: -2, name: 'Masters Tournament', secondaryPhoto: Static1},
+				{_id: -3, name: 'British Open', secondaryPhoto: Static2}
+			];
+		} else {
+			tournaments.forEach(tournament => {
+				tournament.mainPhoto = {uri: FileHost + tournament.mainPhoto};
+				tournament.secondaryPhoto = {uri: FileHost + tournament.secondaryPhoto};
+			});
+
+			leaderboard = await BaseModel.get('leaderboard/findByTournament/' + tournaments[0]._id).catch(handleError);
+		}
+
+		let header = tournaments.shift();
+		this.setState({ tournaments, header, leaderboard });
+    }
+
+    async refreshData() {
+        this.setState({isRefreshing: true});
+        await this.loadData();
+        this.setState({isRefreshing: false});
+    }
 
 	getFormattedDate(obj) {
 		if (obj && obj.startDate && obj.endDate) {
@@ -58,37 +90,17 @@ export default class Tournaments extends Component {
 		}
 
 		return false;
-	}
+    }
 	
 	async componentDidMount() {
 		global.setLoading(true);
-		//Moment.locale("en_US");
-		let tournaments = await BaseModel.get("tournament/findAll").catch(handleError);
-		let leaderboard = [];
-
-		if (tournaments == null || tournaments.length == 0) {
-			tournaments = [
-				{_id: -1, name: 'US Open', mainPhoto: GolfCourse},
-				{_id: -2, name: 'Masters Tournament', secondaryPhoto: Static1},
-				{_id: -3, name: 'British Open', secondaryPhoto: Static2}
-			];
-		} else {
-			tournaments.forEach(tournament => {
-				tournament.mainPhoto = {uri: FileHost + tournament.mainPhoto};
-				tournament.secondaryPhoto = {uri: FileHost + tournament.secondaryPhoto};
-			});
-
-			leaderboard = await BaseModel.get('leaderboard/findByTournament/' + tournaments[0]._id).catch(handleError);
-		}
-
-		let header = tournaments.shift();
-		this.setState({ tournaments, header, leaderboard });
+		await this.loadData();
 		global.setLoading(false);
 	}
 
 	render() {
 		return (
-			<ScrollView contentContainerStyle={ViewStyle.mainScroll}>
+			<ScrollView contentContainerStyle={ViewStyle.mainScroll} refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshData} />}>
 				<View style={ViewStyle.headerView}>
 					<ImageLoad style={ViewStyle.headerImage} source={this.state.header.mainPhoto} resizeMode={'contain'} resizeMethod={'resize'}
 					placeholderSource={Placeholder} placeholderStyle={ViewStyle.headerPlaceholder}>

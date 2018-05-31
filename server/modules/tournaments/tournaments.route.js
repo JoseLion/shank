@@ -93,13 +93,12 @@ export default function() {
 			let tournament = new Tournament(Object.assign({mainPhoto: archive_one_id, secondaryPhoto: archive_two_id}, req.body));
 			promises.push(tournament.save());
 			
-			Q.all(promises).spread((archive1_saved, archive2_saved, tournament_saved) => {
+			Q.all(promises).spread(async (archive1_saved, archive2_saved, tournament_saved) => {
                 const startDate = new Date(tournament_saved.startDate);
                 
                 const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
-                console.log("remindDate: ", remindDate);
 				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getMonth()} ${remindDate.getUTCDay()}`;
-				CronJobs.create({
+				await CronJobs.create({
                     cronTime: remindTime,
                     functionName: 'tournamentStartReminder',
                     reference: `TSR-${tournament_saved._id}`,
@@ -108,7 +107,7 @@ export default function() {
 
 				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
 				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getMonth()} ${beginDate.getUTCDay()}`;
-                CronJobs.create({
+                await CronJobs.create({
                     cronTime: beginTime,
                     functionName: 'tournamentAboutToBegin',
                     reference: `TAB-${tournament_saved._id}`,
@@ -116,11 +115,11 @@ export default function() {
                 });
                 
                 const endDate = new Date(tournament_saved.endDate);
-                tournament_saved.rounds.forEach(round => {
+                await tournament_saved.rounds.asyncForEach(async round => {
                     const day = new Date(round.day);
                     const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getMonth()} ${day.getUTCDay()}`;
                     
-                    CronJobs.create({
+                    await CronJobs.create({
                         cronTime,
                         functionName: 'assignPoints',
                         reference: `AP${round.number}-${tournament_saved._id}`,
@@ -136,9 +135,9 @@ export default function() {
 			}, (err) => {
 				res.server_error(err);
 			});
-    } catch (e) {
-      res.server_error();
-    }
+        } catch (e) {
+            res.server_error();
+        }
 	});
 	
 	router.route('/update_tournament')
@@ -182,15 +181,14 @@ export default function() {
 			
 			promises.push(Tournament.update({_id: req.body._id}, req.body).exec());
 			
-			Q.all(promises).then(() => {
+			Q.all(promises).then(async () => {
 				const startDate = new Date(Number(req.body.startDate));
                 
                 const remindDate = new Date(startDate.getTime() - (15 * 60 * 60 * 1000));
-                console.log("remindDate: ", remindDate);
 				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getMonth()} ${remindDate.getUTCDay()}`;
                 
-                CronJobs.remove({reference: `TSR-${req.body._id}`});
-				CronJobs.create({
+                await CronJobs.remove({reference: `TSR-${req.body._id}`});
+				await CronJobs.create({
                     cronTime: remindTime,
                     functionName: 'tournamentStartReminder',
                     reference: `TSR-${req.body._id}`,
@@ -200,8 +198,8 @@ export default function() {
 				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
 				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getMonth()} ${beginDate.getUTCDay()}`;
                 
-                CronJobs.remove({reference: `TAB-${req.body._id}`});
-				CronJobs.create({
+                await CronJobs.remove({reference: `TAB-${req.body._id}`});
+				await CronJobs.create({
                     cronTime: beginTime,
                     functionName: 'tournamentAboutToBegin',
                     reference: `TAB-${req.body._id}`,
@@ -209,12 +207,12 @@ export default function() {
                 });
 
                 const endDate = new Date(Number(req.body.endDate));
-                req.body.rounds.forEach(round => {
+                req.body.rounds.asyncForEach(async round => {
                     const day = new Date(round.day);
                     const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getMonth()} ${day.getUTCDay()}`;
                     
-                    CronJobs.remove({reference: `ASP-${req.body._id}`});
-                    CronJobs.create({
+                    await CronJobs.remove({reference: `ASP-${req.body._id}`});
+                    await CronJobs.create({
                         cronTime,
                         functionName: 'assignPoints',
                         reference: `AP${round.number}-${req.body._id}`,
@@ -229,9 +227,9 @@ export default function() {
 			}, (err) => {
 				res.server_error(err);
 			});
-    } catch (e) {
-      res.server_error();
-    }
+        } catch (e) {
+            res.server_error();
+        }
 	});
 	
 	router.route('/remove_tournaments')
@@ -243,21 +241,21 @@ export default function() {
 				Archive.findByIdAndRemove(req.body.secondaryPhoto).exec()
 			];
 			
-      Q.all(promises).spread((tournament) => {
-        CronJobs.remove({reference: `TSR-${req.body._id}`});
-        CronJobs.remove({reference: `TAB-${req.body._id}`});
+            Q.all(promises).spread((tournament) => {
+                CronJobs.remove({reference: `TSR-${req.body._id}`});
+                CronJobs.remove({reference: `TAB-${req.body._id}`});
 
-        tournament.rounds.forEach(round => {
-            CronJobs.remove({reference: `AP${round.number}-${req.body._id}`});
-        });
+                tournament.rounds.forEach(round => {
+                    CronJobs.remove({reference: `AP${round.number}-${req.body._id}`});
+                });
 
-        res.ok(tournament);
-      }, (err) => {
-        res.server_error(err);
-      });
-    } catch (e) {
-      res.server_error();
-    }
+                res.ok(tournament);
+            }, (err) => {
+                res.server_error(err);
+            });
+        } catch (e) {
+            res.server_error();
+        }
 	});
 	
 	return router;

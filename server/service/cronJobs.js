@@ -2,9 +2,11 @@ import { CronJob } from 'cron';
 import mongoose from 'mongoose';
 import handleMongoError from './handleMongoError';
 import PushNotiications from './pushNotification';
+import Fantasy from './fantasy';
 import AssignPoints from './assignPoints';
 
 const Job = mongoose.model('Job');
+const pushNotifications = new PushNotiications();
 
 export default class {
     constructor() {
@@ -26,7 +28,6 @@ export default class {
             const cronJob = new CronJob({
                 cronTime: cronTime,
                 onTick: function() {
-                    console.log("ON TICK!!");
                     const shouldContinue = self[functionName](args);
 
                     if (!shouldContinue) {
@@ -62,10 +63,9 @@ export default class {
 
             cronJob._id = job._id;
             global.runningJobs.push(cronJob);
-            console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime.source));
             return cronJob;
         } catch (error) {
-            throw "CronJobs Error: " + error;
+            throw "CronJobs [create] Error: " + error;
         }
     }
 
@@ -87,54 +87,53 @@ export default class {
                 }
                 
                 job.remove();
-                console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime.source));
             }
         } catch (error) {
-            throw "CronJobs Error: " + error;
+            throw "CronJobs [remove] Error: " + error;
         }
     }
 
     static async restoreRunningJobs() {
-        const self = this;
-        const jobs = await Job.find().catch(handleMongoError);
+        try {
+            const self = this;
+            const jobs = await Job.find().catch(handleMongoError);
 
-        jobs.forEach(job => {
-            const cronJob = new CronJob({
-                cronTime: job.cronTime,
-                onTick: function() {
-                    console.log("ON TICK!!");
-                    const shouldContinue = self[job.functionName](JSON.parse(job.args));
+            jobs.forEach(job => {
+                const cronJob = new CronJob({
+                    cronTime: job.cronTime,
+                    onTick: function() {
+                        const shouldContinue = self[job.functionName](JSON.parse(job.args));
 
-                    if (!shouldContinue) {
-                        this.stop();
-                    }
-                },
-                onComplete: async function() {
-                    let index;
-                    global.runningJobs.forEach((job, i) => {
-                        if (job._id === this._id) {
-                            index = i;
-                            return;
+                        if (!shouldContinue) {
+                            this.stop();
                         }
-                    });
+                    },
+                    onComplete: async function() {
+                        let index;
+                        global.runningJobs.forEach((job, i) => {
+                            if (job._id === this._id) {
+                                index = i;
+                                return;
+                            }
+                        });
 
-                    if (index) {
-                        global.runningJobs.splice(index, 1);
-                    }
+                        if (index) {
+                            global.runningJobs.splice(index, 1);
+                        }
 
-                    await Job.remove({_id: this._id}).catch(handleMongoError);
-                },
-                start: false,
-                timeZone: 'Atlantic/Reykjavik'
+                        await Job.remove({_id: this._id}).catch(handleMongoError);
+                    },
+                    start: false,
+                    timeZone: 'Atlantic/Reykjavik'
+                });
+
+                cronJob.start();
+                cronJob._id = job._id;
+                global.runningJobs.push(cronJob);
             });
-
-            cronJob.start();
-            cronJob._id = job._id;
-            global.runningJobs.push(cronJob);
-            console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime.source));
-        });
-        
-        return true;
+        } catch (error) {
+            throw "CronJob [restore] error: " + error;
+        }
     }
 
     /**
@@ -143,11 +142,12 @@ export default class {
 
     static async tournamentStartReminder(id) {
         try {
-            console.log("RUNNING (tournamentStartReminder)");
-            const pushNotifications = new PushNotiications();
             const Tournament = mongoose.model('Tournament');
             const Group = mongoose.model('Group');
+
+            const tournament = await Tournament.findById(id).catch(handleMongoError);
             const groups = await Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            await Fantasy.update_leaderboard(tournament.tournamentID).catch(error => console.error(error));
 
             groups.forEach(group => {
                 group.tournaments.forEach(tournamentCross => {
@@ -169,12 +169,13 @@ export default class {
 
     static async tournamentAboutToBegin(id) {
         try {
-            const pushNotifications = new PushNotiications();
             const Tournament = mongoose.model('Tournament');
             const Group = mongoose.model('Group');
             const tournament = await Tournament.findById(id).catch(handleMongoError);
             const groups = await Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
             const startDate = new Date(tournament.startDate);
+
+            await Fantasy.update_leaderboard(tournament.tournamentID).catch(error => console.error(error));
 
             groups.forEach(group => {
                 group.tournaments.forEach(tournamentCross => {
@@ -196,12 +197,14 @@ export default class {
 
     static async assignPoints({ tournamentId, round }) {
         try {
-            await AssignPoints(tournamentId, round);
-
-            const pushNotifications = new PushNotiications();
             const Group = mongoose.model('Group');
+            const Tournament = mongoose.model('Tournament');
+            const tournament = await Tournament.findById(id).catch(handleMongoError);
             const groups = await Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
 
+            await Fantasy.update_leaderboard(tournament.tournamentID).catch(error => console.error(error));
+            await AssignPoints(tournamentId, round);
+            
             groups.forEach(group => {
                 group.tournaments.forEach(tournamentCross => {
                     tournamentCross.leaderboard.forEach(leaderboardCross => {

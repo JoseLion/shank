@@ -138,12 +138,14 @@ export default StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'flex-start',
 		paddingVertical: '1%',
-		paddingHorizontal: '3%'
+        paddingHorizontal: '3%',
+        backgroundColor: AppConst.COLOR_BLUE
 	},
 	listHeaderText: {
 		fontFamily: Style.CENTURY_GOTHIC,
 		fontSize: Style.FONT_14_5,
-		color: AppConst.COLOR_WHITE
+        color: AppConst.COLOR_WHITE,
+        width: '100%'
 	},
 	listRowView: {
 		flexDirection: 'row',

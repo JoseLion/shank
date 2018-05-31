@@ -58,21 +58,11 @@ if (testing_preview_or_production) {
   options.pass = process.env.DB_PASS;
 }
 
-mongoose.connect(database_uri, {})
-  .then(async() => {
+mongoose.connect(database_uri, {}).then(async() => {
 	console.log(`Database connected at ${database_uri}`);
-	CronJobs.restoreRunningJobs();
-    
-    /*let tournaments = await fantasy.updateTournaments().catch(error => console.log("Error fetching from fantasydata.net: ", error));
-    console.log("Tournaments updated! (Total: " + tournaments.length + ")");
-  
-    let players = await fantasy.updatePlayers().catch(error => console.log("Error fetching from fantasydata.net: ", error));
-    console.log("Players updated! (Total: " + players.length + ")");
-  
-    let total = await fantasy.updateLeaderboard();
-    console.log("Updated " + total + " leaderboards in all tournaments!");*/
-  })
-  .catch(err => console.log(`Database connection error: ${err.message}`));
+    await CronJobs.restoreRunningJobs();
+    await fantasy.update_leaderboard(288).catch(error => console.error(error));
+}).catch(err => console.log(`Database connection error: ${err.message}`));
 
 app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
@@ -135,32 +125,5 @@ app.use(function (err, req, res, next) {
 		error: {}
 	});
 });
-
-/** THIS CODE SHOULD CHANGE, THIS IS A BURNT VERSION OF WHAT SHOULD BE DONE WHEN A TOURNAMENT IS ADDED TO THE DB **/
-
-/*async function createCrons(id) {
-	const Tournament = mongoose.model('Tournament');
-	const tournament = await Tournament.findOne({tournamentID: id}).catch(handleMongoError);
-
-	if (tournament) {
-		tournament.rounds.forEach(round => {
-			new CronJob({
-				cronTime: `0 30 18 ${round.day.getDate()} ${round.day.getMonth()} ${round.day.getDay()}`,
-				onTick: async function() {
-					await fantasy.updateLeaderboard();
-					AssignPoints(tournament._id, round.number);
-					this.stop();
-				},
-				start: true,
-				timeZone: 'America/Guayaquil'
-			});
-		});
-	}
-}*/
-
-//createCrons(263);
-
-/** ----------------------------------------------------------------------------------------------------------- **/
-
 
 module.exports = app;

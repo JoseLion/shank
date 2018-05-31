@@ -35,48 +35,45 @@ export default {
 	},
 	
 	get_leaderboard_by_tournament: async function(tournamentID) {
-		console.log(`Fetching leaderboard of tournament ${tournamentID} from fantasydata.net...`);
-		
-		const response = await fetch(`${fantasy_url}/Leaderboard/${tournamentID}`, options).catch(handleError);
-		let json = await response.json().catch(handleError);
-		json = normalizeKeys(json);
-		
-		return json;
+        try {
+            console.log(`Fetching leaderboard of tournament ${tournamentID} from fantasydata.net...`);
+            
+            const response = await fetch(`${fantasy_url}/Leaderboard/${tournamentID}`, options).catch(handleError);
+            let json = await response.json().catch(handleError);
+            json = normalizeKeys(json);
+            
+            return json;
+        } catch (error) {
+            throw "Exception[get_leaderboard_by_tournament(tournamentID)]: " + error;
+        }
 	},
 
-	updateLeaderboard: async function() {
-		const Leaderboard = mongoose.model('Leaderboard');
-		const Tournament = mongoose.model('Tournament');
-		const Player = mongoose.model('Player');
+	update_leaderboard: async function(tournamentID) {
+        try {
+            const Leaderboard = mongoose.model('Leaderboard');
+            const Tournament = mongoose.model('Tournament');
+            const Player = mongoose.model('Player');
 
-		const tournaments = await Tournament.find({}).catch(handleError);
-		let count = 0;
+            const tournament = await Tournament.findOne({ tournamentID }).catch(handleError);
+            const json = await this.get_leaderboard_by_tournament(tournamentID);
 
-		await tournaments.asyncForEach(async tournament => {
-			console.log("Fetching leaderboard of tournament " + tournament.tournamentID + " from fantasydata.net...");
+            await json.players.asyncForEach(async cross => {
+                let found = await Leaderboard.findOne({playerTournamentID: cross.playerTournamentID}).catch(handleError);
+                cross.tournament = tournament;
+                cross.player = await Player.findOne({playerID: cross.playerID}).catch(handleError);
 
-			const response = await fetch(`https://api.fantasydata.net/golf/v2/JSON/Leaderboard/${tournament.tournamentID}`, options).catch(handleError);
-			let json = await response.json().catch(handleError);
-			json = normalizeKeys(json);
+                if (found) {
+                    found.set(cross);
+                    await found.save().catch(handleError);
+                } else {
+                    await Leaderboard.create(cross).catch(handleError);
+                }
+            });
 
-			await json.players.asyncForEach(async cross => {
-				let found = await Leaderboard.findOne({playerTournamentID: cross.playerTournamentID}).catch(handleError);
-				cross.tournament = tournament;
-				cross.player = await Player.findOne({playerID: cross.playerID}).catch(handleError);
-
-				if (found) {
-					found.set(cross);
-					await found.save().catch(handleError);
-				} else {
-					await Leaderboard.create(cross).catch(handleError);
-				}
-			});
-
-			count += json.players.length;
-		});
-
-		
-		return count;
+            console.log(`Tournament ${tournamentID} leaderboard updated successfully!`);
+        } catch (error) {
+            throw "Exception[update_leaderboard(tournamentID)]: " + error;
+        }
 	}
 }
 

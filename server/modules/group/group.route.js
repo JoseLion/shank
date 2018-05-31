@@ -4,6 +4,7 @@ import auth from '../../config/auth';
 import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
 import Q from 'q';
+import PushNotifications from '../../service/pushNotification';
 
 const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
@@ -82,10 +83,32 @@ export default function(app) {
 			let new_tournament = req.body.new_tournament;
 			new_tournament.leaderboard[0].user = req.payload._id;
 			
-			Group.update({"_id": req.body._id}, { $push: { tournaments: new_tournament} }, function(err, group) {
+			Group.update({"_id": req.body._id}, { $push: { tournaments: new_tournament} }, async function(err, group) {
 				if (err) {
 					return res.server_error(err);
-				}
+                }
+
+                await group.tournaments.asyncForEach(async tournamentCross => {
+                    if (String(tournamentCross.tournament) == String(new_tournament.tournament)) {
+                        const pushNotification = new PushNotifications();
+
+                        await tournamentCross.leaderboard.asyncForEach(async cross => {
+                            const appUser = await AppUser.findById(cross.user).catch(handleMongoError);
+                            const tournament = await Tournament.findById(new_tournament.tournament);
+                            const today = new Date();
+                            const startDate = new Date(tournament.startDate);
+                            const days = Math.round((startDate.getTime() - today.getTime()) / 1000 / 60 / 60 / 24);
+                            
+                            appUser.notifications.forEach(push => {
+                                pushNotification.send({
+                                    token: push.token,
+                                    os: push.os,
+                                    aleert: `The next tournament ${tournament.name} starts in ${days} days. Don’t miss it`
+                                })
+                            });
+                        });
+                    }
+                });
 
 				res.ok(req.body);
 			});
