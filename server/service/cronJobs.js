@@ -58,16 +58,16 @@ export default class {
 
             cronJob._id = job._id;
             global.runningJobs.push(cronJob);
-            console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime));
+            console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime.source));
             return cronJob;
         } catch (error) {
             throw "CronJobs Error: " + error;
         }
     }
 
-    static async remove({ cronTime, onTick, reference } = new Object()) {
+    static async remove({ reference } = new Object()) {
         try {
-            const job = await Job.findOne(arguments[0]).catch(handleMongoError);
+            const job = await Job.findOne({ reference }).catch(handleMongoError);
 
             if (job) {
                 let index;
@@ -83,7 +83,7 @@ export default class {
                 }
                 
                 job.remove();
-                console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime));
+                console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime.source));
             }
         } catch (error) {
             throw "CronJobs Error: " + error;
@@ -119,7 +119,7 @@ export default class {
             cronJob.start();
             cronJob._id = job._id;
             global.runningJobs.push(cronJob);
-            console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime));
+            console.log("RUNNING JOBS: ", global.runningJobs.map(running => running.cronTime.source));
         });
         
         return true;
@@ -131,6 +131,7 @@ export default class {
 
     static tournamentStartReminder(id) {
         try {
+            console.log("RUNNING (tournamentStartReminder)");
             const pushNotifications = new PushNotiications();
             const Tournament = mongoose.model('Tournament');
             const Group = mongoose.model('Group');
@@ -185,27 +186,26 @@ export default class {
 
     static async assignPoints({ tournamentId, round }) {
         try {
-            
-        } catch (error) {
-            throw "Exception[assignPoints({ tournamentId, round })]: " + error;
-        }
-        await AssignPoints(tournamentId, round);
+            await AssignPoints(tournamentId, round);
 
-        const Group = mongoose.model('Group');
-        const groups = Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            const Group = mongoose.model('Group');
+            const groups = Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
 
-        groups.forEach(group => {
-            group.tournaments.forEach(tournamentCross => {
-                tournamentCross.leaderboard.forEach(leaderboardCross => {
-                    leaderboardCross.user.notifications.forEach(pushObj => {
-                        pushNotifications.send({
-                            token: pushObj.token,
-                            os: pushObj.os,
-                            alert: `The results of round ${round} are already. Look at your score`
+            groups.forEach(group => {
+                group.tournaments.forEach(tournamentCross => {
+                    tournamentCross.leaderboard.forEach(leaderboardCross => {
+                        leaderboardCross.user.notifications.forEach(pushObj => {
+                            pushNotifications.send({
+                                token: pushObj.token,
+                                os: pushObj.os,
+                                alert: `The results of round ${round} are already. Look at your score`
+                            });
                         });
                     });
                 });
             });
-        });
+        } catch (error) {
+            throw "Exception[assignPoints({ tournamentId, round })]: " + error;
+        }
     }
 }
