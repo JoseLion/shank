@@ -24,6 +24,12 @@
     var vm = this;
     $scope.list = referrals;
     
+    vm.search_params = {};
+    vm.dates = {
+      from_date_opened: false,
+      to_date_opened: false
+    };
+    
     parse_referrals();
     
     function parse_referrals() {
@@ -38,46 +44,24 @@
       });
     }
     
-    $scope.$on('changeChildren', function(event, parentItem) {
-      var child;
-      var i;
-      var len;
-      var ref;
-      var results;
-      
-      ref = parentItem.children;
-      results = [];
-      
-      for (i = 0, len = ref.length; i < len; i++) {
-        if (window.CP.shouldStopExecution(2)) {
-          break;
-        }
-        
-        child = ref[i];
-        child.selected = parentItem.selected;
-        
-        if (child.children !== null) {
-          results.push($scope.$broadcast('changeChildren', child));
-        }
-        else {
-          results.push(void 0);
-        }
-      }
-      
-      window.CP.exitedLoop(2);
-      
-      return results;
-    });
+    vm.clear_search_params = function() {
+      vm.search_params = {};
+    }
     
-    return $scope.$on('changeParent', function(event, parentScope) {
-      var children;
-      
-      children = parentScope.item.children;
-      parentScope.item.selected = $filter('selected')(children).length === children.length;
-      parentScope = parentScope.$parent.$parent;
-      if (parentScope.item !== null) {
-        return $scope.$broadcast('changeParent', parentScope);
+    vm.open_search_calendar = function(number) {
+      console.log("-----------------");
+      switch (number) {
+        case 1:
+          vm.dates.from_date_opened = true;
+          vm.dates.to_date_opened = false;
+          break;
+        case 2:
+          vm.dates.from_date_opened = false;
+          vm.dates.to_date_opened = true;
+          break;
       }
-    });
+    }
+    
+    //https://codepen.io/sliiice/pen/GurpF
   }
 })();
