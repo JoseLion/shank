@@ -22,7 +22,31 @@
       
       <span style="width: 10px;">&nbsp;</span>
       
-      <a class="pull-right btn btn-info btn-xs"
+      <span ng-if="node.level == 1" class="btn btn-primary btn-file input-large">
+        &Iacute;cono:
+        <input type="file"
+               ngf-change="referralCtrl.onChangeFiles($files)"
+               ngf-select
+               ng-model="node.icon_file"
+               name="node_icon"
+               accept="'image/*'" />
+      </span>
+      
+      <img ng-if="node.icon_file" ngf-src="node.icon_file" class="thumb">
+      <img ng-if="!node.icon_file && node.icon && node.icon.name"
+           ng-src="{{general_variables.Host + node.icon.path}}"
+           class="thumb pointer"
+           ng-click="referralCtrl.openNodeImage(node)">
+      
+      <a ng-if="node.level == 1 || node.level == 2"
+         class="pull-right btn btn-danger btn-xs"
+         data-nodrag
+         ng-click="referralCtrl.remove(this)">
+        <span class="fa fa-trash-o"></span>
+      </a>
+      
+      <a ng-if="(node.level == 0 && node.nodes.length < 6) || (node.level == 1 && node.nodes.length < 3)"
+         class="pull-right btn btn-info btn-xs"
          data-nodrag
          ng-click="referralCtrl.newSubItem(this)"
          style="margin-right: 8px;">
@@ -58,15 +82,6 @@
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content">
-          <div class="row">
-            <div class="col-sm-12 text-right">
-              <button type="button" class="btn btn-primary" ng-click="referralCtrl.get_users_xlsx()">
-                <i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Excel
-              </button>
-              <div class="space-10"></div>
-            </div>
-          </div>
-          
           <div class="table-responsive">
             <div ui-tree id="tree1-root" data-nodrop-enabled="true">
               <ol ui-tree-nodes ng-model="referralCtrl.tree1">
