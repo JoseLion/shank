@@ -193,7 +193,7 @@ export default function() {
 			
 			Referred
 			.find()
-			.populate('host', "_id fullName")
+			.populate('user', "_id fullName")
 			.populate({
 				path: 'guests.user',
 				select: '_id fullName',

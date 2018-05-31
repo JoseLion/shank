@@ -1,63 +1,21 @@
-<!-- Nested node template -->
-<script type="text/ng-template" id="nodes_renderer.html">
-  <div class="tree-node">
-<!--    <div class="pull-left tree-handle" ui-tree-handle>
-      <span class="fa fa-list"></span>
-    </div>-->
-    
-    <div class="tree-node-content">
-      <a class="btn btn-success btn-xs"
-         ng-if="node.nodes && node.nodes.length > 0"
-         data-nodrag ng-click="referralCtrl.toggle(this)">
-        <span
-          class="fa"
-          ng-class="{
-            'fa-chevron-right': collapsed,
-            'fa-chevron-down': !collapsed}">
-        </span>
-      </a>
-      
-      <input type="text"
-             ng-model="node.name" />
-      
-      <span style="width: 10px;">&nbsp;</span>
-      
-      <span ng-if="node.level == 1" class="btn btn-primary btn-file input-large">
-        &Iacute;cono:
-        <input type="file"
-               ngf-change="referralCtrl.onChangeFiles($files)"
-               ngf-select
-               ng-model="node.icon_file"
-               name="node_icon"
-               accept="'image/*'" />
-      </span>
-      
-      <img ng-if="node.icon_file" ngf-src="node.icon_file" class="thumb">
-      <img ng-if="!node.icon_file && node.icon && node.icon.name"
-           ng-src="{{general_variables.Host + node.icon.path}}"
-           class="thumb pointer"
-           ng-click="referralCtrl.openNodeImage(node)">
-      
-      <a ng-if="node.level == 1 || node.level == 2"
-         class="pull-right btn btn-danger btn-xs"
-         data-nodrag
-         ng-click="referralCtrl.remove(this)">
-        <span class="fa fa-trash-o"></span>
-      </a>
-      
-      <a ng-if="(node.level == 0 && node.nodes.length < 6) || (node.level == 1 && node.nodes.length < 3)"
-         class="pull-right btn btn-info btn-xs"
-         data-nodrag
-         ng-click="referralCtrl.newSubItem(this)"
-         style="margin-right: 8px;">
-        <span class="fa fa-plus"></span>
-      </a>
-    </div>
-  </div>
-  <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
-    <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
-    </li>
-  </ol>
+<script id="table_tree.html" type="text/ng-template">
+  <tr ng-class="{parent: item.guests}" ng-init="parentScope = $parent.$parent; initCheckbox(item, parentScope.item)">
+    <td class="cell-name" ng-click="item.opened = !item.opened">
+      <div class="indent" style="padding-left: {{10*item.level}}px"></div>
+      {{item.user.fullName}}
+    </td>
+    <td class="cell-members">
+      {{item.guests.length}}
+    </td>
+  </tr>
+  
+  <tr class="children" ng-if="item.guests &amp;&amp; item.guests.length &gt; 0">
+    <td colspan="2">
+      <table>
+        <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-init="level = level + 1" ng-repeat="item in item.guests"></tbody>
+      </table>
+    </td>
+  </tr>
 </script>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -68,7 +26,7 @@
         <a ui-sref="admin.dashboard">Dashboard</a>
       </li>
       <li class="active">
-        <strong>App Users</strong>
+        <strong>Referrals</strong>
       </li>
     </ol>
   </div>
@@ -82,11 +40,21 @@
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content">
-          <div class="table-responsive">
-            <div ui-tree id="tree1-root" data-nodrop-enabled="true">
-              <ol ui-tree-nodes ng-model="referralCtrl.tree1">
-                <li ng-repeat="node in referralCtrl.tree1" ui-tree-node ng-include="'nodes_renderer.html'"></li>
-              </ol>
+          <div class="row">
+            <div class="wrapper col-md-6">
+              <table class="table-nested table-responsive">
+                <thead>
+                  <tr>
+                    <th style="padding-left: 10px">
+                      Name
+                    </th>
+                    <th class="cell-members">
+                      Number of referrals
+                    </th>
+                  </tr>
+                </thead>
+                <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-repeat="item in list"></tbody>
+              </table>
             </div>
           </div>
         </div>

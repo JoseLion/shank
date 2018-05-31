@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 let ReferredSchema = new mongoose.Schema({
-	host: {
+	user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'App_User'
 	},

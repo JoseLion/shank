@@ -20,35 +20,64 @@
       });
   });
   
-  function ReferralsController(NgTableParams, referrals, reports_model, date_utils, _) {
+  function ReferralsController($scope, $filter, referrals, _) {
     var vm = this;
+    $scope.list = referrals;
     
-    vm.referrals = referrals;
-    vm.tree1 = [{
-      level: 0,
-      name: 'A PIE',
-      type: 1,
-      nodes: []
-    }];
+    parse_referrals();
     
-    vm.remove = function(scope) {
-      scope.remove();
-    };
-    
-    vm.toggle = function(scope) {
-      scope.toggle();
-    };
-    
-    vm.newSubItem = function(scope) {
-      var node_data = scope.$modelValue;
-      
-      node_data.nodes.push({
-        //id: node_data.id * 10 + node_data.nodes.length,
-        //name: node_data.name + '.' + (node_data.nodes.length + 1),
-        level: Number(node_data.level) + 1,
-        name: '',
-        nodes: []
+    function parse_referrals() {
+      _.each($scope.list, function(referral, index) {
+        if (index === 0) {
+          referral.opened = false;
+          referral.level = 1;
+        }
+        _.each(referral.guests, function(guests) {
+          guests.level = 2;
+        });
       });
-    };
+    }
+    
+    $scope.$on('changeChildren', function(event, parentItem) {
+      var child;
+      var i;
+      var len;
+      var ref;
+      var results;
+      
+      ref = parentItem.children;
+      results = [];
+      
+      for (i = 0, len = ref.length; i < len; i++) {
+        if (window.CP.shouldStopExecution(2)) {
+          break;
+        }
+        
+        child = ref[i];
+        child.selected = parentItem.selected;
+        
+        if (child.children !== null) {
+          results.push($scope.$broadcast('changeChildren', child));
+        }
+        else {
+          results.push(void 0);
+        }
+      }
+      
+      window.CP.exitedLoop(2);
+      
+      return results;
+    });
+    
+    return $scope.$on('changeParent', function(event, parentScope) {
+      var children;
+      
+      children = parentScope.item.children;
+      parentScope.item.selected = $filter('selected')(children).length === children.length;
+      parentScope = parentScope.$parent.$parent;
+      if (parentScope.item !== null) {
+        return $scope.$broadcast('changeParent', parentScope);
+      }
+    });
   }
 })();
