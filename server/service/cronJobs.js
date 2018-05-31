@@ -24,6 +24,7 @@ export default class {
             const cronJob = new CronJob({
                 cronTime: cronTime,
                 onTick: function() {
+                    console.log("ON TICK!!");
                     const shouldContinue = this[functionName](...args);
 
                     if (!shouldContinue) {
