@@ -13,6 +13,8 @@ export default class {
 
     static async create({ cronTime, functionName, reference, args } = new Object()) {
         try {
+            const self = this;
+
             if (functionName ==null || functionName == '') {
                 throw "The name of the function to excecute is required";
             }
@@ -25,7 +27,7 @@ export default class {
                 cronTime: cronTime,
                 onTick: function() {
                     console.log("ON TICK!!");
-                    const shouldContinue = this[functionName](...args);
+                    const shouldContinue = self[functionName](args);
 
                     if (!shouldContinue) {
                         this.stop();
@@ -54,6 +56,7 @@ export default class {
             const job = await Job.create({
                 cronTime: cronTime,
                 onTick: functionName,
+                args: JSON.stringify(args),
                 reference: reference
             }).catch(handleMongoError);
 
@@ -92,12 +95,20 @@ export default class {
     }
 
     static async restoreRunningJobs() {
+        const self = this;
         const jobs = await Job.find().catch(handleMongoError);
 
         jobs.forEach(job => {
             const cronJob = new CronJob({
                 cronTime: job.cronTime,
-                onTick: this[job.onTick],
+                onTick: function() {
+                    console.log("ON TICK!!");
+                    const shouldContinue = this[job.functionName](JSON.parse(job.args));
+
+                    if (!shouldContinue) {
+                        this.stop();
+                    }
+                },
                 onComplete: async function() {
                     let index;
                     global.runningJobs.forEach((job, i) => {
@@ -130,15 +141,13 @@ export default class {
      * FUNCTION TO BE EXCECUTED BY JOBS
      */
 
-    static tournamentStartReminder(id) {
+    static async tournamentStartReminder(id) {
         try {
             console.log("RUNNING (tournamentStartReminder)");
             const pushNotifications = new PushNotiications();
             const Tournament = mongoose.model('Tournament');
             const Group = mongoose.model('Group');
-            const tournament = Tournament.findById(id).catch(handleMongoError);
-            const groups = Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
-            const startDate = new Date(tournament.startDate);
+            const groups = await Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
 
             groups.forEach(group => {
                 group.tournaments.forEach(tournamentCross => {
@@ -147,7 +156,7 @@ export default class {
                             pushNotifications.send({
                                 token: pushObj.token,
                                 os: pushObj.os,
-                                alert: `Roster alert: Remember to make your picks before the tournament starts: Tomorrow at ${startDate.getUTCHours()}:${startDate.getUTCMinutes()}. It’s time to make your picks for this week’s tournament`
+                                alert: `Roster alert: Remember to make your picks before the tournament starts: Tomorrow in 15 hours. It’s time to make your picks for this week’s tournament`
                             });
                         });
                     });
@@ -158,13 +167,13 @@ export default class {
         }
     }
 
-    static tournamentAboutToBegin(id) {
+    static async tournamentAboutToBegin(id) {
         try {
             const pushNotifications = new PushNotiications();
             const Tournament = mongoose.model('Tournament');
             const Group = mongoose.model('Group');
-            const tournament = Tournament.findById(id).catch(handleMongoError);
-            const groups = Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            const tournament = await Tournament.findById(id).catch(handleMongoError);
+            const groups = await Group.find({'tournaments.tournament': id}).populate('tournaments.leaderboard.user').catch(handleMongoError);
             const startDate = new Date(tournament.startDate);
 
             groups.forEach(group => {
@@ -190,7 +199,7 @@ export default class {
             await AssignPoints(tournamentId, round);
 
             const Group = mongoose.model('Group');
-            const groups = Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            const groups = await Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
 
             groups.forEach(group => {
                 group.tournaments.forEach(tournamentCross => {
