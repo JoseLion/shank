@@ -198,6 +198,7 @@ export default class {
         try {
             await AssignPoints(tournamentId, round);
 
+            const pushNotifications = new PushNotiications();
             const Group = mongoose.model('Group');
             const groups = await Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
 

@@ -185,7 +185,7 @@ export default function() {
 			Q.all(promises).then(() => {
 				const startDate = new Date(Number(req.body.startDate));
                 
-                const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
+                const remindDate = new Date(startDate.getTime() - (15 * 60 * 60 * 1000));
                 console.log("remindDate: ", remindDate);
 				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getMonth()} ${remindDate.getUTCDay()}`;
                 

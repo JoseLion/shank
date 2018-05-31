@@ -750,15 +750,16 @@ export default class Group extends BaseComponent {
 							</TouchableOpacity>
 						</View>
 
-						<View style={{flex: 2}}>
-							{this.state.displayGroupOptions ?
-								<TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
-									<Text style={MainStyles.buttonText}>Invite</Text>
-								</TouchableOpacity>
-								:
-								null
-							}
-						</View>
+						    
+                        {this.state.displayGroupOptions ?
+                            <View style={{flex: 2}}>
+                                <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
+                                    <Text style={MainStyles.buttonText}>Invite</Text>
+                                </TouchableOpacity>
+                            </View>
+                        :
+                            null
+                        }
 					</View>
 
 					<View style={[ViewStyle.prizeView]}>
