@@ -7,10 +7,13 @@
     <td class="cell-members">
       {{item.guests.length}}
     </td>
+    <td class="cell-members">
+      {{item.user.country}}
+    </td>
   </tr>
   
   <tr class="children" ng-if="item.guests &amp;&amp; item.guests.length &gt; 0">
-    <td colspan="2">
+    <td colspan="3">
       <table class="tree-table">
         <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-init="level = level + 1" ng-repeat="item in item.guests"></tbody>
       </table>
@@ -151,6 +154,9 @@
                     </th>
                     <th class="cell-members">
                       Number of referrals
+                    </th>
+                    <th class="cell-members">
+                      Country
                     </th>
                   </tr>
                 </thead>

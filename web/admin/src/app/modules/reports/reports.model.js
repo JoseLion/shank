@@ -32,6 +32,10 @@
       return base_model('get_player_payments').create(params);
     }
     
+    model.get_initial_data_for_dashboar = function(params) {
+      return base_model('get_initial_data_for_dashboar').create(params);
+    }
+    
     return model;
   });
 })();
