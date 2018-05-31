@@ -42,9 +42,8 @@
     <input type="text"
            id="tournament_start_date"
            name="tournament_start_date"
-           ng-value="tournamentsCtrl.tournament.start_date"
-           class="form-control"
-           readonly />
+           ng-model="tournamentsCtrl.tournament.start_date"
+           class="form-control"/>
   </div>
   <div class="col-sm-2">
       <div ng-cloak>
@@ -93,6 +92,19 @@
 </div>
 
 <div class="form-group">
+  <label class="col-sm-4 control-label text-right" for="tournament_time_zone">Time Zone: </label>
+  <div class="col-sm-4">
+    <input type="text"
+           id="tournament_time_zone"
+           name="tournament_time_zone"
+           ng-value="tournamentsCtrl.tournament.timeZone"
+           class="form-control"
+           readonly/>
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div class="form-group">
   <label class="col-sm-4 control-label text-right" for="tournament_main_photo">Main photo: </label>
   <div class="col-sm-6">
     <img ng-if="!tournamentsCtrl.tournament.mainPhoto && !tournamentsCtrl.main_photo_file" ng-src="img/default_quote_image.png" class="thumb-100" ng-click="tournamentsCtrl.open_select_main_photo()">
@@ -129,12 +141,12 @@
 </div>
 
 <div class="form-group">
-  <label class="col-sm-4 control-label text-right" for="atourment_url">Url: </label>
+  <label class="col-sm-4 control-label text-right" for="tournament_url">Url: </label>
   <div class="col-sm-4">
     <input validation
            type="url"
-           id="atourment_url"
-           name="atourment_url"
+           id="tournament_url"
+           name="tournament_url"
            ng-model="tournamentsCtrl.tournament.url"
            class="form-control"
            required="" />

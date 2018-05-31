@@ -44,10 +44,11 @@
     vm.assign_tournament_selected = function() {
       if (vm.tournament.tournamentID) {
         tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
-        tournament_selected.start_date = moment(tournament_selected.startDate).utc().format("YYYY-MM-DD");
-        tournament_selected.end_date = moment(tournament_selected.endDate).utc().format("YYYY-MM-DD");
+        tournament_selected.start_date = moment(tournament_selected.startDate).tz(tournament_selected.timeZone).utc().format("YYYY-MM-DD");
+        tournament_selected.end_date = moment(tournament_selected.endDate).tz(tournament_selected.timeZone).utc().format("YYYY-MM-DD");
         
         vm.tournament = Object.assign(vm.tournament, tournament_selected);
+        console.log(vm.tournament, 'vm.tournament');
       }
     };
     
@@ -135,7 +136,9 @@
         Notifier.warning({custom_message: 'Tournament not found.'});
         return;
       }
+      console.log(prepare_data(tournament_selected), '**********************');
       
+      return;
       tournaments_model.create_tournament(prepare_data(tournament_selected)).then(function() {
         Notifier.success({custom_message: 'Tournament created.'});
         $state.go('admin.tournaments.list');
@@ -157,8 +160,9 @@
     }
     
     function prepare_data() {
-      var start_date = date_utils.to_utc_unix(vm.tournament.start_date + ' ' + vm.tournament.start_date_time);
-      var end_date = date_utils.to_utc_unix(vm.tournament.end_date + ' ' + vm.tournament.end_date_time);
+      console.log(vm.tournament.start_date + ' ' + vm.tournament.start_date_time, '*************************');
+      var start_date = moment(vm.tournament.start_date + ' ' + vm.tournament.start_date_time).tz(vm.tournament.timeZone).utc().format('x');
+      var end_date = moment(vm.tournament.end_date + ' ' + vm.tournament.end_date_time).tz(vm.tournament.timeZone).utc().format('x');
       
       vm.tournament.startDate = start_date;
       vm.tournament.endDate = end_date;
