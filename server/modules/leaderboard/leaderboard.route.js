@@ -13,15 +13,10 @@ export default function(app) {
         const leaderboard = await Leaderboard.find({tournament: request.params.id}).sort({rank: 1}).populate('player').catch(handleMongoError);
         
         leaderboard.sort((a, b) => {
-            if (a.rank == null) {
-                return -9999;
-            }
+            const x = a.rank ? a.rank : 999999;
+            const y = b.rank ? b.rank : 999999;
 
-            if (b.rank == null) {
-                return -9999;
-            }
-
-            return a.rank -b.rank;
+            return x - y;
         });
 
 		response.ok(leaderboard);

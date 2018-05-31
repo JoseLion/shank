@@ -103,7 +103,7 @@ export default class {
                 cronTime: job.cronTime,
                 onTick: function() {
                     console.log("ON TICK!!");
-                    const shouldContinue = this[job.functionName](JSON.parse(job.args));
+                    const shouldContinue = self[job.functionName](JSON.parse(job.args));
 
                     if (!shouldContinue) {
                         this.stop();
