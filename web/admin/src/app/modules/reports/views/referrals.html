@@ -1,7 +1,8 @@
 <script id="table_tree.html" type="text/ng-template">
   <tr ng-class="{parent: item.guests}" ng-init="parentScope = $parent.$parent; initCheckbox(item, parentScope.item)">
     <td class="cell-name" ng-click="item.opened = !item.opened">
-      <div class="indent" style="padding-left: {{10*item.level}}px"></div>
+      <div ng-if="item.level == 1" class="indent" style="padding-left: {{10*item.level}}px"></div>
+      <div ng-if="item.level == 2" class="indent" style="padding-left: {{20*item.level}}px"></div>
       {{item.user.fullName}}
     </td>
     <td class="cell-members">
@@ -143,6 +144,7 @@
       <div class="ibox float-e-margins">
         <div class="ibox-content">
           <div class="row">
+            <div class="col-md-3"></div>
             <div class="wrapper col-md-6">
               <table class="tree-table table-nested table-responsive">
                 <thead>
