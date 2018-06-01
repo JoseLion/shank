@@ -36,7 +36,7 @@
     };
     
     $rootScope.messages = {
-      empty_records: 'No existen registros',
+      empty_records: 'There are no records',
       check_your_zip_code: 'Consulta tu código postal'
     };
     
@@ -45,8 +45,8 @@
     socket.on('notification-profile-updated', function() {
       auth_service.logout();
       alertify
-      .okBtn("ACEPTAR")
-      .alert("Se han modificado los accesos al sistema, por favor inicia sesión", function (ev) {
+      .okBtn("TO ACCEPT")
+      .alert("The access to the system has been modified, please login", function (ev) {
         ev.preventDefault();
         $state.go('login');
       }, function(ev) {

@@ -15,15 +15,12 @@
         resolve: {
           earnings: function(reports_model) {
             return reports_model.get_earnings();
-          },
-          initial_data: function(reports_model) {
-            return reports_model.get_initial_data_for_dashboar();
           }
         }
       });
   });
   
-  function ReportsController(NgTableParams, earnings, math_utils, reports_model, _) {
+  function ReportsController(NgTableParams, earnings, math_utils, reports_model, date_utils, _) {
     var vm = this;
     vm.earnings = earnings;
     vm.dates = {
@@ -69,7 +66,20 @@
     }
     
     vm.find_earnings = function() {
-      vm_search_params = angular.copy(vm.search_params);
+      var vm_search_params = angular.copy(vm.search_params);
+      
+      if (vm_search_params.from_date && vm_search_params.to_date) {
+        vm_search_params.from_date = date_utils.format_date(vm_search_params.from_date);
+        vm_search_params.to_date = date_utils.format_date(vm_search_params.to_date);
+      }
+      
+      console.log(vm_search_params, 'vm_search_params');
+      return;
+      reports_model.get_earnings(vm_search_params).then(function(response) {
+        vm.earnings = response;
+        parse_earnings();
+        set_pagination();
+      });
     }
     
     vm.get_earnings_xlsx = function() {
