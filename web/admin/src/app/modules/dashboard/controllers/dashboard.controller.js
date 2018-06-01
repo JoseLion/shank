@@ -10,12 +10,36 @@
         title: 'Admin Dashboard',
         templateUrl: 'app/modules/dashboard/views/dashboard.html',
         controller: 'adminDashboardController',
-        controllerAs: 'dashCtrl'
+        controllerAs: 'dashCtrl',
+        resolve: {
+          earnings: function(reports_model) {
+            return reports_model.get_earnings();
+          }
+        }
       });
   });
   
-  function adminDashboardController($state) {
+  function adminDashboardController($state, earnings, math_utils) {
     var vm = this;
+    vm.earnings = earnings;
+    
+    parse_earnings();
+    
+    function parse_earnings() {
+      var total_earnings = 0;
+      
+      _.each(vm.earnings, function(earning) {
+        earning.leaderboard.total_amount = 0;
+        _.each(earning.leaderboard.checkouts, function(checkout) {
+          earning.leaderboard.total_amount = math_utils.add(earning.leaderboard.total_amount, Number(checkout.payment));
+        });
+        
+        total_earnings = math_utils.add(total_earnings, earning.leaderboard.total_amount);
+      });
+      
+      vm.total_earnings = total_earnings;
+    }
+    
     vm.data = [];
     vm.creationDate = 1437665190507;
     

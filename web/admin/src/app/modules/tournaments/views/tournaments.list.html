@@ -36,8 +36,8 @@
                 <td data-title="'Tournament'" filter="{ 'name': 'text'}" class="text-center">{{tournament.name}}</td>
                 <td data-title="'Location'" filter="{ 'location': 'text'}" class="text-center">{{tournament.location}}</td>
                 <td data-title="'Venue'" filter="{ 'venue': 'text'}" class="text-center">{{tournament.venue}}</td>
-                <td data-title="'Start date'" filter="{ 'startDate': 'text' }" class="text-center">{{tournament.startDate | date : 'yyyy-MM-dd'}}</td>
-                <td data-title="'End date'" filter="{ 'endDate': 'text' }" class="text-center">{{tournament.endDate | date : 'yyyy-MM-dd'}}</td>
+                <td data-title="'Start date'" filter="{ 'startDate': 'text' }" class="text-center">{{tournament.startDate | date : 'yyyy-MM-dd' : 'UTC'}}</td>
+                <td data-title="'End date'" filter="{ 'endDate': 'text' }" class="text-center">{{tournament.endDate | date : 'yyyy-MM-dd' : 'UTC'}}</td>
                 <td data-title="'Year'" filter="{ 'year': 'text' }" class="text-center">{{tournament.year}}</td>
                 <td data-title="'Actions'" class="text-center">
                   <button authorize-section="['tournaments.update']"

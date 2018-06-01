@@ -15,6 +15,9 @@
         resolve: {
           earnings: function(reports_model) {
             return reports_model.get_earnings();
+          },
+          initial_data: function(reports_model) {
+            return reports_model.get_initial_data_for_dashboar();
           }
         }
       });
