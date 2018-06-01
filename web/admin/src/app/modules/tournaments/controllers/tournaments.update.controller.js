@@ -24,6 +24,10 @@
   function tournamentsUpdateController($state, $timeout, tournaments_model, tournament, date_utils, Notifier) {
     var vm = this;
     vm.tournament = tournament;
+    vm.dates = {
+      start_date_opened: false,
+      end_date_opened: false
+    };
     
     vm.years = [];
     var tournament_selected;
@@ -39,13 +43,13 @@
     parse_tournament();
     
     function parse_tournament() {
-      vm.tournament.start_date = moment(vm.tournament.startDate).utc().format("YYYY-MM-DD");
-      vm.tournament.end_date = moment(vm.tournament.endDate).utc().format("YYYY-MM-DD");
+      vm.tournament.start_date = moment(moment.utc(vm.tournament.startDate).tz(vm.tournament.timeZone).format("YYYY-MM-DD HH:mm")).format('x') * 1;
+      vm.tournament.end_date = moment(moment.utc(vm.tournament.endDate).tz(vm.tournament.timeZone).format("YYYY-MM-DD HH:mm")).format('x') * 1;
       
-      var start_date_time =  moment(vm.tournament.startDate).utc().format("HH:mm");
+      var start_date_time =  moment.utc(vm.tournament.startDate).tz(vm.tournament.timeZone).format("HH:mm");
       vm.tournament.start_date_time = start_date_time;
       
-      var end_date_time =  moment(vm.tournament.endDate).utc().format("HH:mm");
+      var end_date_time =  moment.utc(vm.tournament.endDate).tz(vm.tournament.timeZone).format("HH:mm");
       vm.tournament.end_date_time = end_date_time;
     }
     
@@ -66,15 +70,14 @@
     vm.assign_tournament_selected = function() {
       if (vm.tournament.tournamentID) {
         tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
-        tournament_selected.start_date = moment(tournament_selected.startDate).utc().format("YYYY-MM-DD");
-        tournament_selected.end_date = moment(tournament_selected.endDate).utc().format("YYYY-MM-DD");
+        tournament_selected.start_date = moment(tournament_selected.startDate).format('x') * 1;
+        tournament_selected.end_date = moment(tournament_selected.endDate).format('x') * 1;
         
         vm.tournament = Object.assign(vm.tournament, tournament_selected);
       }
     };
     
-    vm.open_search_calendar = function(number) {
-      
+    vm.open_calendar = function(number) {
       switch (number) {
         case 1:
             vm.dates.start_date_opened = true;
@@ -156,11 +159,12 @@
     };
     
     function prepare_data() {
-      var start_date = date_utils.to_utc_unix(vm.tournament.start_date + ' ' + vm.tournament.start_date_time);
-      var end_date = date_utils.to_utc_unix(vm.tournament.end_date + ' ' + vm.tournament.end_date_time);
+      var start_date = date_utils.format_date(vm.tournament.start_date);
+      var end_date = date_utils.format_date(vm.tournament.end_date);
       
-      vm.tournament.startDate = start_date;
-      vm.tournament.endDate = end_date;
+      vm.tournament.startDate = moment.tz(start_date + ' ' + vm.tournament.start_date_time, vm.tournament.timeZone).utc().format('x');
+      vm.tournament.endDate = moment.tz(end_date + ' ' + vm.tournament.end_date_time, vm.tournament.timeZone).utc().format('x');
+      
       return Object.assign(vm.tournament, {file1: vm.main_photo_file, file2: vm.secondary_photo_file});
     }
   }

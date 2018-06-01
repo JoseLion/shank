@@ -39,11 +39,24 @@
 <div class="form-group">
   <label class="col-sm-4 control-label text-right" for="tournament_start_date">Start date: </label>
   <div class="col-sm-2">
-    <input type="text"
-           id="tournament_start_date"
-           name="tournament_start_date"
-           ng-model="tournamentsCtrl.tournament.start_date"
-           class="form-control"/>
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             id="tournament_start_date"
+             name="tournament_start_date"
+             uib-datepicker-popup="yyyy-MM-dd"
+             ng-model="tournamentsCtrl.tournament.start_date"
+             is-open="tournamentsCtrl.dates.start_date_opened"
+             datepicker-options="tournamentsCtrl.dateOptions"
+             alt-input-formats="tournamentsCtrl.altInputFormats" />
+      <span class="input-group-btn">
+        <button type="button"
+                class="btn btn-default"
+                ng-click="tournamentsCtrl.open_calendar(1)">
+          <i class="glyphicon glyphicon-calendar"></i>
+        </button>
+      </span>
+    </div>
   </div>
   <div class="col-sm-2">
       <div ng-cloak>
@@ -66,12 +79,24 @@
 <div class="form-group">
   <label class="col-sm-4 control-label text-right" for="tournament_end_date">End date: </label>
   <div class="col-sm-2">
-    <input type="text"
-           id="tournament_end_date"
-           name="tournament_end_date"
-           ng-value="tournamentsCtrl.tournament.end_date"
-           class="form-control"
-           readonly />
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             id="tournament_end_date"
+             name="tournament_end_date"
+             uib-datepicker-popup="yyyy-MM-dd"
+             ng-model="tournamentsCtrl.tournament.end_date"
+             is-open="tournamentsCtrl.dates.end_date_opened"
+             datepicker-options="tournamentsCtrl.dateOptions"
+             alt-input-formats="tournamentsCtrl.altInputFormats" />
+      <span class="input-group-btn">
+        <button type="button"
+                class="btn btn-default"
+                ng-click="tournamentsCtrl.open_calendar(2)">
+          <i class="glyphicon glyphicon-calendar"></i>
+        </button>
+      </span>
+    </div>
   </div>
   <div class="col-sm-2">
       <div ng-cloak>
