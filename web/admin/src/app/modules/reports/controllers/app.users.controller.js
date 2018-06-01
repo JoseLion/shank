@@ -69,7 +69,7 @@
     
     vm.find_app_users = function() {
       var vm_search_params = angular.copy(vm.search_params);
-      console.log(vm_search_params, 'vm_search_params');
+      
       if (vm_search_params.from_date && vm_search_params.to_date) {
         vm_search_params.from_date = date_utils.format_date(vm_search_params.from_date);
         vm_search_params.to_date = date_utils.format_date(vm_search_params.to_date);

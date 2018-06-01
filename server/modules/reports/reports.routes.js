@@ -17,7 +17,7 @@ const Player = mongoose.model('Player');
 
 export default function() {
 	router.post('/get_earnings', auth, (req, res) => {
-		Group.aggregate([
+		let  aggregate_params = [
 			{"$unwind": "$tournaments"},
 			{"$unwind": "$tournaments.leaderboard"},
 			{"$lookup": {
@@ -60,9 +60,163 @@ export default function() {
 					}
 				}
 			}
-		])
+		];
+		
+		if (req.body.country) {
+			aggregate_params = [
+				{"$unwind": "$tournaments"},
+				{"$unwind": "$tournaments.leaderboard"},
+				{"$lookup": {
+						"from": "tournaments",
+						"localField": "tournaments.tournament",
+						"foreignField": "_id",
+						"as": "tournament"
+					}
+				},
+				{"$unwind": "$tournament"},
+				{"$project": {"tournament": 1, "tournaments.leaderboard": 1}},
+				{"$lookup": {
+						"from": "app_users",
+						"localField": "tournaments.leaderboard.user",
+						"foreignField": "_id",
+						"as": "user"
+					}
+				},
+				{"$unwind": "$user"},
+				{"$match": {"user.country": req.body.country}},
+				{"$project": {
+						"user": {
+							"_id": "$user._id",
+							"fullName": "$user.fullName",
+							"register_os": "$user.register_os",
+							"country": "$user.country",
+							"created_at": "$user.created_at"
+						},
+						"tournament": {
+							"_id": "$tournament._id",
+							"name": "$tournament.name",
+							"country": "$tournament.country",
+							"city": "$tournament.city"
+						},
+						"leaderboard": {
+							"_id": "$tournaments.leaderboard._id",
+							"checkouts": "$tournaments.leaderboard.checkouts",
+							"rank": "$tournaments.leaderboard.rank",
+							"score": "$tournaments.leaderboard.score",
+							"user": "$tournaments.leaderboard.user"
+						}
+					}
+				}
+			];
+		}
+		
+		if (req.body.from_date && req.body.to_date) {
+			let from_date = date_service.to_utc_unix(req.body.from_date + " 00:00:00");
+			let to_date = date_service.to_utc_unix(req.body.to_date + " 23:59:59");
+			
+			aggregate_params = [
+				{"$unwind": "$tournaments"},
+				{"$unwind": "$tournaments.leaderboard"},
+				{"$lookup": {
+						"from": "tournaments",
+						"localField": "tournaments.tournament",
+						"foreignField": "_id",
+						"as": "tournament"
+					}
+				},
+				{"$unwind": "$tournament"},
+				{"$project": {"tournament": 1, "tournaments.leaderboard": 1}},
+				{"$match": {"tournaments.leaderboard.checkouts.payment_date": {$gte: from_date, $lt: to_date}}},
+				{"$lookup": {
+						"from": "app_users",
+						"localField": "tournaments.leaderboard.user",
+						"foreignField": "_id",
+						"as": "user"
+					}
+				},
+				{"$unwind": "$user"},
+				{"$project": {
+						"user": {
+							"_id": "$user._id",
+							"fullName": "$user.fullName",
+							"register_os": "$user.register_os",
+							"country": "$user.country",
+							"created_at": "$user.created_at"
+						},
+						"tournament": {
+							"_id": "$tournament._id",
+							"name": "$tournament.name",
+							"country": "$tournament.country",
+							"city": "$tournament.city"
+						},
+						"leaderboard": {
+							"_id": "$tournaments.leaderboard._id",
+							"checkouts": "$tournaments.leaderboard.checkouts",
+							"rank": "$tournaments.leaderboard.rank",
+							"score": "$tournaments.leaderboard.score",
+							"user": "$tournaments.leaderboard.user"
+						}
+					}
+				}
+			];
+		}
+		
+		if (req.body.country && req.body.from_date && req.body.to_date) {
+			let from_date = date_service.to_utc_unix(req.body.from_date + " 00:00:00");
+			let to_date = date_service.to_utc_unix(req.body.to_date + " 23:59:59");
+			
+			aggregate_params = [
+				{"$unwind": "$tournaments"},
+				{"$unwind": "$tournaments.leaderboard"},
+				{"$lookup": {
+						"from": "tournaments",
+						"localField": "tournaments.tournament",
+						"foreignField": "_id",
+						"as": "tournament"
+					}
+				},
+				{"$unwind": "$tournament"},
+				{"$project": {"tournament": 1, "tournaments.leaderboard": 1}},
+				{"$match": {"tournaments.leaderboard.checkouts.payment_date": {$gte: from_date, $lt: to_date}}},
+				{"$lookup": {
+						"from": "app_users",
+						"localField": "tournaments.leaderboard.user",
+						"foreignField": "_id",
+						"as": "user"
+					}
+				},
+				{"$unwind": "$user"},
+				{"$match": {"user.country": req.body.country}},
+				{"$project": {
+						"user": {
+							"_id": "$user._id",
+							"fullName": "$user.fullName",
+							"register_os": "$user.register_os",
+							"country": "$user.country",
+							"created_at": "$user.created_at"
+						},
+						"tournament": {
+							"_id": "$tournament._id",
+							"name": "$tournament.name",
+							"country": "$tournament.country",
+							"city": "$tournament.city"
+						},
+						"leaderboard": {
+							"_id": "$tournaments.leaderboard._id",
+							"checkouts": "$tournaments.leaderboard.checkouts",
+							"rank": "$tournaments.leaderboard.rank",
+							"score": "$tournaments.leaderboard.score",
+							"user": "$tournaments.leaderboard.user"
+						}
+					}
+				}
+			];
+		}
+		
+		Group.aggregate(aggregate_params)
 		.exec((err, data) => {
 			if (err) {
+				console.log(err, '*****--------*********');
 				return res.server_error(err.message);
 			}
 			

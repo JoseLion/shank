@@ -72,6 +72,7 @@
         tournament_selected = _.findWhere(vm.tournaments, {tournamentID: vm.tournament.tournamentID});
         tournament_selected.start_date = moment(tournament_selected.startDate).format('x') * 1;
         tournament_selected.end_date = moment(tournament_selected.endDate).format('x') * 1;
+        tournament_selected.timeZone = tournament_selected.timeZone.split(' ').join('_');
         
         vm.tournament = Object.assign(vm.tournament, tournament_selected);
       }

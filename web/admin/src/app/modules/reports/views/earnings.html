@@ -39,7 +39,7 @@
                              id="search_country"
                              name="search_country"
                              class="form-control"
-                             ng-model="reportEarningCtrl.search.cuntry" />
+                             ng-model="reportEarningCtrl.search_params.country" />
                     </div>
                   </div>
                 </div>
@@ -100,7 +100,7 @@
                 <div class="row form-group">
                   <div class="col-md-12">
                     <div class="col-md-12 text-right">
-                      <button type="button" class="btn btn-w-m btn-default" ng-click="reportEarningCtrl.clearSearch()">Clear</button>
+                      <button type="button" class="btn btn-w-m btn-default" ng-click="reportEarningCtrl.clear_search_params()">Clear</button>
                       <button type="submit" class="btn btn-w-m btn-primary">Search</button>
                     </div>
                   </div>
@@ -134,7 +134,7 @@
                 <td data-title="'User'" header-class="'header-text-left'">{{earning.user.fullName}}</td>
                 <td data-title="'Country'" header-class="'header-text-left'">{{earning.user.country}}</td>
                 <td data-title="'OS'" header-class="'header-text-left'">{{earning.user.register_os}}</td>
-                <td data-title="'Register date'" header-class="'header-text-left'">{{earning.user.created_at | date : 'yyyy-MM-dd'}}</td>
+                <td data-title="'Purchase date'" header-class="'header-text-left'">{{earning.user.created_at | date : 'yyyy-MM-dd'}}</td>
                 <td data-title="'Tournament'" header-class="'header-text-left'">{{earning.tournament.name}}</td>
                 <td data-title="'Total amount'" class="text-right">{{earning.leaderboard.total_amount | format_number}}</td>
               </tr>
