@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import date_service from '../services/date.services';
 
 let ReferredSchema = new mongoose.Schema({
 	user: {
@@ -14,16 +15,13 @@ let ReferredSchema = new mongoose.Schema({
     })
 	],
 	enabled: {type: Boolean, default: true},
-	created_at: Number,
+	created_at: {type: Number, default: date_service.utc_unix_current_date()},
 	updated_at: Number
 }, {
 	collection: 'referrals'
 });
 
 ReferredSchema.pre('save', function(next) {
-	if (!this.created_at) {
-		this.created_at = date_service.utc_unix_current_date();
-	}
 	this.updated_at = date_service.utc_unix_current_date();
 	next();
 });
