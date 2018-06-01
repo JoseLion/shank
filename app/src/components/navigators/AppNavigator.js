@@ -39,7 +39,7 @@ export const TabNav = TabNavigator({
 		},
 		style: {
             backgroundColor: AppConst.COLOR_BLUE,
-            paddingVertical: Platform.OS == 'ios' ? Style.EM(0.75) : 0
+            paddingVertical: Platform.OS == 'ios' ? '2%' : 0
 		},
 		labelStyle: {
 			fontFamily: Style.CENTURY_GOTHIC_BOLD,

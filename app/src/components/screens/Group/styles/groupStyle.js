@@ -27,6 +27,11 @@ export default ViewStyle = StyleSheet.create({
         textShadowRadius: isAndroid ? 15 : 3,
         shadowOpacity: 0.1
     },
+    mainContainer: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: AppConst.COLOR_WHITE
+    },
     editButton: {
         height: '100%',
         justifyContent: 'center',

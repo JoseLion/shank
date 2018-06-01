@@ -360,7 +360,8 @@ export default class Group extends BaseComponent {
 			sheetNames: [],
 			tournamentIndex: 0,
 			currentUserIndex: 0,
-			displayGroupOptions: false
+            displayGroupOptions: false,
+            isScrollDisabled: false
 		};
 	}
 
@@ -737,7 +738,7 @@ export default class Group extends BaseComponent {
 		}
 
 		return (
-			<ScrollView contentContainerStyle={{width: '100%', height: '100%', backgroundColor: AppConst.COLOR_WHITE}} refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshGroup} />}>
+			<ScrollView contentContainerStyle={ViewStyle.mainContainer} scrollEnabled={!this.state.isScrollDisabled} refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshGroup} />}>
 				<ActionSheet ref={sheet => this.actionSheet = sheet} title={'Select a tournament'} options={this.state.sheetNames} onPress={this.tournamentSelected} />
 
 				<View style={{flex: 7}}>
@@ -810,8 +811,9 @@ export default class Group extends BaseComponent {
 								data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []}
 								renderRow={({data, index}) => (
 									<RoasterRow roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />
-								)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
-									EventRegister.emit('EVT_RESET_SHADOW_STYLE');
+								)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onActivateRow={() => this.setState({isScrollDisabled: true})} onReleaseRow={key => {
+                                    this.setState({isScrollDisabled: false});
+                                    EventRegister.emit('EVT_RESET_SHADOW_STYLE');
 
 									if (this.nextOrder) {
 										let roaster = [];
