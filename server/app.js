@@ -83,13 +83,13 @@ app.use(function (req, res, next) {
 loadModules(app);
 
 //execute admin client
-app.use('/admin', express['static'](__dirname + '/../web/admin/dist'));
+app.use('/', express['static'](__dirname + '/../web/admin/dist'));
 
 //execute public client single page application
-app.use('/', express.static(path.join(__dirname, '/../web/public/dist')));
-app.get('/[^\.]+$', function(req, res){
-  res.sendFile("index.html", { root: __dirname + '/../web/public/dist' });
-});
+//app.use('/', express.static(path.join(__dirname, '/../web/public/dist')));
+//app.get('/[^\.]+$', function(req, res){
+  //res.sendFile("index.html", { root: __dirname + '/../web/public/dist' });
+//});
 
 setPassport();
 
