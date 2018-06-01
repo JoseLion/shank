@@ -20,7 +20,7 @@
       });
   });
   
-  function ReferralsController($scope, $filter, referrals, _) {
+  function ReferralsController($scope, $filter, referrals, date_utils, reports_model, _) {
     var vm = this;
     $scope.list = referrals;
     
@@ -36,8 +36,10 @@
       _.each($scope.list, function(referral, index) {
         if (index === 0) {
           referral.opened = false;
-          referral.level = 1;
         }
+        
+        referral.level = 1;
+        
         _.each(referral.guests, function(guests) {
           guests.level = 2;
         });
@@ -48,8 +50,25 @@
       vm.search_params = {};
     }
     
+    vm.find_referrals = function() {
+      var vm_search_params = angular.copy(vm.search_params);
+      
+      if (vm_search_params.from_date && vm_search_params.to_date) {
+        vm_search_params.from_date = date_utils.format_date(vm_search_params.from_date);
+        vm_search_params.to_date = date_utils.format_date(vm_search_params.to_date);
+      }
+      else {
+        delete vm_search_params.from_date;
+        delete vm_search_params.to_date;
+      }
+      
+      reports_model.get_referrals(vm_search_params).then(function(response) {
+        $scope.list = response;
+        parse_referrals();
+      });
+    }
+    
     vm.open_search_calendar = function(number) {
-      console.log("-----------------");
       switch (number) {
         case 1:
           vm.dates.from_date_opened = true;

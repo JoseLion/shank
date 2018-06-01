@@ -11,7 +11,8 @@ let ReferredSchema = new mongoose.Schema({
       user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'App_User'
-      }
+      },
+			created_at: {type: Number, default: date_service.utc_unix_current_date()}
     })
 	],
 	enabled: {type: Boolean, default: true},

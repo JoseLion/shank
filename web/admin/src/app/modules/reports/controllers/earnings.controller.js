@@ -78,8 +78,6 @@
         delete vm_search_params.to_date;
       }
       
-      console.log(vm_search_params, 'vm_search_params');
-      
       reports_model.get_earnings(vm_search_params).then(function(response) {
         vm.earnings = response;
         parse_earnings();

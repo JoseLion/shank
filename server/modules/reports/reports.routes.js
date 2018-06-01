@@ -346,20 +346,52 @@ export default function() {
 				return res.unauthorized();
 			}
 			
+			let main_filter = {};
+			
+			if (req.body.country) {
+			  main_filter.country = req.body.country;
+			}
+			
 			Referred
 			.find()
-			.populate('user', "_id fullName country")
+			.populate({
+				path: 'user',
+				select: "_id fullName country created_at",
+				match: main_filter
+			})
 			.populate({
 				path: 'guests.user',
-				select: '_id fullName country',
-				model: App_User
+				select: "_id fullName country created_at",
+				match: main_filter
 			})
-			.exec((err, data) => {
+			.exec((err, referrals) => {
 				if (err) {
 					return res.server_error(err.message);
 				}
 				
-				res.ok(data);
+				let from_date = null;
+				let to_date = null;
+				
+				if (req.body.from_date && req.body.to_date) {
+					from_date = date_service.to_utc_unix(req.body.from_date + " 00:00:00");
+					to_date = date_service.to_utc_unix(req.body.to_date + " 23:59:59");
+				}
+				
+				referrals = referrals.filter(function(referred) {
+					referred.guests = referred.guests.filter(function(guest) {
+						return guest.user;
+					});
+					
+					if (from_date) {
+						referred.guests = referred.guests.filter(function(guest) {
+							return (guest.created_at >= from_date && guest.created_at <= to_date);
+						});
+					}
+					
+					return referred.user;
+				});
+				
+				res.ok(referrals);
 			});
     } catch (e) {
       res.server_error();
