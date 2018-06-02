@@ -67,8 +67,8 @@ export default AppNavigator = StackNavigator({
 	initialRouteName: 'Splash',
 	navigationOptions: {
 		headerTintColor: AppConst.COLOR_WHITE,
-		headerTitleStyle: {flex: 1, textAlign: 'center', fontFamily: Style.CENTURY_GOTHIC, alignSelf: 'center', color: AppConst.COLOR_WHITE},
-		headerStyle: {backgroundColor: AppConst.COLOR_BLUE},
-		headerBackTitle: 'Back'
+		headerTitleStyle: {flex: 1, textAlign: 'center', fontFamily: Style.CENTURY_GOTHIC, fontSize: Style.EM(1), alignSelf: 'center', color: AppConst.COLOR_WHITE},
+		headerStyle: {backgroundColor: AppConst.COLOR_BLUE, height: Style.EM(2.5)},
+		headerBackTitle: 'Back',
 	}
 });

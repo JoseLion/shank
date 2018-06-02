@@ -109,8 +109,8 @@ export default function(app) {
                                 pushNotification.send({
                                     token: push.token,
                                     os: push.os,
-                                    aleert: `The next tournament ${tournament.name} starts in ${days} days. Don’t miss it`
-                                })
+                                    alert: `The next tournament ${tournament.name} starts in ${days} days. Don’t miss it`
+                                });
                             });
                         });
                     }
@@ -208,15 +208,29 @@ export default function(app) {
 
 	router.delete(`${basePath}/delete/:id`, auth, async (request, response) => {
         try {
-            const group = await Group.findById(request.params.id).catch(handleMongoError);
+            const group = await Group.findById(request.params.id).populate('tournaments.leaderboard.user').catch(handleMongoError);
 
             if (!group) {
                 response.reset_content("This group has already been removed!");
                 return;
             }
 
+            const users = group.tournaments[0].leaderboard.map(cross => cross.user);
+            const groupName = group.name.toUpperCase();
             await Archive.findByIdAndRemove(group.photo).catch(handleMongoError);
             await group.remove().catch(handleMongoError);
+            
+            const pushNotification = new PushNotifications();
+            users.forEach(user => {
+                user.notifications.forEach(notif => {
+                    pushNotification.send({
+                        token: notif.token,
+                        os: notif.os,
+                        alert: `Please know that your group ${groupName} admin deleted this group`
+                    });
+                });
+            });
+
             response.ok();
         } catch (error) {
             response.server_error(error);
@@ -302,18 +316,6 @@ export default function(app) {
                 response.reset_content("Sorry! This group has been deleted");
                 return;
             }
-            
-            /*const tournament = Tournament.findById(request.params.tournamentId).catch(handleMongoError);
-            const today = new Date();
-            const time = (today.getHours() * 60 * 60 * 1000) + (today.getMinutes() * 60 * 1000) + (today.getSeconds() * 1000) + today.getMilliseconds();
-            const startDate = new Date(tournament.startDate);
-            const startTime = (startDate.getHours() * 60 * 60 * 1000) + (startDate.getMinutes() * 60 * 1000) + (startDate.getSeconds() * 1000) + startDate.getMilliseconds();
-            const endDate = new Date(tournament.endDate);
-            const endTime = (endDate.getHours() * 60 * 60 * 1000) + (endDate.getMinutes() * 60 * 1000) + (endDate.getSeconds() * 1000) + endDate.getMilliseconds();
-            
-            if (today.getTime() > endDate.getTime() || (time > startTime && time < endTime)) {
-                response.reset_content("Sorry! The roster cannot be edited during the round")
-            }*/
 
 			group.tournaments.forEach(tournamentCross => {
 				if (tournamentCross.tournament == request.params.tournamentId) {

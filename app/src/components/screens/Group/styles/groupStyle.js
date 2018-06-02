@@ -38,11 +38,6 @@ export default ViewStyle = StyleSheet.create({
         alignItems: 'center',
         paddingRight: Style.EM(1)
     },
-    editButtonText: {
-        fontFamily: Style.CENTURY_GOTHIC,
-        fontSize: Style.FONT_16,
-        color: AppConst.COLOR_WHITE
-    },
     groupInformation: {
         flex: 1,
         flexDirection: 'row',
@@ -71,6 +66,7 @@ export default ViewStyle = StyleSheet.create({
     tournamentNameText: {
         fontFamily: Style.CENTURY_GOTHIC_BOLD,
         fontSize: Style.FONT_16,
+        color: 'black',
         width: '92.5%'
     },
     caretDown: {
@@ -93,11 +89,13 @@ export default ViewStyle = StyleSheet.create({
     },
     prizeText: {
         fontFamily: Style.CENTURY_GOTHIC_BOLD,
-        fontSize: Style.FONT_16
+        fontSize: Style.FONT_16,
+        color: 'black'
     },
     prizeDescription: {
         fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_16,
+        color: 'black',
         paddingBottom: Style.EM(0.5)
     },
     groupStats: {
@@ -162,7 +160,8 @@ export default ViewStyle = StyleSheet.create({
     },
     leaderboardRowText: {
         fontFamily: Style.CENTURY_GOTHIC,
-        fontSize: Style.FONT_16
+        fontSize: Style.FONT_16,
+        color: 'black'
     },
     leaderboardRowPts: {
         fontFamily: Style.CENTURY_GOTHIC_BOLD,
@@ -191,6 +190,7 @@ export default ViewStyle = StyleSheet.create({
     roundsText: {
         fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_14,
+        color: 'black',
         marginRight: '2%'
     },
     roundLabel: {

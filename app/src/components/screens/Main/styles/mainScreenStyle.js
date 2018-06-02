@@ -32,7 +32,7 @@ export default StyleSheet.create({
 	},
 	rowContainer: {
 		width: '100%',
-		paddingHorizontal: '5%'
+        paddingHorizontal: '5%'
 	},
 	rowSubView: {
 		flex: 1,
@@ -42,7 +42,7 @@ export default StyleSheet.create({
 		width: '100%',
 		borderBottomWidth: 1,
 		borderBottomColor: AppConst.COLOR_GRAY,
-		paddingVertical: '5%'
+        paddingTop: '1%'
 	},
 	groupImage: {
 		width: Style.EM(4),
@@ -54,7 +54,8 @@ export default StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 		paddingHorizontal: '2%',
-		height: '100%'
+        height: '100%',
+        marginBottom: '5%'
 	},
 	groupName: {
 		fontFamily: Style.CENTURY_GOTHIC,

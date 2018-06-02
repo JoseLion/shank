@@ -3,7 +3,6 @@ import React from 'react';
 import { AsyncStorage, FlatList, Image, Text, TouchableHighlight, TouchableOpacity, View, Linking, ScrollView, RefreshControl, Alert } from 'react-native';
 import Swipeable from 'react-native-swipeable';
 import { EventRegister } from 'react-native-event-listeners';
-import PushNotification from 'react-native-push-notification';
 
 // Shank components:
 import { BaseComponent, BaseModel, FileHost, AppConst, DropdownAlert, MainStyles } from '../BaseComponent';
@@ -145,9 +144,9 @@ export default class MainScreen extends BaseComponent {
 
 	async componentDidMount() {
 		try {
-			this.auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(handleError);
+			const auth = await AsyncStorage.getItem(AppConst.AUTH_TOKEN).catch(handleError);
 
-			if (this.auth) {
+			if (auth) {
 				Linking.addEventListener('url', this.handleUrlEvent);
 				Linking.getInitialURL().then(this.handleUrlEvent).catch(handleError);
 				this.realoadGroupsEvent = EventRegister.addEventListener(AppConst.EVENTS.realoadGroups, async () => {
@@ -156,15 +155,12 @@ export default class MainScreen extends BaseComponent {
                 });
 				
 				const currentUserJson = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
-				this.currentUser = JSON.parse(currentUserJson);
-
-                PushNotification.requestPermissions();
+                this.currentUser = JSON.parse(currentUserJson);
+                
                 global.setLoading(true);
                 const groups = await this.getGroups();
                 this.setState({ groups });
                 global.setLoading(false);
-			} else {
-				this.props.navigation.navigate('Login');
 			}
 		} catch (error) {
 			handleError(error);

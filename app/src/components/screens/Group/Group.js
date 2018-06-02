@@ -317,13 +317,13 @@ export default class Group extends BaseComponent {
 					{navigation.state.params.displayGroupOptions?
 						<View style={[MainStyles.inRow, ViewStyle.editButton]}>
 							<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.addTournament}>
-								<Icon name="md-add" size={30} color="#fff" />
+								<Icon name="md-add" size={Style.EM(1.5)} color="#fff" />
 							</TouchableOpacity>
 
 							<View style={{width: 5}}/>
 
 							<TouchableOpacity style={ViewStyle.editButton} onPress={navigation.state.params.editGroup}>
-								<IconFontAwesome name="pencil" size={25} color="#fff" />
+								<IconFontAwesome name="pencil" size={Style.EM(1.5)} color="#fff" />
 							</TouchableOpacity>
 						</View>
 						:

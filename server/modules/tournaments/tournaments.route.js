@@ -97,7 +97,7 @@ export default function() {
                 const startDate = new Date(tournament_saved.startDate);
                 
                 const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
-				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getMonth()} ${remindDate.getUTCDay()}`;
+				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getUTCMonth()} ${remindDate.getUTCDay()}`;
 				await CronJobs.create({
                     cronTime: remindTime,
                     functionName: 'tournamentStartReminder',
@@ -106,7 +106,7 @@ export default function() {
                 });
 
 				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
-				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getMonth()} ${beginDate.getUTCDay()}`;
+				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getUTCMonth()} ${beginDate.getUTCDay()}`;
                 await CronJobs.create({
                     cronTime: beginTime,
                     functionName: 'tournamentAboutToBegin',
@@ -117,7 +117,7 @@ export default function() {
                 const endDate = new Date(tournament_saved.endDate);
                 await tournament_saved.rounds.asyncForEach(async round => {
                     const day = new Date(round.day);
-                    const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getMonth()} ${day.getUTCDay()}`;
+                    const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getUTCMonth()} ${day.getUTCDay()}`;
                     
                     await CronJobs.create({
                         cronTime,
@@ -185,7 +185,7 @@ export default function() {
 				const startDate = new Date(Number(req.body.startDate));
                 
                 const remindDate = new Date(startDate.getTime() - (15 * 60 * 60 * 1000));
-				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getMonth()} ${remindDate.getUTCDay()}`;
+				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getUTCMonth()} ${remindDate.getUTCDay()}`;
                 
                 await CronJobs.remove({reference: `TSR-${req.body._id}`});
 				await CronJobs.create({
@@ -196,8 +196,8 @@ export default function() {
                 });
 
 				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
-				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getMonth()} ${beginDate.getUTCDay()}`;
-                
+				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getUTCMonth()} ${beginDate.getUTCDay()}`;
+                console.log(`TAB-${req.body._id}[cronTime]: ${beginTime}`);
                 await CronJobs.remove({reference: `TAB-${req.body._id}`});
 				await CronJobs.create({
                     cronTime: beginTime,
@@ -209,7 +209,7 @@ export default function() {
                 const endDate = new Date(Number(req.body.endDate));
                 req.body.rounds.asyncForEach(async round => {
                     const day = new Date(round.day);
-                    const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getMonth()} ${day.getUTCDay()}`;
+                    const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getUTCMonth()} ${day.getUTCDay()}`;
                     
                     await CronJobs.remove({reference: `ASP-${req.body._id}`});
                     await CronJobs.create({
