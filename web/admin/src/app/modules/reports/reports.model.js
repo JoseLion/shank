@@ -24,6 +24,18 @@
       return base_model('get_ranking_by_tournament').create(params);
     }
     
+    model.get_referrals = function(params) {
+      return base_model('get_referrals').create(params);
+    }
+    
+    model.get_player_payments = function(params) {
+      return base_model('get_player_payments').create(params);
+    }
+    
+    model.get_initial_data_for_dashboar = function(params) {
+      return base_model('get_initial_data_for_dashboar').create(params);
+    }
+    
     return model;
   });
 })();

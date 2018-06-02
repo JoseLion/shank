@@ -20,9 +20,10 @@
       });
   });
   
-  function ReportsController(NgTableParams, earnings, math_utils, reports_model, _) {
+  function ReportsController(NgTableParams, earnings, math_utils, reports_model, date_utils, _) {
     var vm = this;
     vm.earnings = earnings;
+    vm.search_params = {};
     vm.dates = {
       from_date_opened: false,
       to_date_opened: false
@@ -66,7 +67,22 @@
     }
     
     vm.find_earnings = function() {
-      vm_search_params = angular.copy(vm.search_params);
+      var vm_search_params = angular.copy(vm.search_params);
+      
+      if (vm_search_params.from_date && vm_search_params.to_date) {
+        vm_search_params.from_date = date_utils.format_date(vm_search_params.from_date);
+        vm_search_params.to_date = date_utils.format_date(vm_search_params.to_date);
+      }
+      else {
+        delete vm_search_params.from_date;
+        delete vm_search_params.to_date;
+      }
+      
+      reports_model.get_earnings(vm_search_params).then(function(response) {
+        vm.earnings = response;
+        parse_earnings();
+        set_pagination();
+      });
     }
     
     vm.get_earnings_xlsx = function() {

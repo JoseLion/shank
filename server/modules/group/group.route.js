@@ -10,6 +10,7 @@ const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
 const AppUser = mongoose.model('App_User');
 const Tournament = mongoose.model('Tournament');
+const Referred = mongoose.model('Referred');
 const basePath = '/group';
 const router = express.Router();
 
@@ -162,7 +163,7 @@ export default function(app) {
 			response.server_error(error);
 		}
 	});
-
+  
 	router.get(`${basePath}/addUserToGroup/:id`, auth, async (request, response) => {
 		try {
 			let user = await AppUser.findOne({_id: request.payload._id}).catch(handleMongoError);
@@ -191,9 +192,19 @@ export default function(app) {
 					const rank = tournament.leaderboard.length + 1;
 					tournament.leaderboard.push({ user, rank });
 				});
-
+        
 				await group.save().catch(handleMongoError);
 				const userGroups = await Group.find({enabled: true, 'tournaments.leaderboard.user': request.payload._id}).populate('tournaments.tournament').catch(handleMongoError);
+        
+        let userInRefrral = await Referred.findOne({user: group.owner});
+        
+        if (userInRefrral) {
+          await Referred.findByIdAndUpdate({"_id": userInRefrral._id}, {$push: {guests: {user: request.payload._id}}}).catch(handleMongoError);
+        }
+        else {
+          await Referred.create({user: group.owner, guests: [{user: request.payload._id}]}).catch(handleMongoError);
+        }
+        
 				response.ok(userGroups);
 			}
 			else {

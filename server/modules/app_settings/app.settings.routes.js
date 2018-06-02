@@ -74,9 +74,6 @@ module.exports = function (app) {
     });
   })
   .post('/findSettings', function(req, res) {
-    console.log('REQUEST: ', req.body, 'PAYLOAD: ', req.payload);
-    // TODO: if is not logged
-    // res.ok({}, 'Usuario no autorizado.')
     Profile.find(req.body)
     .select('id created_at updated_at enabled name')
     .exec(function(err, profiles) {

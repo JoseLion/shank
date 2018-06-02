@@ -11,6 +11,7 @@
       'ngAria',
       'ngResource',
       'ui.router',
+      'ui.tree',
       'ui.bootstrap',
       'toastr',
       'pascalprecht.translate',

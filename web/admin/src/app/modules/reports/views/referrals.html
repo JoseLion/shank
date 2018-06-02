@@ -1,3 +1,27 @@
+<script id="table_tree.html" type="text/ng-template">
+  <tr ng-class="{parent: item.guests}" ng-init="parentScope = $parent.$parent; initCheckbox(item, parentScope.item)">
+    <td class="cell-name" ng-click="item.opened = !item.opened">
+      <div ng-if="item.level == 1" class="indent" style="padding-left: {{10*item.level}}px"></div>
+      <div ng-if="item.level == 2" class="indent" style="padding-left: {{20*item.level}}px"></div>
+      {{item.user.fullName}}
+    </td>
+    <td class="cell-members">
+      {{item.guests.length}}
+    </td>
+    <td class="cell-members">
+      {{item.user.country}}
+    </td>
+  </tr>
+  
+  <tr class="children" ng-if="item.guests &amp;&amp; item.guests.length &gt; 0">
+    <td colspan="3">
+      <table class="tree-table">
+        <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-init="level = level + 1" ng-repeat="item in item.guests"></tbody>
+      </table>
+    </td>
+  </tr>
+</script>
+
 <div class="row wrapper border-bottom white-bg page-heading">
   <div class="col-lg-10">
     <h2>Reports</h2>
@@ -6,7 +30,7 @@
         <a ui-sref="admin.dashboard">Dashboard</a>
       </li>
       <li class="active">
-        <strong>Earnings</strong>
+        <strong>Referrals</strong>
       </li>
     </ol>
   </div>
@@ -27,7 +51,7 @@
           <div class="panel-body">
             <form class="form-horizontal"
                   role="form"
-                  ng-submit="reportEarningCtrl.find_earnings()"
+                  ng-submit="referralCtrl.find_referrals()"
                   novalidate>
       
               <div class="row">
@@ -39,7 +63,7 @@
                              id="search_country"
                              name="search_country"
                              class="form-control"
-                             ng-model="reportEarningCtrl.search_params.country" />
+                             ng-model="referralCtrl.search_params.country" />
                     </div>
                   </div>
                 </div>
@@ -55,14 +79,14 @@
                                id="search_from_date"
                                name="search_from_date"
                                uib-datepicker-popup="yyyy-MM-dd"
-                               ng-model="reportEarningCtrl.search_params.from_date"
-                               is-open="reportEarningCtrl.dates.from_date_opened"
-                               datepicker-options="reportEarningCtrl.dateOptions"
-                               alt-input-formats="reportEarningCtrl.altInputFormats" />
+                               ng-model="referralCtrl.search_params.from_date"
+                               is-open="referralCtrl.dates.from_date_opened"
+                               datepicker-options="referralCtrl.dateOptions"
+                               alt-input-formats="referralCtrl.altInputFormats" />
                         <span class="input-group-btn">
                           <button type="button"
                                   class="btn btn-default"
-                                  ng-click="reportEarningCtrl.open_search_calendar(1)">
+                                  ng-click="referralCtrl.open_search_calendar(1)">
                             <i class="glyphicon glyphicon-calendar"></i>
                           </button>
                         </span>
@@ -79,14 +103,14 @@
                                id="search_to_date"
                                name="search_to_date"
                                uib-datepicker-popup="yyyy-MM-dd"
-                               ng-model="reportEarningCtrl.search_params.to_date"
-                               is-open="reportEarningCtrl.dates.to_date_opened"
-                               datepicker-options="reportEarningCtrl.dateOptions"
+                               ng-model="referralCtrl.search_params.to_date"
+                               is-open="referralCtrl.dates.to_date_opened"
+                               datepicker-options="referralCtrl.dateOptions"
                                alt-input-formats="['M!/d!/yyyy']" />
                         <span class="input-group-btn">
                           <button type="button"
                                   class="btn btn-default"
-                                  ng-click="reportEarningCtrl.open_search_calendar(2)">
+                                  ng-click="referralCtrl.open_search_calendar(2)">
                             <i class="glyphicon glyphicon-calendar"></i>
                           </button>
                         </span>
@@ -100,7 +124,7 @@
                 <div class="row form-group">
                   <div class="col-md-12">
                     <div class="col-md-12 text-right">
-                      <button type="button" class="btn btn-w-m btn-default" ng-click="reportEarningCtrl.clear_search_params()">Clear</button>
+                      <button type="button" class="btn btn-w-m btn-default" ng-click="referralCtrl.clear_search_params()">Clear</button>
                       <button type="submit" class="btn btn-w-m btn-primary">Search</button>
                     </div>
                   </div>
@@ -120,25 +144,25 @@
       <div class="ibox float-e-margins">
         <div class="ibox-content">
           <div class="row">
-            <div class="col-sm-12 text-right">
-              <button type="button" class="btn btn-primary" ng-click="reportEarningCtrl.get_earnings_xlsx()">
-                <i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Excel
-              </button>
-              <div class="space-10"></div>
+            <div class="col-md-3"></div>
+            <div class="wrapper col-md-6">
+              <table class="tree-table table-nested table-responsive">
+                <thead>
+                  <tr>
+                    <th style="padding-left: 10px">
+                      Name
+                    </th>
+                    <th class="cell-members">
+                      Number of referrals
+                    </th>
+                    <th class="cell-members">
+                      Country
+                    </th>
+                  </tr>
+                </thead>
+                <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-repeat="item in list"></tbody>
+              </table>
             </div>
-          </div>
-          
-          <div class="table-responsive">
-            <table ng-table="reportEarningCtrl.tableParams" class="table table-bordered">
-              <tr ng-repeat="earning in $data track by $index">
-                <td data-title="'User'" header-class="'header-text-left'">{{earning.user.fullName}}</td>
-                <td data-title="'Country'" header-class="'header-text-left'">{{earning.user.country}}</td>
-                <td data-title="'OS'" header-class="'header-text-left'">{{earning.user.register_os}}</td>
-                <td data-title="'Purchase date'" header-class="'header-text-left'">{{earning.user.created_at | date : 'yyyy-MM-dd'}}</td>
-                <td data-title="'Tournament'" header-class="'header-text-left'">{{earning.tournament.name}}</td>
-                <td data-title="'Total amount'" class="text-right">{{earning.leaderboard.total_amount | format_number}}</td>
-              </tr>
-            </table>
           </div>
         </div>
       </div>

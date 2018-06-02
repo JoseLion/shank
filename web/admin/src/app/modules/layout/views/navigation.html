@@ -160,6 +160,16 @@
                                   || state.includes('admin.admin_users.update'))}">
             <a ui-sref="admin.reports.ranking_by_tournament"><i class="fa fa-user"></i> <span class="nav-label">Ranking by Turnament</span></a>
           </li>
+          <li ng-class="{active: (state.includes('admin.users.list')
+                                  || state.includes('admin.admin_users.create')
+                                  || state.includes('admin.admin_users.update'))}">
+            <a ui-sref="admin.reports.referrals"><i class="fa fa-user"></i> <span class="nav-label">Referrals</span></a>
+          </li>
+          <li ng-class="{active: (state.includes('admin.users.list')
+                                  || state.includes('admin.admin_users.create')
+                                  || state.includes('admin.admin_users.update'))}">
+            <a ui-sref="admin.reports.player_payments"><i class="fa fa-user"></i> <span class="nav-label">Player Payments</span></a>
+          </li>
         </ul>
       </li>
     </ul>

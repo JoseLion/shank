@@ -1,6 +1,6 @@
 <div class="row wrapper border-bottom white-bg page-heading">
   <div class="col-lg-12">
-    <h2>Bienvenidos a Shank - Administrador</h2>
+    <h2>Welcome to Shank</h2>
     <ol class="breadcrumb">
       <li class="active">
         <strong>Dashboard</strong>
@@ -11,43 +11,45 @@
 
 <div class="wrapper wrapper-content animated fadeInRight without-padding-bottom">
   <div class="row">
-    <div class="col-lg-3">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h4>Administraci&oacute;n</h4>
+          <h4>Earnings</h4>
         </div>
+        
         <div class="ibox-content">
-          <h5>
-            <a class="font-bold text-success" ui-sref="admin.brands.list">Marcas</a>
-          </h5>                    
-          <span>&nbsp;</span>
+          <h1 class="no-margins">{{dashCtrl.total_earnings | format_number }}</h1>
+          <!--<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>-->
+          <small ui-sref="admin.reports.earnings" class="text-success pointer" >View report</small>
         </div>
       </div>
     </div>
     
-    <div class="col-lg-3">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h4>Perfiles</h4>
+          <h4>Funnel</h4>
         </div>
         <div class="ibox-content">
-          <h5>
-            <a class="font-bold text-success" ui-sref="admin.profiles.list">Configuraci&oacute;n</a>
-          </h5>
-          <span>&nbsp;</span>
+          <h1 class="no-margins">{{dashCtrl.total_earnings | format_number }}</h1>
+          <!--<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>-->
+          <small ui-sref="admin.reports.funnel" class="text-success pointer" >View report</small>
         </div>
       </div>
     </div>
     
-    <div class="col-lg-3">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h4>Usuarios</h4>
+          <h4>App Users</h4>
         </div>
         <div class="ibox-content">
-            <h5>
-              <a class="font-bold text-success" ui-sref="admin.admin_users.list">Del Sistema</a>
-            </h5>
+          <h3 class="no-margins">New User Today</h3>
+          <h3 class="no-margins">AVG People on a Tournament</h3>
+          <h3 class="no-margins">AVG Earnings Per Group</h3>
+          <h3 class="no-margins">Active Groups</h3>
+          <!--<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>-->
+          <small ui-sref="admin.reports.app_users" class="text-success pointer" >View report</small>
         </div>
       </div>
     </div>

@@ -2,8 +2,8 @@
 (function() {
   'use strict';
 
-  var Host = "";
-  var ApiHost = Host + "api/";
+  var Host = window.location.origin;
+  var ApiHost = Host + "/api/";
   
   if (location.hostname === 'localhost') {
     Host = "http://localhost:3010/";
