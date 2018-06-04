@@ -1,506 +1,56 @@
-<!-- preloader -->
-<div id="preloader">
-  <div class="spinner spinner-round"></div>
+<style>
+  .ibox-tools a {
+    color: #000;
+  }
+  a:link {
+    color: #676a6c;
+    text-decoration: none;
+  }
+  
+  a:visited {
+    text-decoration: none;
+    color: #676a6c;
+  }
+  a:hover, a:focus {
+    text-decoration: none !important;
+    color: #676a6c;
+  }
+</style>
+
+<div ng-include src="'app/modules/header/views/header.html'"></div>
+
+<div>
+  <img src="assets/images/shank-background.png" class="header-back">
 </div>
-<!-- / preloader -->
-<!-- header -->
-<header id="text-slider-header" data-section="home">
-  <div id="home">
-    <div class="row" ng-include src="'app/modules/header/views/header.html'"></div>
 
-
-<!-- text slider -->
-  <div id="text-slider" class="carousel slide">  
-    <div class="carousel-inner">
-      <div class="item active slide1">
-        <div class="container">
-          <div class="carousel-caption">
-            <h2 class="animated fadeInDown">WELCOME TO SIMPLYCITY</h2>
-            <h4 class="animated fadeInDown">MULTIPURPOSE ONE PAGE THEME</h4>
-            <div class="row">
-            <div class="col-sm-12">
-                <a href="#about" class="page-scroll btn animated fadeInUp">FIND OUT MORE</a>
-                <a href="#services" class="page-scroll btn animated fadeInUp">WHAT WE OFFER</a>
-            </div>
-            </div>
-            </div>
-        </div>
-      </div>
-      <div class="item slide2">
-        <div class="container">
-          <div class="carousel-caption">
-            <h2 class="animated fadeInDown">SIMPLYCITY</h2>
-            <h4 class="animated fadeInDown">EASY TO CUSTOMISE</h4>
-            <div class="row">
-            <div class="col-sm-12">
-                <a href="#about" class="page-scroll btn animated fadeInUp">FIND OUT MORE</a>
-                <a href="#contact" class="page-scroll btn animated fadeInUp">GET IN TOUCH</a>
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="item slide3">
-        <div class="container">
-          <div class="carousel-caption">
-            <h2 class="animated fadeInDown">GO LIVE WITH YOUR WEBSITE IN NO-TIME</h2>
-            <h4 class="animated fadeInDown">WELL DOCUMENTED CODE, EASY TO SETUP</h4>
-            <div class="row">
-            <div class="col-sm-12">
-                <a href="#contact" class="page-scroll btn animated fadeInUp">CONTACT US</a>
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<section id="features" class="container services">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <div class="navy-line"></div>
+      <h1>How does it Work?</h1>
     </div>
-    <!-- Controls -->
-    <a class="left carousel-control" href="#text-slider" data-slide="prev"><span class="lnr lnr-chevron-left"></span></a>
-    <a class="right carousel-control" href="#text-slider" data-slide="next"><span class="lnr lnr-chevron-right"></span></a>  
-  </div><!-- / text slider -->
-  </div><!-- / home --> 
-</header><!-- / header -->
-
-
-<!-- about section 4col -->
-<div id="about" data-section="about">
-  <div class="container">
-      <div class="page-header wsub first">
-          <h2>ABOUT</h2>
-      </div>
-      <div class="sub-header">
-          <h4>SimplyCity is a beautiful fully responsive Bootstrap Theme.</h4>
-      </div>
-      <div class="row">
-          <div class="about col-sm-3">
-              <div class="feature-icon">
-                  <i class="lnr lnr-laptop-phone"></i>
-              </div>
-              <h5 class="about-title">RESPONSIVE</h5>
-              <p>Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</p>
-          </div>
-          <div class="about col-sm-3">
-              <div class="feature-icon">
-                  <i class="lnr lnr-eye"></i>
-              </div>
-              <h5 class="about-title">RETINA READY</h5>
-              <p>Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</p>
-          </div>
-          <div class="about col-sm-3">
-              <div class="feature-icon">
-                  <i class="lnr lnr-code"></i>
-              </div>
-              <h5 class="about-title">CLEAN CODE</h5>
-              <p>Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</p>
-          </div>
-          <div class="about col-sm-3">
-              <div class="feature-icon">
-                  <i class="lnr lnr-pencil"></i>
-              </div>
-              <h5 class="about-title">EASY TO EDIT</h5>
-              <p>Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</p>
-          </div>
-      </div>
-  </div><!-- / container -->
-</div><!-- / about section 4col -->
-
-
-<!-- team section 3col -->
-<div id="team" data-section="team">
-  <div class="container">
-      <div class="page-header">
-          <h2>THE TEAM</h2>
-      </div>
-      <div class="row">
-          <div class="team-rounded col-sm-6 col-md-4">
-              <img src="assets/images/about-rounded1.jpg" alt="about">
-              <h5 class="team-title">JAMES DOE</h5>
-              <p class="team-role">-CEO -</p>
-              <p class="social-icons">
-                  <span>
-                      <a href="#"><i class="fa fa-facebook"></i></a>
-                      <a href="#"><i class="fa fa-twitter"></i></a>
-                      <a href="#"><i class="fa fa-google-plus"></i></a>
-                      <a href="#"><i class="fa fa-linkedin"></i></a>
-                      <a href="#"><i class="fa fa-dribbble"></i></a>
-                  </span>
-          </div>
-          <div class="team-rounded col-sm-6 col-md-4">
-              <img src="assets/images/about-rounded2.jpg" alt="about">
-              <h5 class="team-title">JANE DOE</h5>
-              <p class="team-role">- Graphic Designer -</p>
-              <p class="social-icons">
-                  <span>
-                      <a href="#"><i class="fa fa-facebook"></i></a>
-                      <a href="#"><i class="fa fa-twitter"></i></a>
-                      <a href="#"><i class="fa fa-google-plus"></i></a>
-                      <a href="#"><i class="fa fa-linkedin"></i></a>
-                      <a href="#"><i class="fa fa-dribbble"></i></a>
-                  </span>
-          </div>
-          <div class="team-rounded last col-sm-6 col-md-4">
-              <img src="assets/images/about-rounded3.jpg" alt="about">
-              <h5 class="team-title">JOHN DOE</h5>
-              <p class="team-role">- Project Manager -</p>
-              <p class="social-icons">
-                  <span>
-                      <a href="#"><i class="fa fa-facebook"></i></a>
-                      <a href="#"><i class="fa fa-twitter"></i></a>
-                      <a href="#"><i class="fa fa-google-plus"></i></a>
-                      <a href="#"><i class="fa fa-linkedin"></i></a>
-                      <a href="#"><i class="fa fa-dribbble"></i></a>
-                  </span>
-          </div>
-      </div>
-  </div><!-- / container -->
-</div><!-- / team section 3col -->
-
-
-<!-- services section 4col -->
-<div id="services" data-section="services">
-  <div class="container">
-      <div class="page-header wsub first">
-          <h2>SERVICES</h2>
-      </div>
-      <div class="sub-header">
-          <h4>Explore Our amazing services</h4>
-      </div>
-      <div class="row">
-          <div class="service col-sm-6 col-md-3">
-              <div class="service-icon">
-                  <i class="lnr lnr-pencil"></i>
-              </div>
-              <h5 class="service-title">WEB DESIGN</h5>
-              <p>Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</p>
-          </div>
-          <div class="service col-sm-6 col-md-3">
-              <div class="service-icon">
-                  <i class="lnr lnr-cog"></i>
-              </div>
-              <h5 class="service-title">WEB DEVELOPMENT</h5>
-              <p>Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</p>
-          </div>
-          <div class="service col-sm-6 col-md-3">
-              <div class="service-icon">
-                  <i class="lnr lnr-camera"></i>
-              </div>
-              <h5 class="service-title">PHOTOGRAPHY</h5>
-              <p>Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</p>
-          </div>
-          <div class="service col-sm-6 col-md-3">
-              <div class="service-icon">
-                  <i class="lnr lnr-diamond"></i>
-              </div>
-              <h5 class="service-title">UI DESIGN</h5>
-              <p>Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</p>
-          </div>
-      </div>
-  </div><!-- / container -->
-</div><!-- / services section 4col -->
-
-
-<!-- facts 4col -->
-<div id="facts" class="parallax" data-section="facts">
-  <div class="container">
-      <div class="row">
-          <div class="col-sm-6 col-md-3">
-              <i class="facts-icon lnr lnr-rocket"></i>
-              <p class="timer" id="websites" data-to="178" data-speed="1000">fact</p>
-              <h5 class="facts-title">WEBSITES LAUNCHED</h5>
-          </div>
-          <div class="col-sm-6 col-md-3">
-              <i class="facts-icon lnr lnr-code"></i>
-              <p class="timer" id="code" data-to="483" data-speed="1500">fact</p>
-              <h5 class="facts-title">LINES OF CODE</h5>
-          </div>
-          <div class="col-sm-6 col-md-3">
-              <i class="facts-icon lnr lnr-coffee-cup"></i>
-              <p class="timer" id="coffee" data-to="649" data-speed="2000">fact</p>
-              <h5 class="facts-title">CUPS OF COFFEE</h5>
-          </div>
-          <div class="col-sm-6 col-md-3">
-              <i class="facts-icon lnr lnr-envelope"></i>
-              <p class="timer" id="emails" data-to="836" data-speed="2500">fact</p>
-              <h5 class="facts-title">EMAILS ANSWERED</h5>
-          </div>
-      </div>
-  </div><!-- / container -->
-</div><!-- / facts 4col -->
-
-
-<!-- pricing section 4col -->
-<div id="pricing" data-section="pricing">
-  <div class="container">
-      <div class="page-header first">
-          <h2>PRICING</h2>
-      </div>
-      <div class="row">
-          <div class="col-sm-6 col-md-3">
-              <div class="pricing-table">
-                  <div class="pricing-table-title">
-                      <h5 class="pricing-title">SINGLE</h5>
-                  </div>
-                  <div class="pricing-table-price">
-                      <p>
-                          <span class="pricing-currency">$</span>
-                          <span class="pricing-price">15</span>
-                          <span class="pricing-period">/ one-time</span>
-                      </p>
-                  </div>
-                  <div class="pricing-table-content">
-                      <ul>
-                          <li>SINGLE INSTALLATION</li>
-                          <li>FREE LIFETIME UPDATES</li>
-                          <li>24/5 EMAIL SUPPORT</li>
-                          <li>DESIGN FILES</li>
-                          <li>HTML, CSS, SASS AND JS FILES INCLUDED</li>
-                          <li>EXTENSIVE DOCUMENTATION</li>
-                      </ul>
-                      <div class="pricing-table-button">
-                          <a href="#" class="btn btn-primary md">BUY NOW</a>
-                      </div>
-                  </div>
-              </div><!-- / first pricing-table -->
-          </div>
-          <div class="col-sm-6 col-md-3">
-              <div class="pricing-table">
-                  <div class="pricing-table-title">
-                      <h5 class="featured pricing-title">MULTIPLE</h5>
-                  </div>
-                  <div class="pricing-table-price">
-                      <p>
-                          <span class="pricing-currency">$</span>
-                          <span class="pricing-price">50</span>
-                          <span class="pricing-period">/ one-time</span>
-                      </p>
-                  </div>
-                  <div class="pricing-table-content">
-                      <ul>
-                          <li>MULTIPLE INSTALLATION</li>
-                          <li>FREE LIFETIME UPDATES</li>
-                          <li>24/7 EMAIL SUPPORT</li>
-                          <li>DESIGN FILES</li>
-                          <li>HTML, CSS, SASS AND JS FILES INCLUDED</li>
-                          <li>EXTENSIVE DOCUMENTATION</li>
-                      </ul>
-                      <div class="pricing-table-button">
-                          <a href="#" class="btn btn-primary md">BUY NOW</a>
-                      </div>
-                  </div>
-              </div><!-- / second pricing-table -->
-          </div>
-          <div class="col-sm-6 col-md-3">
-              <div class="pricing-table">
-                  <div class="pricing-table-title">
-                      <h5 class="pricing-title">EXTENDED</h5>
-                  </div>
-                  <div class="pricing-table-price">
-                      <p>
-                          <span class="pricing-currency">$</span>
-                          <span class="pricing-price">750</span>
-                          <span class="pricing-period">/ one-time</span>
-                      </p>
-                  </div>
-                  <div class="pricing-table-content">
-                      <ul>
-                          <li>RESELL, SUBLICENSE</li>
-                          <li>FREE LIFETIME UPDATES</li>
-                          <li>24/7 EMAIL SUPPORT</li>
-                          <li>DESIGN FILES</li>
-                          <li>HTML, CSS, SASS AND JS FILES INCLUDED</li>
-                          <li>EXTENSIVE DOCUMENTATION</li>
-                      </ul>
-                      <div class="pricing-table-button">
-                          <a href="#" class="btn btn-primary md">BUY NOW</a>
-                      </div>
-                  </div>
-              </div><!-- / third pricing-table -->
-          </div>
-          <div class="col-sm-6 col-md-3">
-              <div class="pricing-table">
-                  <div class="pricing-table-title">
-                      <h5 class="pricing-title">LIFETIME</h5>
-                  </div>
-                  <div class="pricing-table-price">
-                      <p>
-                          <span class="pricing-currency">$</span>
-                          <span class="pricing-price">249</span>
-                          <span class="pricing-period">/ one-time</span>
-                      </p>
-                  </div>
-                  <div class="pricing-table-content">
-                      <ul>
-                          <li>GET EVERYTHING FOR LIFE</li>
-                          <li>FREE LIFETIME UPDATES</li>
-                          <li>24/7 EMAIL SUPPORT</li>
-                          <li>DESIGN FILES</li>
-                          <li>HTML, CSS, SASS AND JS FILES INCLUDED</li>
-                          <li>EXTENSIVE DOCUMENTATION</li>
-                      </ul>
-                      <div class="pricing-table-button">
-                          <a href="#" class="btn btn-primary md">BUY NOW</a>
-                      </div>
-                  </div>
-              </div><!-- / fourth pricing-table -->
-          </div>
-      </div>
-  </div><!-- / container -->
-</div><!-- / pricing section 4col -->
-
-
-<!-- parallax section -->
-<div id="parallax-section" class="parallax" data-section="testimonials">
-  <div class="container">
-      <div class="parallax-section-content">
-          <h2 class="parallax-section-title">PARALLAX SECTION</h2>
-          <h3 class="parallax-section-text">Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet</h3>
-          <a href="#" class="btn btn-success">DOWNLOAD</a>
-      </div>
-  </div><!-- / container -->
-</div><!-- / parallax section -->
-
-
-<!-- blog 3col -->
-<div id="blog" data-section="blog">
-  <div class="container">
-      <div class="page-header first">
-          <h2>BLOG</h2>
-      </div>
-      <div class="row">
-          <div class="blog-post-small col-sm-12 col-md-4">
-              <img src="assets/images/blog-post-image1.jpg" alt="">
-              <h3 class="post-title">SIMPLE IMAGE BLOG POST</h3>
-              <p class="post-meta">POSTED BY <a href="#" class="post-meta-link">JOHN DOE</a> ON <a href="#" class="post-meta-link">APR. 20, 2016</a></p>
-              <p class="post-excerpt">Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet vulputate, orci justo sodales... <a href="pages/single-image-post.html" class="read-more">(read more)</a></p>
-          </div>
-          <div class="blog-post-small col-sm-12 col-md-4">
-              <!-- carousel -->
-              <div id="blog-carousel" class="carousel slide" data-ride="carousel">
-                  <!-- Wrapper for slides -->
-                  <div class="carousel-inner" role="listbox">
-                      <div class="item active">
-                          <img src="assets/images/blog-post-image3.jpg" alt="">
-                      </div>
-                      <div class="item">
-                          <img src="assets/images/blog-post-image2.jpg" alt="">
-                      </div>
-                      <div class="item">
-                          <img src="assets/images/blog-post-image1.jpg" alt="">
-                      </div>
-                  </div>
-                  <!-- Controls -->
-                  <a class="left carousel-control" href="#blog-carousel" role="button" data-slide="prev">
-                      <span class="lnr lnr-chevron-left" aria-hidden="true"></span>
-                  </a>
-                  <a class="right carousel-control" href="#blog-carousel" role="button" data-slide="next">
-                      <span class="lnr lnr-chevron-right" aria-hidden="true"></span>
-                  </a>
-              </div>
-              <h3 class="post-title">SLIDER POST</h3>
-              <p class="post-meta">POSTED BY <a href="#" class="post-meta-link">JOHN DOE</a> ON <a href="#" class="post-meta-link">APR. 22, 2016</a></p>
-              <p class="post-excerpt">Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet vulputate, orci justo sodales... <a href="pages/single-slider-post.html" class="read-more">(read more)</a></p>
-          </div><!-- / carousel --> 
-          <div class="blog-post-small col-sm-12 col-md-4">
-              <div class="embed-responsive embed-responsive-16by9">
-                  <iframe src="https://www.youtube.com/embed/bsY2GdBEvSA?showinfo=0" allowfullscreen></iframe>
-              </div>
-              <h3 class="post-title">VIDEO POST</h3>
-              <p class="post-meta">POSTED BY <a href="#" class="post-meta-link">JOHN DOE</a> ON <a href="#" class="post-meta-link">APR. 24, 2016</a></p>
-              <p class="post-excerpt">Aenean vel egestas augue, faucibus egestas tortor. Praesent tempor, urna eu imperdiet vulputate, orci justo sodales... <a href="pages/single-video-post.html" class="read-more">(read more)</a></p>
-          </div>    
-      </div>
-  </div><!-- / container -->
-</div><!-- / blog 3col -->
-
-
-<!-- contact -->
-<div id="contact" class="parallax" data-section="contact">
-  <div class="container">
-      <div class="page-header">
-          <h2>CONTACT</h2>
-      </div>
-      <div class="row">
-          <div class="col-md-12">
-              <form id="contactForm" data-toggle="validator">
-                  <div class="row">
-                      <div class="col-md-6">
-                          <div class="form-group">
-                              <input type="text" class="form-control" id="name" placeholder="FULL NAME" required>
-                              <div class="help-block with-errors"></div>
-                          </div>
-                          <div class="form-group">
-                              <input type="email" class="form-control" id="email" placeholder="EMAIL" required>
-                              <div class="help-block with-errors"></div>
-                          </div>
-                          <div class="form-group">
-                              <input type="text" class="form-control" id="subject" placeholder="SUBJECT">
-                          </div>
-                      </div>
-                      <div class="col-md-6">
-                          <div class="form-group">
-                          <textarea id="message" class="form-control" rows="5" placeholder="MESSAGE" required></textarea>
-                          <div class="help-block with-errors"></div>
-                          </div>
-                          <button type="submit" id="form-submit" class="page-scroll btn btn-info btn-md btn-form-submit">Submit</button>
-                          <div id="msgSubmit" class="h3 text-center hidden"></div>
-                          <div class="clearfix"></div>
-                      </div>
-                  </div>
-              </form>
-          </div>
-      </div>
-  </div><!-- / container -->
-</div><!-- / contact -->
-
-
-<!-- footer social -->
-<div class="footer-social">
-  <h3 class="footer-social-title">FIND US ON:</h3>
-  <a href="#"><i class="fa fa-facebook"></i></a>
-  <a href="#"><i class="fa fa-twitter"></i></a>
-  <a href="#"><i class="fa fa-google-plus"></i></a>
-  <a href="#"><i class="fa fa-linkedin"></i></a>
-  <a href="#"><i class="fa fa-pinterest"></i></a>
-  <a href="#"><i class="fa fa-dribbble"></i></a>
-</div><!-- / footer social -->
-
-
-<!-- footer -->
-<footer>
-  <div class="container">
-      <p>
-          © 2016 <b>SimplyCity</b> - Multipurpose One Page Bootstrap Theme
-      </p>
   </div>
-</footer><!-- / footer -->
-
-
-<!-- scroll to top -->
-<a href="#home" class="scroll-to-top page-scroll"><i class="fa fa-angle-up"></i></a>
-<!-- / scroll to top -->
-
-<!-- nav scroll -->
-<script>
-  $(document).ready(function() {
-  $('.nav').onePageNav();
-  });
-</script>
-<!-- / nav scroll -->
-<!-- slider -->
-<script>
-$(document).ready(function() {
-/* Additional Javascript (required) */
-  $('#text-slider').carousel({
-      pause: 'none'
-  })  
-});
-</script>
-<!-- facts counter -->
-<script type="text/javascript">
-    $('.timer').countTo({
-      refreshInterval: 60,
-      formatter: function (value, options) {
-        return value.toFixed(options.decimals);
-      },
-    });
-</script><!-- / facts counter -->
+  
+    <div class="row">
+        <div class="col-sm-3">
+            <h2>Full responsive</h2>
+            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
+            <p><a class="navy-link" href="#" role="button">Details &raquo;</a></p>
+        </div>
+        <div class="col-sm-3">
+            <h2>LESS/SASS Files</h2>
+            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
+            <p><a class="navy-link" href="#" role="button">Details &raquo;</a></p>
+        </div>
+        <div class="col-sm-3">
+            <h2>6 Charts Library</h2>
+            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
+            <p><a class="navy-link" href="#" role="button">Details &raquo;</a></p>
+        </div>
+        <div class="col-sm-3">
+            <h2>Advanced Forms</h2>
+            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
+            <p><a class="navy-link" href="#" role="button">Details &raquo;</a></p>
+        </div>
+    </div>
+</section>

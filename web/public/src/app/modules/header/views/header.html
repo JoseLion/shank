@@ -1,22 +1,64 @@
-<!-- navbar -->
-<nav id="sticky-nav" class="navbar navbar-2 navbar-fixed-top">
-  <div class="container-fluid navbar-header">
-    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-    <span class="sr-only">Toggle navigation</span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    </button>
-  </div>
-  
-  <div id="navbar" class="navbar-collapse collapse text-center">
-    <ul class="nav navbar-nav">
-      <li class="page-scroll"><a class="page-scroll" href="#home" data-nav-section="home"><span>About</span></a></li>
-      <li><a class="page-scroll" href="#about" data-nav-section="about"><span>Features</span></a></li>
-      <li><a class="page-scroll" href="#services" data-nav-section="services"><span>Testimonials</span></a></li>
-      <li><a class="page-scroll" href="#pricing" data-nav-section="work"><span>Terms</span></a></li>
-      <li><a class="page-scroll" href="#blog" data-nav-section="blog"><span>Privacy Policy</span></a></li>
-      <li><a class="page-scroll" href="#contact" data-nav-section="contact"><span>Contact</span></a></li>
-    </ul>
-  </div><!--/.nav-collapse -->
-</nav><!-- / navbar -->
+<div class="navbar-wrapper" ng-controller="HeaderController as headerCtrl">
+  <nav class="navbar navbar-default navbar-fixed-top" ng-class="{ 'navbar-scroll' : (state_name !== 'home') }" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button"
+                class="navbar-toggle collapsed"
+                data-toggle="collapse"
+                data-target="#navbar"
+                aria-expanded="false"
+                aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+					<li ng-class="{ 'active' : (state_name === 'home') }">
+						<a ui-sref="home">Home</a>
+					</li>
+					<li ng-class="{ 'active' : (state_name === 'home') }">
+						<a ui-sref="home">About</a>
+					</li>
+          <li ng-class="{ 'active' : (state_name === 'online_market') }">
+						<a ui-sref="online_market">Features</a>
+					</li>
+          <li ng-class="{ 'active' : (state_name === 'quotes' || state_name === 'quote_description') }">
+						<a ui-sref="quotes">Testimonials</a>
+					</li>
+          <li ng-class="{ 'active' : (state_name === 'about_us') }">
+						<a ui-sref="about_us">Terms</a>
+					</li>
+          <li ng-class="{ 'active' : (state_name === 'contact_us') }">
+						<a ui-sref="contact_us">Privacy Policy</a>
+					</li>
+          <li ng-class="{ 'active' : (state_name === 'contact_us') }">
+						<a ui-sref="contact_us">Contact</a>
+					</li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<script>
+  $(document).ready(function () {
+    // Page scrolling feature
+    $('a.page-scroll').bind('click', function(event) {
+      var link = $(this);
+      $('html, body').stop().animate({
+        scrollTop: $(link.attr('href')).offset().top - 50
+      }, 500);
+      event.preventDefault();
+      if($('body').hasClass('body-small')) {
+        $('#navbar').collapse('toggle');
+      }
+    });
+    
+    // Activate WOW.js plugin for animation on scrol
+    //new WOW().init();
+  });
+</script>
