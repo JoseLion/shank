@@ -15,6 +15,28 @@ const Group = mongoose.model('Group');
 const Referred = mongoose.model('Referred');
 const Player = mongoose.model('Player');
 
+function get_change_of_players(round, old_roaster, current_roaster) {
+	var ald_players = [];
+	var current_palyers = [];
+	
+	if (round > 1 && round < 5) {
+		var number = old_roaster.length;
+		
+		if (number > 0) {
+			var i;
+			
+			for (i = 0; i < number; i++) {
+				if (String(old_roaster[i]._id) !== String(current_roaster[i]._id)) {
+					ald_players.push(old_roaster[i].fullName);
+					current_palyers.push(current_roaster[i].fullName);
+				}
+			}
+		}
+	}
+	
+	return {ald_players: ald_players, current_palyers: current_palyers};
+}
+
 export default function() {
 	router.post('/get_earnings', auth, (req, res) => {
 		let  aggregate_params = [
@@ -438,12 +460,57 @@ export default function() {
 					model: Player
 				}
 			})
-			.exec((err, data) => {
+			.exec((err, groups) => {
 				if (err) {
 					return res.server_error(err.message);
 				}
 				
-				res.ok(data);
+				let from_date = null;
+				let to_date = null;
+				
+				if (req.body.from_date && req.body.to_date) {
+					from_date = date_service.to_utc_unix(req.body.from_date + " 00:00:00");
+					to_date = date_service.to_utc_unix(req.body.to_date + " 23:59:59");
+				}
+				
+				let players = [];
+				
+				groups.map(function(group) {
+					group.tournaments.map(function(tournament) {
+						tournament.leaderboard.map(function(leaderboard) {
+							leaderboard.checkouts.map(function(checkout) {
+								if (from_date) {
+									if (checkout.payment_date >= from_date && checkout.payment_date <= to_date) {
+										players.push({
+											tournament: tournament.tournament.name,
+											group: group.name,
+											user_name: leaderboard.user.fullName,
+											round: checkout.round,
+											amount: checkout.payment,
+											payment_date: checkout.payment_date,
+											old_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).ald_players,
+											new_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).current_palyers
+										});
+									}
+								}
+								else {
+									players.push({
+										tournament: tournament.tournament.name,
+										group: group.name,
+										user_name: leaderboard.user.fullName,
+										round: checkout.round,
+										amount: checkout.payment,
+										payment_date: checkout.payment_date,
+										old_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).ald_players,
+										new_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).current_palyers
+									});
+								}
+							});
+						});
+					});
+				});
+				
+				res.ok(players);
 			});
     } catch (e) {
       res.server_error();

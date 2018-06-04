@@ -74,6 +74,10 @@
         vm_search_params.from_date = date_utils.format_date(vm_search_params.from_date);
         vm_search_params.to_date = date_utils.format_date(vm_search_params.to_date);
       }
+      else {
+        delete vm_search_params.from_date;
+        delete vm_search_params.to_date;
+      }
       
       reports_model.get_app_users(vm_search_params).then(function(response) {
         vm.app_users = response;

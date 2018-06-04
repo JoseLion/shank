@@ -31,10 +31,10 @@
                   novalidate>
       
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <div class="form-group">
-                    <label class="col-md-3 control-label" for="search_from_date">Date: </label>
-                    <div class="col-md-4">
+                    <label class="col-md-1 control-label" for="search_from_date">Date: </label>
+                    <div class="col-md-2">
                       <div class="input-group">
                         <input type="text"
                                class="form-control"
@@ -58,7 +58,7 @@
                     
                     <div class="col-md-1 col-sm-12 no-padding">&nbsp;</div>
                     
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                       <div class="input-group">
                         <input type="text"
                                class="form-control"
@@ -79,16 +79,14 @@
                         </span>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="row">
-                <div class="row form-group">
-                  <div class="col-md-12">
-                    <div class="col-md-12 text-right">
-                      <button type="button" class="btn btn-w-m btn-default" ng-click="appUserCtrl.clear_search_params()">Clear</button>
-                      <button type="submit" class="btn btn-w-m btn-primary">Search</button>
+                    
+                    <div class="col-md-5">
+                      <div class="input-group">
+                        <div class="row form-group">
+                          <button type="submit" class="btn btn-w-m btn-primary">Search</button>
+                          <button type="button" class="btn btn-w-m btn-default" ng-click="appUserCtrl.clear_search_params()">Clear</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
