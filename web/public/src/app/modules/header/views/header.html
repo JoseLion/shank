@@ -17,18 +17,10 @@
       
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav custom-navbar">
-					<li ng-class="{ 'active' : (state_name === 'home') }">
-						<a ui-sref="home">Home</a>
-					</li>
-					<li ng-class="{ 'active' : (state_name === 'home') }">
-						<a ui-sref="home">About</a>
-					</li>
-          <li ng-class="{ 'active' : (state_name === 'online_market') }">
-						<a ui-sref="online_market">Features</a>
-					</li>
-          <li ng-class="{ 'active' : (state_name === 'quotes' || state_name === 'quote_description') }">
-						<a ui-sref="quotes">Testimonials</a>
-					</li>
+          <li><a class="page-scroll" href="#page-top">Home</a></li>
+					<li><a class="page-scroll" href="#about">About</a></li>
+          <li><a class="page-scroll" href="#features">Features</a></li>
+          <li><a class="page-scroll" href="#testimonials">Testimonials</a></li>
           
           <li class="navbar-logo-container">
 						<img src="assets/images/logo_shank.png" class="navbar-logo">
@@ -51,6 +43,11 @@
 
 <script>
   $(document).ready(function () {
+    $('body').scrollspy({
+      target: '.navbar-fixed-top',
+      offset: 80
+    });
+    
     // Page scrolling feature
     $('a.page-scroll').bind('click', function(event) {
       var link = $(this);
@@ -58,12 +55,10 @@
         scrollTop: $(link.attr('href')).offset().top - 50
       }, 500);
       event.preventDefault();
-      if($('body').hasClass('body-small')) {
-        $('#navbar').collapse('toggle');
-      }
+      $("#navbar").collapse('hide');
     });
-    
-    // Activate WOW.js plugin for animation on scrol
-    //new WOW().init();
   });
+  
+  // Activate WOW.js plugin for animation on scrol
+  //new WOW().init();
 </script>
