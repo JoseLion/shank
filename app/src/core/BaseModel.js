@@ -25,17 +25,7 @@ export default class BaseMode {
         const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
         const json = await response.json().catch(handleParsingError);
         
-        if (response.status !== 200) {
-            if (response.status === 401) {
-                EventRegister.emit(AppConst.EVENTS.logout);
-            }
-
-            throw {
-                message: json.error,
-                status: response.status
-            };
-        }
-
+        checkResponse(response, json);
         return json.response;
     }
     
@@ -55,13 +45,7 @@ export default class BaseMode {
         const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
         const json = await response.json().catch(handleParsingError);
 
-        if (response.status !== 200) {
-            throw {
-                message: json.error,
-                status: response.status
-            };
-        }
-        
+        checkResponse(response, json);        
         return json.response;
     }
 
@@ -80,13 +64,7 @@ export default class BaseMode {
         const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
         const json = await response.json().catch(handleParsingError);
         
-        if (response.status !== 200) {
-            throw {
-                message: json.error,
-                status: response.status
-            };
-        }
-
+        checkResponse(response, json);
         return json.response;
     }
 
@@ -106,13 +84,7 @@ export default class BaseMode {
         const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
         const json = await response.json().catch(handleParsingError);
         
-        if (response.status !== 200) {
-            throw {
-                message: json.error,
-                status: response.status
-            };
-        }
-        
+        checkResponse(response, json);        
         return json.response;
     }
 }
@@ -121,10 +93,24 @@ async function getAuthToken() {
     const token = await AsyncStorage.getItem(AuthToken).catch(error => {throw error});
     
     if (!token) {
+        EventRegister.emit(AppConst.EVENTS.logout, true);
         throw "Session has expired... Please login!";
     }
 
     return token;
+}
+
+function checkResponse(response, json) {
+    if (response.status !== 200) {
+        if (response.status === 401) {
+            EventRegister.emit(AppConst.EVENTS.logout);
+        }
+
+        throw {
+            message: json.error,
+            status: response.status
+        };
+    }
 }
 
 function handleFetchError(error) {

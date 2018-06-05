@@ -30,6 +30,7 @@
     "react-native-loading-spinner-overlay": "^0.5.2",
     "react-native-modal-dropdown": "^0.6.2",
     "react-native-push-notification": "^3.0.2",
+    "react-native-responsive-dimensions": "^1.0.2",
     "react-native-scrollable-tab-view": "^0.8.0",
     "react-native-sortable-list": "0.0.21",
     "react-native-svg": "^6.3.1",

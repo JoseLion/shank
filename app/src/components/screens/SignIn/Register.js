@@ -4,6 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import handleError from 'Core/handleError';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import { NavigationActions } from 'react-navigation';
+import PushNotification from 'react-native-push-notification';
 
 import { BaseComponent, NoAuthModel, MainStyles, AppConst } from '../BaseComponent';
 import LocalStyles from './styles/local';
@@ -143,6 +144,8 @@ export default class Register extends BaseComponent {
     
     finishSignup() {
         global.setLoading(false);
+        PushNotification.requestPermissions();
+        
         this.props.navigation.dispatch(NavigationActions.reset({
 			index: 0,
 			actions: [NavigationActions.navigate({routeName: 'Main'})],

@@ -99,18 +99,18 @@ export default class {
             const jobs = await Job.find().catch(handleMongoError);
 
             jobs.forEach(job => {
-                if (job.functionName ==null || job.functionName == '') {
+                if (job.onTick ==null || job.onTick == '') {
                     throw "The name of the function to excecute is required";
                 }
     
-                if (self[job.functionName] == null || typeof self[job.functionName] !== 'function') {
-                    throw `The static function ${functionName} could not be found in cronJobs.js`;
+                if (self[job.onTick] == null || typeof self[job.onTick] !== 'function') {
+                    throw `The static function ${onTick} could not be found in cronJobs.js`;
                 }
 
                 const cronJob = new CronJob({
                     cronTime: job.cronTime,
                     onTick: function() {
-                        const shouldContinue = self[job.functionName](JSON.parse(job.args));
+                        const shouldContinue = self[job.onTick](JSON.parse(job.args));
 
                         if (!shouldContinue) {
                             this.stop();
@@ -159,15 +159,19 @@ export default class {
 
             groups.forEach(group => {
                 group.tournaments.forEach(tournamentCross => {
-                    tournamentCross.leaderboard.forEach(leaderboardCross => {
-                        leaderboardCross.user.notifications.forEach(pushObj => {
-                            pushNotifications.send({
-                                token: pushObj.token,
-                                os: pushObj.os,
-                                alert: `Roster alert: Remember to make your picks before the tournament starts: Tomorrow in 15 hours. It’s time to make your picks for this week’s tournament`
+                    if (String(tournamentCross.tournament) == String(tournament.id)) {
+                        tournamentCross.leaderboard.forEach(leaderboardCross => {
+                            leaderboardCross.user.notifications.forEach(pushObj => {
+                                pushNotifications.send({
+                                    token: pushObj.token,
+                                    os: pushObj.os,
+                                    alert: `Roster alert: Remember to make your picks before the tournament starts: Tomorrow in 15 hours. It’s time to make your picks for this week’s tournament`
+                                });
                             });
                         });
-                    });
+
+                        return;
+                    }
                 }); 
             });
         } catch (error) {
@@ -207,7 +211,7 @@ export default class {
         try {
             const Group = mongoose.model('Group');
             const Tournament = mongoose.model('Tournament');
-            const tournament = await Tournament.findById(id).catch(handleMongoError);
+            const tournament = await Tournament.findById(tournamentId).catch(handleMongoError);
             const groups = await Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
 
             await Fantasy.update_leaderboard(tournament.tournamentID).catch(error => console.error(error));

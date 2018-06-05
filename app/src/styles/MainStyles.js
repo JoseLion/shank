@@ -10,8 +10,8 @@ export default MainStyles = StyleSheet.create({
     button: {
         alignItems: 'center',
         borderRadius: Style.EM(0.5),
-        marginVertical: Style.EM(0.5),
-        padding: Style.EM(0.8),
+        marginVertical: '2%',
+        padding: '3.5%',
         width: '100%'
     },
     buttonText: {
@@ -44,7 +44,7 @@ export default MainStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    stretchContainer :{
+    stretchContainer: {
         flex: 1,
         flexDirection: 'column',
         alignItems: 'stretch',
@@ -83,7 +83,7 @@ export default MainStyles = StyleSheet.create({
         paddingLeft: Style.EM(1),
         paddingRight: Style.EM(1),
         paddingTop: Style.EM(0.75),
-        width:'100%'
+        width: '100%'
     },
     formPickerText: {
         fontSize: Style.EM(1),
@@ -258,178 +258,77 @@ export default MainStyles = StyleSheet.create({
         textAlign: 'left',
     },
 
-    goldenShankButton: {
-        alignItems: 'center',
-        paddingBottom: Style.SMALL_PADDING,
-        paddingTop: Style.SMALL_PADDING,
-        width: '70%',
-        marginTop: Style.PX_15,
-        backgroundColor: '#A39534',
-        borderRadius: 10
+    newMainContainer: {
+        flex: 1
     },
-    goldenShankButtonPayment: {
-        alignItems: 'center',
-        paddingBottom: Style.XS_SMALL_PADDING,
-        paddingTop: Style.XS_SMALL_PADDING,
-        width: '55%',
-        marginVertical: '3%',
-        backgroundColor: '#A39534',
-        borderRadius: 10
+    inRow: {
+        flexDirection: 'row',
     },
-    goldenShankAddGroupButton: {
-        alignItems: 'center',
-        paddingBottom: Style.SMALL_PADDING,
-        paddingTop: Style.SMALL_PADDING,
-        width: '26%',
-        backgroundColor: '#A39534',
-        borderRadius: 10
+    inColumn: {
+        flexDirection: 'column',
     },
-    loginInput: {
-        width: '80%',
-        marginTop: Style.PX_15,
-        padding: 4,
-        fontSize: 18,
-        borderWidth: 1,
-        borderColor: '#rgba(0, 0, 0, .2)',
+    space5: {
+        height: 5,
+    },
+    space10: {
+        height: 10,
+    },
+    space20: {
+        height: 20,
+    },
+    center: {
+        alignItems: 'center', //Center Horizontal
+        justifyContent: 'center', //Center Verticalmente
+    },
+    form: {
+        flex: 1,
+        paddingTop: 0,
+        paddingLeft: 30,
+        paddingBottom: 30,
+        paddingRight: 30,
+        width: containerWidth,
+        justifyContent: 'space-between',
+    },
+    formLabel: {
+        marginBottom: 5,
+        fontFamily: Style.CENTURY_GOTHIC,
+        fontSize: 15,
+        color: 'rgba(112, 163, 77, 1)',
+    },
+    formInputText: {
+        height: 45,
+        fontFamily: Style.CENTURY_GOTHIC,
+        borderColor: AppConst.COLOR_GRAY,
         borderRadius: 0,
-        color: '#333'
+        borderWidth: 1,
+        color: AppConst.COLOR_BLUE,
+        fontSize: Style.EM(1),
+        marginBottom: Style.EM(0.5),
+        marginTop: Style.EM(0.5),
+        paddingBottom: Style.EM(0.75),
+        paddingLeft: Style.EM(1),
+        paddingRight: Style.EM(1),
+        paddingTop: Style.EM(0.75)
     },
-    fbButton: {
-        width: '70%',
-        paddingBottom: Style.SMALL_PADDING,
-        paddingTop: Style.SMALL_PADDING,
-        backgroundColor: '#3B5998',
-        marginTop: 15,
+    imageButton: {
         alignItems: 'center',
-        borderRadius: 10,
+        paddingVertical: Style.EM(1.5)
     },
-    startButton: {
-        backgroundColor: '#556E3E',
-        width: Style.LG,
-        justifyContent: 'center',
-        marginBottom: 7,
-        borderRadius: 10,
+    image: {
+        width: Style.EM(7),
+        height: Style.EM(7),
+        borderRadius: Style.EM(7) / 2.0,
+        marginBottom: Style.EM(0.5)
     },
-    inputTopSeparation: {
-        marginTop: Style.PX_14,
-    },
-    imageOpacity: {
-        backgroundColor: 'rgba(0,0,0,.4)'
-    },
-    listRenderSeparator : {
-        height: 1,
-        width: "76%",
-        backgroundColor: "#CED0CE",
-        marginBottom: "5%",
-        marginHorizontal: '10%'
-    },
-  newMainContainer: {
-    flex: 1
-  },
-  inRow: {
-    flexDirection: 'row',
-  },
-  inColumn: {
-    flexDirection: 'column',
-  },
-  space5: {
-    height: 5,
-  },
-  space10: {
-    height: 10,
-  },
-  space20: {
-    height: 20,
-  },
-  center: {
-    alignItems: 'center', //Center Horizontal
-    justifyContent: 'center', //Center Verticalmente
-  },
-  form: {
-    flex: 1,
-    paddingTop: 0,
-    paddingLeft: 30,
-    paddingBottom: 30,
-    paddingRight: 30,
-    width: containerWidth,
-    justifyContent: 'space-between',
-  },
-  formLabel: {
-    marginBottom: 5,
-    fontFamily: Style.CENTURY_GOTHIC,
-    fontSize: 15,
-    color: 'rgba(112, 163, 77, 1)',
-  },
-  formInputText: {
-    height: 45,
-    fontFamily: Style.CENTURY_GOTHIC,
-    borderColor: AppConst.COLOR_GRAY,
-    borderRadius: 0,
-    borderWidth: 1,
-    color: AppConst.COLOR_BLUE,
-    fontSize: Style.EM(1),
-    marginBottom: Style.EM(0.5),
-    marginTop: Style.EM(0.5),
-    paddingBottom: Style.EM(0.75),
-    paddingLeft: Style.EM(1),
-    paddingRight: Style.EM(1),
-    paddingTop: Style.EM(0.75)
-  },
-  greenColor: {
-    color: 'rgba(112, 163, 77, 1)'
-  },
-  dropdown: {
-		width: '100%',
-		borderWidth: 1,
-		borderRadius: 0,
-    borderColor: AppConst.COLOR_GRAY
-	},
-	dropdownButton: {
-		marginVertical: 2,
-		marginHorizontal: 4,
-		fontSize: Style.EM(1),
-		color: AppConst.COLOR_BLUE,
-    fontFamily: Style.CENTURY_GOTHIC,
-		textAlignVertical: 'center',
-    borderColor: 'blue'
-	},
-	dropdownStyle: {
-		width: 230,
-		height: 150,
-		borderWidth: 1,
-		borderRadius: 3,
-		borderColor: AppConst.COLOR_GRAY
-	},
-	dropdownTextStyle: {
-		fontFamily: Style.CENTURY_GOTHIC,
-		fontSize: Style.EM(1),
-		color: AppConst.COLOR_GRAY
-	},
-  imageButton: {
-		alignItems: 'center',
-		paddingVertical: Style.EM(1.5)
-	},
-  image: {
-		width: Style.EM(7),
-		height: Style.EM(7),
-		borderRadius: Style.EM(7) / 2.0,
-		marginBottom: Style.EM(0.5)
-	},
-  imageText: {
-		fontFamily: Style.CENTURY_GOTHIC,
-		fontSize: Style.FONT_14,
-		color: AppConst.COLOR_GRAY
-    },
-	navButton: {
-		height: '100%',
-		paddingHorizontal: Style.EM(1),
-		justifyContent: 'center',
-		alignItems: 'center'
+    imageText: {
+        fontFamily: Style.CENTURY_GOTHIC,
+        fontSize: Style.FONT_14,
+        color: AppConst.COLOR_GRAY
     },
     mainFontFamily: {
         fontFamily: Style.CENTURY_GOTHIC
     },
-	pickerView: {
+    pickerView: {
         width: '100%',
         height: 45,
         borderColor: AppConst.COLOR_GRAY,
@@ -440,8 +339,8 @@ export default MainStyles = StyleSheet.create({
         paddingBottom: Style.EM(0.5),
         paddingLeft: Style.EM(0.5),
     },
-	pickerText: {
-		fontFamily: Style.CENTURY_GOTHIC,
-		fontSize: Style.FONT_16
-	}
+    pickerText: {
+        fontFamily: Style.CENTURY_GOTHIC,
+        fontSize: Style.FONT_16
+    }
 });

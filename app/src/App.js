@@ -50,10 +50,14 @@ export default class ShankApp extends Component {
 		}
 	}
 
-	async logout() {
+	async logout(sessionExpired) {
         global.setLoading(true);
         const pushToken = await AsyncStorage.getItem(AppConst.PUSH_TOKEN).catch(handleError);
-        await BaseModel.post('app_user/logout', { pushToken }).catch(handleError);
+
+        if (!sessionExpired) {
+            await BaseModel.post('app_user/logout', { pushToken }).catch(handleError);
+        }
+        
         await AsyncStorage.removeItem(AppConst.AUTH_TOKEN).catch(handleError);
         global.setLoading(false);
         

@@ -1,10 +1,15 @@
 import React from 'react';
 import {Dimensions, Platform, PixelRatio} from 'react-native';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 
 // Precalculate Device Dimensions for better performance
-const x = Dimensions.get('window').width;
-const y = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
+const fontScale = Dimensions.get("window").fontScale;
+
+console.log("Window: ", Dimensions.get("window"));
+console.log("Screen: ", Dimensions.get("screen"));
 
 const baseWidth = 320;
 const baseHeight = 480;
@@ -12,21 +17,25 @@ const baseHeight = 480;
 const em_unit = 0.875 / baseWidth;
 
 // Calculating ratio from iPhone breakpoints
-//const ratioX = x < 375 ? (x < 320 ? 0.75 : 0.875) : 1 ;
-//const ratioY = y < 568 ? (y < 480 ? 0.75 : 0.875) : 1 ;
+//const ratioX = width < 375 ? (width < 320 ? 0.75 : 0.875) : 1 ;
+//const ratioY = height < 568 ? (height < 480 ? 0.75 : 0.875) : 1 ;
 
-const ratioX = x * em_unit;
-const ratioY = y * em_unit;
+const ratioX = width * em_unit;
+const ratioY = height * em_unit;
 
 // We set our base font size value
-const base_unit = 16;
+const base_unit = 8;
 
 // We're simulating EM by changing font size according to Ratio
-const unit = base_unit * ratioX;
+//const unit = base_unit * ratioX;
+
+const unit = base_unit * (height / width);
 
 // We add an em() shortcut function
 function em(value) {
-    return unit * value;
+    //return PixelRatio.roundToNearestPixel(unit * value * fontScale);
+
+    return responsiveFontSize(2 * value);
 }
 
 function normalize(size) {
@@ -41,25 +50,7 @@ function normalize(size) {
 export default Style = {
 
     // EM FUNCTION
-    EM: function(value) {return em(value); },
-
-    // GENERAL
-    DEVICE_WIDTH: x,
-    DEVICE_HEIGHT: y,
-    RATIO_X: ratioX,
-    RATIO_Y: ratioY,
-    UNIT: em(1),
-    PADDING: em(1.25),
-    SMALL_PADDING: em(0.8),
-    XS_SMALL_PADDING: em(0.3),
-    ICON_PADDING: em(0.5),
-    ICON_XSS_PADDING: em(0.6),
-
-    // CARD
-    CARD_WIDTH: x - em(1.25) * 2,
-    CARD_HEIGHT: (x - em(1.25) * 2) * (3 / 5),
-    CARD_PADDING_X: em(1.875),
-    CARD_PADDING_Y: em(1.25),
+    EM: value => em(value),
 
     //FONT_PIXEL_RATIO
 

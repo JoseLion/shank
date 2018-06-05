@@ -125,15 +125,7 @@ export default class AddTournament extends BaseComponent {
 			bet: this.state.group.bet,
 			new_tournament: {
 				tournament: this.state.tournament_selected._id,
-				leaderboard : [ 
-					{
-						score : 0,
-						rank : 1,
-						roaster : [],
-						lastRoaster : [],
-						checkouts : []
-					}
-				]
+				leaderboard : []
 			}
 		};
 

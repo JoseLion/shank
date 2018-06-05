@@ -7,6 +7,7 @@ import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-na
 import { EventRegister } from 'react-native-event-listeners';
 import { NavigationActions } from 'react-navigation';
 import dismissKeyboard from 'dismissKeyboard';
+import PushNotification from 'react-native-push-notification';
 
 // Shank components:
 import { BaseComponent, NoAuthModel, MainStyles, AppConst, Spinner } from '../BaseComponent';
@@ -146,7 +147,9 @@ export default class Login extends BaseComponent {
 	}
 
 	finishLogin() {
-		global.setLoading(false);
+        global.setLoading(false);
+        PushNotification.requestPermissions();
+        
 		this.props.navigation.dispatch(NavigationActions.reset({
 			index: 0,
 			actions: [NavigationActions.navigate({routeName: 'Main'})],
