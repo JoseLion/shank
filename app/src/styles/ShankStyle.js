@@ -1,5 +1,6 @@
 import React from 'react';
 import {Dimensions, Platform, PixelRatio} from 'react-native';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 
 // Precalculate Device Dimensions for better performance
@@ -32,7 +33,9 @@ const unit = base_unit * (height / width);
 
 // We add an em() shortcut function
 function em(value) {
-    return PixelRatio.roundToNearestPixel(unit * value * fontScale);
+    //return PixelRatio.roundToNearestPixel(unit * value * fontScale);
+
+    return responsiveFontSize(2 * value);
 }
 
 function normalize(size) {

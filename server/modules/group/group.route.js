@@ -87,39 +87,51 @@ export default function(app) {
 
 	router.post(`${basePath}/addTournament`, auth, async (req, res) => {
 		try {
-			let new_tournament = req.body.new_tournament;
-			new_tournament.leaderboard[0].user = req.payload._id;
-			
-			Group.update({"_id": req.body._id}, { $push: { tournaments: new_tournament} }, async function(err, group) {
-				if (err) {
-					return res.server_error(err);
-                }
+            let group = await Group.findById(req.body._id).populate('tournaments.leaderboard.user').catch(handleMongoError);
+            let newTournament = req.body.new_tournament;
 
-                await group.tournaments.asyncForEach(async tournamentCross => {
-                    if (String(tournamentCross.tournament) == String(new_tournament.tournament)) {
-                        const pushNotification = new PushNotifications();
+            if (!group) {
+                res.reset_content("Sorry! The group could not be found...");
+                return;
+            }
+            
+            group.tournaments[0].leaderboard.forEach(cross => {
+                newTournament.leaderboard.push({
+                    user: cross.user._id,
+                    rank: cross.rank
+                });
+            });
 
-                        await tournamentCross.leaderboard.asyncForEach(async cross => {
-                            const appUser = await AppUser.findById(cross.user).catch(handleMongoError);
-                            const tournament = await Tournament.findById(new_tournament.tournament);
-                            const today = new Date();
-                            const startDate = new Date(tournament.startDate);
-                            const days = Math.round((startDate.getTime() - today.getTime()) / 1000 / 60 / 60 / 24);
-                            
-                            appUser.notifications.forEach(push => {
-                                pushNotification.send({
-                                    token: push.token,
-                                    os: push.os,
-                                    alert: `The next tournament ${tournament.name} starts in ${days} days. Don’t miss it`
-                                });
+            group.tournaments.push(newTournament);
+            await group.save().catch(handleMongoError);
+
+            group.tournaments.forEach(tournamentCross => {
+                if (String(tournamentCross.tournament) == String(newTournament.tournament)) {
+                    const pushNotification = new PushNotifications();
+
+                    tournamentCross.leaderboard.forEach(async cross => {
+                        const appUser = await AppUser.findById(cross.user).catch(handleMongoError);
+                        const tournament = await Tournament.findById(newTournament.tournament);
+                        const today = new Date();
+                        const startDate = new Date(tournament.startDate);
+                        const days = Math.round((startDate.getTime() - today.getTime()) / 1000 / 60 / 60 / 24);
+                        
+                        appUser.notifications.forEach(push => {
+                            pushNotification.send({
+                                token: push.token,
+                                os: push.os,
+                                alert: `The next tournament ${tournament.name} starts in ${days} days. Don’t miss it`
                             });
                         });
-                    }
-                });
+                    });
 
-				res.ok(req.body);
-			});
+                    return;
+                }
+            });
+			
+			res.ok(req.body);
 		} catch (error) {
+            console.log(error);
 			return res.server_error(error);
 		}
 	});

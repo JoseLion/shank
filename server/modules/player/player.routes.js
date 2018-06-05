@@ -74,25 +74,22 @@ module.exports = (app) => {
   })
   .get('/load_players', async (req, res) => {
     try {
-      //https://gyandeeps.com/json-file-write/
-      //let players = await fantasy.get_players(req.body.year);
-      let players = require('./fantasy.players.data.json');
+      let players = await fantasy.get_players().catch(error => console.log(error));
       
-      console.log(players.length, '-----------');
-      players.asyncForEach(async player => {
-        //console.log("--------------------");
-        let player_in = await Player.findOne({playerID: player.playerID}).catch(err => {console.log(err);});
+      await players.asyncForEach(async player => {
+        let player_in = await Player.findOne({playerID: player.playerID}).catch(error => console.log(error));
         
         if (player_in) {
           player_in.set(player);
-          await player_in.save().catch((err) => {console.log(err);});
-        }
-        else {
-          await Player.create(player).catch((err) => {console.log(err);});
+          await player_in.save().catch(error => console.log(error));
+        } else {
+          await Player.create(player).catch(error => console.log(err));
         }
       });
+
+      res.ok();
     } catch (e) {
-      res.server_error();
+      res.server_error(e);
     }
   });
 

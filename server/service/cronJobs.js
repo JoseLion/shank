@@ -211,7 +211,7 @@ export default class {
         try {
             const Group = mongoose.model('Group');
             const Tournament = mongoose.model('Tournament');
-            const tournament = await Tournament.findById(id).catch(handleMongoError);
+            const tournament = await Tournament.findById(tournamentId).catch(handleMongoError);
             const groups = await Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.user').catch(handleMongoError);
 
             await Fantasy.update_leaderboard(tournament.tournamentID).catch(error => console.error(error));
