@@ -7223,7 +7223,7 @@ body.landing-page {
   color: #1ab394 !important;
 }
 .landing-page .contact {
-  background-image: url('../img/landing/word_map.png');
+  background-image: url('../assets/images/landing/word_map.png');
   background-position: 50% 50%;
   background-repeat: no-repeat;
   margin-top: 60px;
@@ -7425,6 +7425,12 @@ body.landing-page {
     background-color: #ffffff;
     padding: 9px 10px;
     border: none;
+  }
+  .custom-navbar {
+    margin-left: 0 !important;
+  }
+  .navbar-logo-container {
+    display: none !important;
   }
 }
 body.rtls {
@@ -8629,7 +8635,7 @@ textarea {
 /* FOOTER */
 
 .landing-page .footer {
-  background-image: url('../img/landing/word_map.png');
+  background-image: url('../assets/images/landing/word_map.png');
   background-position: 50% 50%;
   background-repeat: no-repeat;
   margin-top: 60px;

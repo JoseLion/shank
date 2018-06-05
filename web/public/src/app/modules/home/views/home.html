@@ -19,11 +19,28 @@
 
 <div ng-include src="'app/modules/header/views/header.html'"></div>
 
-<div>
-  <img src="assets/images/shank-background.png" class="header-back">
+<div class="landing-top-section cn">
+  <div class="row inner">
+    <div class="row col-md-12">
+      <div class="col-md-12">SHANK</div>
+      <div class="col-md-12">THE GAME INSIDE THE GAME</div>
+    </div>
+    
+    <div class="row col-md-12">
+      <div class="col-md-12">Join the game of fantasy golf</div>
+      <div class="col-md-12">and compete against your friends</div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <img src="assets/images/web-logo.svg" class="store-container" />
+        <img src="assets/images/web-logo.svg" class="store-container" />
+      </div>
+    </div>
+  </div>
 </div>
 
-<section id="features" class="container services">
+<section class="container">
   <div class="row">
     <div class="col-lg-12 text-center">
       <div class="navy-line"></div>
@@ -31,26 +48,134 @@
     </div>
   </div>
   
-    <div class="row">
-        <div class="col-sm-3">
-            <h2>Full responsive</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
-            <p><a class="navy-link" href="#" role="button">Details &raquo;</a></p>
-        </div>
-        <div class="col-sm-3">
-            <h2>LESS/SASS Files</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
-            <p><a class="navy-link" href="#" role="button">Details &raquo;</a></p>
-        </div>
-        <div class="col-sm-3">
-            <h2>6 Charts Library</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
-            <p><a class="navy-link" href="#" role="button">Details &raquo;</a></p>
-        </div>
-        <div class="col-sm-3">
-            <h2>Advanced Forms</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
-            <p><a class="navy-link" href="#" role="button">Details &raquo;</a></p>
-        </div>
+  <div class="row">
+    <div class="col-sm-3 text-center">
+      <h2>Step 1</h2>
+      <span>Download the app</span><br />
+      <span>and create an acount.</span>
     </div>
+    <div class="col-sm-3 text-center">
+      <h2>Step 2</h2>
+      <span>Create a Group</span><br />
+      <span>and Invite your Friends.</span>
+    </div>
+    <div class="col-sm-3 text-center">
+      <h2>Step 3</h2>
+      <span>Choose a tournament an draft</span><br />
+      <span>from all your favorite players.</span>
+    </div>
+    <div class="col-sm-3 text-center">
+      <h2>Step 4</h2>
+      <span>Rack up big points to</span><br />
+      <span>win your group prizes.</span>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <div class="navy-line"></div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-sm-6">
+      <img src="assets/images/app-screen.png" class="img-app-screen" />
+    </div>
+    <div class="col-sm-6">
+      <div class="col--md-12">
+        <h2>Fair points for all positions</h2>
+        <p>
+          <span>We attribute points for all actions during the games so you only have to think about</span><br />
+          <span>picking the best players. Which stars are going to play for your team?</span>
+        </p>
+      </div>
+      
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>
+                  <span>POS</span>
+                </th>
+                <th class="text-center">
+                  <span>PLAYERS</span>
+                </th>
+                <th class="text-center">
+                  <span>TOTAL</span>
+                </th>
+                <th class="text-center">
+                  <span>THRU</span>
+                </th>
+                <th class="text-center date-column">
+                  <span>TODAY</span>
+                </th>
+                <th class="text-center date-column">
+                  <span>POINTS</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="player in homeCtrl.players track by $index">
+                <td class="text-center">{{player.position}}</td>
+                <td class="text-center">{{player.player}}</td>
+                <td class="text-center">{{player.total}}</td>
+                <td class="text-center">{{player.thru}}</td>
+                <td class="text-center">{{player.today}}</td>
+                <td class="text-center">{{player.points}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <div class="navy-line"></div>
+      <h1>What People Are Saying</h1>
+    </div>
+  </div>
+  
+  <div class="space-20"></div>
+  
+  <div class="row">
+    <div class="col-sm-12 text-center">
+      <div class="team-member wow zoomIn">
+        <img src="assets/images/landing/avatar1.jpg" class="img-responsive img-circle" alt="">
+        <h4>Si Woo Kim</h4>
+        <h6>PGA PLAYER</h6>
+      </div>
+    </div>
+    <div class="col-sm-12 text-center">
+      <p>"I got here by setting a very clear goal, talking to a lot of people about<br/>
+      what I needed to do to accomplish it, and working extremely hard."
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="space-20"></div>
+  
+  <div class="row">
+    <div class="col-sm-12 text-center">
+      <h2>Join Shank Today and let your friends</h2>
+      <h2>you know more about golf</h2>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<section id="contact" class="gray-section contact">
+  <div ng-include src="'app/modules/footer/views/footer.html'"></div>
+</section>
+
+<section id="space" class="gray-section team">
+  <div class="space-20"></div>
 </section>
