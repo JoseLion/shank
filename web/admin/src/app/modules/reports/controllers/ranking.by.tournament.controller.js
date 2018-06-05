@@ -58,17 +58,27 @@
       vm.rankings = new_rankings;
     }
     
-    vm.get_app_users_xlsx = function() {
-      reports_model.get_app_users_xlsx().then(function(response) {
-        var file = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-        var fileURL = URL.createObjectURL(file);
-        
-        var anchor = document.createElement("a");
-        anchor.download = "app_users.xls";
-        anchor.href = fileURL;
-        document.body.appendChild(anchor);
-        anchor.click();
+    vm.get_ranking_xlsx = function() {
+      var data = [];
+      
+      if (vm.rankings && vm.rankings.length === 0) {
+        return;
+      }
+      
+      vm.rankings.map(function(ranking) {
+        data.push({
+          User: ranking.user.fullName,
+          Points: ranking.score,
+          Group: ranking.group_name
+        });
       });
+      
+      var ws = XLSX.utils.json_to_sheet(data);
+      
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Rankings");
+      
+      XLSX.writeFile(wb, "rankings.xlsx");
     }
   }
 })();

@@ -96,16 +96,31 @@
     }
     
     vm.get_app_users_xlsx = function() {
-      reports_model.get_app_users_xlsx().then(function(response) {
-        var file = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-        var fileURL = URL.createObjectURL(file);
-        
-        var anchor = document.createElement("a");
-        anchor.download = "app_users.xls";
-        anchor.href = fileURL;
-        document.body.appendChild(anchor);
-        anchor.click();
+      var data = [];
+      
+      if (vm.players && vm.players.length === 0) {
+        return;
+      }
+      
+      vm.players.map(function(player) {
+        data.push({
+          Date: date_utils.format_date(player.created_at),
+          Tournament: player.tournament,
+          Group: player.group,
+          User: player.user_name,
+          Round: player.round,
+          Value: player.amount,
+          'Old Players': player.old_players_list,
+          'Current Players': player.current_players_list
+        });
       });
+      
+      var ws = XLSX.utils.json_to_sheet(data);
+      
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Payments");
+      
+      XLSX.writeFile(wb, "player-payments.xlsx");
     }
   }
 })();
