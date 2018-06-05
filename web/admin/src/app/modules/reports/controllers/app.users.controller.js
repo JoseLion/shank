@@ -86,17 +86,23 @@
       });
     }
     
-    vm.get_app_users_xlsx = function() {
-      reports_model.get_app_users_xlsx().then(function(response) {
-        var file = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-        var fileURL = URL.createObjectURL(file);
-        
-        var anchor = document.createElement("a");
-        anchor.download = "app_users.xls";
-        anchor.href = fileURL;
-        document.body.appendChild(anchor);
-        anchor.click();
+    vm.get_users_xlsx = function() {
+      /* starting from this data */
+      var data = [];
+      
+      vm.app_users.map(function(app_user) {
+        data.push({User: app_user.fullName, Gender: app_user.gender, Country: app_user.country, Chanel: app_user.channel, 'Register date': date_utils.format_date(app_user.created_at)});
       });
+      
+      /* generate a worksheet */
+      var ws = XLSX.utils.json_to_sheet(data);
+      
+      /* add to workbook */
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "App users");
+      
+      /* write workbook and force a download */
+      XLSX.writeFile(wb, "app-users.xlsx");
     }
   }
 })();
