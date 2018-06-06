@@ -8,10 +8,11 @@ const containerWidth = width > 500 ? 500 : width;
 
 export default MainStyles = StyleSheet.create({
     button: {
+        justifyContent: 'center',
         alignItems: 'center',
         borderRadius: Style.EM(0.5),
-        marginVertical: '2%',
-        padding: '3.5%',
+        paddingHorizontal: Style.EM(0.25),
+        height: Style.EM(2.5),
         width: '100%'
     },
     buttonText: {

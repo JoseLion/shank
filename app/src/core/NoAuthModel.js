@@ -1,34 +1,50 @@
-'use strict';
+import { AsyncStorage } from 'react-native';
+import { ApiHost, AuthToken } from '../config/variables';
+import { EventRegister } from 'react-native-event-listeners';
+import { AppConst } from '../components/screens/BaseComponent';
 
-import React from 'react';
+export default class NoAuthModel {
 
-import * as AppConst from './AppConst';
-import { Host, ApiHost, AuthToken } from '../config/variables';
+    constructor() {
+        
+    }
 
-let internetError = 'No fue posible acceder al internet de su teléfono.';
-let requestServerError = 'No fue posible comunicar con el servidor.';
-let parsingResponseError = 'Error al analizar la respuesta del servidor.';
+    static async get(resource) {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
 
-let NoAuthModel = {
-    async post(resource, params) {
+        const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
+        const json = await response.json().catch(handleParsingError);
+        
+        checkResponse(response, json);
+        return json.response;
+    }
+    
+    static async post(resource, params) {
         const data = JSON.stringify(params);
-        let options = {
+        const options = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: data
+            body: data,
         }
 
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
+        const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
+        const json = await response.json().catch(handleParsingError);
 
-    async multipart(resource, data) {
-        let options = {
+        checkResponse(response, json);        
+        return json.response;
+    }
+
+    static async multipart(resource, data) {
+        const options = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -37,161 +53,47 @@ let NoAuthModel = {
             body: data
         }
 
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
+        const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
+        const json = await response.json().catch(handleParsingError);
+        
+        checkResponse(response, json);
+        return json.response;
+    }
 
-    async get(resource) {
-        let options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            }
-        };
-
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
-
-    async put(resource, params) {
+    static async delete(resource, params) {
         const data = JSON.stringify(params);
-        let options = {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-            body: data
-        };
-
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
-
-    async delete(resource, params) {
-        const data = JSON.stringify(params);
-        let options = {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-            body: data
-        };
-
-        const response = await fetch(ApiHost + resource, options).catch( error => { throw requestServerError; } );
-        const json = await response.json().catch( error => { throw parsingResponseError; } );
-        if (json.error !== '') throw json.error;
-        else return json.response;
-    },
-    
-    // TODO: REMOVE METHOD
-    async create(resource, params) {
-
-        const data = JSON.stringify(params);
-
-        let options = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: data
-        };
-
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
-
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
-        if (json.error !== '') {
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
-    },
-
-    async update(resource, params) {
-
-        const data = JSON.stringify(params);
-
-        let options = {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: data
-        }
-
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
-
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
-
-        if (json.error !== '') {
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
-    },
-
-    async remove(resource) {
-
-        let options = {
+        const options = {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            }
-        }
+            },
+            body: data
+        };
 
-        const response = await fetch(ApiHost + resource, options).catch(
-            error => {
-                throw requestServerError;
-            }
-        );
+        const response = await fetch(ApiHost + resource, options).catch(handleFetchError);
+        const json = await response.json().catch(handleParsingError);
+        
+        checkResponse(response, json);        
+        return json.response;
+    }
+}
 
-        const json = await response.json().catch(
-            error => {
-                throw parsingResponseError;
-            }
-        );
+function checkResponse(response, json) {
+    if (response.status !== 200) {
+        throw {
+            message: json.error,
+            status: response.status
+        };
+    }
+}
 
-        if (json.error !== '') {
-            //return Promise.reject(new Error(json.error));
-            throw json.error;
-        }
-        else {
-            return json.response;
-        }
-    },
-};
+function handleFetchError(error) {
+    console.log("ERROR FETCHING: ", error);
+    throw "We were unable to connect to the server";
+}
 
-export { NoAuthModel as default };
+function handleParsingError(error) {
+    console.log("ERROR PARSING JSON: ", error);
+    throw "There was an error reading the response from the server";
+}

@@ -238,11 +238,11 @@ export default class PlayerSelection extends BaseComponent {
 				<Text style={[ViewStyle.tournamentName]}>{this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
 
 				<View style={[ViewStyle.headerView]}>
-					<Text style={[ViewStyle.headerText, {flex: 7}]}>Players</Text>
+					<Text style={[ViewStyle.headerText, {flex: 7}]} numberOfLines={1} allowFontScaling={true} adjustsFontSizeToFit={true}>Players</Text>
 
-					<Text style={[ViewStyle.headerText, {flex: 2}]}>Pick %</Text>
+					<Text style={[ViewStyle.headerText, {flex: 2}]} numberOfLines={1} allowFontScaling={true} adjustsFontSizeToFit={true}>Pick %</Text>
 
-					<Text style={[ViewStyle.headerText, {flex: 2}]}>Select {this.state.position != null ? '1' : '5'}</Text>
+					<Text style={[ViewStyle.headerText, {flex: 2}]} numberOfLines={1} allowFontScaling={true} adjustsFontSizeToFit={true}>Select {this.state.position != null ? '1' : '5'}</Text>
 				</View>
 				
 				<FlatList data={this.state.leaderboard} keyExtractor={item => item._id} extraData={this.state.selectCount} renderItem={({item}) => (

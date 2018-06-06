@@ -103,7 +103,6 @@ export default class Login extends BaseComponent {
 		try {
 			const permissions = ['public_profile', 'email'];
 			global.setLoading(true);
-			let option = 'Signin';
 			
 			const response = await LoginManager.logInWithReadPermissions(permissions).catch(handleError);
 
@@ -113,7 +112,7 @@ export default class Login extends BaseComponent {
 			}
 
 			if (response.isCancelled) {
-				handleError(`${option} with Facebook was cancelled!`);
+				handleError('Signin with Facebook was cancelled!');
 				return;
 			}
 
@@ -139,7 +138,7 @@ export default class Login extends BaseComponent {
 				const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => this.facebookCallBack(error, profile));
 				new GraphRequestManager().addRequest(infoRequest).start();
 			} else {
-				handleError(`Not enought permissions granted to ${option} with Facebook!`);
+				handleError('Not enought permissions granted to signin with Facebook!');
 			}
 		} catch (error) {
 			handleError(error);
