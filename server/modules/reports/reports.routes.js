@@ -346,16 +346,31 @@ export default function() {
 			}
 			
 			Group
-			.find({"tournaments.tournament": {$eq: req.body.tournament}})
-			.select({_id:1, name:1, tournaments:1, "tournaments.tournament":1, "tournaments.leaderboard.score":1, "tournaments.leaderboard.rank":1, "tournaments.leaderboard.user": 1})
+			.find()
+			.select({
+				_id:1,
+				name:1,
+				"tournaments.tournament": 1,
+				"tournaments.leaderboard.score":1,
+				"tournaments.leaderboard.rank":1,
+				"tournaments.leaderboard.user": 1
+			})
 			.populate('tournaments.tournament', "_id name")
 			.populate('tournaments.leaderboard.user', "_id fullName")
-			.exec((err, data) => {
+			.exec((err, groups) => {
 				if (err) {
 					return res.server_error(err.message);
 				}
 				
-				res.ok(data);
+				groups = groups.filter(function(group) {
+					group.tournaments = group.tournaments.filter(function(tournament) {
+						return (String(tournament.tournament._id) === req.body.tournament);
+					});
+					
+					return group;
+				});
+				
+				res.ok(groups);
 			});
     } catch (e) {
       res.server_error();
