@@ -13,16 +13,16 @@
         controller: 'playerPaymentsController',
         controllerAs: 'playerPaymentCtrl',
         resolve: {
-          groups: function(reports_model) {
+          players: function(reports_model) {
             return reports_model.get_player_payments();
           }
         }
       });
   });
   
-  function playerPaymentsController(NgTableParams, groups, reports_model, date_utils) {
+  function playerPaymentsController(NgTableParams, players, reports_model, date_utils) {
     var vm = this;
-    var players = [];
+    vm.players = players;
     
     vm.search_params = {};
     vm.dates = {
@@ -30,51 +30,29 @@
       to_date_opened: false
     };
     
-    parse_groups(groups);
+    parse_players();
     
-    function parse_groups(groups) {
-      groups.map(function(group) {
-        group.tournaments.map(function(tournament) {
-          tournament.leaderboard.map(function(leaderboard) {
-            if (leaderboard.checkouts.length > 0) {
-              leaderboard.checkouts.map(function(checkout) {
-                players.push({
-                  tournament: tournament.tournament.name,
-                  group: group.name,
-                  user_name: leaderboard.user.fullName,
-                  round: checkout.round,
-                  amount: checkout.payment,
-                  payment_date: checkout.payment_date,
-                  old_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).ald_players,
-                  new_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).current_palyers
-                });
-              });
-            }
-          });
+    function parse_players() {
+      players.map(function(player) {
+        player.old_players_list = '';
+        player.new_players_list = '';
+        
+        player.old_players.map(function(old_player) {
+          if (player.old_players_list !== '') {
+            player.old_players_list += ', ';
+          }
+          
+          player.old_players_list += old_player;
+        });
+        
+        player.new_players.map(function(new_player) {
+          if (player.new_players_list !== '') {
+            player.old_players_list += ', ';
+          }
+          
+          player.old_players_list += new_player;
         });
       });
-    }
-    
-    function get_change_of_players(round, old_roaster, current_roaster) {
-      var ald_players = [];
-      var current_palyers = [];
-      
-      if (round > 1 && round < 5) {
-        var number = old_roaster.length;
-        
-        if (number > 0) {
-          var i;
-          
-          for (i = 0; i < number; i++) {
-            if (old_roaster[i]._id !== current_roaster[i]._id) {
-              ald_players.push(old_roaster[i].fullName);
-              current_palyers.push(current_roaster[i].fullName);
-            }
-          }
-        }
-      }
-      
-      return {ald_players: ald_players, current_palyers: current_palyers};
     }
     
     set_pagination();
@@ -112,23 +90,37 @@
       }
       
       reports_model.get_player_payments(vm_search_params).then(function(response) {
-        vm.app_users = response;
-        parse_groups(response);
+        vm.players = response;
         set_pagination();
       });
     }
     
     vm.get_app_users_xlsx = function() {
-      reports_model.get_app_users_xlsx().then(function(response) {
-        var file = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-        var fileURL = URL.createObjectURL(file);
-        
-        var anchor = document.createElement("a");
-        anchor.download = "app_users.xls";
-        anchor.href = fileURL;
-        document.body.appendChild(anchor);
-        anchor.click();
+      var data = [];
+      
+      if (vm.players && vm.players.length === 0) {
+        return;
+      }
+      
+      vm.players.map(function(player) {
+        data.push({
+          Date: date_utils.format_date(player.created_at),
+          Tournament: player.tournament,
+          Group: player.group,
+          User: player.user_name,
+          Round: player.round,
+          Value: player.amount,
+          'Old Players': player.old_players_list,
+          'Current Players': player.current_players_list
+        });
       });
+      
+      var ws = XLSX.utils.json_to_sheet(data);
+      
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Payments");
+      
+      XLSX.writeFile(wb, "player-payments.xlsx");
     }
   }
 })();

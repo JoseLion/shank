@@ -26,65 +26,35 @@
         </div>
         
         <div class="logo-element">
-          D+
+          S+
         </div>
       </li>
       
-      <li ng-class="{active: (state.includes('admin.brands.list')
-                             || state.includes('admin.brands.create')
-                             || state.includes('admin.brands.update')
-                             || state.includes('admin.shops.list')
-                             || state.includes('admin.shops.create')
-                             || state.includes('admin.shops.update')
-                             || state.includes('admin.measurements.list')
-                             || state.includes('admin.measurements.create')
-                             || state.includes('admin.measurements.update')
-                             || state.includes('admin.banners.list')
-                             || state.includes('admin.banners.create')
-                             || state.includes('admin.banners.update')
-                             || state.includes('admin.advertisements.list')
-                             || state.includes('admin.advertisements.create')
-                             || state.includes('admin.advertisements.update')
-                             || state.includes('admin.promotions.list')
-                             || state.includes('admin.promotions.create')
-                             || state.includes('admin.promotions.update'))}">
+      <li ng-class="{active: (state.includes('admin.tournaments.settings')
+                             || state.includes('admin.administration.web_links')
+                             || state.includes('admin.tournaments.list')
+                             || state.includes('admin.tournaments.create')
+                             || state.includes('admin.tournaments.update'))}">
         <a href="#">
           <i class="fa fa-users"></i>
           <span class="nav-label">Administration</span>
           <span class="fa arrow"></span>
         </a>
         <ul class="nav nav-second-level collapse"
-          ng-class="{in: (state.includes('admin.brands.list')
-                             || state.includes('admin.brands.create')
-                             || state.includes('admin.brands.update')
-                             || state.includes('admin.shops.list')
-                             || state.includes('admin.shops.create')
-                             || state.includes('admin.shops.update')
-                             || state.includes('admin.measurements.list')
-                             || state.includes('admin.measurements.create')
-                             || state.includes('admin.measurements.update')
-                             || state.includes('admin.banners.list')
-                             || state.includes('admin.banners.create')
-                             || state.includes('admin.banners.update')
-                             || state.includes('admin.advertisements.list')
-                             || state.includes('admin.advertisements.create')
-                             || state.includes('admin.advertisements.update')
-                             || state.includes('admin.promotions.list')
-                             || state.includes('admin.promotions.create')
-                             || state.includes('admin.promotions.update'))}">
-          <li ng-class="{active: (state.includes('admin.brands.list')
-                                 || state.includes('admin.brands.create')
-                                 || state.includes('admin.brands.update'))}">
+          ng-class="{in: (state.includes('admin.tournaments.settings')
+                             || state.includes('admin.administration.web_links')
+                             || state.includes('admin.tournaments.list')
+                             || state.includes('admin.tournaments.create')
+                             || state.includes('admin.tournaments.update'))}">
+          <li ng-class="{active: (state.includes('admin.tournaments.settings'))}">
             <a ui-sref="admin.tournaments.settings"><i class="fa fa-list-alt"></i> <span class="nav-label">Tournament settings</span> </a>
           </li>
-          <li ng-class="{active: (state.includes('admin.brands.list')
-                                 || state.includes('admin.brands.create')
-                                 || state.includes('admin.brands.update'))}">
+          <li ng-class="{active: (state.includes('admin.administration.web_links'))}">
             <a ui-sref="admin.administration.web_links"><i class="fa fa-list-alt"></i> <span class="nav-label">Web links</span> </a>
           </li>
-          <li ng-class="{active: (state.includes('admin.brands.list')
-                                 || state.includes('admin.brands.create')
-                                 || state.includes('admin.brands.update'))}">
+          <li ng-class="{active: (state.includes('admin.tournaments.list')
+                             || state.includes('admin.tournaments.create')
+                             || state.includes('admin.tournaments.update'))}">
             <a ui-sref="admin.tournaments.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Tournaments</span> </a>
           </li>
         </ul>
@@ -92,10 +62,7 @@
       
       <li ng-class="{active: (state.includes('admin.admin_users.list')
                              || state.includes('admin.admin_users.create')
-                             || state.includes('admin.admin_users.update')
-                             || state.includes('admin.store_users.list')
-                             || state.includes('admin.store_users.update')
-                             || state.includes('admin.store_users.update'))}">
+                             || state.includes('admin.admin_users.update'))}">
         <a href="#">
           <i class="fa fa-users"></i>
           <span class="nav-label">Users</span>
@@ -104,11 +71,8 @@
         <ul class="nav nav-second-level collapse"
           ng-class="{in: (state.includes('admin.admin_users.list')
                              || state.includes('admin.admin_users.create')
-                             || state.includes('admin.admin_users.update')
-                             || state.includes('admin.store_users.list')
-                             || state.includes('admin.store_users.create')
-                             || state.includes('admin.store_users.update'))}">
-          <li ng-class="{active: (state.includes('admin.users.list')
+                             || state.includes('admin.admin_users.update'))}">
+          <li ng-class="{active: (state.includes('admin.admin_users.list')
                                   || state.includes('admin.admin_users.create')
                                   || state.includes('admin.admin_users.update'))}">
             <a ui-sref="admin.admin_users.list"><i class="fa fa-user"></i> <span class="nav-label">Of system</span></a>
@@ -122,52 +86,40 @@
         <a ui-sref="admin.profiles.list"><i class="fa fa-list-alt"></i> <span class="nav-label">Profiles</span> </a>
       </li>
       
-      <li ng-class="{active: (state.includes('admin.admin_users.list')
-                             || state.includes('admin.admin_users.create')
-                             || state.includes('admin.admin_users.update')
-                             || state.includes('admin.store_users.list')
-                             || state.includes('admin.store_users.update')
-                             || state.includes('admin.store_users.update'))}">
+      <li ng-class="{active: (state.includes('admin.reports.earnings')
+                             || state.includes('admin.reports.funnel')
+                             || state.includes('admin.reports.app_users')
+                             || state.includes('admin.reports.ranking_by_tournament')
+                             || state.includes('admin.reports.referrals')
+                             || state.includes('admin.reports.player_payments'))}">
         <a href="#">
           <i class="fa fa-users"></i>
           <span class="nav-label">Reports</span>
           <span class="fa arrow"></span>
         </a>
         <ul class="nav nav-second-level collapse"
-          ng-class="{in: (state.includes('admin.admin_users.list')
-                             || state.includes('admin.admin_users.create')
-                             || state.includes('admin.admin_users.update')
-                             || state.includes('admin.store_users.list')
-                             || state.includes('admin.store_users.create')
-                             || state.includes('admin.store_users.update'))}">
-          <li ng-class="{active: (state.includes('admin.users.list')
-                                  || state.includes('admin.admin_users.create')
-                                  || state.includes('admin.admin_users.update'))}">
+          ng-class="{in: (state.includes('admin.reports.earnings')
+                             || state.includes('admin.reports.funnel')
+                             || state.includes('admin.reports.app_users')
+                             || state.includes('admin.reports.ranking_by_tournament')
+                             || state.includes('admin.reports.referrals')
+                             || state.includes('admin.reports.player_payments'))}">
+          <li ng-class="{active: (state.includes('admin.reports.earnings'))}">
             <a ui-sref="admin.reports.earnings"><i class="fa fa-user"></i> <span class="nav-label">Earnings</span></a>
           </li>
-          <li ng-class="{active: (state.includes('admin.users.list')
-                                  || state.includes('admin.admin_users.create')
-                                  || state.includes('admin.admin_users.update'))}">
+          <li ng-class="{active: (state.includes('admin.reports.funnel'))}">
             <a ui-sref="admin.reports.funnel"><i class="fa fa-user"></i> <span class="nav-label">Funnel</span></a>
           </li>
-          <li ng-class="{active: (state.includes('admin.users.list')
-                                  || state.includes('admin.admin_users.create')
-                                  || state.includes('admin.admin_users.update'))}">
+          <li ng-class="{active: (state.includes('admin.reports.app_users'))}">
             <a ui-sref="admin.reports.app_users"><i class="fa fa-user"></i> <span class="nav-label">App Users</span></a>
           </li>
-          <li ng-class="{active: (state.includes('admin.users.list')
-                                  || state.includes('admin.admin_users.create')
-                                  || state.includes('admin.admin_users.update'))}">
+          <li ng-class="{active: (state.includes('admin.reports.ranking_by_tournament'))}">
             <a ui-sref="admin.reports.ranking_by_tournament"><i class="fa fa-user"></i> <span class="nav-label">Ranking by Turnament</span></a>
           </li>
-          <li ng-class="{active: (state.includes('admin.users.list')
-                                  || state.includes('admin.admin_users.create')
-                                  || state.includes('admin.admin_users.update'))}">
+          <li ng-class="{active: (state.includes('admin.reports.referrals'))}">
             <a ui-sref="admin.reports.referrals"><i class="fa fa-user"></i> <span class="nav-label">Referrals</span></a>
           </li>
-          <li ng-class="{active: (state.includes('admin.users.list')
-                                  || state.includes('admin.admin_users.create')
-                                  || state.includes('admin.admin_users.update'))}">
+          <li ng-class="{active: (state.includes('admin.reports.player_payments'))}">
             <a ui-sref="admin.reports.player_payments"><i class="fa fa-user"></i> <span class="nav-label">Player Payments</span></a>
           </li>
         </ul>

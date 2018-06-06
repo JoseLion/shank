@@ -118,11 +118,14 @@
           <div class="table-responsive">
             <table ng-table="playerPaymentCtrl.tableParams" class="table table-bordered">
               <tr ng-repeat="user in $data track by $index">
-                <td data-title="'User'" header-class="'header-text-left'">{{user.fullName}}</td>
-                <td data-title="'Gender'" header-class="'header-text-left'">{{user.gender}}</td>
-                <td data-title="'Country'" header-class="'header-text-left'">{{user.country}}</td>
-                <td data-title="'Channel'" header-class="'header-text-left'">{{user.channel}}</td>
-                <td data-title="'Register date'" header-class="'header-text-left'">{{user.created_at | date : 'yyyy-MM-dd'}}</td>
+                <td data-title="'Date'" header-class="'header-text-left'">{{user.created_at | date : 'yyyy-MM-dd'}}</td>
+                <td data-title="'Tournament'" header-class="'header-text-left'">{{user.tournament}}</td>
+                <td data-title="'Group'" header-class="'header-text-left'">{{user.group}}</td>
+                <td data-title="'User'" header-class="'header-text-left'">{{user.user_name}}</td>
+                <td data-title="'Round'" header-class="'header-text-left'">{{user.round}}</td>
+                <td data-title="'Value'" header-class="'header-text-left'">{{user.amount}}</td>
+                <td data-title="'Old players'" header-class="'header-text-left'">{{user.old_players_list}}</td>
+                <td data-title="'Current players'" header-class="'header-text-left'">{{user.current_players_list}}</td>
               </tr>
             </table>
           </div>

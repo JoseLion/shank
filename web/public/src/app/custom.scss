@@ -1,0 +1,82 @@
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  justify-content: center;  //horizontal align
+  align-items: center; //vertical alingn
+}
+
+.in-column {
+  flex-direction: column;
+}
+
+.in-row {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-start {
+  justify-content: flex-start;
+}
+
+.flex-end {
+  justify-content: flex-end;
+}
+
+.space-around {
+  justify-content: space-around
+}
+.space-between {
+  justify-content: space-between;
+}
+
+.flex-start-to {
+  align-items: flex-start;
+}
+
+.icon-navigator {
+  width: 127px;
+  height: 50px;
+}
+
+.footer-grey-color {
+  color: #676a6c !important;
+}
+.custom-navbar {
+  margin-left: 15%;
+}
+.navbar-logo-container {
+  width: 8%;
+}
+.navbar-logo {
+  width: 100%;
+}
+.landing-top-section {
+  background: url('../assets/images/shank-background.png') no-repeat center top;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  min-height: 745px;
+  margin-top: 80px;
+}
+.store-container {
+  width: 15%;
+}
+.cn {
+  display: table;
+  width: 100%;
+}
+
+.inner {
+  height:100%;
+  display:table-cell;
+  vertical-align:middle;
+}
+.img-app-screen {
+  width: 60%;
+}
+
+/* FOOTER */
+.footer-logo {
+  width: 15%;
+}

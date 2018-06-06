@@ -86,16 +86,28 @@
     }
     
     vm.get_earnings_xlsx = function() {
-      reports_model.get_earnings_xlsx().then(function(response) {
-        var file = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-        var fileURL = URL.createObjectURL(file);
-        
-        var anchor = document.createElement("a");
-        anchor.download = "earnings.xls";
-        anchor.href = fileURL;
-        document.body.appendChild(anchor);
-        anchor.click();
+      var data = [];
+      
+      vm.earnings.map(function(earning) {
+        data.push({
+          User: earning.user.fullName,
+          Country: earning.user.country,
+          OS: earning.user.register_os,
+          'Purchase date': date_utils.format_date(earning.payment_date),
+          Tournament: earning.tournament.name,
+          'Total amount': earning.leaderboard.total_amount
+        });
       });
+      
+      /* generate a worksheet */
+      var ws = XLSX.utils.json_to_sheet(data);
+      
+      /* add to workbook */
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Earnings");
+      
+      /* write workbook and force a download */
+      XLSX.writeFile(wb, "earnings.xlsx");
     }
   }
 })();

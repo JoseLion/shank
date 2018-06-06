@@ -23,8 +23,14 @@ exports.paths = {
  *  Mainly used to inject script tags in the index.html but also used
  *  to inject css preprocessor deps and js files in karma
  */
+//exports.wiredep = {
+//  exclude: [/\/bootstrap\.js$/, /\/bootstrap-sass\/.*\.js/, /\/bootstrap\.css/],
+//  directory: 'bower_components'
+//};
+
+//Agregado esto para data-toggle="dropdown", tambien se agrego en bower override assets/javascripts/bootstrap.js
+//https://www.bountysource.com/issues/31126632-bootstrap-dropdown-is-not-working ultima parte
 exports.wiredep = {
-  exclude: [/\/bootstrap\.js$/, /\/bootstrap-sass\/.*\.js/, /\/bootstrap\.css/],
   directory: 'bower_components'
 };
 

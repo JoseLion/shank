@@ -1,0 +1,64 @@
+<div class="navbar-wrapper" ng-controller="HeaderController as headerCtrl">
+  <nav class="navbar navbar-default navbar-fixed-top" ng-class="{ 'navbar-scroll' : (state_name !== 'home') }" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button"
+                class="navbar-toggle collapsed"
+                data-toggle="collapse"
+                data-target="#navbar"
+                aria-expanded="false"
+                aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav custom-navbar">
+          <li><a class="page-scroll" href="#page-top">Home</a></li>
+					<li><a class="page-scroll" href="#about">About</a></li>
+          <li><a class="page-scroll" href="#features">Features</a></li>
+          <li><a class="page-scroll" href="#testimonials">Testimonials</a></li>
+          
+          <li class="navbar-logo-container">
+						<img src="assets/images/logo_shank.png" class="navbar-logo">
+					</li>
+          
+          <li ng-class="{ 'active' : (state_name === 'about_us') }">
+						<a ui-sref="about_us">Terms</a>
+					</li>
+          <li ng-class="{ 'active' : (state_name === 'contact_us') }">
+						<a ui-sref="contact_us">Privacy Policy</a>
+					</li>
+          <li ng-class="{ 'active' : (state_name === 'contact_us') }">
+						<a ui-sref="contact_us">Contact</a>
+					</li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('body').scrollspy({
+      target: '.navbar-fixed-top',
+      offset: 80
+    });
+    
+    // Page scrolling feature
+    $('a.page-scroll').bind('click', function(event) {
+      var link = $(this);
+      $('html, body').stop().animate({
+        scrollTop: $(link.attr('href')).offset().top - 50
+      }, 500);
+      event.preventDefault();
+      $("#navbar").collapse('hide');
+    });
+  });
+  
+  // Activate WOW.js plugin for animation on scrol
+  //new WOW().init();
+</script>
