@@ -22,21 +22,45 @@
   
   function ReportsController(NgTableParams, earnings, math_utils, reports_model, date_utils, _) {
     var vm = this;
-    vm.earnings = earnings;
     vm.search_params = {};
     vm.dates = {
       from_date_opened: false,
       to_date_opened: false
     };
     
-    parse_earnings();
+    parse_earnings(earnings);
     
-    function parse_earnings() {
-      _.each(vm.earnings, function(earning) {
-        earning.leaderboard.total_amount = 0;
+    function parse_earnings(earnings) {
+      vm.earnings = [];
+      var checkout_total_amount = 0;
+      
+      _.each(earnings, function(earning) {
+        earning.total_amount = 0;
+        earning.payment_date = '';
+        
         _.each(earning.leaderboard.checkouts, function(checkout) {
-          earning.leaderboard.total_amount = math_utils.add(earning.leaderboard.total_amount, Number(checkout.payment));
+          checkout.payment_date_formated = date_utils.format_date(checkout.payment_date);
         });
+        
+        if (earning.leaderboard.checkouts.length > 0) {
+          var new_checkouts = _.groupBy(earning.leaderboard.checkouts, function(checkout) { return checkout.payment_date_formated; });
+          _.each(new_checkouts, function(new_checkout) {
+            checkout_total_amount = 0;
+            var earning_copy = angular.copy(earning);
+            
+            new_checkout.map(function(_new_checkout) {
+              checkout_total_amount = math_utils.add(checkout_total_amount, Number(_new_checkout.payment));
+              earning_copy.payment_date = _new_checkout.payment_date_formated;
+            });
+            
+            earning_copy.total_amount = checkout_total_amount;
+            
+            vm.earnings.push(earning_copy);
+          });
+        }
+        else {
+          vm.earnings.push(earning);
+        }
       });
     }
     
@@ -80,7 +104,7 @@
       
       reports_model.get_earnings(vm_search_params).then(function(response) {
         vm.earnings = response;
-        parse_earnings();
+        parse_earnings(response);
         set_pagination();
       });
     }
@@ -93,9 +117,9 @@
           User: earning.user.fullName,
           Country: earning.user.country,
           OS: earning.user.register_os,
-          'Purchase date': date_utils.format_date(earning.payment_date),
+          'Purchase date': earning.payment_date,
           Tournament: earning.tournament.name,
-          'Total amount': earning.leaderboard.total_amount
+          'Total amount': earning.total_amount
         });
       });
       
