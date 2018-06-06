@@ -192,11 +192,11 @@ export default class Login extends BaseComponent {
 									placeholder={'Password'}
 									onSubmitEditing={() => this.onLoginPressed()}/>
 
-								<TouchableHighlight style={[MainStyles.button, MainStyles.success]} onPress={() => this.onLoginPressed()}>
+								<TouchableHighlight style={[MainStyles.button, MainStyles.success, {marginTop: Style.EM(0.5)}]} onPress={() => this.onLoginPressed()}>
 									<Text style={MainStyles.buttonText}>Log in</Text>
 								</TouchableHighlight>
 
-								<TouchableHighlight style={[MainStyles.button, MainStyles.facebook]} onPress={this.facebookService}>
+								<TouchableHighlight style={[MainStyles.button, MainStyles.facebook, {marginTop: Style.EM(0.5)}]} onPress={this.facebookService}>
 									<Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
 								</TouchableHighlight>
 
