@@ -142,7 +142,7 @@ export default function(app) {
 									.populate('tournaments.tournament')
 									.populate('tournaments.leaderboard.user')
 									.populate({path: 'tournaments.leaderboard.roaster', populate: {path: 'player'}})
-									.catch(handleMongoError);
+								.catch(handleMongoError);
 
 			if (!group) {
                 response.reset_content("Sorry! This group has been deleted");
@@ -167,8 +167,7 @@ export default function(app) {
                 response.reset_content("Sorry! You were removed from this group");
                 return;
             }
-
-            group.tournaments.sort(sortByMostActive);
+            
 			response.ok(group);
 		} catch (error) {
             console.error(error);

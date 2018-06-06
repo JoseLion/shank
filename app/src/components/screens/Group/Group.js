@@ -336,7 +336,7 @@ export default class Group extends BaseComponent {
         this.getLeaderboardLength =this.getLeaderboardLength.bind(this);
 		this.getDaysObj = this.getDaysObj.bind(this);
 		this.showActionSheet = this.showActionSheet.bind(this);
-		this.tournamentSelected = this.tournamentSelected.bind(this);
+		this.changeTournament = this.changeTournament.bind(this);
 		this.inviteToJoin = this.inviteToJoin.bind(this);
 		this.removeUserFromGroup = this.removeUserFromGroup.bind(this);
 		this.managePlayers = this.managePlayers.bind(this);
@@ -356,8 +356,7 @@ export default class Group extends BaseComponent {
 			sheetNames: [],
 			tournamentIndex: 0,
 			currentUserIndex: 0,
-            displayGroupOptions: false,
-            isScrollDisabled: false
+            displayGroupOptions: false
 		};
 	}
 
@@ -389,7 +388,7 @@ export default class Group extends BaseComponent {
 				}
 			});
 			
-			const userRoaster = group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster;
+			const userRoaster = [...group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster];
 			this.setState({ group, sheetNames, userRoaster });
 		} catch(error) {
 			handleError(error);
@@ -456,14 +455,15 @@ export default class Group extends BaseComponent {
 			if (IsAndroid) {
 				this.actionSheet.show();
 			} else {
-				ActionSheetIOS.showActionSheetWithOptions({options: this.state.sheetNames, cancelButtonIndex: this.state.sheetNames.length}, this.tournamentSelected);
+				ActionSheetIOS.showActionSheetWithOptions({options: this.state.sheetNames, cancelButtonIndex: this.state.sheetNames.length}, this.changeTournament);
 			}
 		}
 	}
 
-	tournamentSelected(index) {
-		if (index >= 0 && index < this.state.sheetNames.length - 1) {
-			this.setState({tournamentIndex: index});
+	changeTournament(tournamentIndex) {
+		if (tournamentIndex >= 0 && tournamentIndex < this.state.sheetNames.length - 1) {
+            const userRoaster = [...this.state.group.tournaments[tournamentIndex].leaderboard[this.state.currentUserIndex].roaster];
+			this.setState({ tournamentIndex, userRoaster });
 		}
 	}
 
@@ -692,12 +692,48 @@ export default class Group extends BaseComponent {
         this.setState({isRefreshing: false});
     }
 
+    sortByMostActive(a, b) {
+        const today = Date.now();
+        const a1 = new Date(a.tournament.startDate);
+        const a2 = new Date(a.tournament.endDate);
+        const a3 = a1 - today;
+        const b1 = new Date(b.tournament.startDate);
+        const b2 = new Date(b.tournament.endDate);
+        const b3 = b1 - today;
+    
+        if (today >= a1 && today <= a2) {
+            return -1;
+        }
+    
+        if (today >= b1 && today <= b2) {
+            return 1
+        }
+    
+        if (a3 < 0 && b3 < 0) {
+            return 0;
+        }
+    
+        if (a3 < 0) {
+            return 1;
+        }
+    
+        if (b3 < 0) {
+            return -1;
+        }
+    
+        return a3 - b3;
+    }
+
 	async componentDidMount() {
 		global.setLoading(true);
 
 		const currentUser = await AsyncStorage.getItem(AppConst.USER_PROFILE).catch(handleError);
 		this.setState({currentUser: JSON.parse(currentUser)});
-		await this.loadGroupData();
+        await this.loadGroupData();
+        
+        let reorder = [...this.state.group.tournaments];
+        reorder.sort(this.sortByMostActive);
+        this.changeTournament(this.state.group.tournaments.indexOf(reorder[0]));
 
 		if (this.state.group.owner == this.state.currentUser._id) {
 			this.setState({displayGroupOptions: true});
@@ -732,63 +768,65 @@ export default class Group extends BaseComponent {
 		}
 
 		return (
-			<ScrollView contentContainerStyle={ViewStyle.mainContainer} scrollEnabled={!this.state.isScrollDisabled} refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshGroup} />}>
-				<ActionSheet ref={sheet => this.actionSheet = sheet} title={'Select a tournament'} options={this.state.sheetNames} onPress={this.tournamentSelected} />
+			<View style={ViewStyle.mainContainer}>
+				<ActionSheet ref={sheet => this.actionSheet = sheet} title={'Select a tournament'} options={this.state.sheetNames} onPress={this.changeTournament} />
 
-				<View style={{flex: 7}}>
-					<View style={[ViewStyle.groupInformation]}>
-						<Image source={{uri: FileHost + this.state.group.photo}} style={ViewStyle.groupImage} />
+                <View style={{flex: 7}}>
+                    <ScrollView contentContainerStyle={{width: '100%', height: '100%'}} refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshGroup} />}>
+                        <View style={[ViewStyle.groupInformation]}>
+                            <Image source={{uri: FileHost + this.state.group.photo}} style={ViewStyle.groupImage} />
 
-						<View style={ViewStyle.groupHeader}>
-							<View>
-								<Text style={[ViewStyle.groupNameText]}>{this.state.group.name}</Text>
-							</View>
+                            <View style={ViewStyle.groupHeader}>
+                                <View>
+                                    <Text style={[ViewStyle.groupNameText]}>{this.state.group.name}</Text>
+                                </View>
 
-							
-							<TouchableOpacity underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
-								<View style={{flexDirection: 'row', alignItems: 'center'}}>
-									<Text style={[ViewStyle.tournamentNameText]} numberOfLines={1}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
-									<Image style={ViewStyle.caretDown} source={DownCaretIcon} resizeMode={'contain'} resizeMethod={'resize'} />
-								</View>
-							</TouchableOpacity>
-						</View>
-
-						    
-                        {this.state.displayGroupOptions ?
-                            <View style={{flex: 2}}>
-                                <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
-                                    <Text style={MainStyles.buttonText}>Invite</Text>
+                                
+                                <TouchableOpacity underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={() => this.showActionSheet()}>
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Text style={[ViewStyle.tournamentNameText]} numberOfLines={1}>{this.state.group.tournaments && this.state.group.tournaments[this.state.tournamentIndex].tournament.name}</Text>
+                                        <Image style={ViewStyle.caretDown} source={DownCaretIcon} resizeMode={'contain'} resizeMethod={'resize'} />
+                                    </View>
                                 </TouchableOpacity>
                             </View>
-                        :
-                            null
-                        }
-					</View>
 
-					<View style={[ViewStyle.prizeView]}>
-						<View style={[ViewStyle.prizeSubView]}>
-							<View><Text style={[ViewStyle.prizeText]}>PRIZE</Text></View>
-							<View><Text style={[ViewStyle.prizeDescription]}>{this.state.group.bet}</Text></View>
-						</View>
-					</View>
+                                
+                            {this.state.displayGroupOptions ?
+                                <View style={{flex: 2}}>
+                                    <TouchableOpacity style={[MainStyles.button, MainStyles.success, MainStyles.buttonVerticalPadding]} onPress={this.inviteToJoin}>
+                                        <Text style={MainStyles.buttonText}>Invite</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            :
+                                null
+                            }
+                        </View>
 
-					<View style={[ViewStyle.groupStats]}>
-						<View style={[ViewStyle.statView]}>
-							<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('score')}</Text></View>
-							<View><Text style={[ViewStyle.statLabel]}>Points</Text></View>
-						</View>
-						
-						<View style={[ViewStyle.statView]}>
-							<View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank')}/{this.getLeaderboardLength()}</Text></View>
-							<View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
-						</View>
+                        <View style={[ViewStyle.prizeView]}>
+                            <View style={[ViewStyle.prizeSubView]}>
+                                <View><Text style={[ViewStyle.prizeText]}>PRIZE</Text></View>
+                                <View><Text style={[ViewStyle.prizeDescription]}>{this.state.group.bet}</Text></View>
+                            </View>
+                        </View>
 
-						<View style={[ViewStyle.statView]}>
-							<View><Text style={[ViewStyle.statNumber]}>{this.getDaysObj().days}</Text></View>
-							<View><Text style={[ViewStyle.statLabel]}>{this.getDaysObj().label}</Text></View>
-						</View>
-					</View>
-				</View>
+                        <View style={[ViewStyle.groupStats]}>
+                            <View style={[ViewStyle.statView]}>
+                                <View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('score')}</Text></View>
+                                <View><Text style={[ViewStyle.statLabel]}>Points</Text></View>
+                            </View>
+                            
+                            <View style={[ViewStyle.statView]}>
+                                <View><Text style={[ViewStyle.statNumber]}>{this.getCurrentUserStat('rank')}/{this.getLeaderboardLength()}</Text></View>
+                                <View><Text style={[ViewStyle.statLabel]}>Ranking</Text></View>
+                            </View>
+
+                            <View style={[ViewStyle.statView]}>
+                                <View><Text style={[ViewStyle.statNumber]}>{this.getDaysObj().days}</Text></View>
+                                <View><Text style={[ViewStyle.statLabel]}>{this.getDaysObj().label}</Text></View>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </View>
 
 				<View style={{flex: 10}}>
 					<ScrollableTabView initialPage={0} locked={true} tabBarActiveTextColor={AppConst.COLOR_BLUE} tabBarInactiveTextColor={AppConst.COLOR_BLUE} renderTabBar={() => <GroupTabBar />}>
@@ -805,9 +843,7 @@ export default class Group extends BaseComponent {
 								data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []}
 								renderRow={({data, index, active}) => {
                                     return (<RoasterRow isActive={active} roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />)
-                                }} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onActivateRow={key => this.setState({isScrollDisabled: true})} onReleaseRow={key => {
-                                    this.setState({isScrollDisabled: false});
-
+                                }} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onReleaseRow={key => {
 									if (this.nextOrder) {
 										let roaster = [];
 										this.nextOrder.forEach(order => {
@@ -841,7 +877,7 @@ export default class Group extends BaseComponent {
 				: null}
 
 				<DropdownAlert ref={ref => this.dropDownRef = ref} />
-			</ScrollView>
+			</View>
 		);
 	}
 }

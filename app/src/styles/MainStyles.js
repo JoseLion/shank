@@ -11,7 +11,6 @@ export default MainStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: Style.EM(0.5),
-        marginVertical: '2%',
         paddingHorizontal: Style.EM(0.25),
         height: Style.EM(2.5),
         width: '100%'
