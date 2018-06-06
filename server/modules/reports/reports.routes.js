@@ -19,7 +19,7 @@ function get_change_of_players(round, old_roaster, current_roaster) {
 	var old_players = [];
 	var current_players = [];
 	
-	if (round > 1 && round < 4) {
+	if (round > 0 && round < 5) {
 		var number = old_roaster.length;
 		if (number > 0) {
 			var i;
