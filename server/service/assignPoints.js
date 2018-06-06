@@ -10,8 +10,8 @@ const App_Setting = mongoose.model('App_Setting');
 export default async function(tournamentId, roundNumber) {
 	let tournament = await Tournament.findById(tournamentId).catch(handleMongoError);
 	const tournamentLeaderboard = await Leaderboard.find({tournament: tournamentId, rank: {$ne: null}}).sort({rank: 1}).catch(handleMongoError);
-	const points = await App_Setting.findOne({code: /PTS.*/}).sort({value: -1}).catch(handleMongoError);
-	const fines = await App_Setting.findOne({code: /FND.*/}).sort({value: 1}).catch(handleMongoError);
+	const points = await App_Setting.findOne({code: 'PTS'}).sort({value: -1}).catch(handleMongoError);
+	const fines = await App_Setting.findOne({code: 'FND'}).sort({value: 1}).catch(handleMongoError);
 
 	let leaders = filterLeaders(tournamentLeaderboard);
 
@@ -21,7 +21,7 @@ export default async function(tournamentId, roundNumber) {
 		if (round.number == roundNumber && !round.pointsGiven) {
 			let groups = await Group.find({'tournaments.tournament': tournamentId}).populate('tournaments.leaderboard.roaster').catch(handleMongoError);
 
-			groups.asyncForEach(async group => {
+			await groups.asyncForEach(async group => {
 				group.tournaments.forEach(crossTournament => {
 					if (String(crossTournament.tournament) == String(tournamentId)) {
 						crossTournament.leaderboard.forEach((leaderboardCross, j) => {

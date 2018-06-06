@@ -8,9 +8,6 @@ const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 const fontScale = Dimensions.get("window").fontScale;
 
-console.log("Window: ", Dimensions.get("window"));
-console.log("Screen: ", Dimensions.get("screen"));
-
 const baseWidth = 320;
 const baseHeight = 480;
 

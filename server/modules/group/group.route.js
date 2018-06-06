@@ -91,7 +91,7 @@ export default function(app) {
             let newTournament = req.body.new_tournament;
 
             if (!group) {
-                res.reset_content("Sorry! The group could not be found...");
+                res.reset_content("Sorry! The group could not be found");
                 return;
             }
             
@@ -164,7 +164,7 @@ export default function(app) {
             });
 
             if (!isUserInGroup) {
-                response.reset_content("Sorry! You habe been removed from this group");
+                response.reset_content("Sorry! You were removed from this group");
                 return;
             }
 
@@ -182,7 +182,7 @@ export default function(app) {
 			let group = await Group.findOne({_id: request.params.id}).catch(handleMongoError);
 
 			if (!group) {
-				return response.reset_content("Sorry! The group could not be found...");
+				return response.reset_content("Sorry! The group could not be found");
 			}
 
 			let isUserInGroup = false;
@@ -301,7 +301,7 @@ export default function(app) {
             const group = await Group.findById(request.body.groupId).catch(handleMongoError);
 
             if (!group) {
-                response.reset_content("This group no longer exists!");
+                response.reset_content("Sorry! The group could not be found");
                 return;
             }
 

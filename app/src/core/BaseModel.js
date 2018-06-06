@@ -3,8 +3,6 @@ import { ApiHost, AuthToken } from '../config/variables';
 import { EventRegister } from 'react-native-event-listeners';
 import { AppConst } from '../components/screens/BaseComponent';
 
-const notLogged = 'Not Logged.';
-
 export default class BaseMode {
 
     constructor() {

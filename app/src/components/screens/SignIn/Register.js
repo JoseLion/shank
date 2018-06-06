@@ -32,7 +32,7 @@ export default class Register extends BaseComponent {
 
 	async onRegisterPressed() {
 		if (!this.state.fullName) {
-			handleError('Please enter your name.');
+			handleError('Please enter your name');
 			return;
 		}
 
@@ -109,7 +109,7 @@ export default class Register extends BaseComponent {
             }
 
             if (response.isCancelled) {
-                handleError(`${option} with Facebook was cancelled!`);
+                handleError('Signup with Facebook was cancelled!');
                 return;
             }
 
@@ -135,7 +135,7 @@ export default class Register extends BaseComponent {
                 const infoRequest = new GraphRequest('/me?fields=id,name,email,picture', null, (error, profile) => this.facebookCallBack(error, profile));
                 new GraphRequestManager().addRequest(infoRequest).start();
             } else {
-                handleError(`Not enought permissions grnated to ${option} with Facebook!`);
+                handleError('Not enought permissions grnated to signup with Facebook!');
             }
         } catch (error) {
             handleError(error);
