@@ -16,25 +16,24 @@ const Referred = mongoose.model('Referred');
 const Player = mongoose.model('Player');
 
 function get_change_of_players(round, old_roaster, current_roaster) {
-	var ald_players = [];
-	var current_palyers = [];
+	var old_players = [];
+	var current_players = [];
 	
-	if (round > 1 && round < 5) {
+	if (round > 1 && round < 4) {
 		var number = old_roaster.length;
-		
 		if (number > 0) {
 			var i;
 			
 			for (i = 0; i < number; i++) {
-				if (String(old_roaster[i]._id) !== String(current_roaster[i]._id)) {
-					ald_players.push(old_roaster[i].fullName);
-					current_palyers.push(current_roaster[i].fullName);
+				if (String(old_roaster[i].player._id) !== String(current_roaster[i].player._id)) {
+					old_players.push(old_roaster[i].player.firstName + ' ' + old_roaster[i].player.lastName);
+					current_players.push(current_roaster[i].player.firstName + ' ' + current_roaster[i].player.lastName);
 				}
 			}
 		}
 	}
 	
-	return {ald_players: ald_players, current_palyers: current_palyers};
+	return {old_players: old_players, current_players: current_players};
 }
 
 export default function() {
@@ -453,7 +452,8 @@ export default function() {
 				"tournaments.leaderboard.checkouts.originalRoaster": 1,
 				"tournaments.leaderboard.checkouts.roaster": 1,
 				"tournaments.leaderboard.checkouts.round": 1,
-				"tournaments.leaderboard.checkouts.payment": 1
+				"tournaments.leaderboard.checkouts.payment": 1,
+				"tournaments.leaderboard.checkouts.payment_date": 1,
 			})
 			.populate('tournaments.tournament', "_id name")
 			.populate('tournaments.leaderboard.user', "_id fullName")
@@ -503,8 +503,8 @@ export default function() {
 											round: checkout.round,
 											amount: checkout.payment,
 											payment_date: checkout.payment_date,
-											old_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).ald_players,
-											new_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).current_palyers
+											old_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).old_players,
+											current_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).current_players
 										});
 									}
 								}
@@ -516,8 +516,8 @@ export default function() {
 										round: checkout.round,
 										amount: checkout.payment,
 										payment_date: checkout.payment_date,
-										old_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).ald_players,
-										new_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).current_palyers
+										old_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).old_players,
+										current_players: get_change_of_players(checkout.round, checkout.originalRoaster, checkout.roaster).current_players
 									});
 								}
 							});

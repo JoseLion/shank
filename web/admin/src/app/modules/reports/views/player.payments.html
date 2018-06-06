@@ -108,7 +108,7 @@
         <div class="ibox-content">
           <div class="row">
             <div class="col-sm-12 text-right">
-              <button type="button" class="btn btn-primary" ng-click="playerPaymentCtrl.get_users_xlsx()">
+              <button type="button" class="btn btn-primary" ng-click="playerPaymentCtrl.get_player_payments_xlsx()">
                 <i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Excel
               </button>
               <div class="space-10"></div>
@@ -117,15 +117,15 @@
           
           <div class="table-responsive">
             <table ng-table="playerPaymentCtrl.tableParams" class="table table-bordered">
-              <tr ng-repeat="user in $data track by $index">
-                <td data-title="'Date'" header-class="'header-text-left'">{{user.created_at | date : 'yyyy-MM-dd'}}</td>
-                <td data-title="'Tournament'" header-class="'header-text-left'">{{user.tournament}}</td>
-                <td data-title="'Group'" header-class="'header-text-left'">{{user.group}}</td>
-                <td data-title="'User'" header-class="'header-text-left'">{{user.user_name}}</td>
-                <td data-title="'Round'" header-class="'header-text-left'">{{user.round}}</td>
-                <td data-title="'Value'" header-class="'header-text-left'">{{user.amount}}</td>
-                <td data-title="'Old players'" header-class="'header-text-left'">{{user.old_players_list}}</td>
-                <td data-title="'Current players'" header-class="'header-text-left'">{{user.current_players_list}}</td>
+              <tr ng-repeat="palyer in $data track by $index">
+                <td data-title="'Date'" header-class="'header-text-left'">{{palyer.payment_date | date : 'yyyy-MM-dd'}}</td>
+                <td data-title="'Tournament'" header-class="'header-text-left'">{{palyer.tournament}}</td>
+                <td data-title="'Group'" header-class="'header-text-left'">{{palyer.group}}</td>
+                <td data-title="'User'" header-class="'header-text-left'">{{palyer.user_name}}</td>
+                <td data-title="'Round'" header-class="'header-text-left'">{{palyer.round}}</td>
+                <td data-title="'Value'" header-class="'header-text-left'">{{palyer.amount}}</td>
+                <td data-title="'Old players'" header-class="'header-text-left'">{{palyer.old_players_list}}</td>
+                <td data-title="'Current players'" header-class="'header-text-left'">{{palyer.current_players_list}}</td>
               </tr>
             </table>
           </div>

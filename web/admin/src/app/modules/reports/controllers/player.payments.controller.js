@@ -33,9 +33,9 @@
     parse_players();
     
     function parse_players() {
-      players.map(function(player) {
+      vm.players.map(function(player) {
         player.old_players_list = '';
-        player.new_players_list = '';
+        player.current_players_list = '';
         
         player.old_players.map(function(old_player) {
           if (player.old_players_list !== '') {
@@ -45,12 +45,12 @@
           player.old_players_list += old_player;
         });
         
-        player.new_players.map(function(new_player) {
-          if (player.new_players_list !== '') {
-            player.old_players_list += ', ';
+        player.current_players.map(function(current_player) {
+          if (player.current_players_list !== '') {
+            player.current_players_list += ', ';
           }
           
-          player.old_players_list += new_player;
+          player.current_players_list += current_player;
         });
       });
     }
@@ -91,11 +91,12 @@
       
       reports_model.get_player_payments(vm_search_params).then(function(response) {
         vm.players = response;
+        parse_players();
         set_pagination();
       });
     }
     
-    vm.get_app_users_xlsx = function() {
+    vm.get_player_payments_xlsx = function() {
       var data = [];
       
       if (vm.players && vm.players.length === 0) {
