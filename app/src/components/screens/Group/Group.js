@@ -28,7 +28,6 @@ class RoasterRow extends Component {
 		this.animateCell = this.animateCell.bind(this);
 		this.onPress = this.onPress.bind(this);
 		this.onLongPress = this.onLongPress.bind(this);
-		this.resetShadowStyle = this.resetShadowStyle.bind(this);
 		this.state = {
 			roaster: this.props.roaster,
 			shadowStyle: null,
@@ -101,20 +100,17 @@ class RoasterRow extends Component {
 
 		this.props.toggleRowActive();
 	}
+    
+    static getDerivedStateFromProps(props, state) {
+        if (!props.isActive) {
+            state.popBottom = new Animated.Value(0);
+            state.popLeft = new Animated.Value(0);
+            state.shadowStyle = null;
+            state.separatorWith = 1;
+        }
 
-	resetShadowStyle() {
-		this.state.popBottom.setValue(0);
-		this.state.popLeft.setValue(0);
-		this.setState({shadowStyle: null, separatorWith: 1});
-	}
-
-	componentDidMount() {
-		this.resetShadowEvent = EventRegister.addEventListener('EVT_RESET_SHADOW_STYLE', this.resetShadowStyle);
-	}
-
-	componentWillUnmount() {
-		EventRegister.removeEventListener(this.resetShadowEvent);
-	}
+        return state;
+    }
 
 	render() {
 		if (this.state.roaster && this.state.roaster.playerTournamentID) {
@@ -127,7 +123,7 @@ class RoasterRow extends Component {
 			const row = (
 				<Animated.View style={[{backgroundColor: AppConst.COLOR_WHITE, flex: 1}, this.state.shadowStyle]}>
 					<TouchableHighlight style={ViewStyle.cellMainView} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.animateCell} onLongPress={this.onLongPress} {...this.props.sortHandlers}>
-						<View style={[ViewStyle.cellSubview, {paddingVertical: '3%', borderBottomWidth: this.state.separatorWith}]}>
+						<View style={[ViewStyle.cellSubview, {borderBottomWidth: this.state.separatorWith}]}>
 							<View style={{flex: 1}}>
 								<Text style={[ViewStyle.roasterPosition]}>{Number.parseInt(this.props.rowId) + 1}</Text>
 							</View>
@@ -530,8 +526,6 @@ export default class Group extends BaseComponent {
 				onPlayesrsManaged: this.onPlayesrsManaged,
 				managePlayersCallback: this.managePlayersCallback
 			});
-		} else {
-			this.dropDownRef.alertWithType('info', 'Opps!', 'You cannot edit your roaster during the round');
 		}
 	}
 
@@ -809,11 +803,10 @@ export default class Group extends BaseComponent {
 
 							<SortableList style={{flex: 1}} sortingEnabled={this.isBeforeEndDate() && !this.isRoundOnCourse()} manuallyActivateRows={true}
 								data={this.state.group.tournaments ? this.state.group.tournaments[this.state.tournamentIndex].leaderboard[this.state.currentUserIndex].roaster : []}
-								renderRow={({data, index}) => (
-									<RoasterRow roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />
-								)} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onActivateRow={() => this.setState({isScrollDisabled: true})} onReleaseRow={key => {
+								renderRow={({data, index, active}) => {
+                                    return (<RoasterRow isActive={active} roaster={data} rowId={index} isEditable={this.isBeforeEndDate() && !this.isRoundOnCourse()} onPress={() => this.managePlayers(data, index)} />)
+                                }} onChangeOrder={nextOrder => this.nextOrder = nextOrder} onActivateRow={key => this.setState({isScrollDisabled: true})} onReleaseRow={key => {
                                     this.setState({isScrollDisabled: false});
-                                    EventRegister.emit('EVT_RESET_SHADOW_STYLE');
 
 									if (this.nextOrder) {
 										let roaster = [];

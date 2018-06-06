@@ -214,7 +214,7 @@ export default ViewStyle = StyleSheet.create({
     },
     cellSubview: {
         borderBottomColor: AppConst.COLOR_GRAY,
-        paddingVertical: '7.5%',
+        height: Style.EM(4),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
