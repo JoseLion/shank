@@ -20,7 +20,7 @@
       });
   });
   
-  function rankingByTournamentController(NgTableParams, tournaments, reports_model, _) {
+  function rankingByTournamentController(NgTableParams, tournaments, reports_model, XLSX, _) {
     var vm = this;
     
     vm.tournaments = tournaments;

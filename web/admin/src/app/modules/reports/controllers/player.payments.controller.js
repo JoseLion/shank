@@ -20,7 +20,7 @@
       });
   });
   
-  function playerPaymentsController(NgTableParams, players, reports_model, date_utils) {
+  function playerPaymentsController(NgTableParams, players, reports_model, date_utils, XLSX) {
     var vm = this;
     vm.players = players;
     

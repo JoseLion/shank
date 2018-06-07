@@ -15,13 +15,12 @@
         resolve: {
           tournament: function(tournaments_model, $stateParams) {
             return tournaments_model.get($stateParams._id);
-          },
-          
+          }
         }
       });
   });
   
-  function tournamentsUpdateController($state, $timeout, tournaments_model, tournament, date_utils, Notifier) {
+  function tournamentsUpdateController($state, $timeout, tournaments_model, tournament, date_utils, Notifier, moment, _) {
     var vm = this;
     vm.tournament = tournament;
     vm.dates = {

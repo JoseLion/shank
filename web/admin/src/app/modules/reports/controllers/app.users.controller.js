@@ -20,7 +20,7 @@
       });
   });
   
-  function appUsersController(NgTableParams, app_users, reports_model, date_utils, _) {
+  function appUsersController(NgTableParams, app_users, reports_model, date_utils, XLSX, _) {
     var vm = this;
     
     vm.app_users = app_users;

@@ -15,7 +15,7 @@
       });
   });
   
-  function tournamentsCreateController($scope, $state, $timeout, tournaments_model, date_utils, Notifier) {
+  function tournamentsCreateController($scope, $state, $timeout, tournaments_model, date_utils, Notifier, moment, _) {
     var vm = this;
     vm.tournament = {};
     vm.dates = {

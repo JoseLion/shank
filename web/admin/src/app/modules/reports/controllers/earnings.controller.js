@@ -20,7 +20,7 @@
       });
   });
   
-  function ReportsController(NgTableParams, earnings, math_utils, reports_model, date_utils, _) {
+  function ReportsController(NgTableParams, earnings, math_utils, reports_model, date_utils, XLSX, _) {
     var vm = this;
     vm.search_params = {};
     vm.dates = {

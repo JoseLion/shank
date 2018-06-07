@@ -25,7 +25,7 @@
       });
   });
   
-  function adminDashboardController($state, earnings, funnel, data_for_dashboard, math_utils) {
+  function adminDashboardController($state, earnings, funnel, data_for_dashboard, math_utils, _) {
     var vm = this;
     vm.earnings = earnings;
     vm.funnel = funnel;

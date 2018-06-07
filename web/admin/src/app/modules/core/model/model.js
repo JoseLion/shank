@@ -45,8 +45,7 @@
       return Upload.upload({
           url: path,
           data: params
-      }).then(handle_errors(method, resource), function (resp) {
-        console.log('Error status: ' + resp.status);
+      }).then(handle_errors(method, resource), function () {
       }, function () {
         //var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
         //console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
@@ -94,7 +93,7 @@
         
         multipart: function(params) {
           return request_multipart('post', resource, params);
-        },
+        }
       };
     };
   });

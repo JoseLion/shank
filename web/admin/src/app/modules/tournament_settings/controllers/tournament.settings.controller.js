@@ -22,7 +22,6 @@
   
   function tournamentSettingsController($state, tournament_settings_model, tournament_settings, Notifier, _) {
     var vm = this;
-    console.log(tournament_settings, 'tournament_settings');
     
     var round_in;
     
