@@ -20,7 +20,7 @@
       });
   });
   
-  function reportFunnelController(funnel, reports_model) {
+  function reportFunnelController(funnel, reports_model, date_utils) {
     var vm = this;
     vm.funnel = funnel;
     display_chart();

@@ -246,9 +246,19 @@ export default function() {
 	
 	router.post('/get_funnel', auth, (req, res) => {
 		try {
+			let date_filter = {};
+			let from_date = null;
+			let to_date = null;
+			
+			if (req.body.from_date) {
+				from_date = date_service.to_utc_unix(req.body.from_date + " 00:00:00");
+				to_date = date_service.to_utc_unix(req.body.to_date + " 23:59:59");
+				date_filter = {"created_at": {"$gte": from_date, "$lt": to_date}};
+			}
+			
 			let promises = [
-				App_User.count({}).exec(),
-				Group.find().distinct('owner').exec(),
+				App_User.count(date_filter).exec(),
+				Group.find(date_filter).distinct('owner').exec(),
 				Group.aggregate([
 					{$project: {_id: 1, tournaments: {_id: 1, leaderboard: {_id: 1, user: 1, roaster: 1, checkouts: 1}}}}
 				]).exec()
@@ -262,11 +272,29 @@ export default function() {
 					group.tournaments.map((tournament) => {
 						tournament.leaderboard.map((leaderboard) => {
 							if (leaderboard.checkouts.length > 0) {
-								revenues.push(String(leaderboard.user));
+								if (req.body.from_date) {
+									leaderboard.checkouts.map((checkout) => {
+										if (checkout.payment_date >= from_date && checkout.payment_date <= to_date) {
+											revenues.push(String(leaderboard.user));
+										}
+									});
+								}
+								else {
+									revenues.push(String(leaderboard.user));
+								}
 							}
 							
 							if (leaderboard.roaster.length > 0) {
-								activations.push(String(leaderboard.user));
+								if (req.body.from_date) {
+									leaderboard.roaster.map((roaster) => {
+										if (roaster.date_first_roaster >= from_date && roaster.date_first_roaster <= to_date) {
+											activations.push(String(leaderboard.user));
+										}
+									});
+								}
+								else {
+									activations.push(String(leaderboard.user));
+								}
 							}
 						});
 					});
