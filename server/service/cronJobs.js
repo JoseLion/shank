@@ -76,13 +76,14 @@ export default class {
             if (job) {
                 let index;
                 global.runningJobs.forEach((running, i) => {
-                    if (running._id === job._id) {
+                    if (String(running._id) === String(job._id)) {
                         index = i;
                         return;
                     }
                 });
 
                 if (index > -1) {
+                    global.runningJobs[index].stop();
                     global.runningJobs.splice(index, 0);
                 }
                 
@@ -110,7 +111,8 @@ export default class {
                 const cronJob = new CronJob({
                     cronTime: job.cronTime,
                     onTick: function() {
-                        const shouldContinue = self[job.onTick](JSON.parse(job.args));
+                        const args = job.args ? JSON.parse(job.args) : null;
+                        const shouldContinue = self[job.onTick](JSON.parse(args));
 
                         if (!shouldContinue) {
                             this.stop();

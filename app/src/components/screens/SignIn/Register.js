@@ -60,7 +60,7 @@ export default class Register extends BaseComponent {
             register_os: Platform.OS
 		};
         
-        const response = await NoAuthModel.create('app_user/register', data).catch(handleError);
+        const response = await NoAuthModel.post('app_user/register', data).catch(handleError);
         await AsyncStorage.setItem(AppConst.AUTH_TOKEN, response.token);
         await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(response.user));
         this.finishSignup();
