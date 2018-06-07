@@ -26,7 +26,7 @@
       suffix : '.json'
     });
     
-    $translateProvider.preferredLanguage('es_EC');
+    $translateProvider.preferredLanguage('en');
   }
 
 })();
