@@ -28,11 +28,8 @@ export default class {
             const cronJob = new CronJob({
                 cronTime: cronTime,
                 onTick: function() {
-                    const shouldContinue = self[functionName](args);
-
-                    if (!shouldContinue) {
-                        this.stop();
-                    }
+                    self[functionName](args);
+                    this.stop();                    
                 },
                 onComplete: async function() {
                     let index;
@@ -99,7 +96,7 @@ export default class {
             const self = this;
             const jobs = await Job.find().catch(handleMongoError);
 
-            jobs.forEach(job => {
+            await jobs.asyncForEach(async job => {
                 if (job.onTick ==null || job.onTick == '') {
                     throw "The name of the function to excecute is required";
                 }
@@ -108,38 +105,40 @@ export default class {
                     throw `The static function ${onTick} could not be found in cronJobs.js`;
                 }
 
-                const cronJob = new CronJob({
-                    cronTime: job.cronTime,
-                    onTick: function() {
-                        const args = job.args ? JSON.parse(job.args) : null;
-                        const shouldContinue = self[job.onTick](JSON.parse(args));
-
-                        if (!shouldContinue) {
+                if (job.cronTime < Date.now()) {
+                    await job.remove().catch(handleMongoError);
+                } else {
+                    const cronJob = new CronJob({
+                        cronTime: job.cronTime,
+                        onTick: function() {
+                            const args = job.args ? JSON.parse(job.args) : null;
+                            self[job.onTick](JSON.parse(args));
                             this.stop();
-                        }
-                    },
-                    onComplete: async function() {
-                        let index;
-                        global.runningJobs.forEach((job, i) => {
-                            if (job._id === this._id) {
-                                index = i;
-                                return;
+                            
+                        },
+                        onComplete: async function() {
+                            let index;
+                            global.runningJobs.forEach((job, i) => {
+                                if (job._id === this._id) {
+                                    index = i;
+                                    return;
+                                }
+                            });
+
+                            if (index) {
+                                global.runningJobs.splice(index, 1);
                             }
-                        });
 
-                        if (index) {
-                            global.runningJobs.splice(index, 1);
-                        }
+                            await Job.remove({_id: this._id}).catch(handleMongoError);
+                        },
+                        start: false,
+                        timeZone: 'Atlantic/Reykjavik'
+                    });
 
-                        await Job.remove({_id: this._id}).catch(handleMongoError);
-                    },
-                    start: false,
-                    timeZone: 'Atlantic/Reykjavik'
-                });
-
-                cronJob.start();
-                cronJob._id = job._id;
-                global.runningJobs.push(cronJob);
+                    cronJob.start();
+                    cronJob._id = job._id;
+                    global.runningJobs.push(cronJob);
+                }
             });
         } catch (error) {
             throw "CronJob [restore] error: " + error;
@@ -235,5 +234,9 @@ export default class {
         } catch (error) {
             throw "Exception[assignPoints({ tournamentId, round })]: " + error;
         }
+    }
+
+    static test() {
+        console.log("*********** CRON TEST **********");
     }
 }

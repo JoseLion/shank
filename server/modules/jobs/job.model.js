@@ -1,7 +1,7 @@
 import mongoose, { model } from 'mongoose';
 
 const JobSchema = new mongoose.Schema({
-    cronTime: String,
+    cronTime: Date,
     onTick: String,
     args: String,
     reference: String

@@ -89,17 +89,6 @@ export default function (app) {
         }
     });
 
-    router.get(`/apns/send/:id`, async (request, response) => {
-        const appUser = await AppUser.findById(request.params.id);
-        const pushNotification = new PushNotification();
-
-        appUser.notifications.asyncForEach(async notifObj => {
-            pushNotification.send({ token: notifObj.token, os: notifObj.os, alert: 'New message from Shank' });
-        });
-
-        return response.ok();
-    });
-
     router.get('/app_profile', auth, async (req, res) => {
         if (!req.payload._id) {
             return res.server_error('Unauthorized.');
@@ -213,6 +202,26 @@ export default function (app) {
             response.server_error(error);
         }
     });
+    
+    /* ---------------------------- TEST (SHOULD BE DELETED) ---------------------------- */
+    router.get(`/apns/send/:id`, async (request, response) => {
+        /*const appUser = await AppUser.findById(request.params.id);
+        const pushNotification = new PushNotification();
+
+        appUser.notifications.asyncForEach(async notifObj => {
+            pushNotification.send({ token: notifObj.token, os: notifObj.os, alert: 'New message from Shank' });
+        });*/
+
+        const pushNotification = new PushNotification();
+        pushNotification.send({
+            token: request.params.id,
+            os: 'android',
+            alert: 'Notification test!'
+        });
+
+        return response.ok();
+    });
+    /* ---------------------------------------------------------------------------------- */
 
     return router;
 }
