@@ -7,6 +7,7 @@ import { NavigationActions } from 'react-navigation';
 import PushNotification from 'react-native-push-notification';
 
 import { BaseComponent, NoAuthModel, MainStyles, AppConst } from '../BaseComponent';
+import Style from 'ShankStyle';
 import LocalStyles from './styles/local';
 
 export default class Register extends BaseComponent {
@@ -59,7 +60,7 @@ export default class Register extends BaseComponent {
             register_os: Platform.OS
 		};
         
-        const response = await NoAuthModel.create('app_user/register', data).catch(handleError);
+        const response = await NoAuthModel.post('app_user/register', data).catch(handleError);
         await AsyncStorage.setItem(AppConst.AUTH_TOKEN, response.token);
         await AsyncStorage.setItem(AppConst.USER_PROFILE, JSON.stringify(response.user));
         this.finishSignup();
@@ -172,11 +173,11 @@ export default class Register extends BaseComponent {
 							<TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(repeatedPassword) => this.setState({repeatedPassword})} value={this.state.repeatedPassword}
 							onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { Keyboard.dismiss() }} placeholder={'Repeat your password'} ref='pass2' secureTextEntry={true} />
 
-							<TouchableOpacity style={[MainStyles.button, MainStyles.success]} onPress={this.onRegisterPressed}>
+							<TouchableOpacity style={[MainStyles.button, MainStyles.success, {marginTop: Style.EM(0.5)}]} onPress={this.onRegisterPressed}>
 								<Text style={[MainStyles.buttonText]}>Register</Text>
 							</TouchableOpacity>
 
-							<TouchableHighlight style={[MainStyles.button, MainStyles.facebook]} onPress={this.facebookService}>
+							<TouchableHighlight style={[MainStyles.button, MainStyles.facebook, {marginTop: Style.EM(0.5)}]} onPress={this.facebookService}>
 								<Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
 							</TouchableHighlight>
 						</View>

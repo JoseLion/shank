@@ -97,7 +97,8 @@ export default function() {
                 const startDate = new Date(tournament_saved.startDate);
                 
                 const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
-				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getUTCMonth()} ${remindDate.getUTCDay()}`;
+                const remindTime = new Date(Date.UTC(remindDate.getUTCFullYear(), remindDate.getUTCMonth(), remindDate.getUTCDate(), remindDate.getUTCHours(), remindDate.getUTCMinutes(), remindDate.getUTCSeconds(), remindDate.getUTCMilliseconds()));
+				//const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getUTCMonth()} ${remindDate.getUTCDay()}`;
 				await CronJobs.create({
                     cronTime: remindTime,
                     functionName: 'tournamentStartReminder',
@@ -105,8 +106,9 @@ export default function() {
                     args: tournament_saved._id
                 });
 
-				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
-				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getUTCMonth()} ${beginDate.getUTCDay()}`;
+                const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
+                const beginTime = new Date(Date.UTC(beginDate.getUTCFullYear(), beginDate.getUTCMonth(), beginDate.getUTCDate(), beginDate.getUTCHours(), beginDate.getUTCMinutes, beginDate.getUTCSeconds(), beginDate.getUTCMilliseconds()));
+				//const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getUTCMonth()} ${beginDate.getUTCDay()}`;
                 await CronJobs.create({
                     cronTime: beginTime,
                     functionName: 'tournamentAboutToBegin',
@@ -117,8 +119,8 @@ export default function() {
                 const endDate = new Date(tournament_saved.endDate);
                 await tournament_saved.rounds.asyncForEach(async round => {
                     const day = new Date(round.day);
-                    const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getUTCMonth()} ${day.getUTCDay()}`;
-                    
+                    const cronTime = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), endDate.getUTCHours(), endDate.getUTCMinutes(), endDate.setUTCSeconds(), endDate.getUTCMilliseconds()));
+                    //const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getUTCMonth()} ${day.getUTCDay()}`;
                     await CronJobs.create({
                         cronTime,
                         functionName: 'assignPoints',
@@ -185,8 +187,8 @@ export default function() {
 				const startDate = new Date(Number(req.body.startDate));
                 
                 const remindDate = new Date(startDate.getTime() - (15 * 60 * 60 * 1000));
-				const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getUTCMonth()} ${remindDate.getUTCDay()}`;
-                
+                const remindTime = new Date(Date.UTC(remindDate.getUTCFullYear(), remindDate.getUTCMonth(), remindDate.getUTCDate(), remindDate.getUTCHours(), remindDate.getUTCMinutes(), remindDate.getUTCSeconds(), remindDate.getUTCMilliseconds()));
+				//const remindTime = `${remindDate.getUTCSeconds()} ${remindDate.getUTCMinutes()} ${remindDate.getUTCHours()} ${remindDate.getUTCDate()} ${remindDate.getUTCMonth()} ${remindDate.getUTCDay()}`;
                 await CronJobs.remove({reference: `TSR-${req.body._id}`});
 				await CronJobs.create({
                     cronTime: remindTime,
@@ -195,9 +197,9 @@ export default function() {
                     args: req.body._id
                 });
 
-				const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
-				const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getUTCMonth()} ${beginDate.getUTCDay()}`;
-                console.log(`TAB-${req.body._id}[cronTime]: ${beginTime}`);
+                const beginDate = new Date(startDate.getTime() - (30 * 60 * 1000));
+                const beginTime = new Date(Date.UTC(beginDate.getUTCFullYear(), beginDate.getUTCMonth(), beginDate.getUTCDate(), beginDate.getUTCHours(), beginDate.getUTCMinutes, beginDate.getUTCSeconds(), beginDate.getUTCMilliseconds()));
+				//const beginTime = `${beginDate.getUTCSeconds()} ${beginDate.getUTCMinutes()} ${beginDate.getUTCHours()} ${beginDate.getUTCDate()} ${beginDate.getUTCMonth()} ${beginDate.getUTCDay()}`;
                 await CronJobs.remove({reference: `TAB-${req.body._id}`});
 				await CronJobs.create({
                     cronTime: beginTime,
@@ -209,8 +211,8 @@ export default function() {
                 const endDate = new Date(Number(req.body.endDate));
                 req.body.rounds.asyncForEach(async round => {
                     const day = new Date(round.day);
-                    const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getUTCMonth()} ${day.getUTCDay()}`;
-                    
+                    const cronTime = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), endDate.getUTCHours(), endDate.getUTCMinutes(), endDate.setUTCSeconds(), endDate.getUTCMilliseconds()));
+                    //const cronTime = `${endDate.getUTCSeconds()} ${endDate.getUTCMinutes()} ${endDate.getUTCHours()} ${day.getUTCDate()} ${day.getUTCMonth()} ${day.getUTCDay()}`;
                     await CronJobs.remove({reference: `ASP-${req.body._id}`});
                     await CronJobs.create({
                         cronTime,

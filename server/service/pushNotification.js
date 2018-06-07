@@ -1,7 +1,9 @@
 import apn from 'apn';
+import mongoose from 'mongoose';
 import Constants from '../config/constants';
 import * as FireBaseAdmin from 'firebase-admin';
 import ServiceAccount from '../certificates/shank-e5ddc-firebase-adminsdk-elcvz-df37323348.json';
+import handleMongoError from './handleMongoError';
 
 export default class {
     constructor() {
@@ -59,7 +61,32 @@ export default class {
                 }
             };
 
-            response = await FireBaseAdmin.messaging().send(message).catch(error => console.error("Exception[FireBaseAdmin.messaging().send(...)]: ", error));
+            response = await FireBaseAdmin.messaging().send(message).catch(async error => {
+                if (error.code == 'messaging/invalid-argument') {
+                    const AppUser = mongoose.model('App_User');
+                    const user = await AppUser.findOne({'notifications.token': token}).catch(handleMongoError);
+                    
+                    if (user) {
+                        let index = -1;
+                        user.notifications.forEach((notif, i) => {
+                            if (notif.token == token) {
+                                index = i;
+                                return;
+                            }
+                        });
+
+                        if (index > -1) {
+                            user.notifications.splice(index, 1);
+                            await user.save().catch(handleMongoError);
+                            console.log("Exception[FireBaseAdmin.messaging().send(...)]: ", "Invalid token, it was removed from user register!");
+                        }
+                    }
+                    
+                    return;
+                }
+
+                console.error("Exception[FireBaseAdmin.messaging().send(...)]: ", error);
+            });
         }
 
         return response;
