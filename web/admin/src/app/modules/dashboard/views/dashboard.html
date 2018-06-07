@@ -18,9 +18,10 @@
         </div>
         
         <div class="ibox-content">
-          <h1 class="no-margins">{{dashCtrl.total_earnings | format_number }}</h1>
-          <!--<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>-->
-          <small ui-sref="admin.reports.earnings" class="text-success pointer" >View report</small>
+          <h1 class="no-margins">$ {{dashCtrl.total_earnings | format_number }}</h1>
+          <div class="text-center">
+            <small ui-sref="admin.reports.earnings" class="text-success pointer" >View report</small>
+          </div>
         </div>
       </div>
     </div>
@@ -31,9 +32,42 @@
           <h4>Funnel</h4>
         </div>
         <div class="ibox-content">
-          <h1 class="no-margins">{{dashCtrl.total_earnings | format_number }}</h1>
-          <!--<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>-->
-          <small ui-sref="admin.reports.funnel" class="text-success pointer" >View report</small>
+          <ul class="list-group clear-list">
+            <li class="list-group-item fist-item">
+              <span class="pull-right">
+                {{dashCtrl.funnel.acquisition}}
+              </span>
+              Acquisition
+            </li>
+            <li class="list-group-item">
+              <span class="pull-right">
+                {{dashCtrl.funnel.activation}}
+              </span>
+              Activation
+            </li>
+            <li class="list-group-item">
+              <span class="pull-right">
+                <span>Android</span>&nbsp;&nbsp;&nbsp;<span>IOS</span>
+              </span>
+              Retention
+            </li>
+            <li class="list-group-item">
+              <span class="pull-right">
+                {{dashCtrl.funnel.referral}}
+              </span>
+              Referral
+            </li>
+            <li class="list-group-item">
+              <span class="pull-right">
+                {{dashCtrl.funnel.revenue}}
+              </span>
+              Revenue
+            </li>
+          </ul>
+          
+          <div class="text-center">
+            <small ui-sref="admin.reports.funnel" class="text-success pointer" >View report</small>
+          </div>
         </div>
       </div>
     </div>
@@ -44,12 +78,32 @@
           <h4>App Users</h4>
         </div>
         <div class="ibox-content">
-          <h3 class="no-margins">New User Today</h3>
-          <h3 class="no-margins">AVG People on a Tournament</h3>
-          <h3 class="no-margins">AVG Earnings Per Group</h3>
-          <h3 class="no-margins">Active Groups</h3>
-          <!--<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>-->
-          <small ui-sref="admin.reports.app_users" class="text-success pointer" >View report</small>
+          <ul class="list-group clear-list">
+            <li class="list-group-item fist-item">
+              <span class="pull-right">
+                {{dashCtrl.data_for_dashboard.total_users_today}}
+              </span>
+              New User Today
+            </li>
+            <li class="list-group-item">
+              <span class="pull-right">
+                {{dashCtrl.data_for_dashboard.avg_people_on_tournament}}
+              </span>
+              AVG People on a Tournament
+            </li>
+            <li class="list-group-item">
+              <span class="pull-right">
+                {{dashCtrl.data_for_dashboard.avg_earnings_per_group}}
+              </span>
+              AVG Earnings Per Group
+            </li>
+            <li class="list-group-item">
+              <span class="pull-right">
+                {{dashCtrl.data_for_dashboard.total_groups}}
+              </span>
+              Active Groups
+            </li>
+          </ul>
         </div>
       </div>
     </div>

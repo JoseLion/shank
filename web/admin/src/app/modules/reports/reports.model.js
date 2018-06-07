@@ -4,6 +4,10 @@
   angular.module('admin.reports').factory('reports_model', function(base_model) {
     var model = base_model('reports');
     
+    model.get_data_for_dashboard = function(params) {
+      return base_model('get_data_for_dashboard').create(params);
+    }
+    
     model.get_earnings = function(params) {
       return base_model('get_earnings').create(params);
     }

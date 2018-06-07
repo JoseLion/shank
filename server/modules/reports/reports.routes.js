@@ -7,6 +7,7 @@ import xlsx from 'node-xlsx';
 import handleMongoError from '../../service/handleMongoError';
 import auth from '../../config/auth';
 import date_service from '../services/date.services';
+import moment from 'moment-timezone';
 
 let router = express.Router();
 const Acquisition = mongoose.model('Acquisition');
@@ -541,52 +542,57 @@ export default function() {
     }
 	});
 	
-	router.post('/get_initial_data_for_dashboar', auth, (req, res) => {
+	router.post('/get_data_for_dashboard', auth, (req, res) => {
 		try {
 			if (!req.payload._id) {
 				return res.unauthorized();
 			}
 			
-			Group
-			.find()
-			.select({
-				_id: 1,
-				name: 1,
-				tournaments: 1,
-				"tournaments.tournament": 1,
-				"tournaments.leaderboard.user": 1,
-				"tournaments.leaderboard.checkouts": 1,
-				"tournaments.leaderboard.checkouts.originalRoaster": 1,
-				"tournaments.leaderboard.checkouts.roaster": 1,
-				"tournaments.leaderboard.checkouts.round": 1,
-				"tournaments.leaderboard.checkouts.payment": 1
-			})
-			.populate('tournaments.tournament', "_id name")
-			.populate('tournaments.leaderboard.user', "_id fullName")
-			.populate({
-				path: 'tournaments.leaderboard.checkouts.originalRoaster',
-				select: '_id playerTournamentID player',
-				populate: {
-					path: 'player',
-					select: '_id firstName lastName',
-					model: Player
-				}
-			})
-			.populate({
-				path: 'tournaments.leaderboard.checkouts.roaster',
-				select: '_id playerTournamentID player',
-				populate: {
-					path: 'player',
-					select: '_id firstName lastName',
-					model: Player
-				}
-			})
-			.exec((err, data) => {
-				if (err) {
-					return res.server_error(err.message);
-				}
+			let current_date =  moment().format('YYYY-MM-DD');
+			let from_date = date_service.to_utc_unix(current_date + " 00:00:00");
+			let to_date = date_service.to_utc_unix(current_date + " 23:59:59");
+			
+			let date_filter = {"created_at": {"$gte": from_date, "$lt": to_date}};
+			
+			let promises = [
+				App_User.count(date_filter).exec(),
+				Group.aggregate([
+					{$project: {_id: 1, tournaments: {_id: 1, leaderboard: {_id: 1, user: 1, checkouts: 1}}}}
+				]).exec()
+			];
+			
+			console.log(current_date, 'current_date');
+			
+			Q.all(promises).spread((total_users_today, groups) => {
+				let total_tournaments = 0;
+				let total_users_in_tournaments = 0;
+				let total_earnings = 0;
 				
-				res.ok(data);
+				groups.map(function(group) {
+					total_tournaments += Number(group.tournaments.length);
+					
+					group.tournaments.map(function(tournament) {
+						total_users_in_tournaments += tournament.leaderboard.length;
+						
+						tournament.leaderboard.map(function(leaderboard) {
+							leaderboard.checkouts.map(function(checkout) {
+								total_earnings += Number(checkout.payment);
+							});
+						});
+					});
+				});
+				
+				let response_data = {
+					total_users_today: total_users_today,
+					total_groups: groups.length,
+					total_tournaments_in_groups: total_tournaments,
+					total_users_in_tournaments: total_users_in_tournaments,
+					total_earnings: total_earnings
+				};
+				
+				res.ok(response_data);
+			}, (err) => {
+				res.server_error(err);
 			});
     } catch (e) {
       res.server_error();
