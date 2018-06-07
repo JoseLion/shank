@@ -5,6 +5,7 @@ import handleMongoError from '../../service/handleMongoError';
 import multer from 'multer';
 import Q from 'q';
 import PushNotifications from '../../service/pushNotification';
+import date_service from '../services/date.services';
 
 const Group = mongoose.model('Group');
 const Archive = mongoose.model('Archive');
@@ -332,20 +333,24 @@ export default function(app) {
 	router.post(`${basePath}/updateMyRoaster/:groupId/:tournamentId`, auth, async (request, response) => {
 		try {
 			let isUserInGroup = false;
+			
 			let group = await Group.findById(request.params.groupId).catch(handleMongoError);
-
+			
 			if (!group) {
-                response.reset_content("Sorry! This group has been deleted");
-                return;
-            }
-
+				return response.reset_content("Sorry! This group has been deleted");
+      }
+			
 			group.tournaments.forEach(tournamentCross => {
-				if (tournamentCross.tournament == request.params.tournamentId) {
+				if (String(tournamentCross.tournament) == request.params.tournamentId) {
 					tournamentCross.leaderboard.forEach(cross => {
 						if (String(cross.user) == String(request.payload._id)) {
 							isUserInGroup = true;
+							if (!cross.date_first_roaster) {
+								cross.date_first_roaster = date_service.utc_unix_current_date();
+							}
+							
 							cross.roaster = request.body.roaster;
-
+							
 							if (request.body.movements > 0) {
 								cross.checkouts.push(request.body);
 							}
@@ -355,8 +360,7 @@ export default function(app) {
 			});
 
 			if (!isUserInGroup) {
-                response.reset_content("Sorry! You were removed from this group");
-                return;
+        return response.reset_content("Sorry! You were removed from this group");
 			}
 
 			group = await group.save().catch(handleMongoError);

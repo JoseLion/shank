@@ -21,9 +21,18 @@ let Admin_UserSchema = new mongoose.Schema({
   role: {type: Number, default: 1},
   salt: String,
   hash: String,
-  enabled: {type: Boolean, default: true}
-},
-{ timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}});
+  enabled: {type: Boolean, default: true},
+	created_at: Number,
+	updated_at: Number
+});
+
+Admin_UserSchema.pre('save', function(next) {
+	if (!this.created_at) {
+		this.created_at = date_service.utc_unix_current_date();
+	}
+	this.updated_at = date_service.utc_unix_current_date();
+	next();
+});
 
 Admin_UserSchema.post('save', (error, doc, next) => {
   if (error.name === 'BulkWriteError' && error.code === 11000) {

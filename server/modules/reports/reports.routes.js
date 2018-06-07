@@ -237,7 +237,6 @@ export default function() {
 		Group.aggregate(aggregate_params)
 		.exec((err, data) => {
 			if (err) {
-				console.log(err, '*****--------*********');
 				return res.server_error(err.message);
 			}
 			
@@ -245,60 +244,42 @@ export default function() {
 		});
 	});
 	
-	router.post('/get_earnings_xlsx', (req, res) => {
-		const data = [[1, 2, 3], [true, false, null, 'sheetjs'], ['foo', 'bar', new Date('2014-02-19T14:30Z'), '0.3'], ['baz', null, 'qux']];
-		let buffer = xlsx.build([{name: "mySheetName", data: data}]); // Returns a buffer
-		/* send to client */
-		res.status(200).end(buffer, 'binary');
-	});
-	
 	router.post('/get_funnel', auth, (req, res) => {
 		try {
 			let promises = [
-				Acquisition.count({}).exec(),
 				App_User.count({}).exec(),
 				Group.find().distinct('owner').exec(),
 				Group.aggregate([
-					{$project: {_id: 1, tournaments: {_id: 1, leaderboard: {_id: 1, user: 1, checkouts: 1}}}}
+					{$project: {_id: 1, tournaments: {_id: 1, leaderboard: {_id: 1, user: 1, roaster: 1, checkouts: 1}}}}
 				]).exec()
 			];
 			
-			Q.all(promises).spread((acquisition, app_user, referral, revenues) => {
-				let users = [];
-				let user_in;
-				let all_users = [];
-				let user_in_all;
-				let duplicate_users = [];
+			Q.all(promises).spread((acquisition, referral, groups) => {
+				let revenues = [];
+				let activations = [];
 				
-				revenues.map((revenue) => {
-					revenue.tournaments.map((tournament) => {
+				groups.map((group) => {
+					group.tournaments.map((tournament) => {
 						tournament.leaderboard.map((leaderboard) => {
 							if (leaderboard.checkouts.length > 0) {
-								user_in = users.indexOf(String(leaderboard.user));
-								if (user_in === -1) {
-									users.push(String(leaderboard.user));
-								}
+								revenues.push(String(leaderboard.user));
 							}
 							
-							user_in_all = all_users.indexOf(String(leaderboard.user));
-							if (user_in_all === -1) {
-								all_users.push(String(leaderboard.user));
-							}
-							else {
-								duplicate_users.push(String(leaderboard.user));
+							if (leaderboard.roaster.length > 0) {
+								activations.push(String(leaderboard.user));
 							}
 						});
 					});
 				});
 				
-				duplicate_users = _.uniq(duplicate_users);
+				activations = _.uniq(activations);
+				revenues = _.uniq(revenues);
 				
 				let data = {
 					acquisition: acquisition,
-					activation: app_user,
-					retention: duplicate_users.length,
+					activation: activations.length,
 					referral: referral.length,
-					revnue: users.length
+					revenue: revenues.length
 				};
 				res.ok(data);
 			}, (err) => {
