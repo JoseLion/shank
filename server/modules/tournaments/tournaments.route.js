@@ -94,7 +94,7 @@ export default function() {
 			promises.push(tournament.save());
 			
 			Q.all(promises).spread(async (archive1_saved, archive2_saved, tournament_saved) => {
-                const startDate = new Date(tournament_saved.startDate);
+                const startDate = new Date(Number(tournament_saved.startDate));
                 
                 const remindDate = new Date(startDate.getTime() - (12 * 60 * 60 * 1000));
                 const remindTime = new Date(Date.UTC(remindDate.getUTCFullYear(), remindDate.getUTCMonth(), remindDate.getUTCDate(), remindDate.getUTCHours(), remindDate.getUTCMinutes(), remindDate.getUTCSeconds(), remindDate.getUTCMilliseconds()));

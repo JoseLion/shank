@@ -468,7 +468,7 @@ export default class Group extends BaseComponent {
 	}
 
 	inviteToJoin() {
-		const url = `http://${ClientHost}/#/invitation?group=${this.state.group._id}`;
+        const url = `http://${ClientHost}/invitation?group=${this.state.group._id}`;
 
 		Share.share({
 			message: `Join to our group '${this.state.group.name}' at ${url}`,
