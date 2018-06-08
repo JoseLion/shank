@@ -1,6 +1,6 @@
 // shank.levelaptesting.com
 // 192.168.10.152
-const endPoint = 'http://goshank.com';
+const endPoint = 'www.goshank.com';
 const port = '';
 const Host = `http://${endPoint}${port}/`; 
 const ApiHost = Host + 'api/';

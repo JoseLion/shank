@@ -12,6 +12,8 @@ const Archive = mongoose.model('Archive');
 const AppUser = mongoose.model('App_User');
 const Tournament = mongoose.model('Tournament');
 const Referred = mongoose.model('Referred');
+const Leaderboard = mongoose.model('Leaderboard');
+const Player = mongoose.model('Player');
 const basePath = '/group';
 const router = express.Router();
 
@@ -337,31 +339,42 @@ export default function(app) {
 			let group = await Group.findById(request.params.groupId).catch(handleMongoError);
 			
 			if (!group) {
-				return response.reset_content("Sorry! This group has been deleted");
-      }
+                return response.reset_content("Sorry! This group has been deleted");
+            }
 			
-			group.tournaments.forEach(tournamentCross => {
+			await group.tournaments.asyncForEach(async tournamentCross => {
 				if (String(tournamentCross.tournament) == request.params.tournamentId) {
-					tournamentCross.leaderboard.forEach(cross => {
+					await tournamentCross.leaderboard.asyncForEach(async cross => {
 						if (String(cross.user) == String(request.payload._id)) {
 							isUserInGroup = true;
 							if (!cross.date_first_roaster) {
 								cross.date_first_roaster = date_service.utc_unix_current_date();
-							}
+                            }
+                            
+                            await request.body.roaster.asyncForEach(async (roasterObj, i) => {
+                                if (String(roasterObj._id) != String(cross.roaster[i])) {
+                                    const leaderboard = await Leaderboard.findById(roasterObj._id).catch(handleMongoError);
+                                    let player = await Player.findById(leaderboard.player).catch(handleMongoError);
+                                    player.pickCount++;
+                                    await player.save().catch(handleMongoError);
+                                }
+                            });
 							
 							cross.roaster = request.body.roaster;
 							
 							if (request.body.movements > 0) {
 								cross.checkouts.push(request.body);
-							}
+                            }
+
+                            return;
 						}
 					});
 				}
-			});
-
-			if (!isUserInGroup) {
-        return response.reset_content("Sorry! You were removed from this group");
-			}
+            });
+            
+            if (!isUserInGroup) {
+                return response.reset_content("Sorry! You were removed from this group");
+            }
 
 			group = await group.save().catch(handleMongoError);
 			group = await Group.findOne({_id: group._id})

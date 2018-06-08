@@ -5,7 +5,8 @@ const PlayerSchema = new mongoose.Schema({
 	playerID: Number,
 	firstName: String,
 	lastName: String,
-	photoUrl: String,
+    photoUrl: String,
+    pickCount: {type: Number, default: 0}
 }, {
 	collection: 'players',
 	timestamps: {
