@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard, Platform } from 'react-native';
+import { Text, View, TextInput, TouchableHighlight, AsyncStorage, findNodeHandle, TouchableOpacity, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import handleError from 'Core/handleError';
 import FBSDK, { LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
@@ -156,32 +156,34 @@ export default class Register extends BaseComponent {
 	render() {
 		return (
 			<View style={{flex: 1}}>
-				<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardDismissMode='interactive' style={[MainStyles.background]}>
-					<View style={[MainStyles.container]} behavior="padding">
-						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
-						<Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>LET{"\'"}S START BY CREATING AN ACCOUNT</Text>
-						<View style={[LocalStyles.formContainer]}>
-							<TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(fullName) => this.setState({fullName})} value={this.state.fullName} placeholder={'Name'} 
-							onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { this.refs.email.focus(); }} ref='name' />
-							
-							<TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(email) => this.setState({email})} value={this.state.email} placeholder={'Email'}
-							onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { this.refs.pass1.focus(); }} ref='email' />
-							
-							<TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(password) => this.setState({password})} value={this.state.password} placeholder={'Password'}
-							onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { this.refs.pass2.focus(); }} secureTextEntry={true} ref='pass1' />
-							
-							<TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(repeatedPassword) => this.setState({repeatedPassword})} value={this.state.repeatedPassword}
-							onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { Keyboard.dismiss() }} placeholder={'Repeat your password'} ref='pass2' secureTextEntry={true} />
+				<KeyboardAwareScrollView ref='scroll' enableOnAndroid={true} extraHeight={10} keyboardShouldPersistTaps="always" style={[MainStyles.background]} >
+					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+						<View style={[MainStyles.container]}>
+                            <Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.subtitlePage]}>WELCOME TO SHANK</Text>
+                            <Text style={[MainStyles.centerText, LocalStyles.contentColor, LocalStyles.descriptionPage]}>LET{"\'"}S START BY CREATING AN ACCOUNT</Text>
+                            <View style={[LocalStyles.formContainer]}>
+                                <TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(fullName) => this.setState({fullName})} value={this.state.fullName} placeholder={'Name'} 
+                                onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { this.refs.email.focus(); }} ref='name' />
+                                
+                                <TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(email) => this.setState({email})} value={this.state.email} placeholder={'Email'}
+                                onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { this.refs.pass1.focus(); }} ref='email' />
+                                
+                                <TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(password) => this.setState({password})} value={this.state.password} placeholder={'Password'}
+                                onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { this.refs.pass2.focus(); }} secureTextEntry={true} ref='pass1' />
+                                
+                                <TextInput returnKeyType={"next"} underlineColorAndroid="transparent" style={[MainStyles.formInput]} onChangeText={(repeatedPassword) => this.setState({repeatedPassword})} value={this.state.repeatedPassword}
+                                onFocus={(event) => { this.scrollToInput(findNodeHandle(event.target)) }} onSubmitEditing={(event) => { Keyboard.dismiss() }} placeholder={'Repeat your password'} ref='pass2' secureTextEntry={true} />
 
-							<TouchableOpacity style={[MainStyles.button, MainStyles.success, {marginTop: Style.EM(0.5)}]} onPress={this.onRegisterPressed}>
-								<Text style={[MainStyles.buttonText]}>Register</Text>
-							</TouchableOpacity>
+                                <TouchableOpacity style={[MainStyles.button, MainStyles.success, {marginTop: Style.EM(0.5)}]} onPress={this.onRegisterPressed}>
+                                    <Text style={[MainStyles.buttonText]}>Register</Text>
+                                </TouchableOpacity>
 
-							<TouchableHighlight style={[MainStyles.button, MainStyles.facebook, {marginTop: Style.EM(0.5)}]} onPress={this.facebookService}>
-								<Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
-							</TouchableHighlight>
-						</View>
-					</View>
+                                <TouchableHighlight style={[MainStyles.button, MainStyles.facebook, {marginTop: Style.EM(0.5)}]} onPress={this.facebookService}>
+                                    <Text style={[MainStyles.buttonText]}>Continue with Facebook</Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+					</TouchableWithoutFeedback>
 				</KeyboardAwareScrollView>
 			</View>
 		);

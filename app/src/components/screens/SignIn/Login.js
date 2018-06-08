@@ -34,7 +34,7 @@ export default class Login extends BaseComponent {
 		this.refs.scroll.scrollToFocusedInput(reactNode);
 	}
 
-	onLoginPressed() {
+	async onLoginPressed() {
 		if (!this.state.email) {
 			handleError("Please enter your Email.");
 			return;
@@ -51,11 +51,8 @@ export default class Login extends BaseComponent {
 			email: this.state.email.toLowerCase(),
 			password: this.state.password,
 		};
-		this.onLoginPressedAsync(data);
-	}
-
-	async onLoginPressedAsync(data) {
-		global.setLoading(true);
+        
+        global.setLoading(true);
 		const login = await NoAuthModel.post('app_login', data).catch(handleError);
 
 		if (login) {
@@ -190,9 +187,9 @@ export default class Login extends BaseComponent {
 									onChangeText={(password) => this.setState({password})}
 									value={this.state.password}
 									placeholder={'Password'}
-									onSubmitEditing={() => this.onLoginPressed()}/>
+									onSubmitEditing={this.onLoginPressed}/>
 
-								<TouchableHighlight style={[MainStyles.button, MainStyles.success, {marginTop: Style.EM(0.5)}]} onPress={() => this.onLoginPressed()}>
+								<TouchableHighlight style={[MainStyles.button, MainStyles.success, {marginTop: Style.EM(0.5)}]} onPress={this.onLoginPressed}>
 									<Text style={MainStyles.buttonText}>Log in</Text>
 								</TouchableHighlight>
 

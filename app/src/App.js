@@ -134,9 +134,9 @@ export default class ShankApp extends Component {
 			<View style={{width: '100%', height: '100%'}}>
                 <DropdownAlert ref={ref => this.dropDownRef = ref} zIndex={9999} onClose={() => this.setLoading(false)} />
 				<StatusBar barStyle="light-content" backgroundColor={AppConst.COLOR_BLUE} />
-                <LoadingIndicator visible={this.state.showLoading} />
 				
 				<AppNavigator ref={ref => this.navigation = ref} />
+                <LoadingIndicator visible={this.state.showLoading} />
 			</View>
 		);
 	}

@@ -49,17 +49,17 @@ export default ViewStyle = StyleSheet.create({
     },
     pickerView: {
         width: '100%',
-        height: isAndroid ? Style.EM(3) : Style.EM(6),
+        height: isAndroid ? Style.EM(2.75) : Style.EM(6),
+        justifyContent: 'center',
         borderColor: AppConst.COLOR_GRAY,
         borderRadius: 0,
         borderWidth: 1,
         marginBottom: Style.EM(0.5),
         marginTop: Style.EM(0.5),
-        paddingBottom: Style.EM(0.5),
         paddingLeft: Style.EM(0.5)
     },
     pickerItem: {
-        height: isAndroid ? Style.EM(3) : Style.EM(6),
+        height: isAndroid ? Style.EM(2.75) : Style.EM(6),
         fontFamily: Style.CENTURY_GOTHIC,
         fontSize: Style.FONT_16
     }
