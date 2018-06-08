@@ -1,176 +1,85 @@
 <style>
-  .ibox-tools a {
-    color: #000;
-  }
-  a:link {
-    color: #676a6c;
-    text-decoration: none;
-  }
-  
-  a:visited {
-    text-decoration: none;
-    color: #676a6c;
-  }
-  a:hover, a:focus {
-    text-decoration: none !important;
-    color: #676a6c;
+  .ibox-content {
+    border: 1px solid #e7eaec;
   }
 </style>
 
 <div ng-include src="'app/modules/header/views/header.html'"></div>
 
-<div id="page-top" class="landing-top-section cn">
-  <div class="row inner">
-    <div class="row col-md-12">
-      <div class="col-md-12">SHANK</div>
-      <div class="col-md-12">THE GAME INSIDE THE GAME</div>
-    </div>
-    
-    <div class="row col-md-12">
-      <div class="col-md-12">Join the game of fantasy golf</div>
-      <div class="col-md-12">and compete against your friends</div>
-    </div>
-    
+<div class="body-container">
+  <section class="container">
     <div class="row">
-      <div class="col-md-6">
-        <img src="assets/images/web-logo.svg" class="store-container" />
-        <img src="assets/images/web-logo.svg" class="store-container" />
-      </div>
-    </div>
-  </div>
-</div>
-
-<section id="about" class="container">
-  <div class="row">
-    <div class="col-lg-12 text-center">
-      <div class="navy-line"></div>
-      <h1>How does it Work?</h1>
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class="col-sm-3 text-center">
-      <h2>Step 1</h2>
-      <span>Download the app</span><br />
-      <span>and create an acount.</span>
-    </div>
-    <div class="col-sm-3 text-center">
-      <h2>Step 2</h2>
-      <span>Create a Group</span><br />
-      <span>and Invite your Friends.</span>
-    </div>
-    <div class="col-sm-3 text-center">
-      <h2>Step 3</h2>
-      <span>Choose a tournament an draft</span><br />
-      <span>from all your favorite players.</span>
-    </div>
-    <div class="col-sm-3 text-center">
-      <h2>Step 4</h2>
-      <span>Rack up big points to</span><br />
-      <span>win your group prizes.</span>
-    </div>
-  </div>
-</section>
-
-<section id="features" class="container">
-  <div class="row">
-    <div class="col-lg-12 text-center">
-      <div class="navy-line"></div>
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class="col-sm-6">
-      <img src="assets/images/app-screen.png" class="img-app-screen" />
-    </div>
-    <div class="col-sm-6">
-      <div class="col--md-12">
-        <h2>Fair points for all positions</h2>
-        <p>
-          <span>We attribute points for all actions during the games so you only have to think about</span><br />
-          <span>picking the best players. Which stars are going to play for your team?</span>
-        </p>
-      </div>
-      
-      <div class="col-md-12">
-        <div class="table-responsive">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>
-                  <span>POS</span>
-                </th>
-                <th class="text-center">
-                  <span>PLAYERS</span>
-                </th>
-                <th class="text-center">
-                  <span>TOTAL</span>
-                </th>
-                <th class="text-center">
-                  <span>THRU</span>
-                </th>
-                <th class="text-center date-column">
-                  <span>TODAY</span>
-                </th>
-                <th class="text-center date-column">
-                  <span>POINTS</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="player in homeCtrl.players track by $index">
-                <td class="text-center">{{player.position}}</td>
-                <td class="text-center">{{player.player}}</td>
-                <td class="text-center">{{player.total}}</td>
-                <td class="text-center">{{player.thru}}</td>
-                <td class="text-center">{{player.today}}</td>
-                <td class="text-center">{{player.points}}</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="col-lg-4">
+        <div class="ibox float-e-margins">
+          <div class="ibox-content">
+            <div class="row text-center">
+              <span>Let us know how</span><br/>
+              <span>we can help!</span>
+            </div>
+            
+            <form class="m-t"
+                  role="form"
+                  validate-form="contactCtrl.send_contant()"
+                  name="loginForm"
+                  novalidate="">
+              <div class="form-group">
+                <input validation
+                       type="email"
+                       id="form_email"
+                       name="form_email"
+                       ng-model="contactCtrl.form.email"
+                       class="form-control"
+                       placeholder="Email"
+                       required="">
+              </div>
+              
+              <div class="form-group">
+                <input validation
+                       type="text"
+                       id="form_subject"
+                       name="form_subject"
+                       ng-model="contactCtrl.form.subject"
+                       class="form-control"
+                       placeholder="Subject"
+                       required="">
+              </div>
+              
+              <div class="form-group">
+                <textarea validation
+                       type="text"
+                       id="form_message"
+                       name="form_message"
+                       ng-model="contactCtrl.form.message"
+                       class="form-control"
+                       placeholder="Message"
+                       required="">
+                </textarea>
+              </div>
+              
+              <div class="form-group">
+                <div vc-recaptcha
+                     theme="'light'"
+                     ng-model="contactCtrl.myRecaptchaResponse"
+                     key="contactCtrl.form.key"
+                     on-create="contactCtrl.setWidgetId(widgetId)"
+                     on-success="contactCtrl.setResponse(response)"
+                     on-expire="contactCtrl.cbExpiration()">
+                </div>
+              </div>
+              
+              <button type="submit" class="btn btn-primary block full-width m-b">
+                <span ng-show="contactCtrl.logging_in">
+                  <i class="glyphicon glyphicon-refresh spinning"></i>
+                </span>
+                Send
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<section id="testimonials" class="container">
-  <div class="row">
-    <div class="col-lg-12 text-center">
-      <div class="navy-line"></div>
-      <h1>What People Are Saying</h1>
-    </div>
-  </div>
-  
-  <div class="space-20"></div>
-  
-  <div class="row">
-    <div class="col-sm-12 text-center">
-      <div class="team-member wow zoomIn">
-        <img src="assets/images/avatar1.jpg" class="img-responsive img-circle" alt="">
-        <h4>Si Woo Kim</h4>
-        <h6>PGA PLAYER</h6>
-      </div>
-    </div>
-    <div class="col-sm-12 text-center">
-      <p>"I got here by setting a very clear goal, talking to a lot of people about<br/>
-      what I needed to do to accomplish it, and working extremely hard."
-      </p>
-    </div>
-  </div>
-</section>
-
-<section class="container">
-  <div class="space-20"></div>
-  
-  <div class="row">
-    <div class="col-sm-12 text-center">
-      <h2>Join Shank Today and let your friends</h2>
-      <h2>you know more about golf</h2>
-    </div>
-  </div>
-</section>
-
+  </section>
+</div>
 <!-- Footer -->
 <section id="contact" class="gray-section contact">
   <div ng-include src="'app/modules/footer/views/footer.html'"></div>

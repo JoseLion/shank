@@ -2,6 +2,10 @@
   'use strict';
   
   angular.module('core', [
-    'core.directives'
+    'core.underscore',
+    'core.model',
+    'core.directives',
+    'core.notifier',
+    'core.utils'
   ]);
 })();
