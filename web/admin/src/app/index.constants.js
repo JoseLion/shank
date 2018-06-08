@@ -15,6 +15,7 @@
     .constant('malarkey', malarkey)
     .constant('moment', moment)
     .constant('Host', Host)
-    .constant('ApiHost', ApiHost);
+    .constant('ApiHost', ApiHost)
+    .constant('XLSX', XLSX);
 
 })();
