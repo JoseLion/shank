@@ -38,7 +38,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>6</string>
+	<string>9</string>
 	<key>FacebookAppID</key>
 	<string>1840743005946613</string>
 	<key>FacebookDisplayName</key>
@@ -58,6 +58,13 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>goshank.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>192.168.10.152</key>
 			<dict/>
 			<key>NSExceptionAllowsInsecureHTTPLoads</key>
