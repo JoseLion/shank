@@ -6871,8 +6871,9 @@ body.landing-page {
   color: #179d82;
 }
 .landing-page section p {
-  color: #aeaeae;
+  //color: #aeaeae;
   font-size: 13px;
+  text-align: justify;
 }
 .landing-page address {
   font-size: 13px;
@@ -8624,7 +8625,6 @@ textarea {
 
 .underline {
   text-decoration: underline;
-  text-decoration-color: blue;
 }
 
 /* COLORS */

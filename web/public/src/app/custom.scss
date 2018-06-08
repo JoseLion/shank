@@ -47,10 +47,11 @@
   color: #676a6c !important;
 }
 .custom-navbar {
-  margin-left: 15%;
+  margin-left: 23%;
 }
 .navbar-logo-container {
-  width: 8%;
+  width: 5%;
+  padding-top: 15px;
 }
 .navbar-logo {
   width: 100%;
@@ -78,7 +79,11 @@
 .img-app-screen {
   width: 60%;
 }
+/* HEADER */
 
+.bg-blue {
+  background-color: rgba(37, 45, 59, 1) !important;
+}
 /* FOOTER */
 .footer-logo {
   width: 15%;
