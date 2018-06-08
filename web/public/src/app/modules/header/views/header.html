@@ -32,13 +32,13 @@
             <!--</a>-->
 					</li>
           
-          <li ng-class="{ 'active' : (state_name === 'terms') }">
+          <li ng-class="{ 'active page-selected' : (state.includes('terms')) }">
 						<a ui-sref="terms">Terms</a>
 					</li>
-          <li ng-class="{ 'active' : (state_name === 'privacy_policy') }">
+          <li ng-class="{ 'active page-selected' : (state.includes('privacy_policy')) }">
 						<a ui-sref="privacy_policy">Privacy Policy</a>
 					</li>
-          <li ng-class="{ 'active' : (state_name === 'contact_us') }">
+          <li ng-class="{ 'active page-selected' : (state.includes('contact_us')) }">
 						<a ui-sref="contact_us">Contact</a>
 					</li>
         </ul>
