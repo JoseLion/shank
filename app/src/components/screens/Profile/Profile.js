@@ -134,7 +134,7 @@ export default class ProfileScreen extends BaseComponent {
     async componentDidMount() {
         global.setLoading(true);
         const response = await BaseModel.get('app_profile').catch(handleError);
-        this.setState({...response.user});
+        this.setState({...response.user, countries: response.countries});
         global.setLoading(false);
 	}
 
