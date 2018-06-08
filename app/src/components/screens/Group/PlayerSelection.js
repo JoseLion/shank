@@ -19,7 +19,10 @@ class PlayerRow extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onPress = this.onPress.bind(this);
-		this.state = {cross: this.props.cross};
+		this.state = {
+            totalCount: props.totalCount,
+            cross: props.cross
+        };
 	}
 
 	async onPress() {
@@ -40,37 +43,46 @@ class PlayerRow extends React.Component {
 		}
 
 		return false;
-	}
+    }
+    
+    static getDerivedStateFromProps(props, state) {
+        state.totalCount = props.totalCount;
+        return state;
+    }
 
 	render() {
-		return (
-			<TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.onPress}>
-				<View style={[ViewStyle.cellView]}>
-					<View style={{flex: 1}}>
-						<ImageLoad style={ViewStyle.playerImage} source={{uri: this.state.cross.player && this.state.cross.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'}
-						placeholderSource={UserIcon} placeholderStyle={ViewStyle.playerImage} />
-					</View>
+        if (this.state.cross.player) {
+            return (
+                <TouchableHighlight style={[ViewStyle.rowCell]} underlayColor={AppConst.COLOR_HIGHLIGHT} onPress={this.onPress}>
+                    <View style={[ViewStyle.cellView]}>
+                        <View style={{flex: 1}}>
+                            <ImageLoad style={ViewStyle.playerImage} source={{uri: this.state.cross.player.photoUrl}} resizeMode={'contain'} resizeMethod={'resize'}
+                            placeholderSource={UserIcon} placeholderStyle={ViewStyle.playerImage} />
+                        </View>
 
-					<View style={{flex: 6}}>
-						<Text style={[ViewStyle.playerName]}>{this.state.cross.player && (this.state.cross.player.firstName + ' ' + this.state.cross.player.lastName)}</Text>
-					</View>
+                        <View style={{flex: 6}}>
+                            <Text style={[ViewStyle.playerName]}>{this.state.cross.player.firstName + ' ' + this.state.cross.player.lastName}</Text>
+                        </View>
 
-					<View style={{flex: 2}}>
-						<Text style={[ViewStyle.pickRate]}>0%</Text>
-					</View>
+                        <View style={{flex: 2}}>
+                            <Text style={[ViewStyle.pickRate]}>{Math.round(this.state.cross.player.pickCount * 100 / this.state.totalCount, 2)}%</Text>
+                        </View>
 
-					<View style={{flex: 2, alignItems: 'center'}}>
-						<View style={[ViewStyle.checkView, (this.state.cross.isSelected ? ViewStyle.selectedView : null)]}>
-							{this.state.cross.isSelected ? 
-								<Image source={CheckWhiteIcon} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.checkImage} />
-							:
-								<Image source={CheckGreenIcon} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.checkImage} />
-							}
-						</View>
-					</View>
-				</View>
-			</TouchableHighlight>
-		);
+                        <View style={{flex: 2, alignItems: 'center'}}>
+                            <View style={[ViewStyle.checkView, (this.state.cross.isSelected ? ViewStyle.selectedView : null)]}>
+                                {this.state.cross.isSelected ? 
+                                    <Image source={CheckWhiteIcon} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.checkImage} />
+                                :
+                                    <Image source={CheckGreenIcon} resizeMode={'contain'} resizeMethod={'resize'} style={ViewStyle.checkImage} />
+                                }
+                            </View>
+                        </View>
+                    </View>
+                </TouchableHighlight>
+            );
+        }
+
+        return null;
 	}
 }
 
@@ -116,6 +128,7 @@ export default class PlayerSelection extends BaseComponent {
 		this.searchChanged = this.searchChanged.bind(this);
 		this.done = this.done.bind(this);
 		this.state = {
+            totalCount: 0,
 			selectCount: 0,
 			position: this.props.navigation.state.params.position,
 			group: this.props.navigation.state.params.group,
@@ -212,7 +225,8 @@ export default class PlayerSelection extends BaseComponent {
 	async componentDidMount() {
 		this.props.navigation.setParams({searchChanged: this.searchChanged});
 
-		global.setLoading(true);
+        global.setLoading(true);
+        const totalCount = await BaseModel.get('leaderboard/playersCount').catch(handleError);
 		let leaderboard = await BaseModel.get('leaderboard/findByTournament/' + this.state.group.tournaments[this.state.tournamentIndex].tournament._id).catch(handleError);
 		leaderboard = leaderboard.filter(cross => {
 			let isInRoaster = false;
@@ -225,9 +239,9 @@ export default class PlayerSelection extends BaseComponent {
 			}
 
 			return !isInRoaster;
-		});
-
-		this.setState({leaderboard: leaderboard});
+        });
+        
+		this.setState({ leaderboard, totalCount});
 		this.searchList = [...this.state.leaderboard];
 		global.setLoading(false);
 	}
@@ -246,7 +260,7 @@ export default class PlayerSelection extends BaseComponent {
 				</View>
 				
 				<FlatList data={this.state.leaderboard} keyExtractor={item => item._id} extraData={this.state.selectCount} renderItem={({item}) => (
-					<PlayerRow cross={item} count={this.state.selectCount} max={this.state.position != null ? 1 : 5} onPressItem={() => this.playerSelected(item)} />
+					<PlayerRow totalCount={this.state.totalCount} cross={item} count={this.state.selectCount} max={this.state.position != null ? 1 : 5} onPressItem={() => this.playerSelected(item)} />
 				)} />
 
 				{this.state.selectCount == (this.state.position != null ? 1 : 5) ?
